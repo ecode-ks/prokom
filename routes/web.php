@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagesController;
+use App\Http\Controllers\MaterialsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -46,4 +47,13 @@ Route::controller(ClientsController::class)->group(function () {
     Route::get('/edit-client/{id}', 'edit')->name('edit.client');
     Route::post('/update-client', 'update')->name('update.client');
     Route::get('/delete-client/{id}', 'delete')->name('delete.client');
+});
+
+// Materials
+Route::controller(MaterialsController::class)->group(function () {
+    Route::post('/create-material', 'create')->name('create.material');
+    Route::get('/materials', 'read')->name('materials');
+    Route::get('/edit-material/{id}', 'edit')->name('edit.material');
+    Route::post('/update-material', 'update')->name('update.material');
+    Route::get('/delete-material/{id}', 'delete')->name('delete.material');
 });
