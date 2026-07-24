@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Construction Flow | Register</title>
+        <title>PROKOM | Regjistrimi</title>
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,23 +21,23 @@
                             <i class="fa-solid fa-city"></i>
                         </div>
                         <div>
-                            <span class="d-block fw-semibold">Construction Flow</span>
-                            <small class="d-block opacity-50">Management Suite</small>
+                            <span class="d-block fw-semibold">PROKOM</span>
+                            <small class="d-block opacity-50">Paneli Menaxhimit</small>
                         </div>
                     </div>
                     <div class="mt-4">
                         <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-light px-3 py-2 fw-semibold">
                             <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                            Trusted by <strong>10+</strong> Companies
+                            Besuar nga <strong>10+</strong> Kompani
                         </span>
                     </div>
                     <div class="mt-5">
-                        <h1 class="display-4 fw-bold col-8">Staff, Projects and Finances <span class="opacity-50">- in one hand.</span></h1>
-                        <p class="lead opacity-75 col-7 mt-5">Employees, working hours, holidays, contracts, wages, tasks and reports. A quiet, thoughtful system.</p>
+                        <h1 class="display-4 fw-bold col-8">Stafi, Projektet dhe Financat <span class="opacity-50">- në një vend.</span></h1>
+                        <p class="lead opacity-75 col-7 mt-5">Punonjësit, oraret e punës, pushimet, kontratat, pagat, detyrat dhe raportet. Një sistem i qetë dhe i menduar mirë.</p>
                     </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between opacity-50">
-                            <small>&copy; {{ date('Y') }} Construction Flow</small>
+                            <small>&copy; {{ date('Y') }} PROKOM</small>
                             <small><i class="fa-solid fa-shield-alt"></i> ISO 27001</small>
                         </div>
                     </div>
@@ -46,43 +46,43 @@
                 {{-- Registration Form --}}
                 <div class="col-12 col-md-12 col-lg-6 bg-custom vh-100 overflow-y-auto">
                     <div class="col-12 col-md-8 mx-auto py-5">
-                        <span class="txt-darkblue fw-semibold text-uppercase">Welcome to C-Flow</span>
-                        <h1 class="fw-bold col-12 mt-3">Create an account for your Company</h1>
+                        <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini në PROKOM</span>
+                        <h1 class="fw-bold col-12 mt-3">Krijoni një llogari për kompaninë tuaj</h1>
                         <form action="{{ route('register.company') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                             @csrf
                             <div class="mb-3">
-                                <label for="company" class="form-label text-uppercase small fw-semibold">Company Name</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="company" name="company" value="{{ old('company') }}" placeholder="Enter your company name">
+                                <label for="company" class="form-label text-uppercase small fw-semibold">Emri i Kompanisë</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="company" name="company" value="{{ old('company') }}" placeholder="Shkruani emrin e kompanisë suaj">
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label text-uppercase small fw-semibold">Email</label>
-                                <input type="email" class="form-control shadow-sm py-custom rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="Enter your email">
+                                <label for="email" class="form-label text-uppercase small fw-semibold">Emaili</label>
+                                <input type="email" class="form-control shadow-sm py-custom rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="Shkruani email-in tuaj">
                             </div>
                             <div class="mb-3">
-                                <label for="phone" class="form-label text-uppercase small fw-semibold">Phone</label>
-                                <input type="tel" class="form-control shadow-sm py-custom rounded-3" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Enter your phone number">
+                                <label for="phone" class="form-label text-uppercase small fw-semibold">Telefoni</label>
+                                <input type="tel" class="form-control shadow-sm py-custom rounded-3" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Shkruani numrin tuaj të telefonit">
                             </div>
                             <div class="mb-3">
-                                <label for="location" class="form-label text-uppercase small fw-semibold">Location</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="Enter your location">
+                                <label for="location" class="form-label text-uppercase small fw-semibold">Vendndodhja</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="Shkruani vendndodhjen tuaj">
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label text-uppercase small fw-semibold">Username</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="Enter your username">
+                                <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="Shkruani përdoruesin">
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="form-label text-uppercase small fw-semibold">Password</label>
-                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="Enter your password">
+                                <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi</label>
+                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="Shkruani fjalëkalimin tuaj">
                             </div>
                             <div class="mb-3">
-                                <label for="password_confirmation" class="form-label text-uppercase small fw-semibold">Confirm Password</label>
-                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="Confirm your password">
+                                <label for="password_confirmation" class="form-label text-uppercase small fw-semibold">Konfirmo fjalëkalimin</label>
+                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="Konfirmoni fjalëkalimin tuaj">
                             </div>
-                            <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Register <i class="fa-solid fa-angle-right"></i></button>
+                            <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Regjistrohu <i class="fa-solid fa-angle-right"></i></button>
                         </form>
-                        <span class="opacity-50 small mt-4 d-block text-center">---------- OR ----------</span>
+                        <span class="opacity-50 small mt-4 d-block text-center">---------- OSE ----------</span>
                         <div class="mt-4 text-center">
-                            <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Do you have an account?</span> Log in now!</a>
+                            <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Keni një llogari?</span> Kyçu tani!</a>
                         </div>
                         <div class="mt-4 text-center d-block d-md-none d-lg-none">
                             <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-success border border-success px-3 py-2 fw-semibold">
@@ -100,7 +100,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success border-success">
-                        <strong class="me-auto text-light">Success!</strong>
+                        <strong class="me-auto text-light">Njoftim!</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-success">
@@ -115,7 +115,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="errorToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-danger border-danger">
-                        <strong class="me-auto text-light">Error!</strong>
+                        <strong class="me-auto text-light">Njoftim!</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-danger">
