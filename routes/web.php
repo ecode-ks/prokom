@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\CompaniesController;
+use App\Http\Controllers\DashboardController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -18,4 +20,15 @@ Route::controller(ClientsController::class)->group(function () {
     Route::get('/clients/{id}', 'edit')->name('clients.edit');
     Route::put('/clients/{id}', 'update')->name('clients.update');
     Route::delete('/clients/{id}', 'delete')->name('clients.delete');
+});
+
+// Companies
+Route::controller(CompaniesController::class)->group(function () {
+    Route::get('/register', 'register')->name('register');
+    Route::post('/register-company', 'registerCompany')->name('register.company');
+});
+
+// Dashboard
+Route::controller(DashboardController::class)->group(function () {
+    Route::get('/dashboard', 'dashboard')->name('dashboard');
 });

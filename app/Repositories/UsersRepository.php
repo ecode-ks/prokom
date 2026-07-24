@@ -19,4 +19,24 @@ class UsersRepository
             ->where('role', 'admin')
             ->exists();
     }
+    //---------------
+    public function checkUserExists(string $username): bool
+    {
+        return DB::table($this->table)
+            ->where('username', $username)
+            ->exists();
+    }
+    //---------------
+    public function registerAdmin(array $data): bool
+    {
+        return DB::table($this->table)
+            ->insert($data);
+    }
+    //---------------
+    public function checkUser(array $credentials)
+    {
+        return DB::table($this->table)
+            ->where('username', $credentials['username'])
+            ->first();
+    }
 }

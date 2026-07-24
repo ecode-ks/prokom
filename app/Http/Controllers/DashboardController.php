@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class DashboardController extends Controller
 {
-    //
+    //---------------
+    public function dashboard()
+    {
+        $page = 'Dashboard';
+        return view('management.dashboard')
+            ->with('page', $page);
+    }
 }
