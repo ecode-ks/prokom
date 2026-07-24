@@ -70,4 +70,22 @@ class UsersService
 
         throw new \Exception('Emri i përdoruesit ose fjalëkalimi është i pasaktë.');
     }
+    //---------------
+    public function updateProfilePassword(string $oldPassword, string $newPassword, string $username): bool
+    {
+        if (session('role') === 'company') {
+            $company = $this->companiesRepository->findCompanyByUsername($username);
+            if (!$company || !Hash::check($oldPassword, $company->password)) {
+                return false;
+            }
+            return $this->companiesRepository->updatePasswordByUsername($username, Hash::make($newPassword));
+        } else {
+            $user = $this->usersRepository->findUserByUsername($username);
+            if (!$user || !Hash::check($oldPassword, $user->password)) {
+                return false;
+            }
+
+            return $this->usersRepository->updatePasswordByUsername($username, Hash::make($newPassword));
+        }
+    }
 }

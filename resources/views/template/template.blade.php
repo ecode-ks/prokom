@@ -161,8 +161,6 @@
 
                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                 <small class="d-block text-uppercase opacity-50 ms-2 mb-2 fs-small">Staff</small>
-                            @else
-                                <small class="d-block text-uppercase opacity-50 ms-2 mb-2 fs-small">Users</small>
                             @endif
                             <ul class="list-group mb-4">
                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
@@ -176,13 +174,6 @@
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Check In' ? 'sidebar-active' : 'sidebar-link' }}">
                                         <a href="" class="text-decoration-none text-light">
                                             <i class="fa-solid fa-user-check mx-2 opacity-75"></i> Check In
-                                        </a>
-                                    </li>
-                                @endif
-                                @if(session('role') === 'admin')
-                                    <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Users' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-user-lock mx-2 opacity-75"></i> Users
                                         </a>
                                     </li>
                                 @endif
@@ -293,15 +284,10 @@
                                             <li><hr class="dropdown-divider"></li>
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                                 <li><span class="dropdown-item-text fw-semibold">Staff</span></li>
-                                            @else
-                                                <li><span class="dropdown-item-text fw-semibold">Users</span></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employees' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-users me-2 opacity-75"></i> Employees</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-user-check me-2 opacity-75"></i> Check In</a></li>
-                                            @endif
-                                            @if(session('role') === 'admin')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Users' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-user-lock me-2 opacity-75"></i> Users</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-clock me-2 opacity-75"></i> Working Hours</a></li>
@@ -355,7 +341,7 @@
                                     <ul class="dropdown-menu rounded-3 shadow-sm p-2">
                                         <span class="d-block px-3 fw-semibold">{{ $profileName }}</span>
                                         <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize">{{ session('role') }}</small>
-                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-regular fa-circle-user"></i> Profili im</a></li>
+                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href="{{ route('profile') }}"><i class="fa-regular fa-circle-user"></i> Profili im</a></li>
                                         <li><a class="dropdown-item rounded-3 text-danger" href="{{ route('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Shkyçu</a></li>
                                     </ul>
                                 </div>

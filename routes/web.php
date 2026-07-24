@@ -14,6 +14,8 @@ Route::controller(UsersController::class)->group(function () {
     Route::post('/check-login', 'checkLogin')->name('check.login');
     Route::post('/register-admin', 'registerAdmin')->name('register.admin');
     Route::get('/logout', 'logout')->name('logout');
+    Route::get('/profile', 'profile')->name('profile');
+    Route::post('/profile-password', 'updateProfilePassword')->name('update.profile.password');
 });
 
 // Companies
