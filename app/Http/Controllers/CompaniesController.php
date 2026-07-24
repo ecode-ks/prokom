@@ -22,7 +22,6 @@ class CompaniesController extends Controller
     //---------------
     public function registerCompany(Request $request)
     {
-        $page = 'Register Company';
         $validator=Validator::make($request->all(),[
             'company'=>'required|string|min:3|max:255',
             'email'=>'required|email|min:3|max:255',
@@ -45,6 +44,61 @@ class CompaniesController extends Controller
             } catch (\Exception $e) {
                 return back()->with('error', 'Regjistrimi dështoi: ' . $e->getMessage())->withInput();
             }
+        }
+    }
+    //---------------
+    public function read(Request $request)
+    {
+        $page = 'Companies';
+        $search = $request->query('search', '');
+        $companies = $this->companiesService->getCompanies(10, $search);
+
+        return view('management.companies')
+            ->with('page', $page)
+            ->with('companies', $companies);
+    }
+    //---------------
+    public function details(int $id)
+    {
+        $page = 'Companies';
+        if (!$this->companiesService->findOrFail($id)) {
+            return redirect()->route('companies')->with('error', 'Kompania nuk u gjet');
+        }
+
+        $companyDetails = $this->companiesService->getCompanyById($id);
+        return view('management.company-details')
+            ->with('page', $page)
+            ->with('companyDetails', $companyDetails);
+    }
+    //---------------
+    public function updateStatus(int $id, string $status)
+    {
+        if (!$this->companiesService->findOrFail($id)) {
+            return redirect()->route('companies')->with('error', 'Kompania nuk u gjet');
+        }
+
+        try {
+            if (!$this->companiesService->updateCompanyStatus($id, $status)) {
+                return redirect()->route('company.details', $id)->with('error', 'Kërkesa për përditësimin e statusit është e pavlefshme.');
+            }
+
+            return redirect()->route('company.details', $id)->with('success', 'Statusi i kompanisë u përditësua me sukses.');
+        } catch (\Exception $e) {
+            return redirect()->route('company.details', $id)->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+        }
+    }
+    //---------------
+    public function delete(int $id)
+    {
+        if (!$this->companiesService->findOrFail($id)) {
+            return redirect()->route('companies')->with('error', 'Kompania nuk u gjet');
+        }
+
+        try {
+            $this->companiesService->deleteCompany($id);
+            return redirect()->route('companies')->with('success', 'Kompania u fshi me sukses.');
+        } catch (\Exception $e) {
+            return redirect()->route('companies')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
         }
     }
 }
