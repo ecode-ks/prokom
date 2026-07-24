@@ -40,7 +40,10 @@ class CompaniesService
     public function getCompanies(int $limit, string $search = '')
     {
         $limit = (int) $limit ?: 10;
-        return $this->companiesRepository->getCompanies($limit, $search);
+        if (!empty($search)) {
+            return $this->companiesRepository->getSearchedCompanies($limit, $search);
+        }
+        return $this->companiesRepository->getCompanies($limit);
     }
     //---------------
     public function findOrFail(int $id): bool

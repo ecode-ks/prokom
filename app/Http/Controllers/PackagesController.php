@@ -27,8 +27,12 @@ class PackagesController extends Controller
         } else {
             $data = $request->only(['title', 'price', 'months', 'description']);
             try {
-                $this->service->createPackage($data);
-                return redirect()->route('packages')->with('success', 'Paketa u krijua me sukses.');
+                $created = $this->service->createPackage($data);
+                if(!$created) {
+                    return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+                }else {
+                    return redirect()->route('packages')->with('success', 'Paketa u krijua me sukses.');
+                }
             } catch (\Exception $e) {
                 return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
             }
@@ -74,8 +78,12 @@ class PackagesController extends Controller
             $id = $request->id;
             $data = $request->only(['title', 'price', 'months', 'description']);
             try {
-                $this->service->updatePackage($id, $data);
-                return back()->with('success', 'Paketa u përditësua me sukses.');
+                $updated = $this->service->updatePackage($id, $data);
+                if(!$updated) {
+                    return redirect()->back()->with('error', 'Nuk u ndryshua asgjë në paketë.');
+                }else {
+                    return redirect()->route('packages')->with('success', 'Paketa u përditësua me sukses.');
+                }
             } catch (\Exception $e) {
                 return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
             }
@@ -88,8 +96,12 @@ class PackagesController extends Controller
             return redirect()->route('packages')->with('error','Paketa nuk u gjet');
         } else {
             try {
-                $this->service->deletePackage($id);
-                return redirect()->route('packages')->with('success','Paketa u fshi me sukses');
+                $deleted = $this->service->deletePackage($id);
+                if(!$deleted) {
+                    return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                }else {
+                    return redirect()->route('packages')->with('success', 'Paketa u fshi me sukses.');
+                }
             } catch (\Exception $e) {
                 return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
             }

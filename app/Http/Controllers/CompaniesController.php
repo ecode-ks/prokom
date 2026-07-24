@@ -39,8 +39,12 @@ class CompaniesController extends Controller
             }
             $data = $request->only(['company', 'email', 'phone', 'location', 'username', 'password']);
             try {
-                $this->companiesService->registerCompany($data);
-                return redirect()->route('login')->with('success', 'Kompania u regjistrua me sukses. Ju lutemi kyçuni.');
+                $created = $this->companiesService->registerCompany($data);
+                if(!$created) {
+                    return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+                }else {
+                    return redirect()->route('login')->with('success', 'Kompania u regjistrua me sukses. Ju lutemi kyçuni.');
+                }
             } catch (\Exception $e) {
                 return back()->with('error', 'Regjistrimi dështoi: ' . $e->getMessage())->withInput();
             }
@@ -52,7 +56,6 @@ class CompaniesController extends Controller
         $page = 'Companies';
         $search = $request->query('search', '');
         $companies = $this->companiesService->getCompanies(10, $search);
-
         return view('management.companies')
             ->with('page', $page)
             ->with('companies', $companies);
@@ -78,11 +81,12 @@ class CompaniesController extends Controller
         }
 
         try {
-            if (!$this->companiesService->updateCompanyStatus($id, $status)) {
-                return redirect()->route('company.details', $id)->with('error', 'Kërkesa për përditësimin e statusit është e pavlefshme.');
+            $updated = $this->companiesService->updateCompanyStatus($id, $status);
+            if(!$updated) {
+                return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+            }else {
+                return redirect()->route('company.details', $id)->with('success', 'Statusi i kompanisë u përditësua me sukses.');
             }
-
-            return redirect()->route('company.details', $id)->with('success', 'Statusi i kompanisë u përditësua me sukses.');
         } catch (\Exception $e) {
             return redirect()->route('company.details', $id)->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
         }
@@ -95,8 +99,12 @@ class CompaniesController extends Controller
         }
 
         try {
-            $this->companiesService->deleteCompany($id);
-            return redirect()->route('companies')->with('success', 'Kompania u fshi me sukses.');
+            $deleted = $this->companiesService->deleteCompany($id);
+            if(!$deleted) {
+                return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+            }else {
+                return redirect()->route('companies')->with('success', 'Kompania u fshi me sukses.');
+            }
         } catch (\Exception $e) {
             return redirect()->route('companies')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
         }

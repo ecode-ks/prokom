@@ -39,11 +39,47 @@ class UsersController extends Controller
             return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.');
         }else{
             $data = $request->only(['user', 'username', 'password']);
-            $created = $this->usersService->registerAdmin($data);
-            if($created){
+            try {
+                $this->usersService->registerAdmin($data);
                 return redirect()->route('login')->with('success', 'Përdoruesi administrator u krijua me sukses. Ju lutemi identifikohuni.');
-            }else{
-                return back()->with('error', 'Dështoi krijimi i përdoruesit administrator. Ju lutemi provoni përsëri.');
+            } catch (\Exception $e) {
+                    return back()->with('error', 'Dështoi krijimi i përdoruesit administrator. Ju lutemi provoni përsëri.');
+            }
+        }
+    }
+    //---------------
+    public function profile()
+    {
+        $page = 'My Profile';
+        return view('management.profile')
+            ->with('page', $page);
+    }
+    //---------------
+    public function updateProfilePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|string|min:8|max:255',
+            'new_password' => 'required|string|min:8|max:255',
+            'new_password_confirmation' => 'required|string|min:8|max:255'
+        ]);
+
+        if($validator->fails()){
+            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.');
+        }else{
+            if ($request->new_password !== $request->new_password_confirmation) {
+                return back()->with('error', 'Fjalëkalimi i ri dhe konfirmimi i fjalëkalimit nuk përputhen.')->withInput();
+            }
+            $username = session()->get('username');
+
+            try {
+                $created = $this->usersService->updateProfilePassword($request->old_password, $request->new_password, $username);
+                if ($created) {
+                    return back()->with('success', 'Fjalëkalimi u përditësua me sukses.');
+                } else {
+                    return back()->with('error', 'Fjalëkalimi i vjetër është i pasaktë.')->withInput();
+                }
+            } catch (\Exception $e) {
+                return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
             }
         }
     }
