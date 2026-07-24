@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PackagesController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -31,4 +32,13 @@ Route::controller(CompaniesController::class)->group(function () {
 // Dashboard
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/dashboard', 'dashboard')->name('dashboard');
+});
+
+// Packages
+Route::controller(PackagesController::class)->group(function () {
+    Route::post('/create-package', 'create')->name('create.package');
+    Route::get('/packages', 'read')->name('packages');
+    Route::get('/edit-package/{id}', 'edit')->name('edit.package');
+    Route::post('/update-package', 'update')->name('update.package');
+    Route::get('/delete-package/{id}', 'delete')->name('delete.package');
 });

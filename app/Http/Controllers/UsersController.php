@@ -59,15 +59,17 @@ class UsersController extends Controller
         }else{
             try {
                 $this->usersService->checkLogin($request->only(['username', 'password']));
-
-                if ((string) session('role') === 'company' && session('payment_expired') === true) {
-                    return redirect()->route('payment.expired')->with('error', 'Your subscription has expired. Please select a new package to continue.');
-                }
-
-                return redirect()->route('dashboard')->with('success', 'Welcome to C-Flow! You have successfully logged in.');
+                return redirect()->route('dashboard')->with('success', 'Mirë se vini në PROKOM! Jeni kyçur me sukses.');
             } catch (\Exception $e) {
-                return back()->with('error', 'Failed to log in : ' . $e->getMessage())->withInput();
+                return back()->with('error', 'Kyçja dështoi: ' . $e->getMessage())->withInput();
             }
         }
+    }
+    //---------------
+    public function logout()
+    {
+        session()->flush();
+        return redirect()->route('login')
+            ->with('success', 'Ju jeni shkyçur me sukses nga sistemi.');
     }
 }
