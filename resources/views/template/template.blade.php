@@ -45,7 +45,7 @@
                                 </li>
                                 @if(session('role') === 'admin')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Packages' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
+                                        <a href="{{ route('packages') }}" class="text-decoration-none text-light">
                                             <i class="fa-brands fa-trello mx-2 opacity-75"></i> Packages
                                         </a>
                                     </li>
@@ -220,7 +220,7 @@
                                         <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ session('role') }}">{{ session('role') }}</small>
                                     </div>
                                     <div class="col-3">
-                                        <a href="" class="btn btn-darkblue rounded-3 btn-sm"><i class="fa-solid fa-right-from-bracket text-danger"></i></a>
+                                        <a href="{{ route('logout') }}" class="btn btn-darkblue rounded-3 btn-sm"><i class="fa-solid fa-right-from-bracket text-danger"></i></a>
                                     </div>
                                 </div>
                             </div>
@@ -246,7 +246,7 @@
                                             <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Dashboard</a></li>
 
                                             @if(session('role') === 'admin')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-brands fa-trello me-2 opacity-75"></i> Packages</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> Packages</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Companies' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-building me-2 opacity-75"></i> Companies</a></li>
                                             @endif
 
@@ -355,8 +355,8 @@
                                     <ul class="dropdown-menu rounded-3 shadow-sm p-2">
                                         <span class="d-block px-3 fw-semibold">{{ $profileName }}</span>
                                         <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize">{{ session('role') }}</small>
-                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-regular fa-circle-user"></i> My Profile</a></li>
-                                        <li><a class="dropdown-item rounded-3 text-danger" href=""><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-regular fa-circle-user"></i> Profili im</a></li>
+                                        <li><a class="dropdown-item rounded-3 text-danger" href="{{ route('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Shkyçu</a></li>
                                     </ul>
                                 </div>
                             </div>
