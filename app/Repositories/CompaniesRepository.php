@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\CompaniesModel;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class CompaniesRepository
 {
@@ -21,19 +20,19 @@ class CompaniesRepository
             ->get();
     }
     //---------------
-    public function getCompanies(int $limit, string $search = '')
+    public function getCompanies(int $limit)
     {
-        $query = DB::table($this->table)
-            ->select('*');
-
-        if (!empty($search)) {
-            $query->where('company', 'like', "%{$search}%");
-        }
-
-        return $query
+        return DB::table($this->table)
             ->orderByDesc('id')
-            ->cursorPaginate($limit)
-            ->withQueryString();
+            ->cursorPaginate($limit);
+    }
+    //---------------
+    public function getSearchedCompanies(int $limit, string $search)
+    {
+        return DB::table($this->table)
+            ->where('company', 'like', "%{$search}%")
+            ->orderByDesc('id')
+            ->cursorPaginate($limit);
     }
     //---------------
     public function registerCompany(array $data): bool
@@ -74,13 +73,13 @@ class CompaniesRepository
             ->where('username', $credentials['username'])
             ->first();
     }
-
     //---------------
     public function findCompanyById(int $id)
     {
         return DB::table($this->table)
-            ->select('*')
-            ->where('id', $id)
+            ->leftJoin('packages', 'companies.package', '=', 'packages.id')
+            ->select('companies.*', 'packages.title')
+            ->where('companies.id', $id)
             ->first();
     }
     //---------------
@@ -104,7 +103,6 @@ class CompaniesRepository
             ->where('id', $companyId)
             ->update(['status' => 'Blocked']);
     }
-
     //---------------
     public function updateStatus(int $id, string $status): bool
     {
@@ -112,34 +110,6 @@ class CompaniesRepository
             ->where('id', $id)
             ->update(['status' => $status]) > 0;
     }
-
-    //---------------
-    public function renewSubscription(int $companyId, int $packageId, int $months): bool
-    {
-        $company = $this->findCompanyById($companyId);
-        if (!$company || $months <= 0) {
-            return false;
-        }
-
-        $baseDate = now();
-        if (!empty($company->payment_expire) && $company->payment_expire > now()) {
-            $baseDate = $company->payment_expire;
-        }
-
-        $update = [
-            'status' => 'Active',
-            'payment_expire' => $baseDate->copy()->addMonths($months),
-        ];
-
-        if (Schema::hasColumn($this->table, 'package_id')) {
-            $update['package_id'] = $packageId;
-        }
-
-        return DB::table($this->table)
-            ->where('id', $companyId)
-            ->update($update) > 0;
-    }
-
     //---------------
     public function delete(int $id): bool
     {

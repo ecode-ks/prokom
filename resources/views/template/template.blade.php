@@ -46,12 +46,12 @@
                                 @if(session('role') === 'admin')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Packages' ? 'sidebar-active' : 'sidebar-link' }}">
                                         <a href="{{ route('packages') }}" class="text-decoration-none text-light">
-                                            <i class="fa-brands fa-trello mx-2 opacity-75"></i> Packages
+                                            <i class="fa-brands fa-trello mx-2 opacity-75"></i> Paketat
                                         </a>
                                     </li>
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Companies' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-building mx-2 opacity-75"></i> Companies
+                                        <a href="{{ route('companies') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-building mx-2 opacity-75"></i> Kompanitë
                                         </a>
                                     </li>
                                 @endif
@@ -246,12 +246,12 @@
                                             <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Dashboard</a></li>
 
                                             @if(session('role') === 'admin')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> Packages</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Companies' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-building me-2 opacity-75"></i> Companies</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> Paketat</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Companies' ? 'bg-darkblue text-light' : '' }}" href="{{ route('companies') }}"><i class="fa-solid fa-building me-2 opacity-75"></i> Kompanitë</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Company News' ? 'bg-darkblue text-light' : '' }}" href="><i class="fa-solid fa-newspaper me-2 opacity-75"></i> Company News</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Company News' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-newspaper me-2 opacity-75"></i> Company News</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
