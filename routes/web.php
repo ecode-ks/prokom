@@ -7,6 +7,7 @@ use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\MaterialsController;
+use App\Http\Controllers\MaterialsStockController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -56,4 +57,14 @@ Route::controller(MaterialsController::class)->group(function () {
     Route::get('/edit-material/{id}', 'edit')->name('edit.material');
     Route::post('/update-material', 'update')->name('update.material');
     Route::get('/delete-material/{id}', 'delete')->name('delete.material');
+});
+
+// Materials Stock
+Route::controller(MaterialsStockController::class)->group(function () {
+    Route::post('/create-material-stock', 'create')->name('create.material.stock');
+    Route::get('/materials-stock', 'read')->name('materials.stock');
+    Route::get('/materials-stock-report', 'report')->name('materials.stock.report');
+    Route::get('/edit-material-stock/{id}', 'edit')->name('edit.material.stock');
+    Route::post('/update-material-stock', 'update')->name('update.material.stock');
+    Route::get('/delete-material-stock/{id}', 'delete')->name('delete.material.stock');
 });

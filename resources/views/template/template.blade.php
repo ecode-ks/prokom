@@ -109,13 +109,13 @@
                                         </a>
                                     </li>
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Materials Stock' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
+                                        <a href="{{ route('materials.stock') }}" class="text-decoration-none text-light">
                                             <i class="fa-solid fa-boxes-stacked mx-2 opacity-75"></i> Materials Stock
                                         </a>
                                     </li>
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Stock Report' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-chart-column mx-2 opacity-75"></i> Stock Report
+                                        <a href="{{ route('materials.stock.report') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-chart-pie mx-2 opacity-75"></i> Stock Report
                                         </a>
                                     </li>
                                 </ul>
@@ -274,7 +274,7 @@
                                                 <li><span class="dropdown-item-text fw-semibold">Materials</span></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-layer-group me-2 opacity-75"></i> Materials</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials Stock' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-boxes-stacked me-2 opacity-75"></i> Materials Stock</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Stock Report' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Stock Report</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Stock Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock.report') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Stock Report</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'finance')
