@@ -125,7 +125,7 @@
                                 <small class="d-block text-uppercase opacity-50 ms-2 mb-2 fs-small">Finances</small>
                                 <ul class="list-group mb-4">
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Clients' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
+                                        <a href="{{ route('clients') }}" class="text-decoration-none text-light">
                                             <i class="fa-solid fa-users-viewfinder mx-2 opacity-75"></i> Clients
                                         </a>
                                     </li>

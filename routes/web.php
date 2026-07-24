@@ -41,9 +41,9 @@ Route::controller(PackagesController::class)->group(function () {
 
 // Clients
 Route::controller(ClientsController::class)->group(function () {
-    Route::get('/clients', 'index')->name('clients');
-    Route::post('/clients', 'create')->name('clients.create');
-    Route::get('/clients/{id}', 'edit')->name('clients.edit');
-    Route::put('/clients/{id}', 'update')->name('clients.update');
-    Route::delete('/clients/{id}', 'delete')->name('clients.delete');
+    Route::post('/create-client', 'create')->name('create.client');
+    Route::get('/clients', 'read')->name('clients');
+    Route::get('/edit-client/{id}', 'edit')->name('edit.client');
+    Route::post('/update-client', 'update')->name('update.client');
+    Route::get('/delete-client/{id}', 'delete')->name('delete.client');
 });

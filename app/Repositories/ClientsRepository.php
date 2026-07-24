@@ -3,13 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\ClientsModel;
-use App\Repositories\Concerns\TenantScopedRepository;
 use Illuminate\Support\Facades\DB;
 
 class ClientsRepository
 {
-    use TenantScopedRepository;
-
     protected string $table;
 
     public function __construct(ClientsModel $model)
@@ -17,18 +14,17 @@ class ClientsRepository
         $this->table = $model->getTable();
     }
     //---------------
-    public function create(array $data, int $companyId): bool
+    public function create(array $data): bool
     {
         return DB::table($this->table)
-            ->insert($data)
-            ->where('company_id', $companyId);
+            ->insert($data);
     }
     //---------------
     public function getClients(int $limit, int $companyId)
     {
         return DB::table($this->table)
-            ->orderByDesc('id')
             ->where('company_id', $companyId)
+            ->orderByDesc('id')
             ->cursorPaginate($limit);
     }
     //---------------
@@ -44,8 +40,8 @@ class ClientsRepository
     public function getAllClients(int $companyId)
     {
         return DB::table($this->table)
-            ->orderBy('client')
             ->where('company_id', $companyId)
+            ->orderBy('client')
             ->get();
     }
     //---------------
@@ -67,10 +63,10 @@ class ClientsRepository
     //---------------
     public function update(int $id, array $data, int $companyId): bool
     {
-        return  DB::table($this->table)
+        return DB::table($this->table)
             ->where('id', $id)
             ->where('company_id', $companyId)
-            ->update($data);
+            ->update($data) > 0;
     }
     //---------------
     public function delete(int $id, int $companyId): bool
@@ -78,7 +74,6 @@ class ClientsRepository
         return DB::table($this->table)
             ->where('id', $id)
             ->where('company_id', $companyId)
-            ->delete();
+            ->delete() > 0;
     }
 }
-?>

@@ -25,9 +25,9 @@ class ClientsController extends Controller
             return redirect()->route('clients')->with('error','Te gjitha fushat duhet te plotesohen sipas rregullave.')->withInput();
         } else {
             $data = $request->only(['client', 'phone', 'location']);
+            $data['company_id'] = session('company_id');
             try {
-                $companyId = session('company_id');
-                $this->service->createClient($data, $companyId);
+                $this->service->createClient($data);
                 return redirect()->route('clients')->with('success', 'Klienti u krijua me sukses.');
             } catch (\Exception $e) {
                 return redirect()->route('clients')->with('error', 'Ndodhi nje problem, ju lutem provoni perseri.')->withInput();
@@ -77,7 +77,7 @@ class ClientsController extends Controller
             $companyId = session('company_id');
             try {
                 $this->service->updateClient($id, $data, $companyId);
-                return back()->with('success', 'Klienti u përditësua me sukses.');
+                return redirect()->route('clients')->with('success', 'Klienti u perditesua me sukses.');
             } catch (\Exception $e) {
                 return redirect()->route('clients')->with('error', 'Ndodhi nje problem, ju lutem provoni perseri.');
             }

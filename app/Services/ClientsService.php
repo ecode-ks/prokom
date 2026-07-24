@@ -12,10 +12,10 @@ class ClientsService
         $this->repository = $repository;
     }
     //---------------
-    public function createClient(array $data, int $companyId): bool
+    public function createClient(array $data): bool
     {
-        return $this->repository->create($data, $companyId);
-    }
+        return $this->repository->create($data);
+    }   
     //---------------
     public function getClients(int $limit,  int $companyId, string $search = '')
     {
