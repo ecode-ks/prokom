@@ -15,19 +15,19 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for cflow
-CREATE DATABASE IF NOT EXISTS `cflow` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
-USE `cflow`;
+-- Dumping database structure for prokom
+CREATE DATABASE IF NOT EXISTS `prokom` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
+USE `prokom`;
 
--- Dumping structure for table cflow.check_ins
+-- Dumping structure for table prokom.check_ins
 CREATE TABLE IF NOT EXISTS `check_ins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) DEFAULT NULL,
   `check_in_time` datetime DEFAULT NULL,
-  `check_in_fact` longtext DEFAULT NULL,
   `check_in_location` varchar(255) DEFAULT NULL,
+  `pause_start_time` datetime DEFAULT NULL,
+  `pause_end_time` datetime DEFAULT NULL,
   `check_out_time` datetime DEFAULT NULL,
-  `check_out_fact` longtext DEFAULT NULL,
   `check_out_location` varchar(255) DEFAULT NULL,
   `status` varchar(50) DEFAULT 'Under Review',
   `company_id` int(11) DEFAULT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `check_ins` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.clients
+-- Dumping structure for table prokom.clients
 CREATE TABLE IF NOT EXISTS `clients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client` varchar(255) DEFAULT NULL,
@@ -54,9 +54,10 @@ CREATE TABLE IF NOT EXISTS `clients` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.companies
+-- Dumping structure for table prokom.companies
 CREATE TABLE IF NOT EXISTS `companies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_at` date NOT NULL DEFAULT current_timestamp(),
   `company` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
@@ -71,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `companies` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.company_news
+-- Dumping structure for table prokom.company_news
 CREATE TABLE IF NOT EXISTS `company_news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -87,12 +88,14 @@ CREATE TABLE IF NOT EXISTS `company_news` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.contracts
+-- Dumping structure for table prokom.contracts
 CREATE TABLE IF NOT EXISTS `contracts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) DEFAULT NULL,
   `position` varchar(255) DEFAULT NULL,
   `salary` decimal(20,2) DEFAULT NULL,
+  `extra_hours_price` decimal(20,2) DEFAULT NULL,
+  `weekend_hours_price` decimal(20,2) DEFAULT NULL,
   `from_date` date DEFAULT NULL,
   `to_date` date DEFAULT NULL,
   `docs` longtext DEFAULT NULL,
@@ -107,12 +110,16 @@ CREATE TABLE IF NOT EXISTS `contracts` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.employees
+-- Dumping structure for table prokom.employees
 CREATE TABLE IF NOT EXISTS `employees` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee` varchar(255) DEFAULT NULL,
   `phone` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `status` varchar(50) DEFAULT 'Active',
   `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_employees_companies` (`company_id`),
@@ -121,7 +128,18 @@ CREATE TABLE IF NOT EXISTS `employees` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.financial_transactions
+-- Dumping structure for table prokom.extra_hours
+CREATE TABLE IF NOT EXISTS `extra_hours` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `employee_id` int(11) DEFAULT NULL,
+  `hours` varchar(255) DEFAULT NULL,
+  `type` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table prokom.financial_transactions
 CREATE TABLE IF NOT EXISTS `financial_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -136,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `financial_transactions` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.materials
+-- Dumping structure for table prokom.materials
 CREATE TABLE IF NOT EXISTS `materials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `material` varchar(255) DEFAULT NULL,
@@ -149,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `materials` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.materials_stock
+-- Dumping structure for table prokom.materials_stock
 CREATE TABLE IF NOT EXISTS `materials_stock` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `material_id` int(11) DEFAULT NULL,
@@ -165,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `materials_stock` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.offers
+-- Dumping structure for table prokom.offers
 CREATE TABLE IF NOT EXISTS `offers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `offer_number` varchar(50) DEFAULT NULL,
@@ -184,7 +202,7 @@ CREATE TABLE IF NOT EXISTS `offers` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.packages
+-- Dumping structure for table prokom.packages
 CREATE TABLE IF NOT EXISTS `packages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
@@ -196,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `packages` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.projects
+-- Dumping structure for table prokom.projects
 CREATE TABLE IF NOT EXISTS `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_name` varchar(255) DEFAULT NULL,
@@ -219,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.project_reports
+-- Dumping structure for table prokom.project_reports
 CREATE TABLE IF NOT EXISTS `project_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT current_timestamp(),
@@ -240,7 +258,20 @@ CREATE TABLE IF NOT EXISTS `project_reports` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.suppliers
+-- Dumping structure for table prokom.salaries
+CREATE TABLE IF NOT EXISTS `salaries` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
+  `employee_id` int(11) DEFAULT NULL,
+  `salary` decimal(20,2) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_salaries_employees` (`employee_id`),
+  CONSTRAINT `FK_salaries_employees` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table prokom.suppliers
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `supplier` varchar(255) DEFAULT NULL,
@@ -254,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.tasks
+-- Dumping structure for table prokom.tasks
 CREATE TABLE IF NOT EXISTS `tasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -272,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.task_reports
+-- Dumping structure for table prokom.task_reports
 CREATE TABLE IF NOT EXISTS `task_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,
@@ -289,22 +320,19 @@ CREATE TABLE IF NOT EXISTS `task_reports` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.users
+-- Dumping structure for table prokom.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(255) DEFAULT NULL,
   `username` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `role` varchar(50) DEFAULT 'employee',
-  `company_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_users_companies` (`company_id`),
-  CONSTRAINT `FK_users_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  `role` varchar(50) DEFAULT 'admin',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.vacations
+-- Dumping structure for table prokom.vacations
 CREATE TABLE IF NOT EXISTS `vacations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -312,6 +340,7 @@ CREATE TABLE IF NOT EXISTS `vacations` (
   `from_date` date DEFAULT NULL,
   `to_date` date DEFAULT NULL,
   `comment` longtext DEFAULT NULL,
+  `type` varchar(50) DEFAULT NULL,
   `status` varchar(50) DEFAULT 'Reviewing',
   `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -321,7 +350,7 @@ CREATE TABLE IF NOT EXISTS `vacations` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table cflow.working_hours
+-- Dumping structure for table prokom.working_hours
 CREATE TABLE IF NOT EXISTS `working_hours` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
