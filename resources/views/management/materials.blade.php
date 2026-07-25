@@ -1,19 +1,19 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', isset($editMaterial) ? 'Update Material' : 'Materials')
+@section('title', isset($editMaterial) ? 'Përditëso Materialin' : 'Materialet')
 
 {{-- Page Content --}}
 @section('content')
     @if(isset($editMaterial))
-        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('materials') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Turn Back</a></small>
-        <h3 class="fw-semibold pt-2">Update Material</h3>
-        <p class="text-muted">Update the details of the selected material.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('materials') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
+        <h3 class="fw-semibold pt-2">Përditëso Materialin</h3>
+        <p class="text-muted">Përditëso të dhënat e materialit të zgjedhur.</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Materials</small>
-        <h3 class="fw-semibold pt-2">Materials</h3>
-        <p class="text-muted">View, create, and manage material records in one place.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">Materialet</small>
+        <h3 class="fw-semibold pt-2">Materialet</h3>
+        <p class="text-muted">Shiko, krijo dhe menaxho të dhënat e materialeve në një vend.</p>
         <hr class="mb-4">
     @endif
 
@@ -22,7 +22,7 @@
         {{-- Update Material --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-layer-group txt-lightblue py-2"></i> Update Material</span>
+                <span><i class="fa-solid fa-layer-group txt-lightblue py-2"></i> Përditëso Materialin</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('update.material') }}" method="post">
@@ -30,15 +30,15 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="material" class="form-label">Material</label>
-                            <input type="text" name="material" id="material" value="{{ old('material', $editMaterial->material) }}" class="form-control shadow-sm rounded-3" placeholder="Enter material here...">
+                            <label for="material" class="form-label">Materiali</label>
+                            <input type="text" name="material" id="material" value="{{ old('material', $editMaterial->material) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj materialin...">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="unit" class="form-label">Unit</label>
-                            <input type="text" name="unit" id="unit" value="{{ old('unit', $editMaterial->unit) }}" class="form-control shadow-sm rounded-3" placeholder="Enter material unit here...">
+                            <label for="unit" class="form-label">Njësia</label>
+                            <input type="text" name="unit" id="unit" value="{{ old('unit', $editMaterial->unit) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj njësinë e materialit...">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Update Material</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Materialin</button>
                         </div>
                     </div>
                 </form>
@@ -49,22 +49,22 @@
         {{-- Create Material --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-layer-group txt-lightblue py-2"></i> Create New Material</span>
+                <span><i class="fa-solid fa-layer-group txt-lightblue py-2"></i> Krijo Material të Ri</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.material') }}" method="post">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="material" class="form-label">Material</label>
-                            <input type="text" name="material" id="material" value="{{ old('material') }}" class="form-control shadow-sm rounded-3" placeholder="Enter material here...">
+                            <label for="material" class="form-label">Materiali</label>
+                            <input type="text" name="material" id="material" value="{{ old('material') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj materialin...">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="unit" class="form-label">Unit</label>
-                            <input type="text" name="unit" id="unit" value="{{ old('unit') }}" class="form-control shadow-sm rounded-3" placeholder="Enter unit here...">
+                            <label for="unit" class="form-label">Njësia</label>
+                            <input type="text" name="unit" id="unit" value="{{ old('unit') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj njësinë...">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Create Material</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Materialin</button>
                         </div>
                     </div>
                 </form>
@@ -74,11 +74,11 @@
         {{-- Materials List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Materials List</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Materialeve</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('materials') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Search..." aria-label="Search..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
                 <div class="table-responsive">
@@ -86,15 +86,15 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Material</th>
-                                <th scope="col" class="text-nowrap">Unit</th>
-                                <th scope="col" class="text-nowrap text-end">Operations</th>
+                                <th scope="col" class="text-nowrap">Materiali</th>
+                                <th scope="col" class="text-nowrap">Njësia</th>
+                                <th scope="col" class="text-nowrap text-end">Operacionet</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($materials) === 0)
                                 <tr>
-                                    <td colspan="4" class="text-center"><i class="fa-regular fa-face-frown"></i> No data found...</td>
+                                    <td colspan="4" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($materials as $material)
@@ -128,10 +128,10 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body text-center">
-                                <p>Confirm if you really want to delete this material?</p>
+                                <p>A jeni i sigurt që dëshironi ta fshini këtë material?</p>
                                 <div class="mt-3">
-                                    <a href="{{ route('delete.material', $material->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Confirm</a>
-                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Cancel</button>
+                                    <a href="{{ route('delete.material', $material->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
+                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
                                 </div>
                             </div>
                         </div>

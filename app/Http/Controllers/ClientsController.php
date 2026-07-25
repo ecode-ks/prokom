@@ -22,7 +22,7 @@ class ClientsController extends Controller
             'location' => 'required|string|min:1|max:255',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('clients')->with('error','Te gjitha fushat duhet te plotesohen sipas rregullave.')->withInput();
+            return redirect()->route('clients')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
         } else {
             $data = $request->only(['client', 'phone', 'location']);
             $data['company_id'] = session('company_id');
@@ -30,7 +30,7 @@ class ClientsController extends Controller
                 $this->service->createClient($data);
                 return redirect()->route('clients')->with('success', 'Klienti u krijua me sukses.');
             } catch (\Exception $e) {
-                return redirect()->route('clients')->with('error', 'Ndodhi nje problem, ju lutem provoni perseri.')->withInput();
+                return redirect()->route('clients')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
             }
         }
     }
@@ -70,16 +70,16 @@ class ClientsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Te gjitha fushat duhet te plotesohen sipas rregullave.')->withInput();
+            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['client', 'phone', 'location']);
             $companyId = session('company_id');
             try {
                 $this->service->updateClient($id, $data, $companyId);
-                return redirect()->route('clients')->with('success', 'Klienti u perditesua me sukses.');
+                return redirect()->route('clients')->with('success', 'Klienti u përditësua me sukses.');
             } catch (\Exception $e) {
-                return redirect()->route('clients')->with('error', 'Ndodhi nje problem, ju lutem provoni perseri.');
+                return redirect()->route('clients')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
             }
         }
     }
@@ -94,7 +94,7 @@ class ClientsController extends Controller
                 $this->service->deleteClient($id, $companyId);
                 return redirect()->route('clients')->with('success','Klienti u fshi me sukses');
             } catch (\Exception $e) {
-                return redirect()->route('clients')->with('error', 'Ndodhi nje problem, ju lutem provoni perseri.');
+                return redirect()->route('clients')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
             }
         }
     }

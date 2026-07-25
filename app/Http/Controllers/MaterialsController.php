@@ -21,15 +21,15 @@ class MaterialsController extends Controller
             'unit' => 'required|string|min:1|max:255',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('materials')->with('error','All fields must be filled in according to the rules.')->withInput();
+            return redirect()->route('materials')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
         } else {
             $data = $request->only(['material', 'unit']);
             $data['company_id'] = session('company_id');
             try {
                 $this->service->createMaterial($data);
-                return redirect()->route('materials')->with('success', 'Material created successfully.');
+                return redirect()->route('materials')->with('success', 'Materiali u krijua me sukses.');
             } catch (\Exception $e) {
-                return redirect()->route('materials')->with('error', 'Something went wrong, please try again.')->withInput();
+                return redirect()->route('materials')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
             }
         }
     }
@@ -50,7 +50,7 @@ class MaterialsController extends Controller
         $page = 'Materials';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('materials')->with('error','Material not found');
+            return redirect()->route('materials')->with('error','Materiali nuk u gjet');
         } else {
             $editMaterial = $this->service->getMaterialById($id, $companyId);
             return view('management.materials')
@@ -68,16 +68,16 @@ class MaterialsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','All fields must be filled in according to the rules.')->withInput();
+            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['material', 'unit']);
             $companyId = session('company_id');
             try {
                 $this->service->updateMaterial($id, $data, $companyId);
-                return redirect()->route('materials')->with('success', 'Material updated successfully.');
+                return redirect()->route('materials')->with('success', 'Materiali u përditësua me sukses.');
             } catch (\Exception $e) {
-                return redirect()->route('materials')->with('error', 'Something went wrong, please try again.');
+                return redirect()->route('materials')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
             }
         }
     }
@@ -86,15 +86,14 @@ class MaterialsController extends Controller
     {
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('materials')->with('error','Material not found');
+            return redirect()->route('materials')->with('error','Materiali nuk u gjet');
         } else {
             try {
                 $this->service->deleteMaterial($id, $companyId);
-                return redirect()->route('materials')->with('success','Material deleted successfully');
+                return redirect()->route('materials')->with('success','Materiali u fshi me sukses');
             } catch (\Exception $e) {
-                return redirect()->route('materials')->with('error', 'Something went wrong, please try again.');
+                return redirect()->route('materials')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
             }
         }
     }
 }
-
