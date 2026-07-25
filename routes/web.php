@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\MaterialsStockController;
+use App\Http\Controllers\CompanyNewsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -41,6 +42,15 @@ Route::controller(PackagesController::class)->group(function () {
     Route::get('/edit-package/{id}', 'edit')->name('edit.package');
     Route::post('/update-package', 'update')->name('update.package');
     Route::get('/delete-package/{id}', 'delete')->name('delete.package');
+});
+
+// Company News
+Route::controller(CompanyNewsController::class)->group(function () {
+    Route::post('/create-company-news', 'create')->name('create.company.news');
+    Route::get('/company-news', 'read')->name('company.news');
+    Route::get('/edit-company-news/{id}', 'edit')->name('edit.company.news');
+    Route::post('/update-company-news', 'update')->name('update.company.news');
+    Route::get('/delete-company-news/{id}', 'delete')->name('delete.company.news');
 });
 
 // Clients

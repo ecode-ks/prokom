@@ -33,7 +33,7 @@
                     <div class="row g-3 mb-4">
                         <div class="col-12 col-md-6">
                             <label class="form-label">Emri dhe Mbiemri</label>
-                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('user') }}" placeholder="Emri dhe Mbiemri" disabled>
+                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('user') ?? session('company') }}" placeholder="Emri dhe Mbiemri" disabled>
                         </div>
                         <div class="col-12 col-md-6">
                             <label class="form-label">Përdoruesi</label>
