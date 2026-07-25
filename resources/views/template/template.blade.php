@@ -36,7 +36,7 @@
 
                         {{-- List Menu --}}
                         <div>
-                            <small class="d-block text-uppercase opacity-50 ms-2 mb-2 mt-4 fs-small">Overview</small>
+                            <small class="d-block text-uppercase opacity-50 ms-2 mb-2 mt-4 fs-small">Përmbledhje</small>
                             <ul class="list-group mb-4">
                                 <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Dashboard' ? 'sidebar-active' : 'sidebar-link' }}">
                                     <a href="{{ route('dashboard') }}" class="text-decoration-none text-light">
@@ -57,8 +57,8 @@
                                 @endif
                                 @if(session('role') === 'company' || session('role') === 'manager')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Company News' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-newspaper mx-2 opacity-75"></i> Company News
+                                        <a href="{{ route('company.news') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-newspaper mx-2 opacity-75"></i> Lajme të Kompanisë
                                         </a>
                                     </li>
                                 @endif
@@ -233,7 +233,7 @@
                                             <i class="fa-solid fa-list-ul"></i></i> <span class="d-none d-md-inline">Menu</span>
                                         </button>
                                         <ul class="dropdown-menu rounded-3 shadow-sm p-2" style="min-width: 260px; max-height: 70vh; overflow-y: auto;">
-                                            <li><span class="dropdown-item-text fw-semibold">Overview</span></li>
+                                            <li><span class="dropdown-item-text fw-semibold">Përmbledhje</span></li>
                                             <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Dashboard</a></li>
 
                                             @if(session('role') === 'admin')
@@ -242,7 +242,7 @@
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Company News' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-newspaper me-2 opacity-75"></i> Company News</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Company News' ? 'bg-darkblue text-light' : '' }}" href="{{ route('company.news') }}"><i class="fa-solid fa-newspaper me-2 opacity-75"></i> Lajme të Kompanisë</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
