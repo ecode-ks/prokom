@@ -130,8 +130,8 @@
                                         </a>
                                     </li>
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Suppliers' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-truck mx-2 opacity-75"></i> Suppliers
+                                        <a href="{{ route('suppliers') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-truck mx-2 opacity-75"></i> Furnizuesit
                                         </a>
                                     </li>
                                     @if(session('role') === 'company' || session('role') === 'finance')
@@ -263,16 +263,16 @@
                                             @if(session('role') === 'company' || session('role') === 'manager')
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li><span class="dropdown-item-text fw-semibold">Materialet</span></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials') }}"><i class="fa-solid fa-layer-group me-2 opacity-75"></i> Materialet</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials Stock' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock') }}"><i class="fa-solid fa-boxes-stacked me-2 opacity-75"></i> Stoku i Materialeve</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-layer-group me-2 opacity-75"></i> Materialet</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials Stock' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-boxes-stacked me-2 opacity-75"></i> Stoku i Materialeve</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Stock Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock.report') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Raporti i Stokut</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'finance')
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li><span class="dropdown-item-text fw-semibold">Finances</span></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Clients' ? 'bg-darkblue text-light' : '' }}" href="{{ route('clients') }}"><i class="fa-solid fa-users-viewfinder me-2 opacity-75"></i> Klientët</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Suppliers' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-truck me-2 opacity-75"></i> Suppliers</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Clients' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-users-viewfinder me-2 opacity-75"></i> Klientët</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Suppliers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('suppliers') }}"><i class="fa-solid fa-truck me-2 opacity-75"></i> Furnizuesit</a></li>
                                                 @if(session('role') === 'company' || session('role') === 'finance')
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Revenue & Expenses' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-wallet me-2 opacity-75"></i> Revenue & Expenses</a></li>
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Financial Report' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-chart-pie me-2 opacity-75"></i> Financial Report</a></li>
