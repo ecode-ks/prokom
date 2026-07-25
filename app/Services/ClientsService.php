@@ -15,7 +15,7 @@ class ClientsService
     public function createClient(array $data): bool
     {
         return $this->repository->create($data);
-    }   
+    }
     //---------------
     public function getClients(int $limit,  int $companyId, string $search = '')
     {
