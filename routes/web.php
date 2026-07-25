@@ -11,6 +11,7 @@ use App\Http\Controllers\MaterialsStockController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\FinancialTransactionsController;
 use App\Http\Controllers\CompanyNewsController;
+use App\Http\Controllers\OffersController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -83,6 +84,22 @@ Route::controller(MaterialsStockController::class)->group(function () {
     Route::get('/delete-material-stock/{id}', 'delete')->name('delete.material.stock');
 });
 
+// Offers
+Route::controller(OffersController::class)->group(function () {
+    Route::get('/create-offer', 'createForm')->name('create.offer');
+    Route::post('/create-offer-client', 'saveClientSession')->name('save.offer.client.session');
+    Route::post('/create-offer-details', 'saveDetailsSession')->name('save.offer.details.session');
+    Route::post('/clear-offer-session', 'clearSession')->name('clear.offer.session');
+    Route::post('/create-offer', 'create')->name('create.offer');
+    Route::get('/offers', 'read')->name('offers');
+    Route::get('/edit-offer/{offerNumber}', 'edit')->name('edit.offer');
+    Route::post('/update-offer-client-info', 'updateClientInfo')->name('update.offer.client.info');
+    Route::post('/add-offer-content', 'addContent')->name('add.offer.content');
+    Route::get('/delete-offer-content/{id}', 'deleteContent')->name('delete.offer.content');
+    Route::get('/delete-offer/{offerNumber}', 'delete')->name('delete.offer');
+    Route::get('/offer-invoice/{offerNumber}', 'invoice')->name('offer.invoice');
+    Route::get('/update-offer-status/{offerNumber}/{status}', 'updateStatus')->name('update.offer.status');
+});
 // Suppliers
 Route::controller(SuppliersController::class)->group(function () {
     Route::post('/create-supplier', 'create')->name('create.supplier');
