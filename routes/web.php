@@ -9,6 +9,7 @@ use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\MaterialsStockController;
 use App\Http\Controllers\SuppliersController;
+use App\Http\Controllers\FinancialTransactionsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -79,4 +80,14 @@ Route::controller(SuppliersController::class)->group(function () {
     Route::get('/edit-supplier/{id}', 'edit')->name('edit.supplier');
     Route::post('/update-supplier', 'update')->name('update.supplier');
     Route::get('/delete-supplier/{id}', 'delete')->name('delete.supplier');
+});
+
+// Financial Transactions
+Route::controller(FinancialTransactionsController::class)->group(function () {
+    Route::post('/create-transaction', 'create')->name('create.transaction');
+    Route::get('/transactions', 'read')->name('financial.transactions');
+    Route::get('/financial-report', 'report')->name('financial.report');
+    Route::get('/edit-transaction/{id}', 'edit')->name('edit.transaction');
+    Route::post('/update-transaction', 'update')->name('update.transaction');
+    Route::get('/delete-transaction/{id}', 'delete')->name('delete.transaction');
 });
