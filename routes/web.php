@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\MaterialsStockController;
+use App\Http\Controllers\SuppliersController;
+use App\Http\Controllers\FinancialTransactionsController;
 use App\Http\Controllers\CompanyNewsController;
 
 // Users
@@ -79,4 +81,23 @@ Route::controller(MaterialsStockController::class)->group(function () {
     Route::get('/edit-material-stock/{id}', 'edit')->name('edit.material.stock');
     Route::post('/update-material-stock', 'update')->name('update.material.stock');
     Route::get('/delete-material-stock/{id}', 'delete')->name('delete.material.stock');
+});
+
+// Suppliers
+Route::controller(SuppliersController::class)->group(function () {
+    Route::post('/create-supplier', 'create')->name('create.supplier');
+    Route::get('/suppliers', 'read')->name('suppliers');
+    Route::get('/edit-supplier/{id}', 'edit')->name('edit.supplier');
+    Route::post('/update-supplier', 'update')->name('update.supplier');
+    Route::get('/delete-supplier/{id}', 'delete')->name('delete.supplier');
+});
+
+// Financial Transactions
+Route::controller(FinancialTransactionsController::class)->group(function () {
+    Route::post('/create-transaction', 'create')->name('create.transaction');
+    Route::get('/transactions', 'read')->name('financial.transactions');
+    Route::get('/financial-report', 'report')->name('financial.report');
+    Route::get('/edit-transaction/{id}', 'edit')->name('edit.transaction');
+    Route::post('/update-transaction', 'update')->name('update.transaction');
+    Route::get('/delete-transaction/{id}', 'delete')->name('delete.transaction');
 });
