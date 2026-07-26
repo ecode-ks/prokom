@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\UsersRepository;
 use App\Repositories\CompaniesRepository;
 use App\Repositories\PackagesRepository;
+use App\Repositories\EmployeesRepository;
 use Illuminate\Support\Facades\Hash;
 
 class CompaniesService
@@ -13,25 +14,20 @@ class CompaniesService
     protected CompaniesRepository $companiesRepository;
     protected UsersRepository $usersRepository;
     protected PackagesRepository $packagesRepository;
-    public function __construct(CompaniesRepository $companiesRepository, UsersRepository $usersRepository, PackagesRepository $packagesRepository)
+    protected EmployeesRepository $employeesRepository;
+    public function __construct(CompaniesRepository $companiesRepository, UsersRepository $usersRepository, PackagesRepository $packagesRepository, EmployeesRepository $employeesRepository)
     {
         $this->companiesRepository = $companiesRepository;
         $this->usersRepository = $usersRepository;
         $this->packagesRepository = $packagesRepository;
+        $this->employeesRepository = $employeesRepository;
     }
     //---------------
     public function registerCompany(array $data): bool
     {
-        if($this->usersRepository->checkUserExists($data['username'])) {
+        if($this->usersRepository->checkUserExists($data['username']) || $this->companiesRepository->checkCompanyExists($data['username']) || $this->employeesRepository->checkEmployeeUsername($data['username'])) {
             throw new \Exception('Ky përdorues tashmë ekziston. Ju lutemi zgjidhni një përdorues tjetër.');
         }
-        if($this->companiesRepository->checkCompanyExists($data['username'])) {
-            throw new \Exception('Ky përdorues tashmë ekziston. Ju lutemi zgjidhni një përdorues tjetër.');
-        }
-        // Per Employee
-        // if($this->companiesRepository->checkCompanyExists($data['username'])) {
-        //     throw new \Exception('Ky përdorues tashmë ekziston. Ju lutemi zgjidhni një përdorues tjetër.');
-        // }
         $data['password'] = Hash::make($data['password']);
         $data['payment_expire'] = now()->addDays(30);
         return $this->companiesRepository->registerCompany($data);
