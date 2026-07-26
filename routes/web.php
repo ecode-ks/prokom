@@ -11,6 +11,7 @@ use App\Http\Controllers\MaterialsStockController;
 use App\Http\Controllers\SuppliersController;
 use App\Http\Controllers\FinancialTransactionsController;
 use App\Http\Controllers\CompanyNewsController;
+use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
 
 // Users
@@ -100,6 +101,7 @@ Route::controller(OffersController::class)->group(function () {
     Route::get('/offer-invoice/{offerNumber}', 'invoice')->name('offer.invoice');
     Route::get('/update-offer-status/{offerNumber}/{status}', 'updateStatus')->name('update.offer.status');
 });
+
 // Suppliers
 Route::controller(SuppliersController::class)->group(function () {
     Route::post('/create-supplier', 'create')->name('create.supplier');
@@ -117,4 +119,15 @@ Route::controller(FinancialTransactionsController::class)->group(function () {
     Route::get('/edit-transaction/{id}', 'edit')->name('edit.transaction');
     Route::post('/update-transaction', 'update')->name('update.transaction');
     Route::get('/delete-transaction/{id}', 'delete')->name('delete.transaction');
+});
+
+// Employees
+Route::controller(EmployeesController::class)->group(function () {
+    Route::post('/create-employee', 'create')->name('create.employee');
+    Route::get('/employees', 'read')->name('employees');
+    Route::get('/edit-employee/{id}', 'edit')->name('edit.employee');
+    Route::post('/update-employee', 'update')->name('update.employee');
+    Route::get('/delete-employee/{id}', 'delete')->name('delete.employee');
+    Route::get('/block-employee/{id}', 'block')->name('block.employee');
+    Route::get('/activate-employee/{id}', 'activate')->name('activate.employee');
 });

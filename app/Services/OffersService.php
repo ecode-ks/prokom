@@ -6,8 +6,8 @@ use App\Repositories\OffersRepository;
 
 class OffersService
 {
-	protected OffersRepository $repository;
     protected int $companyId;
+	protected OffersRepository $repository;
 	public function __construct(OffersRepository $repository)
 	{
 		$this->repository = $repository;
