@@ -13,6 +13,7 @@ use App\Http\Controllers\FinancialTransactionsController;
 use App\Http\Controllers\CompanyNewsController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\WorkingHoursController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -130,4 +131,11 @@ Route::controller(EmployeesController::class)->group(function () {
     Route::get('/delete-employee/{id}', 'delete')->name('delete.employee');
     Route::get('/block-employee/{id}', 'block')->name('block.employee');
     Route::get('/activate-employee/{id}', 'activate')->name('activate.employee');
+});
+
+// Working Hours
+Route::controller(WorkingHoursController::class)->group(function () {
+    Route::post('/create-working-hour', 'create')->name('create.working.hour');
+    Route::get('/working-hours', 'read')->name('working.hours');
+    Route::get('/delete-working-hour/{id}', 'delete')->name('delete.working.hour');
 });

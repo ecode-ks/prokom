@@ -179,8 +179,8 @@
                                 @endif
                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Working Hours' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-clock mx-2 opacity-75"></i> Working Hours
+                                        <a href="{{ route('working.hours') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-clock mx-2 opacity-75"></i> Orët e Punës
                                         </a>
                                     </li>
                                 @endif
@@ -290,7 +290,7 @@
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-user-check me-2 opacity-75"></i> Check In</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-clock me-2 opacity-75"></i> Working Hours</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('working.hours') }}"><i class="fa-solid fa-clock me-2 opacity-75"></i> Orët e Punës</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-file-contract me-2 opacity-75"></i> Contracts</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> Vacations</a></li>
                                             @endif
