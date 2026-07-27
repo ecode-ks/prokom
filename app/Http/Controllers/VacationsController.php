@@ -50,7 +50,7 @@ class VacationsController extends Controller
         $statuses = array_values(array_filter((array) $request->query('statuses', [])));
         $employees = $this->employees->getAllEmployees($companyId);
         if(count($employees) === 0){
-            return redirect()->route('employees')->with('error','Ju lutemi regjistroni punëtorët e parë.');
+            return redirect()->route('employees')->with('error','Ju lutemi regjistroni së pari punonjësit.');
         }
         $vacations = $this->service->getVacations(10, $search, $statuses, $companyId);
         $vacationStats = $this->service->getVacationStatistics($search, $companyId);
@@ -66,11 +66,11 @@ class VacationsController extends Controller
         $page = 'Vacations';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('vacations')->with('error','Vacation not found');
+            return redirect()->route('vacations')->with('error','Pushimi nuk u gjet.');
         } else {
             $employees = $this->employees->getAllEmployees($companyId);
             if(count($employees) === 0){
-                return redirect()->route('vacations')->with('error','Ju lutemi regjistroni punëtorët e parë.');
+                return redirect()->route('vacations')->with('error','Ju lutemi regjistroni së pari punonjësit.');
             }
             $editVacation = $this->service->getVacationById($id, $companyId);
             return view('management.vacations')

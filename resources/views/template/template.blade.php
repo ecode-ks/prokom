@@ -292,7 +292,7 @@
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-clock me-2 opacity-75"></i> Working Hours</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-file-contract me-2 opacity-75"></i> Contracts</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> Vacations</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href="{{ route('vacations') }}"><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> Pushimet</a></li>
                                             @endif
                                         </ul>
                                     </div>
