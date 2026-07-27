@@ -13,6 +13,7 @@ use App\Http\Controllers\FinancialTransactionsController;
 use App\Http\Controllers\CompanyNewsController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\VacationsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -130,4 +131,14 @@ Route::controller(EmployeesController::class)->group(function () {
     Route::get('/delete-employee/{id}', 'delete')->name('delete.employee');
     Route::get('/block-employee/{id}', 'block')->name('block.employee');
     Route::get('/activate-employee/{id}', 'activate')->name('activate.employee');
+});
+
+// Vacations
+Route::controller(VacationsController::class)->group(function () {
+    Route::post('/create-vacation', 'create')->name('create.vacation');
+    Route::get('/vacations', 'read')->name('vacations');
+    Route::get('/edit-vacation/{id}', 'edit')->name('edit.vacation');
+    Route::post('/update-vacation', 'update')->name('update.vacation');
+    Route::get('/delete-vacation/{id}', 'delete')->name('delete.vacation');
+    Route::get('/update-vacation-status/{id}/{status}', 'updateStatus')->name('update.vacation.status');
 });

@@ -19,7 +19,7 @@ class SuppliersService
     //---------------
     public function getSuppliers(int $limit, string $search = '', int $companyId)
     {
-        $limit = (int) $limit ?: 10;
+        $limit = $limit ?: 10;
         if (!empty($search)) {
             return $this->repository->getSearchedSuppliers($limit, $search, $companyId);
         }

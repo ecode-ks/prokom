@@ -191,8 +191,8 @@
                                         </a>
                                     </li>
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Vacations' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-calendar-days mx-2 opacity-75"></i> Vacations
+                                        <a href="{{ route('vacations') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-calendar-days mx-2 opacity-75"></i> Pushimet
                                         </a>
                                     </li>
                                 @endif
