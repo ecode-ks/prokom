@@ -5,6 +5,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CheckInController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\MaterialsStockController;
@@ -40,6 +41,14 @@ Route::controller(CompaniesController::class)->group(function () {
 // Dashboard
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/dashboard', 'dashboard')->name('dashboard');
+});
+
+// Check In
+Route::controller(CheckInController::class)->group(function () {
+    Route::post('/start-work', 'startWork')->name('start.work');
+    Route::post('/start-break', 'startBreak')->name('start.break');
+    Route::post('/end-break', 'endBreak')->name('end.break');
+    Route::post('/end-work', 'endWork')->name('end.work');
 });
 
 // Packages
