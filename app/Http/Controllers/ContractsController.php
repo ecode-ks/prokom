@@ -23,8 +23,8 @@ class ContractsController extends Controller
             'employee_id' => 'required|integer|min:1|exists:employees,id',
             'position' => 'required|string|min:1|max:255',
             'salary' => 'required|numeric|min:0.01',
-            'extra_hours_price' => 'required|numeric|min:0.01',
-            'weekend_hours_price' => 'required|numeric|min:0.01',
+            'extra_hours_price' => 'required|numeric|min:0.00',
+            'weekend_hours_price' => 'required|numeric|min:0.00',
             'from_date' => 'required|date',
             'to_date' => 'required|date|after:from_date',
             'docs' => 'required|array|min:1',
@@ -37,9 +37,9 @@ class ContractsController extends Controller
             $data['company_id'] = session('company_id');
             try {
                 $this->service->createContract($data);
-                return redirect()->route('contracts')->with('success', 'Contracti u krijua me sukses.');
+                return redirect()->route('contracts')->with('success', 'Kontrata u krijua me sukses.');
             } catch (\Exception $e) {
-                return redirect()->route('contracts')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.'. $e)->withInput();
+                return redirect()->route('contracts')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.')->withInput();
             }
         }
     }
@@ -52,7 +52,7 @@ class ContractsController extends Controller
         $companyId = session('company_id');
         $employees = $this->employees->getAllEmployees($companyId);
         if(count($employees) === 0){
-            return redirect()->route('employees')->with('error','Ju lutemi regjistroni punëtorët e parë.');
+            return redirect()->route('employees')->with('error','Ju lutemi regjistroni së pari punonjësit.');
         }
         $contracts = $this->service->getContracts(10, $search, $status, $companyId);
         $contractStats = $this->service->getContractStatistics($search, $companyId);
@@ -68,7 +68,7 @@ class ContractsController extends Controller
         $page = 'Contracts';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('contracts')->with('error','Kontrata nuk u gjetë.');
+            return redirect()->route('contracts')->with('error','Kontrata nuk u gjet.');
         } else {
             $contractDetails = $this->service->getContractDetails($id, $companyId);
             return view('management.contracts')
@@ -82,11 +82,11 @@ class ContractsController extends Controller
         $page = 'Contracts';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('contracts')->with('error','Kontrata nuk u gjetë.');
+            return redirect()->route('contracts')->with('error','Kontrata nuk u gjet.');
         } else {
             $employees = $this->employees->getAllEmployees($companyId);
             if(count($employees) === 0){
-                return redirect()->route('employees')->with('error','Ju lutemi regjistroni punëtorët e parë.');
+                return redirect()->route('employees')->with('error','Ju lutemi regjistroni së pari punonjësit.');
             }
             $editContract = $this->service->getContractById($id, $companyId);
             return view('management.contracts')
@@ -133,7 +133,7 @@ class ContractsController extends Controller
     {
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('contracts')->with('error','Kontrata nuk u gjetë.');
+            return redirect()->route('contracts')->with('error','Kontrata nuk u gjet.');
         } else {
             try {
                 $this->service->deleteContract($id, $companyId);
