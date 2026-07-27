@@ -13,6 +13,8 @@ use App\Http\Controllers\FinancialTransactionsController;
 use App\Http\Controllers\CompanyNewsController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
+use App\Http\Controllers\VacationsController;
+use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\WorkingHoursController;
 
 // Users
@@ -133,6 +135,25 @@ Route::controller(EmployeesController::class)->group(function () {
     Route::get('/activate-employee/{id}', 'activate')->name('activate.employee');
 });
 
+// Vacations
+Route::controller(VacationsController::class)->group(function () {
+    Route::post('/create-vacation', 'create')->name('create.vacation');
+    Route::get('/vacations', 'read')->name('vacations');
+    Route::get('/edit-vacation/{id}', 'edit')->name('edit.vacation');
+    Route::post('/update-vacation', 'update')->name('update.vacation');
+    Route::get('/delete-vacation/{id}', 'delete')->name('delete.vacation');
+    Route::get('/update-vacation-status/{id}/{status}', 'updateStatus')->name('update.vacation.status');
+});
+
+// Contracts
+Route::controller(ContractsController::class)->group(function () {
+    Route::post('/create-contract', 'create')->name('create.contract');
+    Route::get('/contracts', 'read')->name('contracts');
+    Route::get('/contract-details/{id}', 'contractDetails')->name('contract.details');
+    Route::get('/edit-contract/{id}', 'edit')->name('edit.contract');
+    Route::post('/update-contract', 'update')->name('update.contract');
+    Route::get('/delete-contract/{id}', 'delete')->name('delete.contract');
+});
 // Working Hours
 Route::controller(WorkingHoursController::class)->group(function () {
     Route::post('/create-working-hour', 'create')->name('create.working.hour');
