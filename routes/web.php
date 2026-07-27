@@ -14,6 +14,7 @@ use App\Http\Controllers\CompanyNewsController;
 use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\VacationsController;
+use App\Http\Controllers\ContractsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -141,4 +142,14 @@ Route::controller(VacationsController::class)->group(function () {
     Route::post('/update-vacation', 'update')->name('update.vacation');
     Route::get('/delete-vacation/{id}', 'delete')->name('delete.vacation');
     Route::get('/update-vacation-status/{id}/{status}', 'updateStatus')->name('update.vacation.status');
+});
+
+// Contracts
+Route::controller(ContractsController::class)->group(function () {
+    Route::post('/create-contract', 'create')->name('create.contract');
+    Route::get('/contracts', 'read')->name('contracts');
+    Route::get('/contract-details/{id}', 'contractDetails')->name('contract.details');
+    Route::get('/edit-contract/{id}', 'edit')->name('edit.contract');
+    Route::post('/update-contract', 'update')->name('update.contract');
+    Route::get('/delete-contract/{id}', 'delete')->name('delete.contract');
 });
