@@ -41,11 +41,11 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="from_date" class="form-label">From Date</label>
-                            <input type="date" name="from_date" id="from_date" value="{{ old('from_date', $editVacation->from_date) }}" class="form-control shadow-sm rounded-3" placeholder="...">
+                            <input type="date" name="from_date" id="from_date" value="{{ old('from_date', $editVacation->from_date) }}" min="{{ date('Y-m-d') }}" class="form-control shadow-sm rounded-3" placeholder="...">
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="to_date" class="form-label">To Date</label>
-                            <input type="date" name="to_date" id="to_date" value="{{ old('to_date', $editVacation->to_date) }}" class="form-control shadow-sm rounded-3" placeholder="...">
+                            <input type="date" name="to_date" id="to_date" value="{{ old('to_date', $editVacation->to_date) }}" min="{{ date('Y-m-d') }}" class="form-control shadow-sm rounded-3" placeholder="...">
                         </div>
                         <div class="col-12 col-md-6 col-lg-3">
                             <label for="type" class="form-label">Type</label>
@@ -139,11 +139,11 @@
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="from_date" class="form-label">From Date</label>
-                            <input type="date" name="from_date" id="from_date" value="{{ old('from_date') }}" class="form-control shadow-sm rounded-3" placeholder="...">
+                            <input type="date" name="from_date" id="from_date" value="{{ old('from_date') }}" min="{{ date('Y-m-d') }}" class="form-control shadow-sm rounded-3" placeholder="...">
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="to_date" class="form-label">To Date</label>
-                            <input type="date" name="to_date" id="to_date" value="{{ old('to_date') }}" class="form-control shadow-sm rounded-3" placeholder="...">
+                            <input type="date" name="to_date" id="to_date" value="{{ old('to_date') }}" min="{{ date('Y-m-d') }}" class="form-control shadow-sm rounded-3" placeholder="...">
                         </div>
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="type" class="form-label">Type</label>

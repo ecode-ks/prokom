@@ -21,12 +21,15 @@ class VacationsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'employee_id' => 'required|integer|min:1|exists:employees,id',
-            'from_date' => 'required|date',
+            'from_date' => 'required|date|after_or_equal:today',
             'to_date' => 'required|date|after:from_date',
             'type' => 'required|in:Pushim vjetor,Pushim mjekësor',
             'comment' => 'nullable|string|min:1'
         ]);
         if ($validator->fails()) {
+            if ($validator->errors()->has('from_date') && strtotime($request->from_date) < strtotime('today')) {
+                return redirect()->route('vacations')->with('error', 'Nuk mund të rezervoni pushim në të kaluarën.')->withInput();
+            }
             return redirect()->route('vacations')->with('error','Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
         } else {
             $data = $request->only(['employee_id', 'from_date', 'to_date', 'type', 'comment']);
@@ -82,13 +85,16 @@ class VacationsController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:vacations,id',
             'employee_id' => 'required|integer|min:1|exists:employees,id',
-            'from_date' => 'required|date',
+            'from_date' => 'required|date|after_or_equal:today',
             'to_date' => 'required|date|after:from_date',
             'type' => 'required|in:Pushim vjetor,Pushim mjekësor',
             'comment' => 'nullable|string|min:1'
         ]);
 
         if ($validator->fails()) {
+            if ($validator->errors()->has('from_date') && strtotime($request->from_date) < strtotime('today')) {
+                return back()->with('error', 'Nuk mund të rezervoni pushim në të kaluarën.')->withInput();
+            }
             return back()->with('error','Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
         } else {
             $id = $request->id;
