@@ -15,6 +15,7 @@ use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\ContractsController;
+use App\Http\Controllers\WorkingHoursController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -152,4 +153,10 @@ Route::controller(ContractsController::class)->group(function () {
     Route::get('/edit-contract/{id}', 'edit')->name('edit.contract');
     Route::post('/update-contract', 'update')->name('update.contract');
     Route::get('/delete-contract/{id}', 'delete')->name('delete.contract');
+});
+// Working Hours
+Route::controller(WorkingHoursController::class)->group(function () {
+    Route::post('/create-working-hour', 'create')->name('create.working.hour');
+    Route::get('/working-hours', 'read')->name('working.hours');
+    Route::get('/delete-working-hour/{id}', 'delete')->name('delete.working.hour');
 });
