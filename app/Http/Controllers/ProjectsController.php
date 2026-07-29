@@ -43,6 +43,7 @@ class ProjectsController extends Controller
                 'status'
             ]);
             $data['company_id'] = session('company_id');
+            $data['created_at'] = now()->toDateString();
 
             try {
                 $this->service->createProject($data);

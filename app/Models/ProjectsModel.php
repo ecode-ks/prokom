@@ -18,6 +18,7 @@ class ProjectsModel extends Model
         'expected_end_date',
         'budget',
         'description',
-        'status'
+        'status',
+        'created_at',
     ];
 }
