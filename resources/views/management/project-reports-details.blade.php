@@ -13,19 +13,37 @@
             <span><i class="fa-solid fa-circle-info txt-lightblue py-2"></i> Detajet e Raportit të Projektit</span>
         </div>
         <div class="card-body py-4">
+            @php
+                $projectStatus = strtolower((string) ($reportDetails->project_status ?? ''));
+                $projectStatusLabels = [
+                    'planning' => 'Në planifikim',
+                    'in_progress' => 'Në progres',
+                    'completed' => 'Përfunduar',
+                    'on_hold' => 'Në pritje',
+                ];
+                $projectStatusLabel = $projectStatusLabels[$projectStatus] ?? ucwords(str_replace('_', ' ', $reportDetails->project_status ?? '-'));
+            @endphp
+
             @if($reportDetails->status === 'active' || $reportDetails->status === 'new')
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Aktive</span></span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi i Raportit : </span><span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Aktive</span></span>
             @elseif($reportDetails->status === 'under_review')
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span></span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi i Raportit : </span><span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span></span>
             @elseif($reportDetails->status === 'resolved')
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">I zgjidhur</span></span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi i Raportit : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">I zgjidhur</span></span>
             @else
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">Mbyllur</span></span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi i Raportit : </span><span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">Mbyllur</span></span>
             @endif
 
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-diagram-project"></i> Projekti : </span>{{ $reportDetails->project_name }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-circle-user"></i> Raportuar Nga : </span>{{ $reportDetails->reporter_name ?? '-' }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Data : </span>{{ \Carbon\Carbon::parse($reportDetails->date)->format('d/m/Y - H:i') }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user-tag"></i> Menaxheri : </span>{{ $reportDetails->manager_name ?? '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-circle-user"></i> Klienti : </span>{{ $reportDetails->client_name ?? '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-location-dot"></i> Lokacioni : </span>{{ $reportDetails->location ?? '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-flag"></i> Statusi i Projektit : </span>{{ $projectStatusLabel }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-check-dollar"></i> Buxheti : </span>{{ $reportDetails->budget !== null ? number_format((float) $reportDetails->budget, 2) . '€' : '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Data e Fillimit : </span>{{ !empty($reportDetails->start_date) ? \Carbon\Carbon::parse($reportDetails->start_date)->format('d/m/Y') : '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Përfundimi i Pritur : </span>{{ !empty($reportDetails->expected_end_date) ? \Carbon\Carbon::parse($reportDetails->expected_end_date)->format('d/m/Y') : '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-pen"></i> Raportuar Nga : </span>{{ $reportDetails->reporter_name ?? '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Data e Raportit : </span>{{ \Carbon\Carbon::parse($reportDetails->date)->format('d/m/Y - H:i') }}</span>
 
             <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> Raporti</span>
             <div class="card card-body rounded-4">

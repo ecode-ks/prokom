@@ -104,15 +104,17 @@
                                 <th scope="col" class="text-nowrap">#</th>
                                 <th scope="col" class="text-nowrap">Data</th>
                                 <th scope="col" class="text-nowrap">Projekti</th>
-                                <th scope="col" class="text-nowrap">Statusi</th>
+                                <th scope="col" class="text-nowrap">Menaxheri</th>
+                                <th scope="col" class="text-nowrap">Klienti</th>
                                 <th scope="col" class="text-nowrap">Raportuar Nga</th>
+                                <th scope="col" class="text-nowrap">Statusi</th>
                                 <th scope="col" class="text-nowrap text-end">Veprimet</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($reports) === 0)
                                 <tr>
-                                    <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="8" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach($reports as $report)
@@ -120,6 +122,9 @@
                                         <th scope="row" class="text-nowrap">{{ $report->id }}</th>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($report->date)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap">{{ $report->project_name }}</td>
+                                        <td class="text-nowrap">{{ $report->manager_name ?? '-' }}</td>
+                                        <td class="text-nowrap">{{ $report->client_name ?? '-' }}</td>
+                                        <td class="text-nowrap">{{ $report->reporter_name ?? '-' }}</td>
                                         <td class="text-nowrap">
                                             @if($report->status === 'active' || $report->status === 'new')
                                                 <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Aktive</span>
@@ -131,7 +136,6 @@
                                                 <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">Mbyllur</span>
                                             @endif
                                         </td>
-                                        <td class="text-nowrap">{{ $report->reporter_name ?? '-' }}</td>
                                         <td class="text-nowrap text-end">
                                             <a href="{{ route('edit.project.report', $report->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
                                             <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $report->id }}"><i class="fa-solid fa-trash"></i></button>

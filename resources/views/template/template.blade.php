@@ -92,8 +92,8 @@
                                     @endif
                                     @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Task Reports' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-file-lines mx-2 opacity-75"></i> Task Reports
+                                            <a href="{{ route('task.reports') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-file-lines mx-2 opacity-75"></i> Raportet e Detyrave
                                             </a>
                                         </li>
                                     @endif
@@ -256,7 +256,7 @@
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Project Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('project.reports') }}"><i class="fa-solid fa-chart-line me-2 opacity-75"></i> Raportet e Projekteve</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Task Reports' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-file-lines me-2 opacity-75"></i> Task Reports</a></li>
+                                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Task Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('task.reports') }}"><i class="fa-solid fa-file-lines me-2 opacity-75"></i> Raportet e Detyrave</a></li>
                                                 @endif
                                             @endif
 

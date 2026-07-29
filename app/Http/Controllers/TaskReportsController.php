@@ -17,56 +17,52 @@ class TaskReportsController extends Controller
     //---------------
     public function create(Request $request)
     {
-        if (!$this->hasModuleAccess()) {
-            return redirect()->route('login')->with('error', 'You must be logged in as company, manager or employee to access this page.');
-        }
+        $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ?  session('employee_id') : null;
 
         $validator = Validator::make($request->all(), [
             'task_id' => 'required|integer|min:1|exists:tasks,id',
-            'report' => 'required|string|min:3',
+            'report' => 'required|string|min:1',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp,heic,heif|max:4096',
+            'images.*' => 'image|max:5120',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('task.reports')->with('error', $validator->errors()->first())->withInput();
-        }
-
-        $images = [];
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $imageFile) {
-                $images[] = $imageFile->store('task-reports', 'public');
-            }
+            return redirect()->route('task.reports')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
         }
 
         $data = [
-            'task_id' => (int) $request->task_id,
-            'report' => trim((string) $request->report),
-            'reported_by' => (int) session('user_id'),
-            'images' => $images,
+            'task_id' => $request->task_id,
+            'report' => trim( $request->report),
+            'images' => $request->hasFile('images') ? $request->file('images') : [],
+            'reported_by' => $employeeId,
+            'company_id' => $companyId,
+            'status' => 'active',
+            'date' => now(),
         ];
-        $data['company_id'] = session('company_id');
 
-        if (!$this->service->createReport($data))
-            return redirect()->route('task.reports')->with('error', 'You can only report tasks assigned to you.')->withInput();
-        return redirect()->route('task.reports')->with('success', 'Task report created successfully.');
-    }
-    //---------------
-    public function read(Request $request)
-    {
-        if (!$this->hasModuleAccess()) {
-            return redirect()->route('login')->with('error', 'You must be logged in as company, manager or employee to access this page.');
+        if (!$this->service->createReport($data, $role, $employeeId, $companyId)) {
+            return redirect()->route('task.reports')->with('error', 'Nuk mund të raportoni për këtë detyrë.')->withInput();
         }
 
+        return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u krijua me sukses.');
+    }
+    //---------------
+    public function read()
+    {
         $page = 'Task Reports';
         $companyId = session('company_id');
-        $userId = session('user_id');
         $role = session('role');
-        $displayName = session('user');
-        $username = session('username');
+        $employeeId = session('employee_id') ? session('employee_id') : null;
 
-        $tasks = $this->service->getAvailableTasks($userId, $role, $displayName, $username, $companyId);
-        $reports = $this->service->getReports(10, $userId, $role, $displayName, $username, $companyId);
+        $tasks = $this->service->getAvailableTasks($companyId, $role, $employeeId);
+
+        if (count($tasks) === 0) {
+            return redirect()->route('tasks')->with('error', 'Ju lutemi regjistroni së pari detyrat.');
+        }
+
+        $reports = $this->service->getReports(10, $companyId, $role, $employeeId);
 
         return view('management.task-reports')
             ->with('page', $page)
@@ -77,22 +73,15 @@ class TaskReportsController extends Controller
     //---------------
     public function details(int $id)
     {
-        if (!$this->hasModuleAccess()) {
-            return redirect()->route('login')->with('error', 'You must be logged in as company, manager or employee to access this page.');
-        }
-
-        $companyId = session('company_id');
-        $userId = session('user_id');
-        $role = session('role');
-        $displayName = session('user');
-        $username = session('username');
-
-        if (!$this->service->canAccessReport($id, $userId, $role, $displayName, $username, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Task report not found.');
-        }
-
         $page = 'Task Reports';
-        $reportDetails = $this->service->getReportDetails($id, $userId, $role, $displayName, $username, $companyId);
+        $companyId = session('company_id');
+        $role = session('role');
+
+        if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+        }
+
+        $reportDetails = $this->service->getReportDetails($id, $companyId);
 
         return view('management.task-reports-details')
             ->with('page', $page)
@@ -100,31 +89,103 @@ class TaskReportsController extends Controller
             ->with('role', $role);
     }
     //---------------
-    public function updateStatus(int $id, string $status)
+    public function edit(int $id)
     {
-        if (!$this->hasModuleAccess()) {
-            return redirect()->route('login')->with('error', 'You must be logged in as company, manager or employee to access this page.');
-        }
-
+        $page = 'Task Reports';
         $companyId = session('company_id');
-        $userId = session('user_id');
         $role = session('role');
-        $displayName = session('user');
-        $username = session('username');
+        $employeeId = session('employee_id') ? session('employee_id') : null;
 
-        if (!$this->service->canAccessReport($id, $userId, $role, $displayName, $username, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Task report not found.');
+        if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
         }
 
-        if (!$this->service->updateReportStatus($id, $status, $companyId)) {
-            return redirect()->route('task.report.details', $id)->with('error', 'Invalid status update request.');
-        }
+        $tasks = $this->service->getAvailableTasks($companyId, $role, $employeeId);
+        $editReport = $this->service->getReportById($id, $companyId);
 
-        return redirect()->route('task.report.details', $id)->with('success', 'Task report status updated successfully.');
+        return view('management.task-reports')
+            ->with('page', $page)
+            ->with('tasks', $tasks)
+            ->with('editReport', $editReport)
+            ->with('role', $role);
     }
     //---------------
-    protected function hasModuleAccess(): bool
+    public function update(Request $request)
     {
-        return session('active') === true && in_array((string) session('role'), ['company', 'manager', 'employee'], true);
+        $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? session('employee_id') : null;
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer|min:1|exists:task_reports,id',
+            'task_id' => 'required|integer|min:1|exists:tasks,id',
+            'report' => 'required|string|min:1',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:5120',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+        }
+
+        $id = $request->id;
+
+        if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+        }
+
+        $data = [
+            'task_id' => $request->task_id,
+            'report' => trim( $request->report),
+        ];
+
+        if ($request->hasFile('images')) {
+            $data['images'] = $request->file('images');
+        }
+
+        try {
+            if (!$this->service->updateReport($id, $data, $role, $employeeId, $companyId)) {
+                return back()->with('error', 'Raporti nuk u gjet ose nuk u përditësua.')->withInput();
+            }
+
+            return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u përditësua me sukses.');
+        } catch (\Exception $e) {
+            return redirect()->route('task.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+        }
+    }
+    //---------------
+    public function delete(int $id)
+    {
+        $companyId = session('company_id');
+
+        if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+        }
+
+        try {
+            $this->service->deleteReport($id, $companyId);
+            return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u fshi me sukses.');
+        } catch (\Exception $e) {
+            return redirect()->route('task.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+        }
+    }
+    //---------------
+    public function updateStatus(int $id, string $status)
+    {
+        $companyId = session('company_id');
+
+        if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+        }
+
+        try {
+            if (!$this->service->updateReportStatus($id, $status, $companyId)) {
+                return redirect()->route('task.report.details', $id)->with('error', 'Kërkesa për përditësim statusi nuk është e vlefshme.');
+            }
+
+            return redirect()->route('task.report.details', $id)->with('success', 'Statusi i raportit u përditësua me sukses.');
+        } catch (\Exception $e) {
+            return redirect()->route('task.report.details', $id)->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+        }
     }
 }

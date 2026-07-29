@@ -15,6 +15,9 @@ class TaskReportsModel extends Model
         'images',
         'status',
         'reported_by',
-        'task_id'
+        'task_id',
+        'company_id',
     ];
+
+    public $timestamps = false;
 }

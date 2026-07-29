@@ -77,6 +77,8 @@ class ProjectReportsRepository
     {
         return DB::table($this->table . ' as pr')
             ->join('projects as p', 'pr.project_id', '=', 'p.id')
+            ->leftJoin('employees as m', 'p.project_manager', '=', 'm.id')
+            ->leftJoin('clients as cl', 'p.client_id', '=', 'cl.id')
             ->leftJoin('users as u', 'pr.reported_by', '=', 'u.id')
             ->leftJoin('companies as c', 'pr.company_id', '=', 'c.id')
             ->where('pr.company_id', $companyId)
@@ -90,6 +92,13 @@ class ProjectReportsRepository
                 'pr.project_id',
                 'pr.company_id',
                 'p.project_name',
+                'p.location',
+                'p.budget',
+                'p.start_date',
+                'p.expected_end_date',
+                'p.status as project_status',
+                'm.employee as manager_name',
+                'cl.client as client_name',
                 DB::raw('COALESCE(u.user, c.company) as reporter_name')
             );
     }
