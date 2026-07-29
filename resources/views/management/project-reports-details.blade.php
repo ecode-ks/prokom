@@ -59,7 +59,7 @@
                 </div>
             @endif
 
-            @if($role === 'admin')
+            @if(in_array($role, ['company', 'manager', 'admin'], true))
                 <hr class="my-3">
                 <span class="d-block mb-2"><i class="fa-solid fa-arrows-turn-to-dots"></i> Update Status</span>
                 <a href="{{ route('update.project.report.status', ['id' => $reportDetails->id, 'status' => 'active']) }}" class="btn btn-primary btn-sm rounded-4 shadow-sm m-1 {{ ($reportDetails->status === 'active' || $reportDetails->status === 'new') ? 'disabled' : '' }}"><i class="fa-solid fa-list-check"></i> Active</a>

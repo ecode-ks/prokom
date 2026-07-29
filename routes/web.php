@@ -16,6 +16,7 @@ use App\Http\Controllers\OffersController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\ContractsController;
 use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\ProjectReportsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -165,4 +166,15 @@ Route::controller(ProjectsController::class)->group(function () {
     Route::get('/edit-project/{id}', 'edit')->name('edit.project');
     Route::post('/update-project', 'update')->name('update.project');
     Route::get('/delete-project/{id}', 'delete')->name('delete.project');
+});
+
+// Project Reports
+Route::controller(ProjectReportsController::class)->group(function () {
+    Route::post('/create-project-report', 'create')->name('create.project.report');
+    Route::get('/project-reports', 'read')->name('project.reports');
+    Route::get('/project-report/{id}', 'reportDetails')->name('project.report.details');
+    Route::get('/edit-project-report/{id}', 'edit')->name('edit.project.report');
+    Route::post('/update-project-report', 'update')->name('update.project.report');
+    Route::get('/delete-project-report/{id}', 'delete')->name('delete.project.report');
+    Route::get('/update-project-report-status/{id}/{status}', 'updateStatus')->name('update.project.report.status');
 });

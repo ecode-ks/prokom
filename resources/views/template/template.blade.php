@@ -85,8 +85,8 @@
 
                                     @if(session('role') === 'company' || session('role') === 'manager')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Project Reports' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-chart-line mx-2 opacity-75"></i> Project Reports
+                                            <a href="{{ route('project.reports') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-chart-line mx-2 opacity-75"></i> Raportet e Projekteve
                                             </a>
                                         </li>
                                     @endif
