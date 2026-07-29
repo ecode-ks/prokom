@@ -1,59 +1,147 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Prokom
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Prokom** është një platformë multi-tenant për menaxhimin e kompanive të ndërtimit / projekteve: punonjës, projekte, detyra, materiale, oferta, kontrata, pushime dhe raporte.
 
-## About Laravel
+UI është në **shqip**. Stack: **Laravel** + **Blade** + **MySQL** + **Bootstrap**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Çfarë bën (MVP)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Moduli | Funksionaliteti kryesor |
+|--------|-------------------------|
+| Auth | Login admin / kompani, profil, logout |
+| Kompanitë | Regjistrim, lista, status, paketat |
+| Dashboard | Pasqyra e përgjithshme |
+| Punonjësit | CRUD, role, bllokim/aktivizim |
+| Klientët | CRUD |
+| Furnitorët | CRUD |
+| Materialet / Stoqet | CRUD + raport stoku |
+| Ofertat | Krijim, edit, faturë, status |
+| Transaksionet | CRUD + raport financiar |
+| Kontrata | CRUD + dokumente |
+| Pushimet | CRUD + status (aprovim) |
+| Projektet | CRUD, detaje, status, kontekst projekti |
+| Raportet e Projekteve | CRUD, imazhe, status |
+| Detyrat | CRUD, shumë punonjës, status |
+| Raportet e Detyrave | CRUD, imazhe, status |
+| Orët e Punës / Check-in | Evidenca e orëve dhe check-in |
+| Lajmet e Kompanisë | CRUD |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Arkitektura
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```
+Controller → Service → Repository (DB::table)
+Views: resources/views/management/*.blade.php
+```
 
-## Laravel Sponsors
+- Çdo kompani ka `company_id` (multi-tenant).
+- Role tipike: `admin`, `company`, `manager`, `employee`, `finance`, `hr`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Kërkesat
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- PHP 8.2+
+- Composer
+- MySQL / MariaDB
+- Node.js (për Vite/assets, opsionale)
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Instalimi
 
-## Code of Conduct
+```bash
+# 1. Klono / hap projektin
+cd prokom
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 2. Varësitë
+composer install
+npm install && npm run build
 
-## Security Vulnerabilities
+# 3. Environment
+cp .env.example .env
+php artisan key:generate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 4. Konfiguro databazën në .env
+# DB_DATABASE=prokom
+# DB_USERNAME=root
+# DB_PASSWORD=
 
-## License
+# 5. Importo skemën
+# Nga HeidiSQL / phpMyAdmin: importo prokom.sql
+# Ose:
+mysql -u root -p prokom < prokom.sql
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 6. Storage link (për imazhe/dokumente)
+php artisan storage:link
+
+# 7. Nis serverin
+php artisan serve
+```
+
+Hap: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## Databaza
+
+Skema kryesore: `prokom.sql`
+
+Nëse ke tabela ekzistuese, shiko skriptet në `database/` (p.sh. ALTER për tasks):
+
+- `database/alter_tasks_table.sql`
+- `database/alter_tasks_assigned_to_multiple.sql`
+
+---
+
+## Rolet (shkurt)
+
+| Roli | Qasja tipike |
+|------|----------------|
+| `admin` | Kompanitë, paketat |
+| `company` | Menaxhim i plotë i kompanisë |
+| `manager` | Projekte, detyra, raporte |
+| `employee` | Detyra / raporte (sipas menysë) |
+| `finance` | Transaksione, furnitorë |
+| `hr` | Punonjës, kontrata, pushime |
+
+---
+
+## Struktura e projektit
+
+```
+app/
+  Http/Controllers/
+  Services/
+  Repositories/
+  Models/
+resources/views/
+  management/     # faqet e moduleve
+  template/       # layout + sidebar
+routes/web.php
+prokom.sql
+```
+
+---
+
+## Dokumentacioni i MVP
+
+Shiko **[MVP.md](MVP.md)** për:
+
+- qëllimin e produktit
+- çfarë përfshihet në MVP
+- çfarë mbetet jashtë
+- kritere suksesi
+
+
+
+
+
+---
+
+## Licenca
+
+Projekt privat / i brendshëm (ecode).
