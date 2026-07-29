@@ -18,7 +18,8 @@ class TasksController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'assigned_to' => 'required|integer|min:1|exists:employees,id',
+            'assigned_to' => 'required|array|min:1',
+            'assigned_to.*' => 'required|integer|min:1|exists:employees,id',
             'project_id' => 'required|integer|min:1|exists:projects,id',
             'deadline' => 'required|date|after_or_equal:today',
             'title' => 'required|string|min:3|max:255',
@@ -30,7 +31,7 @@ class TasksController extends Controller
         }
 
         $data = [
-            'assigned_to' => (int) $request->assigned_to,
+            'assigned_to' => implode(',', array_map('intval', $request->assigned_to)),
             'assigned_by' => session('employee_id') ? (int) session('employee_id') : null,
             'project_id' => (int) $request->project_id,
             'deadline' => $request->deadline,
@@ -114,9 +115,10 @@ class TasksController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:tasks,id',
-            'assigned_to' => 'required|integer|min:1|exists:employees,id',
+            'assigned_to' => 'required|array|min:1',
+            'assigned_to.*' => 'required|integer|min:1|exists:employees,id',
             'project_id' => 'required|integer|min:1|exists:projects,id',
-            'deadline' => 'required|date|after_or_equal:today',
+            'deadline' => 'required|date',
             'title' => 'required|string|min:3|max:255',
             'task' => 'required|string|min:3'
         ]);
@@ -128,7 +130,7 @@ class TasksController extends Controller
         $id = (int) $request->id;
         $companyId = session('company_id');
         $data = [
-            'assigned_to' => (int) $request->assigned_to,
+            'assigned_to' => implode(',', array_map('intval', $request->assigned_to)),
             'project_id' => (int) $request->project_id,
             'deadline' => $request->deadline,
             'title' => trim((string) $request->title),

@@ -30,13 +30,52 @@
                     <input type="hidden" name="id" value="{{ $editTask->id }}">
                     <div class="row g-3">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="assigned_to" class="form-label">Punonjësi</label>
-                            <select name="assigned_to" id="assigned_to" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Punonjësin --</option>
-                                @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ (string) old('assigned_to', $editTask->assigned_to) === (string) $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Punonjësit</label>
+                            @php
+                                $selectedEmployees = array_map(
+                                    'strval',
+                                    array_filter(explode(',', old('assigned_to') ? implode(',', (array) old('assigned_to')) : (string) $editTask->assigned_to))
+                                );
+                                $selectedEmployeeLabels = [];
+                                foreach ($employees as $employee) {
+                                    if (in_array((string) $employee->id, $selectedEmployees, true)) {
+                                        $selectedEmployeeLabels[] = $employee->employee;
+                                    }
+                                }
+                                $selectedEmployeesText = count($selectedEmployeeLabels) > 0
+                                    ? implode(', ', $selectedEmployeeLabels)
+                                    : '-- Zgjidh Punonjësit --';
+                            @endphp
+                            <div class="dropdown">
+                                <button
+                                    class="form-control shadow-sm rounded-3 text-start d-flex justify-content-between align-items-center"
+                                    type="button"
+                                    id="assignedToEditDropdown"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside"
+                                    aria-expanded="false"
+                                >
+                                    <span class="text-truncate assigned-to-label">{{ $selectedEmployeesText }}</span>
+                                    <i class="fa-solid fa-chevron-down ms-2 opacity-50"></i>
+                                </button>
+                                <div class="dropdown-menu w-100 p-2 shadow rounded-3" aria-labelledby="assignedToEditDropdown" style="max-height: 240px; overflow-y: auto;">
+                                    @foreach($employees as $employee)
+                                        <label class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2 mb-1" for="assigned_to_edit_{{ $employee->id }}">
+                                            <input
+                                                class="form-check-input m-0 assigned-to-checkbox"
+                                                type="checkbox"
+                                                name="assigned_to[]"
+                                                value="{{ $employee->id }}"
+                                                id="assigned_to_edit_{{ $employee->id }}"
+                                                data-label="{{ $employee->employee }}"
+                                                {{ in_array((string) $employee->id, $selectedEmployees, true) ? 'checked' : '' }}
+                                            >
+                                            <span>{{ $employee->employee }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <small class="text-muted">Zgjidh një ose më shumë punonjës.</small>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
                             <label for="project_id" class="form-label">Projekti</label>
@@ -78,13 +117,49 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="assigned_to" class="form-label">Punonjësi</label>
-                            <select name="assigned_to" id="assigned_to" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Punonjësin --</option>
-                                @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ (string) old('assigned_to') === (string) $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
-                                @endforeach
-                            </select>
+                            <label class="form-label">Punonjësit</label>
+                            @php
+                                $oldAssignedTo = array_map('strval', old('assigned_to', []));
+                                $oldAssignedLabels = [];
+                                foreach ($employees as $employee) {
+                                    if (in_array((string) $employee->id, $oldAssignedTo, true)) {
+                                        $oldAssignedLabels[] = $employee->employee;
+                                    }
+                                }
+                                $oldAssignedText = count($oldAssignedLabels) > 0
+                                    ? implode(', ', $oldAssignedLabels)
+                                    : '-- Zgjidh Punonjësit --';
+                            @endphp
+                            <div class="dropdown">
+                                <button
+                                    class="form-control shadow-sm rounded-3 text-start d-flex justify-content-between align-items-center"
+                                    type="button"
+                                    id="assignedToCreateDropdown"
+                                    data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside"
+                                    aria-expanded="false"
+                                >
+                                    <span class="text-truncate assigned-to-label">{{ $oldAssignedText }}</span>
+                                    <i class="fa-solid fa-chevron-down ms-2 opacity-50"></i>
+                                </button>
+                                <div class="dropdown-menu w-100 p-2 shadow rounded-3" aria-labelledby="assignedToCreateDropdown" style="max-height: 240px; overflow-y: auto;">
+                                    @foreach($employees as $employee)
+                                        <label class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2 mb-1" for="assigned_to_create_{{ $employee->id }}">
+                                            <input
+                                                class="form-check-input m-0 assigned-to-checkbox"
+                                                type="checkbox"
+                                                name="assigned_to[]"
+                                                value="{{ $employee->id }}"
+                                                id="assigned_to_create_{{ $employee->id }}"
+                                                data-label="{{ $employee->employee }}"
+                                                {{ in_array((string) $employee->id, $oldAssignedTo, true) ? 'checked' : '' }}
+                                            >
+                                            <span>{{ $employee->employee }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <small class="text-muted">Zgjidh një ose më shumë punonjës.</small>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
                             <label for="project_id" class="form-label">Projekti</label>
@@ -131,6 +206,7 @@
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
                                 <th scope="col" class="text-nowrap">Data</th>
+                                <th scope="col" class="text-nowrap">Punonjësit</th>
                                 <th scope="col" class="text-nowrap">Caktuar Nga</th>
                                 <th scope="col" class="text-nowrap">Titulli</th>
                                 <th scope="col" class="text-nowrap">Projekti</th>
@@ -142,7 +218,7 @@
                         <tbody>
                             @if(count($tasks) === 0)
                                 <tr>
-                                    <td colspan="8" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="9" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($tasks as $task)
@@ -164,6 +240,7 @@
                                     <tr>
                                         <th scope="row" class="text-nowrap">{{ $task->id }}</th>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($task->date)->format('d/m/Y') }}</td>
+                                        <td class="text-nowrap">{{ $task->assigned_to_names ?? '-' }}</td>
                                         <td class="text-nowrap">{{ $task->assigned_by_name ?? '-' }}</td>
                                         <td class="text-nowrap">{{ $task->title }}</td>
                                         <td class="text-nowrap">{{ $task->project_name }}</td>
@@ -221,3 +298,31 @@
         @endif
     @endif
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.dropdown').forEach(function (dropdown) {
+        const label = dropdown.querySelector('.assigned-to-label');
+        const checkboxes = dropdown.querySelectorAll('.assigned-to-checkbox');
+        if (!label || checkboxes.length === 0) {
+            return;
+        }
+
+        const updateLabel = function () {
+            const selected = Array.from(checkboxes)
+                .filter(function (checkbox) { return checkbox.checked; })
+                .map(function (checkbox) { return checkbox.getAttribute('data-label'); });
+
+            label.textContent = selected.length > 0
+                ? selected.join(', ')
+                : '-- Zgjidh Punonjësit --';
+        };
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateLabel);
+        });
+    });
+});
+</script>
+@endpush

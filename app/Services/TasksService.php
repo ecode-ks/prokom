@@ -22,11 +22,14 @@ class TasksService
     {
         $limit = $limit ?: 10;
 
-        if (!empty($search)) {
-            return $this->repository->getSearchedTasks($limit, $companyId, $search);
-        }
+        $tasks = !empty($search)
+            ? $this->repository->getSearchedTasks($limit, $companyId, $search)
+            : $this->repository->getTasks($limit, $companyId);
 
-        return $this->repository->getTasks($limit, $companyId);
+        return $tasks->through(function ($task) {
+            $task->assigned_to_names = $this->formatAssignedEmployees($task->assigned_to ?? '');
+            return $task;
+        });
     }
     //---------------
     public function getAllEmployees(int $companyId)
@@ -51,7 +54,13 @@ class TasksService
     //---------------
     public function getTaskDetails(int $id, int $companyId)
     {
-        return $this->repository->getTaskDetails($id, $companyId);
+        $task = $this->repository->getTaskDetails($id, $companyId);
+        if (!$task) {
+            return null;
+        }
+
+        $task->assigned_to_names = $this->formatAssignedEmployees($task->assigned_to ?? '');
+        return $task;
     }
     //---------------
     public function getTaskStatuses(): array
@@ -91,6 +100,28 @@ class TasksService
             return false;
         }
 
+        if ($task->status === $status) {
+            return true;
+        }
+
         return $this->repository->updateStatus($id, $status, $companyId);
+    }
+    //---------------
+    public function formatAssignedEmployees(string $assignedTo): string
+    {
+        $ids = array_values(array_filter(array_map('intval', explode(',', $assignedTo))));
+        if (count($ids) === 0) {
+            return '-';
+        }
+
+        $employeesById = $this->repository->getEmployeeNamesByIds($ids);
+        $orderedNames = [];
+        foreach ($ids as $id) {
+            if (isset($employeesById[$id])) {
+                $orderedNames[] = $employeesById[$id];
+            }
+        }
+
+        return count($orderedNames) > 0 ? implode(', ', $orderedNames) : '-';
     }
 }

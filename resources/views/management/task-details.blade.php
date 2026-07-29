@@ -46,7 +46,7 @@
 
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-diagram-project"></i> Projekti : </span>{{ $taskDetails->project_name }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-heading"></i> Titulli : </span>{{ $taskDetails->title }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user-tag"></i> Caktuar tek : </span>{{ $taskDetails->assigned_to_name ?? '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user-tag"></i> Punonjësit : </span>{{ $taskDetails->assigned_to_names ?? '-' }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-circle-user"></i> Caktuar nga : </span>{{ $taskDetails->assigned_by_name ?? '-' }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Afati : </span>{{ \Carbon\Carbon::parse($taskDetails->deadline)->format('d/m/Y') }}</span>
             <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> Përshkrimi</span>

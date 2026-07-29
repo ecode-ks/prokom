@@ -109,7 +109,7 @@
                                 <th scope="col" class="text-nowrap">Data</th>
                                 <th scope="col" class="text-nowrap">Titulli i Detyrës</th>
                                 <th scope="col" class="text-nowrap">Projekti</th>
-                                <th scope="col" class="text-nowrap">Punonjësi</th>
+                                <th scope="col" class="text-nowrap">Punonjësit</th>
                                 <th scope="col" class="text-nowrap">Raportuar Nga</th>
                                 <th scope="col" class="text-nowrap">Statusi</th>
                                 <th scope="col" class="text-nowrap text-end">Veprimet</th>
@@ -127,7 +127,7 @@
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($report->date)->format('d/m/Y') }}</td>
                                         <td class="text-truncate" style="max-width: 260px;">{{ $report->title }}</td>
                                         <td class="text-nowrap">{{ $report->project_name }}</td>
-                                        <td class="text-nowrap">{{ $report->assigned_to_name ?? '-' }}</td>
+                                        <td class="text-nowrap">{{ $report->assigned_to_names ?? '-' }}</td>
                                         <td class="text-nowrap">{{ $report->reporter_name ?? '-' }}</td>
                                         <td class="text-nowrap">
                                             @if($report->status === 'active' || $report->status === 'new')

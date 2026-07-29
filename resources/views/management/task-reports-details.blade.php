@@ -38,7 +38,7 @@
 
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-list-check"></i> Titulli i Detyrës : </span>{{ $reportDetails->title }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-diagram-project"></i> Projekti : </span>{{ $reportDetails->project_name }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user-tag"></i> Punonjësi : </span>{{ $reportDetails->assigned_to_name ?? '-' }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user-tag"></i> Punonjësit : </span>{{ $reportDetails->assigned_to_names ?? '-' }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-circle-user"></i> Caktuar Nga : </span>{{ $reportDetails->assigned_by_name ?? '-' }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-flag"></i> Statusi i Detyrës : </span>{{ $taskStatusLabel }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Afati i Detyrës : </span>{{ !empty($reportDetails->deadline) ? \Carbon\Carbon::parse($reportDetails->deadline)->format('d/m/Y') : '-' }}</span>

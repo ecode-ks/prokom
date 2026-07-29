@@ -24,7 +24,6 @@ class TasksRepository
     {
         return DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
-            ->join('employees as e', 't.assigned_to', '=', 'e.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
             ->where('t.company_id', $companyId)
@@ -40,7 +39,6 @@ class TasksRepository
                 't.status',
                 't.company_id',
                 'p.project_name',
-                'e.employee as assigned_to_name',
                 DB::raw('COALESCE(ab.employee, c.company) as assigned_by_name')
             )
             ->orderByDesc('t.id')
@@ -51,7 +49,6 @@ class TasksRepository
     {
         return DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
-            ->join('employees as e', 't.assigned_to', '=', 'e.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
             ->where('t.company_id', $companyId)
@@ -59,8 +56,8 @@ class TasksRepository
                 $query->where('t.title', 'like', "%{$search}%")
                     ->orWhere('t.task', 'like', "%{$search}%")
                     ->orWhere('t.status', 'like', "%{$search}%")
+                    ->orWhere('t.assigned_to', 'like', "%{$search}%")
                     ->orWhere('p.project_name', 'like', "%{$search}%")
-                    ->orWhere('e.employee', 'like', "%{$search}%")
                     ->orWhere('ab.employee', 'like', "%{$search}%")
                     ->orWhere('c.company', 'like', "%{$search}%");
             })
@@ -76,7 +73,6 @@ class TasksRepository
                 't.status',
                 't.company_id',
                 'p.project_name',
-                'e.employee as assigned_to_name',
                 DB::raw('COALESCE(ab.employee, c.company) as assigned_by_name')
             )
             ->orderByDesc('t.id')
@@ -92,6 +88,18 @@ class TasksRepository
             ->get(['id', 'employee']);
     }
     //---------------
+    public function getEmployeeNamesByIds(array $ids): array
+    {
+        if (count($ids) === 0) {
+            return [];
+        }
+
+        return DB::table('employees')
+            ->whereIn('id', $ids)
+            ->pluck('employee', 'id')
+            ->toArray();
+    }
+    //---------------
     public function getAllProjects(int $companyId)
     {
         return DB::table('projects')
@@ -104,7 +112,6 @@ class TasksRepository
     {
         return DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
-            ->join('employees as e', 't.assigned_to', '=', 'e.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
             ->where('t.id', $id)
@@ -121,7 +128,6 @@ class TasksRepository
                 't.status',
                 't.company_id',
                 'p.project_name',
-                'e.employee as assigned_to_name',
                 DB::raw('COALESCE(ab.employee, c.company) as assigned_by_name')
             )
             ->first();

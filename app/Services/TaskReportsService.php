@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Storage;
 class TaskReportsService
 {
     protected TaskReportsRepository $repository;
+    protected TasksService $tasks;
 
-    public function __construct(TaskReportsRepository $repository)
+    public function __construct(TaskReportsRepository $repository, TasksService $tasks)
     {
         $this->repository = $repository;
+        $this->tasks = $tasks;
     }
     //---------------
     public function getAvailableTasks(int $companyId, string $role, ?int $employeeId)
@@ -69,14 +71,17 @@ class TaskReportsService
         $limit = $limit ?: 10;
 
         if ($role === 'manager' && $employeeId) {
-            return $this->repository->getReportsForManager($limit, $companyId, $employeeId);
+            $reports = $this->repository->getReportsForManager($limit, $companyId, $employeeId);
+        } elseif ($role === 'employee' && $employeeId) {
+            $reports = $this->repository->getReportsForEmployee($limit, $companyId, $employeeId);
+        } else {
+            $reports = $this->repository->getReports($limit, $companyId);
         }
 
-        if ($role === 'employee' && $employeeId) {
-            return $this->repository->getReportsForEmployee($limit, $companyId, $employeeId);
-        }
-
-        return $this->repository->getReports($limit, $companyId);
+        return $reports->through(function ($report) {
+            $report->assigned_to_names = $this->tasks->formatAssignedEmployees($report->assigned_to ?? '');
+            return $report;
+        });
     }
     //---------------
     public function findOrFail(int $id, int $companyId): bool
@@ -91,7 +96,13 @@ class TaskReportsService
     //---------------
     public function getReportDetails(int $id, int $companyId)
     {
-        return $this->repository->getReportDetails($id, $companyId);
+        $report = $this->repository->getReportDetails($id, $companyId);
+        if (!$report) {
+            return null;
+        }
+
+        $report->assigned_to_names = $this->tasks->formatAssignedEmployees($report->assigned_to ?? '');
+        return $report;
     }
     //---------------
     public function updateReport(int $id, array $data, string $role, ?int $employeeId, int $companyId): bool

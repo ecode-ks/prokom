@@ -33,7 +33,7 @@ class TaskReportsRepository
         return DB::table('tasks as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
             ->where('t.company_id', $companyId)
-            ->where('t.assigned_to', $employeeId)
+            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
             ->orderByDesc('t.id')
             ->get(['t.id', 't.title', 'p.project_name']);
     }
@@ -61,7 +61,7 @@ class TaskReportsRepository
         return DB::table('tasks')
             ->where('id', $taskId)
             ->where('company_id', $companyId)
-            ->where('assigned_to', $employeeId)
+            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
             ->exists();
     }
     //---------------
@@ -85,7 +85,7 @@ class TaskReportsRepository
     public function getReportsForEmployee(int $limit, int $companyId, int $employeeId)
     {
         return $this->baseQuery($companyId)
-            ->where('t.assigned_to', $employeeId)
+            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
             ->orderByDesc('tr.id')
             ->cursorPaginate($limit);
     }
@@ -151,7 +151,6 @@ class TaskReportsRepository
             ->join('tasks as t', 'tr.task_id', '=', 't.id')
             ->join('projects as p', 't.project_id', '=', 'p.id')
             ->leftJoin('employees as e', 'tr.reported_by', '=', 'e.id')
-            ->leftJoin('employees as at', 't.assigned_to', '=', 'at.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 'tr.company_id', '=', 'c.id')
             ->where('tr.company_id', $companyId)
@@ -167,9 +166,9 @@ class TaskReportsRepository
                 't.title',
                 't.task',
                 't.deadline',
+                't.assigned_to',
                 't.status as task_status',
                 'p.project_name',
-                'at.employee as assigned_to_name',
                 DB::raw('COALESCE(ab.employee, c.company) as assigned_by_name'),
                 DB::raw('COALESCE(e.employee, c.company) as reporter_name')
             );
