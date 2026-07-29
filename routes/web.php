@@ -16,6 +16,10 @@ use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\ContractsController;
+use App\Http\Controllers\ProjectsController;
+use App\Http\Controllers\ProjectReportsController;
+use App\Http\Controllers\TasksController;
+use App\Http\Controllers\TaskReportsController;
 use App\Http\Controllers\WorkingHoursController;
 
 // Users
@@ -162,6 +166,51 @@ Route::controller(ContractsController::class)->group(function () {
     Route::get('/edit-contract/{id}', 'edit')->name('edit.contract');
     Route::post('/update-contract', 'update')->name('update.contract');
     Route::get('/delete-contract/{id}', 'delete')->name('delete.contract');
+});
+
+// Projects
+Route::controller(ProjectsController::class)->group(function () {
+    Route::post('/create-project', 'create')->name('create.project');
+    Route::get('/projects', 'read')->name('projects');
+    Route::get('/project/{id}', 'projectDetails')->name('project.details');
+    Route::get('/set-project-context/{id}', 'setProjectContext')->name('set.project.context');
+    Route::get('/update-project-status/{id}/{status}', 'updateStatus')->name('update.project.status');
+    Route::get('/edit-project/{id}', 'edit')->name('edit.project');
+    Route::post('/update-project', 'update')->name('update.project');
+    Route::get('/delete-project/{id}', 'delete')->name('delete.project');
+});
+
+// Project Reports
+Route::controller(ProjectReportsController::class)->group(function () {
+    Route::post('/create-project-report', 'create')->name('create.project.report');
+    Route::get('/project-reports', 'read')->name('project.reports');
+    Route::get('/project-report/{id}', 'reportDetails')->name('project.report.details');
+    Route::get('/edit-project-report/{id}', 'edit')->name('edit.project.report');
+    Route::post('/update-project-report', 'update')->name('update.project.report');
+    Route::get('/delete-project-report/{id}', 'delete')->name('delete.project.report');
+    Route::get('/update-project-report-status/{id}/{status}', 'updateStatus')->name('update.project.report.status');
+});
+
+// Tasks
+Route::controller(TasksController::class)->group(function () {
+    Route::post('/create-task', 'create')->name('create.task');
+    Route::get('/tasks', 'read')->name('tasks');
+    Route::get('/task/{id}', 'taskDetails')->name('task.details');
+    Route::get('/update-task-status/{id}/{status}', 'updateStatus')->name('update.task.status');
+    Route::get('/edit-task/{id}', 'edit')->name('edit.task');
+    Route::post('/update-task', 'update')->name('update.task');
+    Route::get('/delete-task/{id}', 'delete')->name('delete.task');
+});
+
+// Task Reports
+Route::controller(TaskReportsController::class)->group(function () {
+    Route::post('/create-task-report', 'create')->name('create.task.report');
+    Route::get('/task-reports', 'read')->name('task.reports');
+    Route::get('/task-report/{id}', 'details')->name('task.report.details');
+    Route::get('/edit-task-report/{id}', 'edit')->name('edit.task.report');
+    Route::post('/update-task-report', 'update')->name('update.task.report');
+    Route::get('/delete-task-report/{id}', 'delete')->name('delete.task.report');
+    Route::get('/update-task-report-status/{id}/{status}', 'updateStatus')->name('update.task.report.status');
 });
 // Working Hours
 Route::controller(WorkingHoursController::class)->group(function () {

@@ -229,10 +229,10 @@ CREATE TABLE IF NOT EXISTS `projects` (
   `created_at` date DEFAULT NULL,
   `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_projects_users` (`project_manager`),
+  KEY `FK_projects_employees` (`project_manager`),
   KEY `FK_projects_companies` (`company_id`),
   CONSTRAINT `FK_projects_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_projects_users` FOREIGN KEY (`project_manager`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `FK_projects_employees` FOREIGN KEY (`project_manager`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.
@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS `project_reports` (
   KEY `FK_project_reports_companies` (`company_id`),
   CONSTRAINT `FK_project_reports_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_project_reports_projects` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `FK_project_reports_users` FOREIGN KEY (`reported_by`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `FK_project_reports_employees` FOREIGN KEY (`reported_by`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.
@@ -290,15 +290,19 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
   `title` varchar(255) DEFAULT NULL,
-  `assigned_to` varchar(50) DEFAULT NULL,
+  `assigned_to` varchar(255) DEFAULT NULL,
   `assigned_by` varchar(255) DEFAULT NULL,
   `project_id` int(11) DEFAULT NULL,
   `deadline` date DEFAULT NULL,
   `task` longtext DEFAULT NULL,
-  `status` varchar(50) DEFAULT 'New',
+  `status` varchar(50) DEFAULT 'new',
+  `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_tasks_projects` (`project_id`),
-  CONSTRAINT `FK_tasks_projects` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `FK_tasks_assigned_by` (`assigned_by`),
+  KEY `FK_tasks_companies` (`company_id`),
+  CONSTRAINT `FK_tasks_projects` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_tasks_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.

@@ -70,30 +70,30 @@
                                 <ul class="list-group mb-4">
                                     @if(session('role') === 'company' || session('role') === 'manager')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Projects' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-diagram-project mx-2 opacity-75"></i> Projects
+                                            <a href="{{ route('projects') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-diagram-project mx-2 opacity-75"></i> Projektet
                                             </a>
                                         </li>
                                     @endif
                                     @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Tasks' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-list-check mx-2 opacity-75"></i> Tasks
+                                            <a href="{{ route('tasks') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-list-check mx-2 opacity-75"></i> Detyrat
                                             </a>
                                         </li>
                                     @endif
 
                                     @if(session('role') === 'company' || session('role') === 'manager')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Project Reports' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-chart-line mx-2 opacity-75"></i> Project Reports
+                                            <a href="{{ route('project.reports') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-chart-line mx-2 opacity-75"></i> Raportet e Projekteve
                                             </a>
                                         </li>
                                     @endif
                                     @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Task Reports' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-file-lines mx-2 opacity-75"></i> Task Reports
+                                            <a href="{{ route('task.reports') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-file-lines mx-2 opacity-75"></i> Raportet e Detyrave
                                             </a>
                                         </li>
                                     @endif
@@ -249,14 +249,14 @@
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li><span class="dropdown-item-text fw-semibold">Operations</span></li>
                                                 @if(session('role') === 'company' || session('role') === 'manager')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Projects' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-diagram-project me-2 opacity-75"></i> Projects</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Tasks' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-list-check me-2 opacity-75"></i> Tasks</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Projects' ? 'bg-darkblue text-light' : '' }}" href="{{ route('projects') }}"><i class="fa-solid fa-diagram-project me-2 opacity-75"></i> Projektet</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Tasks' ? 'bg-darkblue text-light' : '' }}" href="{{ route('tasks') }}"><i class="fa-solid fa-list-check me-2 opacity-75"></i> Detyrat</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Project Reports' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-chart-line me-2 opacity-75"></i> Project Reports</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Project Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('project.reports') }}"><i class="fa-solid fa-chart-line me-2 opacity-75"></i> Raportet e Projekteve</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Task Reports' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-file-lines me-2 opacity-75"></i> Task Reports</a></li>
+                                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Task Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('task.reports') }}"><i class="fa-solid fa-file-lines me-2 opacity-75"></i> Raportet e Detyrave</a></li>
                                                 @endif
                                             @endif
 
@@ -300,11 +300,11 @@
                                     {{-- Change Project Dropdown --}}
                                     @if(session('role') === 'company' || session('role') === 'manager')
                                         <div class="dropdown">
-                                            <button class="btn bg-custom rounded-3 border text-truncate" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $selectedProjectName ?? 'Select Project' }}" style="max-width: 250px;">
-                                                <i class="fa-regular fa-building"></i> <span class="d-none d-md-inline">{{ $selectedProjectName ?? 'Select Project' }} <i class="fa-solid fa-up-down ms-1" style="font-size: 10px;"></i></span>
+                                            <button class="btn bg-custom rounded-3 border text-truncate" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $selectedProjectName ?? 'Zgjidh Projektin' }}" style="max-width: 250px;">
+                                                <i class="fa-regular fa-building"></i> <span class="d-none d-md-inline">{{ $selectedProjectName ?? 'Zgjidh Projektin' }} <i class="fa-solid fa-up-down ms-1" style="font-size: 10px;"></i></span>
                                             </button>
                                             <ul class="dropdown-menu rounded-3 shadow-sm p-2">
-                                                <span class="d-block border-bottom pb-2 ps-3 mb-2 fw-semibold">Projects</span>
+                                                <span class="d-block border-bottom pb-2 ps-3 mb-2 fw-semibold">Projektet</span>
                                                 @if(isset($topbarProjects) && count($topbarProjects) > 0)
                                                     @foreach($topbarProjects as $project)
                                                         <li>
@@ -319,7 +319,7 @@
                                                         </li>
                                                     @endforeach
                                                 @else
-                                                    <li><span class="dropdown-item text-muted">No projects found</span></li>
+                                                    <li><span class="dropdown-item text-muted">Nuk u gjetën projekte</span></li>
                                                 @endif
                                             </ul>
                                         </div>
