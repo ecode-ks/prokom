@@ -77,8 +77,8 @@
                                     @endif
                                     @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Tasks' ? 'sidebar-active' : 'sidebar-link' }}">
-                                            <a href="" class="text-decoration-none text-light">
-                                                <i class="fa-solid fa-list-check mx-2 opacity-75"></i> Tasks
+                                            <a href="{{ route('tasks') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-list-check mx-2 opacity-75"></i> Detyrat
                                             </a>
                                         </li>
                                     @endif
@@ -250,7 +250,7 @@
                                                 <li><span class="dropdown-item-text fw-semibold">Operations</span></li>
                                                 @if(session('role') === 'company' || session('role') === 'manager')
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Projects' ? 'bg-darkblue text-light' : '' }}" href="{{ route('projects') }}"><i class="fa-solid fa-diagram-project me-2 opacity-75"></i> Projektet</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Tasks' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-list-check me-2 opacity-75"></i> Tasks</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Tasks' ? 'bg-darkblue text-light' : '' }}" href="{{ route('tasks') }}"><i class="fa-solid fa-list-check me-2 opacity-75"></i> Detyrat</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager')
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Project Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('project.reports') }}"><i class="fa-solid fa-chart-line me-2 opacity-75"></i> Raportet e Projekteve</a></li>
