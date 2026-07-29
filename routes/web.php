@@ -15,6 +15,7 @@ use App\Http\Controllers\EmployeesController;
 use App\Http\Controllers\OffersController;
 use App\Http\Controllers\VacationsController;
 use App\Http\Controllers\ContractsController;
+use App\Http\Controllers\ProjectsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -152,4 +153,16 @@ Route::controller(ContractsController::class)->group(function () {
     Route::get('/edit-contract/{id}', 'edit')->name('edit.contract');
     Route::post('/update-contract', 'update')->name('update.contract');
     Route::get('/delete-contract/{id}', 'delete')->name('delete.contract');
+});
+
+// Projects
+Route::controller(ProjectsController::class)->group(function () {
+    Route::post('/create-project', 'create')->name('create.project');
+    Route::get('/projects', 'read')->name('projects');
+    Route::get('/project/{id}', 'projectDetails')->name('project.details');
+    Route::get('/set-project-context/{id}', 'setProjectContext')->name('set.project.context');
+    Route::get('/update-project-status/{id}/{status}', 'updateStatus')->name('update.project.status');
+    Route::get('/edit-project/{id}', 'edit')->name('edit.project');
+    Route::post('/update-project', 'update')->name('update.project');
+    Route::get('/delete-project/{id}', 'delete')->name('delete.project');
 });
