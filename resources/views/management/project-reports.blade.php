@@ -1,6 +1,6 @@
 @extends('template.template')
 
-@section('title', isset($editReport) ? 'Përditëso Raportin e Projektit' : 'Project Reports')
+@section('title', isset($editReport) ? 'Përditëso Raportin e Projektit' : 'Raportet e Projekteve')
 
 @section('content')
     @if(isset($editReport))
@@ -9,9 +9,9 @@
         <p class="text-muted">Përditëso të dhënat e raportit të zgjedhur.</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Projects</small>
-        <h3 class="fw-semibold pt-2">Project Reports</h3>
-        <p class="text-muted">Create and track project activity reports submitted by managers and admin.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">Projektet</small>
+        <h3 class="fw-semibold pt-2">Raportet e <span class="txt-lightblue fw-semibold">Projekteve</span></h3>
+        <p class="text-muted">Krijo dhe ndiq raportet e aktivitetit të projekteve të dorëzuara nga menaxherët dhe administratori.</p>
         <hr class="mb-4">
     @endif
 
@@ -27,16 +27,16 @@
                     <input type="hidden" name="id" value="{{ $editReport->id }}">
                     <div class="row g-3">
                         <div class="col-12 col-md-4">
-                            <label for="project_id" class="form-label">Project</label>
+                            <label for="project_id" class="form-label">Projekti</label>
                             <select name="project_id" id="project_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="">-- Select Project --</option>
+                                <option value="">-- Zgjidh Projektin --</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ old('project_id', $editReport->project_id) == $project->id ? 'selected' : '' }}>{{ $project->project_name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-8">
-                            <label for="images" class="form-label">Images / Facts <small class="text-muted">(opsionale – lëreni bosh për të ruajtur ekzistueset)</small></label>
+                            <label for="images" class="form-label">Imazhet / Faktet <small class="text-muted">(opsionale – lëreni bosh për të ruajtur ekzistueset)</small></label>
                             <input type="file" name="images[]" id="images" class="form-control shadow-sm rounded-3" multiple accept="image/*">
                             @php
                                 $existingImages = json_decode($editReport->images ?? '[]', true);
@@ -46,8 +46,8 @@
                             @endif
                         </div>
                         <div class="col-12">
-                            <label for="report" class="form-label">Report</label>
-                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="Write report details here..." required>{{ old('report', $editReport->report) }}</textarea>
+                            <label for="report" class="form-label">Raporti</label>
+                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="Shkruani detajet e raportit..." required>{{ old('report', $editReport->report) }}</textarea>
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Raportin</button>
@@ -61,31 +61,31 @@
 
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> Create Project Report</span>
+                <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> Krijo Raport Projekti</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.project.report') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4">
-                            <label for="project_id" class="form-label">Project</label>
+                            <label for="project_id" class="form-label">Projekti</label>
                             <select name="project_id" id="project_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="">-- Select Project --</option>
+                                <option value="">-- Zgjidh Projektin --</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>{{ $project->project_name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-8">
-                            <label for="images" class="form-label">Images / Facts (optional)</label>
+                            <label for="images" class="form-label">Imazhet / Faktet (opsionale)</label>
                             <input type="file" name="images[]" id="images" class="form-control shadow-sm rounded-3" multiple accept="image/*">
                         </div>
                         <div class="col-12">
-                            <label for="report" class="form-label">Report</label>
-                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="Write report details here..." required>{{ old('report') }}</textarea>
+                            <label for="report" class="form-label">Raporti</label>
+                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="Shkruani detajet e raportit..." required>{{ old('report') }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Create Report</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Raportin</button>
                         </div>
                     </div>
                 </form>
@@ -94,7 +94,7 @@
 
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Project Reports List</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Raporteve të Projekteve</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -102,17 +102,17 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Date</th>
-                                <th scope="col" class="text-nowrap">Project</th>
-                                <th scope="col" class="text-nowrap">Status</th>
-                                <th scope="col" class="text-nowrap">Reported By</th>
-                                <th scope="col" class="text-nowrap text-end">Operations</th>
+                                <th scope="col" class="text-nowrap">Data</th>
+                                <th scope="col" class="text-nowrap">Projekti</th>
+                                <th scope="col" class="text-nowrap">Statusi</th>
+                                <th scope="col" class="text-nowrap">Raportuar Nga</th>
+                                <th scope="col" class="text-nowrap text-end">Veprimet</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($reports) === 0)
                                 <tr>
-                                    <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> No data found...</td>
+                                    <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach($reports as $report)
@@ -122,13 +122,13 @@
                                         <td class="text-nowrap">{{ $report->project_name }}</td>
                                         <td class="text-nowrap">
                                             @if($report->status === 'active' || $report->status === 'new')
-                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Active</span>
+                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Aktive</span>
                                             @elseif($report->status === 'under_review')
-                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Under Review</span>
+                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
                                             @elseif($report->status === 'resolved')
-                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Resolved</span>
+                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">I zgjidhur</span>
                                             @else
-                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">Closed</span>
+                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">Mbyllur</span>
                                             @endif
                                         </td>
                                         <td class="text-nowrap">{{ $report->reporter_name ?? '-' }}</td>
