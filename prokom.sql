@@ -290,15 +290,22 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
   `title` varchar(255) DEFAULT NULL,
-  `assigned_to` varchar(50) DEFAULT NULL,
-  `assigned_by` varchar(255) DEFAULT NULL,
+  `assigned_to` int(11) DEFAULT NULL,
+  `assigned_by` int(11) DEFAULT NULL,
   `project_id` int(11) DEFAULT NULL,
   `deadline` date DEFAULT NULL,
   `task` longtext DEFAULT NULL,
   `status` varchar(50) DEFAULT 'New',
+  `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_tasks_projects` (`project_id`),
-  CONSTRAINT `FK_tasks_projects` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `FK_tasks_assigned_to` (`assigned_to`),
+  KEY `FK_tasks_assigned_by` (`assigned_by`),
+  KEY `FK_tasks_companies` (`company_id`),
+  CONSTRAINT `FK_tasks_projects` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_tasks_assigned_to` FOREIGN KEY (`assigned_to`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_tasks_assigned_by` FOREIGN KEY (`assigned_by`) REFERENCES `employees` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `FK_tasks_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.
