@@ -5,6 +5,7 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CompaniesController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CheckInController;
 use App\Http\Controllers\PackagesController;
 use App\Http\Controllers\MaterialsController;
 use App\Http\Controllers\MaterialsStockController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\ProjectReportsController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TaskReportsController;
+use App\Http\Controllers\WorkingHoursController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -43,6 +45,14 @@ Route::controller(CompaniesController::class)->group(function () {
 // Dashboard
 Route::controller(DashboardController::class)->group(function () {
     Route::get('/dashboard', 'dashboard')->name('dashboard');
+});
+
+// Check In
+Route::controller(CheckInController::class)->group(function () {
+    Route::post('/start-work', 'startWork')->name('start.work');
+    Route::post('/start-break', 'startBreak')->name('start.break');
+    Route::post('/end-break', 'endBreak')->name('end.break');
+    Route::post('/end-work', 'endWork')->name('end.work');
 });
 
 // Packages
@@ -201,4 +211,10 @@ Route::controller(TaskReportsController::class)->group(function () {
     Route::post('/update-task-report', 'update')->name('update.task.report');
     Route::get('/delete-task-report/{id}', 'delete')->name('delete.task.report');
     Route::get('/update-task-report-status/{id}/{status}', 'updateStatus')->name('update.task.report.status');
+});
+// Working Hours
+Route::controller(WorkingHoursController::class)->group(function () {
+    Route::post('/create-working-hour', 'create')->name('create.working.hour');
+    Route::get('/working-hours', 'read')->name('working.hours');
+    Route::get('/delete-working-hour/{id}', 'delete')->name('delete.working.hour');
 });
