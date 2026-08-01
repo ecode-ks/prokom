@@ -198,7 +198,7 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
+                                @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee' || session('role') === 'manager')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Vacations' ? 'sidebar-active' : 'sidebar-link' }}">
                                         <a href="{{ route('vacations') }}" class="text-decoration-none text-light">
                                             <i class="fa-solid fa-calendar-days mx-2 opacity-75"></i> Pushimet
@@ -307,7 +307,7 @@
                                             @if(session('role') === 'company' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href="{{ route('contracts') }}"><i class="fa-solid fa-file-contract me-2 opacity-75"></i> Kontratat</a></li>
                                             @endif
-                                            @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
+                                            @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee' || session('role') === 'manager')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href="{{ route('vacations') }}"><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> Pushimet</a></li>
                                             @endif
                                         </ul>

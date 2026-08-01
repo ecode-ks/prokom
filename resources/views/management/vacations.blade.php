@@ -8,7 +8,13 @@
     @php
         $isEmployee = $isEmployee ?? false;
         $canManage = $canManage ?? false;
+        $canApproveManager = $canApproveManager ?? false;
+        $canApproveHr = $canApproveHr ?? false;
+        $isCompany = $isCompany ?? false;
         $selectedType = $selectedType ?? '';
+        $pendingManagerCount = (int) ($vacationStats->pending_manager_count ?? 0);
+        $pendingHrCount = (int) ($vacationStats->pending_hr_count ?? 0);
+        $pendingTotal = $pendingManagerCount + $pendingHrCount;
     @endphp
 
     @if(isset($editVacation))
@@ -17,13 +23,13 @@
         <p class="text-muted">Përditëso të dhënat e kërkesës së zgjedhur për pushim.</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ $isEmployee ? 'Punonjësi' : 'HR' }}</small>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ $isEmployee ? 'Punonjësi' : 'Stafi' }}</small>
         <h3 class="fw-semibold pt-2">Pushimet</h3>
         <p class="text-muted">
             @if($isEmployee)
-                Kërko pushim dhe ndiq statusin e kërkesave tua.
+                Kërko pushim dhe ndiq statusin e kërkesave tua. Aprovimi bëhet fillimisht nga menaxheri, pastaj nga HR.
             @else
-                Kërkesat për pushim nga punonjësit - dërgo, shqyrto dhe planifiko.
+                Kërkesat për pushim: fillimisht menaxheri, pastaj HR.
             @endif
         </p>
         <hr class="mb-4">
@@ -86,32 +92,43 @@
         </div>
     @else
 
-        @if(($vacationStats->reviewing_count ?? 0) > 0)
+        @if($pendingTotal > 0)
             <div class="alert bg-warning border-warning rounded-4 shadow-sm bg-opacity-25" role="alert">
-                <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $vacationStats->reviewing_count }} kërkes{{ ($vacationStats->reviewing_count ?? 0) === 1 ? 'ë' : 'a' }} pushimi në pritje të shqyrtimit</span>
-                <small class="d-block text-muted">Ju lutemi shqyrtoni ndikimin në staf para se të aprovoni pushime shtesë.</small>
+                <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $pendingTotal }} kërkes{{ $pendingTotal === 1 ? 'ë' : 'a' }} në pritje ({{ $pendingManagerCount }} menaxher · {{ $pendingHrCount }} HR)</span>
+                <small class="d-block text-muted">Aprovimi bëhet fillimisht nga menaxheri, pastaj nga HR.</small>
             </div>
         @else
             <div class="alert bg-success border-success rounded-4 shadow-sm bg-opacity-25" role="alert">
-                <span class="d-block fw-semibold"><i class="fa-solid fa-circle-check"></i> Nuk ka kërkesa pushimi në pritje të shqyrtimit</span>
+                <span class="d-block fw-semibold"><i class="fa-solid fa-circle-check"></i> Nuk ka kërkesa pushimi në pritje</span>
                 <small class="d-block text-muted">Kërkesat e aprovuara dhe të refuzuara janë ende të disponueshme në listën më poshtë.</small>
             </div>
         @endif
 
         {{-- Info Cards --}}
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Në shqyrtim</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-user-tie text-warning"></i> Në pritje të menaxherit</small>
                         <div class="d-flex align-items-center justify-content-between gap-2">
-                            <h4 class="fw-semibold mb-0">{{ $vacationStats->reviewing_count ?? 0 }}</h4>
-                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Reviewing'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            <h4 class="fw-semibold mb-0">{{ $pendingManagerCount }}</h4>
+                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Pending Manager'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-building-user text-primary"></i> Në pritje të HR</small>
+                        <div class="d-flex align-items-center justify-content-between gap-2">
+                            <h4 class="fw-semibold mb-0">{{ $pendingHrCount }}</h4>
+                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Pending HR'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Aprovuar</small>
@@ -122,7 +139,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
+            <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-xmark text-danger"></i> Refuzuar</small>
@@ -234,8 +251,10 @@
                                         <td class="text-nowrap">
                                             @if($vacation->status === 'Approved')
                                                 <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Aprovuar</span>
-                                            @elseif($vacation->status === 'Reviewing')
-                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
+                                            @elseif($vacation->status === 'Pending HR')
+                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në pritje të HR</span>
+                                            @elseif($vacation->status === 'Pending Manager' || $vacation->status === 'Reviewing')
+                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në pritje të menaxherit</span>
                                             @else
                                                 <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Refuzuar</span>
                                             @endif
@@ -280,6 +299,9 @@
 
             <!-- Comment Modal -->
             @foreach ($vacations as $vacation)
+            @php
+                $currentStatus = ($vacation->status === 'Reviewing') ? 'Pending Manager' : $vacation->status;
+            @endphp
             <div class="modal modal-lg fade" id="commentModal{{ $vacation->id }}" tabindex="-1" aria-labelledby="commentModal{{ $vacation->id }}Label" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content rounded-4">
@@ -291,8 +313,10 @@
 
                             @if($vacation->status === 'Approved')
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Aprovuar</span></span>
-                            @elseif($vacation->status === 'Reviewing')
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span></span>
+                            @elseif($vacation->status === 'Pending HR')
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në pritje të HR</span></span>
+                            @elseif($vacation->status === 'Pending Manager' || $vacation->status === 'Reviewing')
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në pritje të menaxherit</span></span>
                             @else
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Refuzuar</span></span>
                             @endif
@@ -309,9 +333,20 @@
                             @if($canManage)
                                 <hr class="my-3">
                                 <span class="d-block mb-2"><i class="fa-solid fa-arrows-turn-to-dots"></i> Përditëso Statusin</span>
-                                <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo</a>
-                                <a href="{{ route('update.vacation.status', [$vacation->id, 'Reviewing']) }}" class="btn btn-warning btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-clock"></i> Në shqyrtim</a>
-                                <a href="{{ route('update.vacation.status', [$vacation->id, 'Refused']) }}" class="btn btn-danger btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-times"></i> Refuzo</a>
+                                @if($canApproveManager && $currentStatus === 'Pending Manager')
+                                    <a href="{{ route('update.vacation.status', [$vacation->id, 'Pending HR']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo (Menaxher)</a>
+                                    @if($isCompany)
+                                        <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-darkblue btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check-double"></i> Aprovo direkt</a>
+                                    @endif
+                                    <a href="{{ route('update.vacation.status', [$vacation->id, 'Refused']) }}" class="btn btn-danger btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-times"></i> Refuzo</a>
+                                @elseif($canApproveHr && $currentStatus === 'Pending HR')
+                                    <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo (HR)</a>
+                                    <a href="{{ route('update.vacation.status', [$vacation->id, 'Refused']) }}" class="btn btn-danger btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-times"></i> Refuzo</a>
+                                @elseif(in_array($currentStatus, ['Approved', 'Refused'], true))
+                                    <small class="d-block text-muted">Ky pushim është i mbyllur.</small>
+                                @else
+                                    <small class="d-block text-muted">Nuk keni veprim për këtë fazë.</small>
+                                @endif
                             @endif
                         </div>
                     </div>

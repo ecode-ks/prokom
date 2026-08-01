@@ -83,7 +83,8 @@ class VacationsRepository
         }
 
         return $query
-            ->selectRaw("SUM(CASE WHEN v.status = 'Reviewing' THEN 1 ELSE 0 END) as reviewing_count")
+            ->selectRaw("SUM(CASE WHEN v.status IN ('Pending Manager', 'Reviewing') THEN 1 ELSE 0 END) as pending_manager_count")
+            ->selectRaw("SUM(CASE WHEN v.status = 'Pending HR' THEN 1 ELSE 0 END) as pending_hr_count")
             ->selectRaw("SUM(CASE WHEN v.status = 'Approved' THEN 1 ELSE 0 END) as approved_count")
             ->selectRaw("SUM(CASE WHEN v.status = 'Refused' THEN 1 ELSE 0 END) as refused_count")
             ->first();

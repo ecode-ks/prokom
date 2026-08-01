@@ -58,11 +58,11 @@ class VacationsController extends Controller
         $page = 'Vacations';
         $search = $request->query('search', '');
         $companyId = (int) session('company_id');
-        $role = session('role');
+        $role = (string) session('role');
         $isEmployee = $role === 'employee';
         $statuses = array_values(array_filter((array) $request->query('statuses', [])));
         $selectedType = $request->query('type', old('type', ''));
-        if (!in_array($selectedType, [VacationsService::TYPE_ANNUAL, VacationsService::TYPE_MEDICAL], true)) {
+        if (!in_array($selectedType, ['Pushim vjetor', 'Pushim mjekësor'], true)) {
             $selectedType = '';
         }
 
@@ -83,7 +83,10 @@ class VacationsController extends Controller
 
         $vacations = $this->service->getVacations(10, $search, $statuses, $companyId, $employeeId, null);
         $vacationStats = $this->service->getVacationStatistics($search, $companyId, $employeeId);
-        $canManage = in_array($role, ['company', 'hr'], true);
+        $canApproveManager = in_array($role, ['company', 'manager'], true);
+        $canApproveHr = in_array($role, ['company', 'hr'], true);
+        $canManage = $canApproveManager || $canApproveHr;
+        $isCompany = $role === 'company';
 
         return view('management.vacations')
             ->with('page', $page)
@@ -92,14 +95,18 @@ class VacationsController extends Controller
             ->with('vacationStats', $vacationStats)
             ->with('selectedType', $selectedType)
             ->with('isEmployee', $isEmployee)
-            ->with('canManage', $canManage);
+            ->with('canManage', $canManage)
+            ->with('canApproveManager', $canApproveManager)
+            ->with('canApproveHr', $canApproveHr)
+            ->with('isCompany', $isCompany)
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)
     {
         $page = 'Vacations';
         $companyId = (int) session('company_id');
-        $role = session('role');
+        $role = (string) session('role');
         $isEmployee = $role === 'employee';
 
         if (!$this->service->findOrFail($id, $companyId)) {
@@ -122,7 +129,11 @@ class VacationsController extends Controller
             ->with('employees', $employees)
             ->with('editVacation', $editVacation)
             ->with('isEmployee', $isEmployee)
-            ->with('canManage', in_array($role, ['company', 'hr'], true))
+            ->with('canManage', in_array($role, ['company', 'hr', 'manager'], true))
+            ->with('canApproveManager', in_array($role, ['company', 'manager'], true))
+            ->with('canApproveHr', in_array($role, ['company', 'hr'], true))
+            ->with('isCompany', $role === 'company')
+            ->with('role', $role)
             ->with('selectedType', $editVacation->type ?? '');
     }
     //---------------
@@ -197,10 +208,16 @@ class VacationsController extends Controller
     public function updateStatus(int $id, string $status)
     {
         $companyId = (int) session('company_id');
-        $role = session('role');
+        $role = (string) session('role');
+        $status = urldecode($status);
 
-        if (!in_array($role, ['company', 'hr'], true)) {
+        if (!in_array($role, ['company', 'hr', 'manager'], true)) {
             return redirect()->route('vacations')->with('error', 'Nuk keni të drejtë të ndryshoni statusin.');
+        }
+
+        $allowed = ['Pending Manager', 'Pending HR', 'Approved', 'Refused'];
+        if (!in_array($status, $allowed, true)) {
+            return redirect()->route('vacations')->with('error', 'Statusi nuk është i vlefshëm.');
         }
 
         if (!$this->service->findOrFail($id, $companyId)) {
@@ -208,7 +225,7 @@ class VacationsController extends Controller
         }
 
         try {
-            if (!$this->service->updateVacationStatus($id, $status, $companyId)) {
+            if (!$this->service->updateVacationStatus($id, $status, $role, $companyId)) {
                 return back()->with('error', 'Kërkesa përditësimi statusi nuk është e vlefshme.');
             }
 

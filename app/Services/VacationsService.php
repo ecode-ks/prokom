@@ -8,9 +8,6 @@ use Carbon\Carbon;
 
 class VacationsService
 {
-    public const TYPE_ANNUAL = 'Pushim vjetor';
-    public const TYPE_MEDICAL = 'Pushim mjekësor';
-
     protected VacationsRepository $repository;
     protected NotificationsService $notifications;
     protected EmployeesRepository $employees;
@@ -29,9 +26,18 @@ class VacationsService
     {
         $companyId = (int) ($data['company_id'] ?? session('company_id'));
         $data['company_id'] = $companyId;
+        $employeeId = (int) ($data['employee_id'] ?? 0);
 
+        $employee = $employeeId > 0
+            ? $this->employees->findEmployee($employeeId, $companyId)
+            : null;
+        $employeeRole = $employee->role ?? '';
+
+        // Vetëm punëtori (employee) pret aprovimin e menaxherit; të tjerët shkojnë te HR
         if (empty($data['status'])) {
-            $data['status'] = 'Reviewing';
+            $data['status'] = $employeeRole === 'employee'
+                ? 'Pending Manager'
+                : 'Pending HR';
         }
         if (empty($data['date'])) {
             $data['date'] = now()->toDateString();
@@ -42,7 +48,6 @@ class VacationsService
             return false;
         }
 
-        $employeeId = (int) ($data['employee_id'] ?? 0);
         $from = $data['from_date'] ?? '';
         $to = $data['to_date'] ?? '';
         $period = trim($from . ' - ' . $to, ' -');
@@ -50,7 +55,6 @@ class VacationsService
             ? 'Është regjistruar një kërkesë pushimi (' . $period . ').'
             : 'Është regjistruar një kërkesë pushimi.';
 
-        // Notify the employee on the vacation
         if ($employeeId > 0) {
             $this->notifications->notify(
                 $companyId,
@@ -63,7 +67,6 @@ class VacationsService
             );
         }
 
-        // Notify company account
         $this->notifications->notify(
             $companyId,
             'company',
@@ -74,40 +77,40 @@ class VacationsService
             route('vacations')
         );
 
-        // Notify all active HR employees (they approve requests)
-        $hrEmployees = $this->employees->getEmployeesByRole($companyId, 'hr');
-        foreach ($hrEmployees as $hr) {
-            if ((int) $hr->id === $employeeId) {
-                continue;
+        if ($data['status'] === 'Pending Manager') {
+            $managers = $this->employees->getEmployeesByRole($companyId, 'manager');
+            foreach ($managers as $manager) {
+                if ((int) $manager->id === $employeeId) {
+                    continue;
+                }
+
+                $this->notifications->notify(
+                    $companyId,
+                    'employee',
+                    (int) $manager->id,
+                    'vacation_request',
+                    'Kërkesë e re pushimi',
+                    $message . ' Në pritje të menaxherit.',
+                    route('vacations')
+                );
             }
+        } else {
+            $hrEmployees = $this->employees->getEmployeesByRole($companyId, 'hr');
+            foreach ($hrEmployees as $hr) {
+                if ((int) $hr->id === $employeeId) {
+                    continue;
+                }
 
-            $this->notifications->notify(
-                $companyId,
-                'employee',
-                (int) $hr->id,
-                'vacation_request',
-                'Kërkesë e re pushimi',
-                $message,
-                route('vacations')
-            );
-        }
-
-        // Notify managers about the new leave request
-        $managers = $this->employees->getEmployeesByRole($companyId, 'manager');
-        foreach ($managers as $manager) {
-            if ((int) $manager->id === $employeeId) {
-                continue;
+                $this->notifications->notify(
+                    $companyId,
+                    'employee',
+                    (int) $hr->id,
+                    'vacation_request',
+                    'Kërkesë e re pushimi',
+                    $message . ' Në pritje të HR.',
+                    route('vacations')
+                );
             }
-
-            $this->notifications->notify(
-                $companyId,
-                'employee',
-                (int) $manager->id,
-                'vacation_request',
-                'Kërkesë e re pushimi',
-                $message,
-                route('vacations')
-            );
         }
 
         return true;
@@ -117,6 +120,10 @@ class VacationsService
     {
         $companyId = $companyId ?: (int) session('company_id');
         $limit = $limit ?: 10;
+
+        if (in_array('Pending Manager', $statuses, true)) {
+            $statuses[] = 'Reviewing';
+        }
 
         if (!empty($search) || !empty($statuses) || $employeeId || !empty($type)) {
             return $this->repository->getSearchedVacations($limit, $companyId, $search, $statuses, $employeeId, $type);
@@ -165,7 +172,7 @@ class VacationsService
         return $this->repository->delete($id, $companyId);
     }
     //---------------
-    public function updateVacationStatus(int $id, string $status, ?int $companyId = null): bool
+    public function updateVacationStatus(int $id, string $status, string $role, ?int $companyId = null): bool
     {
         $companyId = $companyId ?: (int) session('company_id');
         $vacation = $this->repository->findVacation($id, $companyId);
@@ -173,8 +180,33 @@ class VacationsService
             return false;
         }
 
-        if ($vacation->status === $status) {
+        $status = urldecode($status);
+        $current = $vacation->status === 'Reviewing' ? 'Pending Manager' : (string) $vacation->status;
+
+        if ($current === $status) {
             return true;
+        }
+
+        $allowed = false;
+        if ($role === 'company') {
+            if ($current === 'Pending Manager' && in_array($status, ['Pending HR', 'Approved', 'Refused'], true)) {
+                $allowed = true;
+            }
+            if ($current === 'Pending HR' && in_array($status, ['Approved', 'Refused', 'Pending Manager'], true)) {
+                $allowed = true;
+            }
+        } elseif ($role === 'manager') {
+            if ($current === 'Pending Manager' && in_array($status, ['Pending HR', 'Refused'], true)) {
+                $allowed = true;
+            }
+        } elseif ($role === 'hr') {
+            if ($current === 'Pending HR' && in_array($status, ['Approved', 'Refused'], true)) {
+                $allowed = true;
+            }
+        }
+
+        if (!$allowed) {
+            return false;
         }
 
         $updated = $this->repository->updateStatus($id, $status, $companyId);
@@ -187,28 +219,56 @@ class VacationsService
             return true;
         }
 
-        if ($status === 'Approved') {
-            $title = 'Pushimi u aprovua';
-            $message = 'Kërkesa juaj e pushimit (' . ($vacation->from_date ?? '') . ' - ' . ($vacation->to_date ?? '') . ') u aprovua.';
-        } elseif ($status === 'Refused') {
-            $title = 'Pushimi u refuzua';
-            $message = 'Kërkesa juaj e pushimit (' . ($vacation->from_date ?? '') . ' - ' . ($vacation->to_date ?? '') . ') u refuzua.';
-        } else {
-            $title = 'Statusi i pushimit';
-            $message = 'Kërkesa juaj e pushimit është në shqyrtim.';
-        }
+        $period = trim(($vacation->from_date ?? '') . ' - ' . ($vacation->to_date ?? ''), ' -');
 
-        $this->notifications->notify(
-            $companyId,
-            'employee',
-            $employeeId,
-            'vacation_status',
-            $title,
-            $message,
-            route('notifications')
-        );
+        if ($status === 'Pending HR') {
+            $this->notifications->notify(
+                $companyId,
+                'employee',
+                $employeeId,
+                'vacation_status',
+                'Pushimi u aprovua nga menaxheri',
+                'Kërkesa juaj e pushimit (' . $period . ') u aprovua nga menaxheri dhe është në pritje të HR.',
+                route('vacations')
+            );
 
-        if ($status === 'Approved') {
+            $hrEmployees = $this->employees->getEmployeesByRole($companyId, 'hr');
+            foreach ($hrEmployees as $hr) {
+                if ((int) $hr->id === $employeeId) {
+                    continue;
+                }
+
+                $this->notifications->notify(
+                    $companyId,
+                    'employee',
+                    (int) $hr->id,
+                    'vacation_request',
+                    'Pushim në pritje të HR',
+                    'Një kërkesë pushimi (' . $period . ') është aprovuar nga menaxheri dhe pret aprovimin e HR.',
+                    route('vacations')
+                );
+            }
+
+            $this->notifications->notify(
+                $companyId,
+                'company',
+                $companyId,
+                'vacation_request',
+                'Pushim në pritje të HR',
+                'Një kërkesë pushimi (' . $period . ') është aprovuar nga menaxheri dhe pret aprovimin e HR.',
+                route('vacations')
+            );
+        } elseif ($status === 'Approved') {
+            $this->notifications->notify(
+                $companyId,
+                'employee',
+                $employeeId,
+                'vacation_status',
+                'Pushimi u aprovua',
+                'Kërkesa juaj e pushimit (' . $period . ') u aprovua.',
+                route('notifications')
+            );
+
             $employee = $this->employees->findEmployee($employeeId, $companyId);
             $employeeName = $employee->employee ?? ('Punonjësi #' . $employeeId);
             $fromDate = !empty($vacation->from_date) ? Carbon::parse($vacation->from_date)->format('d/m/Y') : '';
@@ -231,6 +291,16 @@ class VacationsService
                     route('vacations')
                 );
             }
+        } elseif ($status === 'Refused') {
+            $this->notifications->notify(
+                $companyId,
+                'employee',
+                $employeeId,
+                'vacation_status',
+                'Pushimi u refuzua',
+                'Kërkesa juaj e pushimit (' . $period . ') u refuzua.',
+                route('notifications')
+            );
         }
 
         return true;

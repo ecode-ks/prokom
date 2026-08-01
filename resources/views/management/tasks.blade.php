@@ -270,18 +270,6 @@
                                 @foreach ($tasks as $task)
                                     @php
                                         $status = strtolower((string) ($task->status ?? ''));
-                                        $statusLabels = [
-                                            'new' => 'E re',
-                                            'working' => 'Në punë',
-                                            'in_progress' => 'Në punë',
-                                            'in progress' => 'Në punë',
-                                            'review' => 'Në shqyrtim',
-                                            'reviewing' => 'Në shqyrtim',
-                                            'blocked' => 'Bllokuar',
-                                            'on_hold' => 'Bllokuar',
-                                            'completed' => 'Përfunduar',
-                                        ];
-                                        $statusLabel = $statusLabels[$status] ?? ucwords(str_replace('_', ' ', $task->status ?? '-'));
                                     @endphp
                                     <tr>
                                         <th scope="row" class="text-nowrap">{{ $task->id }}</th>
@@ -293,15 +281,15 @@
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($task->deadline)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap">
                                             @if($status === 'completed')
-                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ $statusLabel }}</span>
+                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Përfunduar</span>
                                             @elseif($status === 'working' || $status === 'in_progress' || $status === 'in progress')
-                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">{{ $statusLabel }}</span>
+                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në punë</span>
                                             @elseif($status === 'review' || $status === 'reviewing')
-                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ $statusLabel }}</span>
+                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
                                             @elseif($status === 'blocked' || $status === 'on_hold')
-                                                <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ $statusLabel }}</span>
+                                                <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Bllokuar</span>
                                             @else
-                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">{{ $statusLabel }}</span>
+                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">E re</span>
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">
