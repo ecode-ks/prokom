@@ -85,6 +85,7 @@
                         <div class="col-12 col-md-8">
                             <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini përsëri</span>
                             <h1 class="fw-bold mt-3">Kyçu në llogarinë tuaj</h1>
+                            <p class="text-muted small mb-0">Admin, kompani ose punonjës — me username dhe fjalëkalim.</p>
                             <form action="{{ route('check.login') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                                 @csrf
                                 <div class="mb-3">
