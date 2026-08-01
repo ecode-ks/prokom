@@ -53,12 +53,26 @@
     font-size: 10px;
 }
 
-#sidebar-link {
+#sidebar-link,
+#sidebar-active {
     font-size: 15px;
-    background-color: #071838;
-    border: none;
-    opacity: 0.8;
+    padding: 0 !important;
     color: #FFFFFF;
+}
+
+#sidebar-link a,
+#sidebar-active a {
+    display: block;
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 0.5rem;
+}
+
+#sidebar-link {
+    background-color: #071838;
+    opacity: 0.8;
     border: 1px solid #071838;
 }
 
@@ -68,10 +82,8 @@
 }
 
 #sidebar-active {
-    font-size: 15px;
     background-color: #1E2B46;
     opacity: 0.9;
-    color: #FFFFFF;
     border: 1px solid #334B68;
     border-left: 2px solid #DDB049;
 }
