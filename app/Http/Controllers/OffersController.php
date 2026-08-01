@@ -155,10 +155,12 @@ class OffersController extends Controller
         $page = 'Offers';
         $search = $request->query('search', '');
         $offers = $this->service->getOffers(10, $search);
+        $offerStats = $this->service->getOfferStatistics();
 
         return view('management.offers')
             ->with('page', $page)
-            ->with('offers', $offers);
+            ->with('offers', $offers)
+            ->with('offerStats', $offerStats);
     }
     //---------------
     public function edit(string $offerNumber)

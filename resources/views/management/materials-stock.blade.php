@@ -34,9 +34,17 @@
                             <select name="material_id" id="material_id" class="form-control shadow-sm rounded-3">
                                 <option value="">-- Zgjidh Materialin --</option>
                                 @foreach ($materials as $material)
-                                    <option value="{{ $material->id }}" {{ old('material_id', $editMaterialStock->material_id) == $material->id ? 'selected' : '' }}>{{ $material->material }}</option>
+                                    <option
+                                        value="{{ $material->id }}"
+                                        data-stock="{{ $material->current_stock }}"
+                                        data-unit="{{ $material->unit }}"
+                                        {{ old('material_id', $editMaterialStock->material_id) == $material->id ? 'selected' : '' }}
+                                    >
+                                        {{ $material->material }}
+                                    </option>
                                 @endforeach
                             </select>
+                            <small id="current-stock-hint" class="text-muted d-block mt-1"></small>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="qty" class="form-label">Sasia</label>
@@ -59,6 +67,42 @@
         </div>
     @else
 
+        {{-- Info Cards --}}
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-down text-success"></i> Hyrje</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($stockStats->in_qty ?? 0), 2) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-up text-danger"></i> Dalje</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($stockStats->out_qty ?? 0), 2) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-receipt text-primary"></i> Transaksione</small>
+                        <h4 class="fw-semibold mb-0">{{ $stockStats->transaction_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-scale-balanced text-warning"></i> Bilanci neto</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($stockStats->net_balance ?? 0), 2) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Create Stock Transaction --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
@@ -73,9 +117,17 @@
                             <select name="material_id" id="material_id" class="form-control shadow-sm rounded-3">
                                 <option value="">-- Zgjidh Materialin --</option>
                                 @foreach ($materials as $material)
-                                    <option value="{{ $material->id }}" {{ old('material_id') == $material->id ? 'selected' : '' }}>{{ $material->material }}</option>
+                                    <option
+                                        value="{{ $material->id }}"
+                                        data-stock="{{ $material->current_stock }}"
+                                        data-unit="{{ $material->unit }}"
+                                        {{ old('material_id') == $material->id ? 'selected' : '' }}
+                                    >
+                                        {{ $material->material }}
+                                    </option>
                                 @endforeach
                             </select>
+                            <small id="current-stock-hint" class="text-muted d-block mt-1"></small>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="qty" class="form-label">Sasia</label>
@@ -169,3 +221,27 @@
         @endif
     @endif
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        const select = document.getElementById('material_id');
+        const hint = document.getElementById('current-stock-hint');
+        if (!select || !hint) return;
+
+        const updateHint = () => {
+            const option = select.options[select.selectedIndex];
+            if (!option || !option.value) {
+                hint.textContent = '';
+                return;
+            }
+            const stock = option.getAttribute('data-stock') || '0';
+            const unit = option.getAttribute('data-unit') || '';
+            hint.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> Stoku aktual: <strong>' + stock + '</strong> ' + unit;
+        };
+
+        select.addEventListener('change', updateHint);
+        updateHint();
+    })();
+</script>
+@endpush

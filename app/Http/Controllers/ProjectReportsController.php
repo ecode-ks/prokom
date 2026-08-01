@@ -61,11 +61,13 @@ class ProjectReportsController extends Controller
         }
 
         $reports = $this->service->getReports(10, $companyId);
+        $reportStats = $this->service->getReportStatistics((int) $companyId);
 
         return view('management.project-reports')
             ->with('page', $page)
             ->with('projects', $projects)
-            ->with('reports', $reports);
+            ->with('reports', $reports)
+            ->with('reportStats', $reportStats);
     }
     //---------------
     public function reportDetails(int $id)

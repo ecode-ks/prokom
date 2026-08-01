@@ -43,4 +43,9 @@ class WorkingHoursService
 
         return $this->repository->delete($id, $this->companyId);
     }
+    //---------------
+    public function getWorkingHoursStatistics(): object
+    {
+        return $this->repository->getWorkingHoursStatistics((int) $this->companyId);
+    }
 }

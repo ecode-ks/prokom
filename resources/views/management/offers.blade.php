@@ -107,6 +107,42 @@
         <p class="text-muted">Menaxhoni ofertat për klientët në mënyrë të shpejtë dhe efikase.</p>
         <hr class="mb-4">
 
+        {{-- Info Cards --}}
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-invoice text-primary"></i> Oferta</small>
+                        <h4 class="fw-semibold mb-0">{{ $offerStats->offer_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-clock text-warning"></i> Në pritje</small>
+                        <h4 class="fw-semibold mb-0">{{ $offerStats->pending_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Përfunduar</small>
+                        <h4 class="fw-semibold mb-0">{{ $offerStats->completed_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-euro-sign text-info"></i> Vlera totale</small>
+                        <h4 class="fw-semibold mb-0">€{{ number_format((float) ($offerStats->total_value ?? 0), 2) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Offers List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">

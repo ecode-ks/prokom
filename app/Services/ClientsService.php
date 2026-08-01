@@ -58,4 +58,9 @@ class ClientsService
         }
         return $this->repository->delete($id, $companyId);
     }
+    //---------------
+    public function getClientStatistics(int $companyId): object
+    {
+        return $this->repository->getClientStatistics($companyId);
+    }
 }

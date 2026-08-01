@@ -119,6 +119,11 @@ class ProjectReportsService
         return $this->repository->updateStatus($id, $status, $companyId);
     }
     //---------------
+    public function getReportStatistics(int $companyId): object
+    {
+        return $this->repository->getReportStatistics($companyId);
+    }
+    //---------------
     private function storeImages(array $images): string
     {
         $paths = [];

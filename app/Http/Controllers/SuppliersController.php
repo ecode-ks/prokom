@@ -41,9 +41,11 @@ class SuppliersController extends Controller
         $search = $request->query('search', '');
         $companyId = session('company_id');
         $suppliers = $this->service->getSuppliers(10, $search, $companyId);
+        $supplierStats = $this->service->getSupplierStatistics((int) $companyId);
         return view('management.suppliers')
             ->with('page', $page)
-            ->with('suppliers', $suppliers);
+            ->with('suppliers', $suppliers)
+            ->with('supplierStats', $supplierStats);
     }
     //---------------
     public function edit(int $id)

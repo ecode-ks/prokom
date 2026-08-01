@@ -80,4 +80,9 @@ class CompaniesService
 
         return $this->companiesRepository->delete($id);
     }
+    //---------------
+    public function getCompanyStatistics(): object
+    {
+        return $this->companiesRepository->getCompanyStatistics();
+    }
 }

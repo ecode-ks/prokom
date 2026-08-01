@@ -54,6 +54,34 @@
         </div>
     @else
 
+        {{-- Info Cards --}}
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-box text-primary"></i> Total paketa</small>
+                        <h4 class="fw-semibold mb-0">{{ $packageStats->total_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-tag text-success"></i> Çmimi mesatar</small>
+                        <h4 class="fw-semibold mb-0">€{{ number_format((float) ($packageStats->avg_price ?? 0), 2) }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-calendar text-warning"></i> Muaj mesatarisht</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($packageStats->avg_months ?? 0), 1) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Create Package --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">

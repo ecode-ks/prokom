@@ -71,4 +71,15 @@ class WorkingHoursRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function getWorkingHoursStatistics(int $companyId): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->selectRaw('SUM(CASE WHEN `date` = CURDATE() THEN 1 ELSE 0 END) as today_count')
+            ->selectRaw('COALESCE(SUM(CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN TIMESTAMPDIFF(MINUTE, check_in, check_out) ELSE 0 END), 0) as month_minutes')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN employee_id END) as active_employees_count')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN `date` END) as month_days_count')
+            ->first();
+    }
 }

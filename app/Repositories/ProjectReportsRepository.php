@@ -73,6 +73,17 @@ class ProjectReportsRepository
             ->delete() > 0;
     }
     //---------------
+    public function getReportStatistics(int $companyId): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->selectRaw("SUM(CASE WHEN status IN ('active', 'new') THEN 1 ELSE 0 END) as active_count")
+            ->selectRaw("SUM(CASE WHEN status = 'under_review' THEN 1 ELSE 0 END) as under_review_count")
+            ->selectRaw("SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) as resolved_count")
+            ->selectRaw("SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as closed_count")
+            ->first();
+    }
+    //---------------
     private function baseQuery(int $companyId)
     {
         return DB::table($this->table . ' as pr')

@@ -107,6 +107,42 @@
         </div>
     @else
 
+        {{-- Info Cards --}}
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-list-check text-primary"></i> Total</small>
+                        <h4 class="fw-semibold mb-0">{{ $taskStats->total_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-sparkles text-info"></i> Të reja</small>
+                        <h4 class="fw-semibold mb-0">{{ $taskStats->new_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-spinner text-warning"></i> Në punë</small>
+                        <h4 class="fw-semibold mb-0">{{ $taskStats->working_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Përfunduar</small>
+                        <h4 class="fw-semibold mb-0">{{ $taskStats->completed_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Create Task --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">

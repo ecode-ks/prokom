@@ -57,4 +57,9 @@ class OffersService
 	{
 		return $this->repository->deleteOfferByNumber($offerNumber, $this->companyId);
 	}
+	//---------------
+	public function getOfferStatistics(): object
+	{
+		return $this->repository->getOfferStatistics((int) $this->companyId);
+	}
 }

@@ -40,9 +40,11 @@ class MaterialsController extends Controller
         $search = $request->query('search', '');
         $companyId = session('company_id');
         $materials = $this->service->getMaterials(10, $companyId, $search);
+        $materialStats = $this->service->getMaterialStatistics((int) $companyId);
         return view('management.materials')
             ->with('page', $page)
-            ->with('materials', $materials);
+            ->with('materials', $materials)
+            ->with('materialStats', $materialStats);
     }
     //---------------
     public function edit(int $id)

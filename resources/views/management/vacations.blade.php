@@ -84,7 +84,7 @@
 
         {{-- Info Cards --}}
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Në shqyrtim</small>
@@ -95,7 +95,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Aprovuar</small>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-xmark text-danger"></i> Refuzuar</small>

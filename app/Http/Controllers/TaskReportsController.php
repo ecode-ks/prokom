@@ -63,12 +63,14 @@ class TaskReportsController extends Controller
         }
 
         $reports = $this->service->getReports(10, $companyId, $role, $employeeId);
+        $reportStats = $this->service->getReportStatistics((int) $companyId, $role, $employeeId ? (int) $employeeId : null);
 
         return view('management.task-reports')
             ->with('page', $page)
             ->with('tasks', $tasks)
             ->with('reports', $reports)
-            ->with('role', $role);
+            ->with('role', $role)
+            ->with('reportStats', $reportStats);
     }
     //---------------
     public function details(int $id)

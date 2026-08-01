@@ -61,6 +61,42 @@
 
     @else
 
+        {{-- Info Cards --}}
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-list-check text-primary"></i> Aktive</small>
+                        <h4 class="fw-semibold mb-0">{{ $reportStats->active_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-magnifying-glass text-warning"></i> Në shqyrtim</small>
+                        <h4 class="fw-semibold mb-0">{{ $reportStats->under_review_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-check text-success"></i> Të zgjidhura</small>
+                        <h4 class="fw-semibold mb-0">{{ $reportStats->resolved_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-lock text-secondary"></i> Mbyllura</small>
+                        <h4 class="fw-semibold mb-0">{{ $reportStats->closed_count ?? 0 }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
                 <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> Krijo Raport Detyre</span>

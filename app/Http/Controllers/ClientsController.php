@@ -41,9 +41,11 @@ class ClientsController extends Controller
         $search = $request->query('search', '');
         $companyId = session('company_id');
         $clients = $this->service->getClients(10, $companyId, $search);
+        $clientStats = $this->service->getClientStatistics((int) $companyId);
         return view('management.clients')
             ->with('page', $page)
-            ->with('clients', $clients);
+            ->with('clients', $clients)
+            ->with('clientStats', $clientStats);
     }
     //---------------
     public function edit(int $id)

@@ -61,4 +61,13 @@ class PackagesRepository
             ->where('id', $id)
             ->delete() > 0;
     }
+    //---------------
+    public function getPackageStatistics(): object
+    {
+        return DB::table($this->table)
+            ->selectRaw('COUNT(*) as total_count')
+            ->selectRaw('COALESCE(AVG(price), 0) as avg_price')
+            ->selectRaw('COALESCE(AVG(months), 0) as avg_months')
+            ->first();
+    }
 }

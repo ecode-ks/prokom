@@ -145,6 +145,29 @@ class TaskReportsRepository
             ->delete() > 0;
     }
     //---------------
+    public function getReportStatistics(int $companyId, ?int $managerId = null, ?int $employeeId = null): object
+    {
+        $query = DB::table($this->table . ' as tr')
+            ->join('tasks as t', 'tr.task_id', '=', 't.id')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('tr.company_id', $companyId);
+
+        if ($managerId) {
+            $query->where('p.project_manager', $managerId);
+        }
+
+        if ($employeeId) {
+            $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
+
+        return $query
+            ->selectRaw("SUM(CASE WHEN tr.status IN ('active', 'new') THEN 1 ELSE 0 END) as active_count")
+            ->selectRaw("SUM(CASE WHEN tr.status = 'under_review' THEN 1 ELSE 0 END) as under_review_count")
+            ->selectRaw("SUM(CASE WHEN tr.status = 'resolved' THEN 1 ELSE 0 END) as resolved_count")
+            ->selectRaw("SUM(CASE WHEN tr.status = 'closed' THEN 1 ELSE 0 END) as closed_count")
+            ->first();
+    }
+    //---------------
     private function baseQuery(int $companyId)
     {
         return DB::table($this->table . ' as tr')

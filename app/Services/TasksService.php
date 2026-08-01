@@ -124,4 +124,9 @@ class TasksService
 
         return count($orderedNames) > 0 ? implode(', ', $orderedNames) : '-';
     }
+    //---------------
+    public function getTaskStatistics(string $search, int $companyId): object
+    {
+        return $this->repository->getTaskStatistics($companyId, $search);
+    }
 }

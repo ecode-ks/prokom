@@ -61,7 +61,7 @@
         @endphp
 
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-up text-success"></i> Të Ardhurat</small>
@@ -69,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-down text-danger"></i> Shpenzimet</small>
@@ -77,7 +77,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body bg-darkblue text-white rounded-4">
                         <small class="text-uppercase opacity-75">Bilanci</small>

@@ -65,12 +65,14 @@ class TasksController extends Controller
         }
 
         $tasks = $this->service->getTasks(10, $search, $companyId);
+        $taskStats = $this->service->getTaskStatistics($search, (int) $companyId);
 
         return view('management.tasks')
             ->with('page', $page)
             ->with('employees', $employees)
             ->with('projects', $projects)
-            ->with('tasks', $tasks);
+            ->with('tasks', $tasks)
+            ->with('taskStats', $taskStats);
     }
     //---------------
     public function edit(int $id)

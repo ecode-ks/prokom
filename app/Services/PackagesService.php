@@ -53,4 +53,9 @@ class PackagesService
         }
         return $this->repository->delete($id);
     }
+    //---------------
+    public function getPackageStatistics(): object
+    {
+        return $this->repository->getPackageStatistics();
+    }
 }

@@ -56,9 +56,11 @@ class CompaniesController extends Controller
         $page = 'Companies';
         $search = $request->query('search', '');
         $companies = $this->companiesService->getCompanies(10, $search);
+        $companyStats = $this->companiesService->getCompanyStatistics();
         return view('management.companies')
             ->with('page', $page)
-            ->with('companies', $companies);
+            ->with('companies', $companies)
+            ->with('companyStats', $companyStats);
     }
     //---------------
     public function details(int $id)

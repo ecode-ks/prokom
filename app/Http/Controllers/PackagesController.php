@@ -44,9 +44,11 @@ class PackagesController extends Controller
         $page = 'Packages';
         $search = $request->query('search', '');
         $packages = $this->service->getPackages(10, $search);
+        $packageStats = $this->service->getPackageStatistics();
         return view('management.packages')
             ->with('page', $page)
-            ->with('packages', $packages);
+            ->with('packages', $packages)
+            ->with('packageStats', $packageStats);
     }
     //---------------
     public function edit(int $id)

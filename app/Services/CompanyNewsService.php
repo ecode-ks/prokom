@@ -58,4 +58,9 @@ class CompanyNewsService
 		}
 		return $this->repository->delete($id);
 	}
+	//---------------
+	public function getCompanyNewsStatistics(int $companyId): object
+	{
+		return $this->repository->getCompanyNewsStatistics($companyId);
+	}
 }

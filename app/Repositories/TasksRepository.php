@@ -172,4 +172,32 @@ class TasksRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function getTaskStatistics(int $companyId, string $search = ''): object
+    {
+        $query = DB::table($this->table . ' as t')
+            ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
+            ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
+            ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
+            ->where('t.company_id', $companyId);
+
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('t.title', 'like', "%{$search}%")
+                    ->orWhere('t.task', 'like', "%{$search}%")
+                    ->orWhere('t.status', 'like', "%{$search}%")
+                    ->orWhere('t.assigned_to', 'like', "%{$search}%")
+                    ->orWhere('p.project_name', 'like', "%{$search}%")
+                    ->orWhere('ab.employee', 'like', "%{$search}%")
+                    ->orWhere('c.company', 'like', "%{$search}%");
+            });
+        }
+
+        return $query
+            ->selectRaw('COUNT(*) as total_count')
+            ->selectRaw("SUM(CASE WHEN t.status = 'new' THEN 1 ELSE 0 END) as new_count")
+            ->selectRaw("SUM(CASE WHEN t.status = 'working' THEN 1 ELSE 0 END) as working_count")
+            ->selectRaw("SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count")
+            ->first();
+    }
 }

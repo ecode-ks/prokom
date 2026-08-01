@@ -70,7 +70,7 @@
 
         {{-- Info Cards --}}
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-users text-dark"></i> Total</small>
@@ -78,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-user-check text-success"></i> Aktiv</small>
@@ -86,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-user-minus text-danger"></i> Të bllokuar</small>

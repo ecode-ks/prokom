@@ -10,6 +10,48 @@
     <p class="text-muted">Lista e orëve të punës të miratuara.</p>
     <hr class="mb-4">
 
+    @php
+        $monthHours = ((float) ($workingHoursStats->month_minutes ?? 0)) / 60;
+        $monthDays = (int) ($workingHoursStats->month_days_count ?? 0);
+        $avgHoursPerDay = $monthDays > 0 ? $monthHours / $monthDays : 0;
+    @endphp
+
+    {{-- Info Cards --}}
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-calendar-day text-primary"></i> Regjistrime sot</small>
+                    <h4 class="fw-semibold mb-0">{{ $workingHoursStats->today_count ?? 0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-clock text-success"></i> Orë këtë muaj</small>
+                    <h4 class="fw-semibold mb-0">{{ number_format($monthHours, 1) }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-users text-info"></i> Punonjës aktivë</small>
+                    <h4 class="fw-semibold mb-0">{{ $workingHoursStats->active_employees_count ?? 0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-chart-line text-warning"></i> Mesatare orë/ditë</small>
+                    <h4 class="fw-semibold mb-0">{{ number_format($avgHoursPerDay, 1) }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Create Working Hour --}}
     <div class="card mb-4">
         <div class="card-header rounded-top-4 bg-white">

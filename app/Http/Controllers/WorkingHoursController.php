@@ -46,10 +46,12 @@ class WorkingHoursController extends Controller
         $search = $request->query('search', '');
         $employees = $this->employeeservice->getAllEmployees();
         $workingHours = $this->service->getWorkingHours(10, $search);
+        $workingHoursStats = $this->service->getWorkingHoursStatistics();
         return view('management.working-hours')
             ->with('page', $page)
             ->with('workingHours', $workingHours)
-            ->with('employees', $employees);
+            ->with('employees', $employees)
+            ->with('workingHoursStats', $workingHoursStats);
     }
     //---------------
     public function delete(int $id)

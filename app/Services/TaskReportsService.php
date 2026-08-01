@@ -176,6 +176,19 @@ class TaskReportsService
         return $this->repository->updateStatus($id, $status, $companyId);
     }
     //---------------
+    public function getReportStatistics(int $companyId, string $role, ?int $employeeId): object
+    {
+        if ($role === 'manager' && $employeeId) {
+            return $this->repository->getReportStatistics($companyId, $employeeId, null);
+        }
+
+        if ($role === 'employee' && $employeeId) {
+            return $this->repository->getReportStatistics($companyId, null, $employeeId);
+        }
+
+        return $this->repository->getReportStatistics($companyId);
+    }
+    //---------------
     private function storeImages(array $images): string
     {
         $paths = [];

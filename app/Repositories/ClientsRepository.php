@@ -76,4 +76,19 @@ class ClientsRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function getClientStatistics(int $companyId): object
+    {
+        return DB::table($this->table . ' as c')
+            ->leftJoin('projects as p', function ($join) use ($companyId) {
+                $join->on('p.client_id', '=', 'c.id')
+                    ->where('p.company_id', '=', $companyId);
+            })
+            ->where('c.company_id', $companyId)
+            ->selectRaw('COUNT(DISTINCT c.id) as total_count')
+            ->selectRaw('COUNT(DISTINCT CASE WHEN p.id IS NOT NULL THEN c.id END) as with_projects_count')
+            ->selectRaw("COUNT(DISTINCT NULLIF(TRIM(c.location), '')) as locations_count")
+            ->selectRaw('COUNT(p.id) as linked_projects_count')
+            ->first();
+    }
 }

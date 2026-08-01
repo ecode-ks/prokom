@@ -10,6 +10,42 @@
     <p class="text-muted">Të gjitha kompanitë e regjistruara me paketën, abonimin dhe statusin e llogarisë.</p>
     <hr class="mb-4">
 
+    {{-- Info Cards --}}
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-building text-primary"></i> Total</small>
+                    <h4 class="fw-semibold mb-0">{{ $companyStats->total_count ?? 0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Aktive</small>
+                    <h4 class="fw-semibold mb-0">{{ $companyStats->active_count ?? 0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-ban text-danger"></i> Jo aktive</small>
+                    <h4 class="fw-semibold mb-0">{{ $companyStats->inactive_count ?? 0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Abonim skadon së shpejti</small>
+                    <h4 class="fw-semibold mb-0">{{ $companyStats->expiring_soon_count ?? 0 }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header rounded-top-4 bg-white">
             <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Kompanive</span>

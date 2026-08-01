@@ -58,4 +58,9 @@ class MaterialsService
         }
         return $this->repository->delete($id, $companyId);
     }
+    //---------------
+    public function getMaterialStatistics(int $companyId): object
+    {
+        return $this->repository->getMaterialStatistics($companyId);
+    }
 }

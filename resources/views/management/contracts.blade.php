@@ -160,7 +160,7 @@
 
         {{-- Info Cards --}}
         <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-signature text-success"></i> Aktive</small>
@@ -171,7 +171,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Duke skaduar</small>
@@ -182,7 +182,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-circle-xmark text-danger"></i> Skaduar</small>

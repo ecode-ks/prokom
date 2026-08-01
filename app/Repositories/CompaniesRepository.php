@@ -117,4 +117,14 @@ class CompaniesRepository
             ->where('id', $id)
             ->delete() > 0;
     }
+    //---------------
+    public function getCompanyStatistics(): object
+    {
+        return DB::table($this->table)
+            ->selectRaw('COUNT(*) as total_count')
+            ->selectRaw("SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END) as active_count")
+            ->selectRaw("SUM(CASE WHEN status != 'Active' THEN 1 ELSE 0 END) as inactive_count")
+            ->selectRaw('SUM(CASE WHEN payment_expire IS NOT NULL AND payment_expire >= CURDATE() AND payment_expire <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as expiring_soon_count')
+            ->first();
+    }
 }
