@@ -83,6 +83,8 @@ class TasksRepository
     {
         return DB::table('employees')
             ->where('company_id', $companyId)
+            ->where('role', 'employee')
+            ->where('status', 'Active')
             ->orderBy('employee')
             ->get(['id', 'employee']);
     }
