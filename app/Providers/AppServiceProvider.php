@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\NotificationsService;
 use App\Services\ProjectsService;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
             $topbarProjects = collect();
             $selectedProjectId = session('project_id');
             $selectedProjectName = null;
+            $topbarNotifications = collect();
+            $topbarUnreadNotifications = 0;
 
             $companyId = session('company_id');
             if ($companyId && (session('role') === 'company' || session('role') === 'manager')) {
@@ -41,10 +44,23 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
+            if ($companyId && session('role') && session('role') !== 'admin') {
+                try {
+                    $notificationsService = app(NotificationsService::class);
+                    $topbarNotifications = $notificationsService->getLatest(8);
+                    $topbarUnreadNotifications = $notificationsService->countUnread();
+                } catch (\Throwable $e) {
+                    $topbarNotifications = collect();
+                    $topbarUnreadNotifications = 0;
+                }
+            }
+
             $view->with([
                 'topbarProjects' => $topbarProjects,
                 'selectedProjectId' => $selectedProjectId,
                 'selectedProjectName' => $selectedProjectName,
+                'topbarNotifications' => $topbarNotifications,
+                'topbarUnreadNotifications' => $topbarUnreadNotifications,
             ]);
         });
     }

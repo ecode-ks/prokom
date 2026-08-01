@@ -43,6 +43,13 @@
                                         <i class="fa-solid fa-chart-column mx-2 opacity-75"></i> Dashboard
                                     </a>
                                 </li>
+                                @if(session('role') && session('role') !== 'admin')
+                                    <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Notifications' ? 'sidebar-active' : 'sidebar-link' }}">
+                                        <a href="{{ route('notifications') }}" class="text-decoration-none text-light">
+                                            <i class="fa-regular fa-bell mx-2 opacity-75"></i> Njoftimet
+                                        </a>
+                                    </li>
+                                @endif
                                 @if(session('role') === 'admin')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Packages' ? 'sidebar-active' : 'sidebar-link' }}">
                                         <a href="{{ route('packages') }}" class="text-decoration-none text-light">
@@ -159,7 +166,7 @@
                                 </ul>
                             @endif
 
-                            @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
+                            @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                 <small class="d-block text-uppercase opacity-50 ms-2 mb-2 fs-small">Stafi</small>
                             @endif
                             <ul class="list-group mb-4">
@@ -190,6 +197,8 @@
                                             <i class="fa-solid fa-file-contract mx-2 opacity-75"></i> Kontratat
                                         </a>
                                     </li>
+                                @endif
+                                @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Vacations' ? 'sidebar-active' : 'sidebar-link' }}">
                                         <a href="{{ route('vacations') }}" class="text-decoration-none text-light">
                                             <i class="fa-solid fa-calendar-days mx-2 opacity-75"></i> Pushimet
@@ -235,6 +244,9 @@
                                         <ul class="dropdown-menu rounded-3 shadow-sm p-2" style="min-width: 260px; max-height: 70vh; overflow-y: auto;">
                                             <li><span class="dropdown-item-text fw-semibold">Përmbledhje</span></li>
                                             <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Dashboard</a></li>
+                                            @if(session('role') && session('role') !== 'admin')
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}"><i class="fa-regular fa-bell me-2 opacity-75"></i> Njoftimet</a></li>
+                                            @endif
 
                                             @if(session('role') === 'admin')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> Paketat</a></li>
@@ -282,16 +294,20 @@
                                             @endif
 
                                             <li><hr class="dropdown-divider"></li>
-                                            @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
+                                            @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><span class="dropdown-item-text fw-semibold">Stafi</span></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employees' ? 'bg-darkblue text-light' : '' }}" href="{{ route('employees') }}"><i class="fa-solid fa-users me-2 opacity-75"></i> Punëtorët</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-user-check me-2 opacity-75"></i> Check In</a></li>
                                             @endif
-                                            @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
+                                            @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('working.hours') }}"><i class="fa-solid fa-clock me-2 opacity-75"></i> Orët e Punës</a></li>
+                                            @endif
+                                            @if(session('role') === 'company' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href="{{ route('contracts') }}"><i class="fa-solid fa-file-contract me-2 opacity-75"></i> Kontratat</a></li>
+                                            @endif
+                                            @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href="{{ route('vacations') }}"><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> Pushimet</a></li>
                                             @endif
                                         </ul>
@@ -333,8 +349,46 @@
                                     $profileName = session('user') ?: session('company');
                                 @endphp
 
+                                @if(session('role') && session('role') !== 'admin')
+                                    <div class="dropdown d-inline-block me-2">
+                                        <button class="btn bg-custom rounded-3 border position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Njoftimet">
+                                            <i class="fa-regular fa-bell"></i>
+                                            @if(($topbarUnreadNotifications ?? 0) > 0)
+                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                                                    {{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }}
+                                                </span>
+                                            @endif
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end rounded-3 shadow-sm p-2" style="min-width: 320px; max-height: 70vh; overflow-y: auto;">
+                                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 px-2 mb-2">
+                                                <span class="fw-semibold">Njoftimet</span>
+                                                <a href="{{ route('notifications.mark.all') }}" class="small text-decoration-none txt-lightblue">Lexo të gjitha</a>
+                                            </div>
+                                            @if(isset($topbarNotifications) && count($topbarNotifications) > 0)
+                                                @foreach($topbarNotifications as $notification)
+                                                    <li>
+                                                        <a class="dropdown-item rounded-3 mb-1 {{ !(int) $notification->is_read ? 'bg-light' : '' }}" href="{{ route('notifications.open', $notification->id) }}">
+                                                            <span class="d-block fw-semibold text-truncate">{{ $notification->title }}</span>
+                                                            <small class="d-block text-muted text-truncate">{{ $notification->message }}</small>
+                                                            <small class="d-block opacity-50">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : '' }}</small>
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            @else
+                                                <li><span class="dropdown-item text-muted">Nuk ka njoftime</span></li>
+                                            @endif
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item rounded-3 text-center {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}">
+                                                    Shiko të gjitha
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 {{-- Profile Dropdown --}}
-                                <div class="dropdown-end">
+                                <div class="dropdown-end d-inline-block">
                                     <button class="btn bg-custom rounded-3 border dropdown-toggle text-truncate" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $profileName }}" style="max-width: 200px;">
                                         <i class="fa-regular fa-user"></i> <span class="d-none d-md-inline">{{ $profileName }}</span>
                                     </button>

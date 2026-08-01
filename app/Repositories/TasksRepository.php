@@ -14,10 +14,9 @@ class TasksRepository
         $this->table = $model->getTable();
     }
     //---------------
-    public function create(array $data): bool
+    public function create(array $data): int
     {
-        return DB::table($this->table)
-            ->insert($data);
+        return (int) DB::table($this->table)->insertGetId($data);
     }
     //---------------
     public function getTasks(int $limit, int $companyId)

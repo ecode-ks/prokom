@@ -370,6 +370,26 @@ CREATE TABLE IF NOT EXISTS `working_hours` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table prokom.notifications
+CREATE TABLE IF NOT EXISTS `notifications` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) DEFAULT NULL,
+  `recipient_type` varchar(50) NOT NULL,
+  `recipient_id` int(11) NOT NULL,
+  `type` varchar(50) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `message` text DEFAULT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `FK_notifications_companies` (`company_id`),
+  KEY `IDX_notifications_recipient` (`recipient_type`, `recipient_id`, `is_read`),
+  CONSTRAINT `FK_notifications_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- Data exporting was unselected.
+
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

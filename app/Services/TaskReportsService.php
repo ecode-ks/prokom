@@ -9,11 +9,16 @@ class TaskReportsService
 {
     protected TaskReportsRepository $repository;
     protected TasksService $tasks;
+    protected NotificationsService $notifications;
 
-    public function __construct(TaskReportsRepository $repository, TasksService $tasks)
-    {
+    public function __construct(
+        TaskReportsRepository $repository,
+        TasksService $tasks,
+        NotificationsService $notifications
+    ) {
         $this->repository = $repository;
         $this->tasks = $tasks;
+        $this->notifications = $notifications;
     }
     //---------------
     public function getAvailableTasks(int $companyId, string $role, ?int $employeeId)
@@ -63,7 +68,25 @@ class TaskReportsService
             $data['date'] = now();
         }
 
-        return $this->repository->create($data);
+        $reportId = $this->repository->create($data);
+        if ($reportId <= 0) {
+            return false;
+        }
+
+        $task = $this->tasks->getTaskById((int) $taskId, $companyId);
+        $taskTitle = $task->title ?? ('#' . $taskId);
+
+        $this->notifications->notify(
+            $companyId,
+            'company',
+            $companyId,
+            'task_report',
+            'Raport i ri detyre',
+            'Është shtuar një raport për detyrën: ' . $taskTitle,
+            route('task.report.details', $reportId)
+        );
+
+        return true;
     }
     //---------------
     public function getReports(int $limit, int $companyId, string $role, ?int $employeeId)

@@ -9,11 +9,16 @@ class ProjectReportsService
 {
     protected ProjectReportsRepository $repository;
     protected ProjectsService $projects;
+    protected NotificationsService $notifications;
 
-    public function __construct(ProjectReportsRepository $repository, ProjectsService $projects)
-    {
+    public function __construct(
+        ProjectReportsRepository $repository,
+        ProjectsService $projects,
+        NotificationsService $notifications
+    ) {
         $this->repository = $repository;
         $this->projects = $projects;
+        $this->notifications = $notifications;
     }
     //---------------
     public function createReport(array $data): bool
@@ -28,7 +33,39 @@ class ProjectReportsService
             $data['status'] = 'active';
         }
 
-        return $this->repository->create($data);
+        $reportId = $this->repository->create($data);
+        if ($reportId <= 0) {
+            return false;
+        }
+
+        $companyId = (int) ($data['company_id'] ?? 0);
+        $projectId = (int) ($data['project_id'] ?? 0);
+        $project = $projectId > 0 ? $this->projects->getProjectById($projectId, $companyId) : null;
+        $projectName = $project->project_name ?? 'Projekt';
+
+        $this->notifications->notify(
+            $companyId,
+            'company',
+            $companyId,
+            'project_report',
+            'Raport i ri projekti',
+            'Është shtuar një raport për projektin: ' . $projectName,
+            route('project.report.details', $reportId)
+        );
+
+        if (!empty($project->project_manager)) {
+            $this->notifications->notify(
+                $companyId,
+                'employee',
+                (int) $project->project_manager,
+                'project_report',
+                'Raport i ri projekti',
+                'Është shtuar një raport për projektin: ' . $projectName,
+                route('project.report.details', $reportId)
+            );
+        }
+
+        return true;
     }
     //---------------
     public function getReports(int $limit, int $companyId)

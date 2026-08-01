@@ -39,7 +39,7 @@
                                 $selectedEmployeeLabels = [];
                                 foreach ($employees as $employee) {
                                     if (in_array((string) $employee->id, $selectedEmployees, true)) {
-                                        $selectedEmployeeLabels[] = $employee->employee;
+                                        $selectedEmployeeLabels[] = $employee->employee . (!empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '');
                                     }
                                 }
                                 $selectedEmployeesText = count($selectedEmployeeLabels) > 0
@@ -67,10 +67,15 @@
                                                 name="assigned_to[]"
                                                 value="{{ $employee->id }}"
                                                 id="assigned_to_edit_{{ $employee->id }}"
-                                                data-label="{{ $employee->employee }}"
+                                                data-label="{{ $employee->employee }}{{ !empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '' }}"
                                                 {{ in_array((string) $employee->id, $selectedEmployees, true) ? 'checked' : '' }}
                                             >
-                                            <span>{{ $employee->employee }}</span>
+                                            <span class="flex-grow-1">
+                                                {{ $employee->employee }}
+                                                @if(!empty($employee->leave_label))
+                                                    <small class="d-block text-warning">{{ $employee->leave_label }}</small>
+                                                @endif
+                                            </span>
                                         </label>
                                     @endforeach
                                 </div>
@@ -159,7 +164,7 @@
                                 $oldAssignedLabels = [];
                                 foreach ($employees as $employee) {
                                     if (in_array((string) $employee->id, $oldAssignedTo, true)) {
-                                        $oldAssignedLabels[] = $employee->employee;
+                                        $oldAssignedLabels[] = $employee->employee . (!empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '');
                                     }
                                 }
                                 $oldAssignedText = count($oldAssignedLabels) > 0
@@ -187,10 +192,15 @@
                                                 name="assigned_to[]"
                                                 value="{{ $employee->id }}"
                                                 id="assigned_to_create_{{ $employee->id }}"
-                                                data-label="{{ $employee->employee }}"
+                                                data-label="{{ $employee->employee }}{{ !empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '' }}"
                                                 {{ in_array((string) $employee->id, $oldAssignedTo, true) ? 'checked' : '' }}
                                             >
-                                            <span>{{ $employee->employee }}</span>
+                                            <span class="flex-grow-1">
+                                                {{ $employee->employee }}
+                                                @if(!empty($employee->leave_label))
+                                                    <small class="d-block text-warning">{{ $employee->leave_label }}</small>
+                                                @endif
+                                            </span>
                                         </label>
                                     @endforeach
                                 </div>

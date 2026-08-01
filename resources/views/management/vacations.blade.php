@@ -5,15 +5,27 @@
 
 {{-- Page Content --}}
 @section('content')
+    @php
+        $isEmployee = $isEmployee ?? false;
+        $canManage = $canManage ?? false;
+        $selectedType = $selectedType ?? '';
+    @endphp
+
     @if(isset($editVacation))
         <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('vacations') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu mbrapa</a></small>
         <h3 class="fw-semibold pt-2">Përditëso Pushimin</h3>
         <p class="text-muted">Përditëso të dhënat e kërkesës së zgjedhur për pushim.</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">HR</small>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ $isEmployee ? 'Punonjësi' : 'HR' }}</small>
         <h3 class="fw-semibold pt-2">Pushimet</h3>
-        <p class="text-muted">Kërkesat për pushim nga punonjësit - dërgo, shqyrto dhe planifiko.</p>
+        <p class="text-muted">
+            @if($isEmployee)
+                Kërko pushim dhe ndiq statusin e kërkesave tua.
+            @else
+                Kërkesat për pushim nga punonjësit - dërgo, shqyrto dhe planifiko.
+            @endif
+        </p>
         <hr class="mb-4">
     @endif
 
@@ -30,15 +42,19 @@
                     @csrf
                     <input type="hidden" name="id" value="{{ $editVacation->id }}">
                     <div class="row g-3">
-                        <div class="col-12 col-md-3 col-lg-3">
-                            <label for="employee_id" class="form-label">Punonjësi</label>
-                            <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Punonjësin --</option>
-                                @foreach($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ old('employee_id', $editVacation->employee_id) == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if($isEmployee)
+                            <input type="hidden" name="employee_id" value="{{ session('employee_id') }}">
+                        @else
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <label for="employee_id" class="form-label">Punonjësi</label>
+                                <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
+                                    <option value="">-- Zgjidh Punonjësin --</option>
+                                    @foreach($employees as $employee)
+                                        <option value="{{ $employee->id }}" {{ old('employee_id', $editVacation->employee_id) == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="from_date" class="form-label">Nga Data</label>
                             <input type="date" name="from_date" id="from_date" value="{{ old('from_date', $editVacation->from_date) }}" min="{{ date('Y-m-d') }}" class="form-control shadow-sm rounded-3" placeholder="...">
@@ -90,7 +106,7 @@
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Në shqyrtim</small>
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <h4 class="fw-semibold mb-0">{{ $vacationStats->reviewing_count ?? 0 }}</h4>
-                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Reviewing']]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Reviewing'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
                         </div>
                     </div>
                 </div>
@@ -101,7 +117,7 @@
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Aprovuar</small>
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <h4 class="fw-semibold mb-0">{{ $vacationStats->approved_count ?? 0 }}</h4>
-                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Approved']]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Approved'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
                         </div>
                     </div>
                 </div>
@@ -112,7 +128,7 @@
                         <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-xmark text-danger"></i> Refuzuar</small>
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <h4 class="fw-semibold mb-0">{{ $vacationStats->refused_count ?? 0 }}</h4>
-                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Refused']]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Refused'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
                         </div>
                     </div>
                 </div>
@@ -120,7 +136,7 @@
         </div>
 
         {{-- Create Vacation --}}
-        <div class="card mb-4">
+        <div class="card mb-4" id="vacation-form">
             <div class="card-header rounded-top-4 bg-white">
                 <span><i class="fa-solid fa-plane-up txt-lightblue py-2"></i> Krijo Kërkesë të Re</span>
             </div>
@@ -128,15 +144,19 @@
                 <form action="{{ route('create.vacation') }}" method="post">
                     @csrf
                     <div class="row g-3">
-                        <div class="col-12 col-md-3 col-lg-3">
-                            <label for="employee_id" class="form-label">Punonjësi</label>
-                            <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Punonjësin --</option>
-                                @foreach ($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        @if($isEmployee)
+                            <input type="hidden" name="employee_id" value="{{ session('employee_id') }}">
+                        @else
+                            <div class="col-12 col-md-3 col-lg-3">
+                                <label for="employee_id" class="form-label">Punonjësi</label>
+                                <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
+                                    <option value="">-- Zgjidh Punonjësin --</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="from_date" class="form-label">Nga Data</label>
                             <input type="date" name="from_date" id="from_date" value="{{ old('from_date') }}" min="{{ date('Y-m-d') }}" class="form-control shadow-sm rounded-3" placeholder="...">
@@ -149,8 +169,8 @@
                             <label for="type" class="form-label">Lloji</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
                                 <option value="">-- Zgjidh Llojin --</option>
-                                <option value="Pushim vjetor" {{ old('type') === 'Pushim vjetor' ? 'selected' : '' }}>Pushim vjetor</option>
-                                <option value="Pushim mjekësor" {{ old('type') === 'Pushim mjekësor' ? 'selected' : '' }}>Pushim mjekësor</option>
+                                <option value="Pushim vjetor" {{ old('type', $selectedType) === 'Pushim vjetor' ? 'selected' : '' }}>Pushim vjetor</option>
+                                <option value="Pushim mjekësor" {{ old('type', $selectedType) === 'Pushim mjekësor' ? 'selected' : '' }}>Pushim mjekësor</option>
                             </select>
                         </div>
                         <div class="col-12">
@@ -175,6 +195,9 @@
                     @foreach((array) request('statuses', []) as $status)
                         <input type="hidden" name="statuses[]" value="{{ $status }}">
                     @endforeach
+                    @if($selectedType)
+                        <input type="hidden" name="type" value="{{ $selectedType }}">
+                    @endif
                     <input type="text" name="search" value="{{ request('search') }}" id="search" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..."  aria-label="Kërko..." aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
@@ -184,7 +207,9 @@
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
                                 <th scope="col" class="text-nowrap">Data e Kërkesës</th>
-                                <th scope="col" class="text-nowrap">Punonjësi</th>
+                                @if(!$isEmployee)
+                                    <th scope="col" class="text-nowrap">Punonjësi</th>
+                                @endif
                                 <th scope="col" class="text-nowrap">Lloji</th>
                                 <th scope="col" class="text-nowrap">Intervali</th>
                                 <th scope="col" class="text-nowrap">Statusi</th>
@@ -194,14 +219,16 @@
                         <tbody>
                             @if(count($vacations) === 0)
                                 <tr>
-                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="{{ $isEmployee ? 6 : 7 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($vacations as $vacation)
                                     <tr>
                                         <th scope="row" class="text-nowrap">{{ $vacation->id }}</th>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($vacation->date)->format('d/m/Y') }}</td>
-                                        <td class="text-nowrap">{{ $vacation->employee }}</td>
+                                        @if(!$isEmployee)
+                                            <td class="text-nowrap">{{ $vacation->employee }}</td>
+                                        @endif
                                         <td class="text-nowrap">{{ $vacation->type ?? '-' }}</td>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($vacation->from_date)->format('d/m/Y') }} &rarr; {{ \Carbon\Carbon::parse($vacation->to_date)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap">
@@ -279,11 +306,13 @@
                             <div class="text-end mt-3">
                                 <small class="text-muted"><i class="fa-solid fa-pen"></i> Kërkuar më {{ \Carbon\Carbon::parse($vacation->date)->format('d/m/Y') }}</small>
                             </div>
-                            <hr class="my-3">
-                            <span class="d-block mb-2"><i class="fa-solid fa-arrows-turn-to-dots"></i> Përditëso Statusin</span>
-                            <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo</a>
-                            <a href="{{ route('update.vacation.status', [$vacation->id, 'Reviewing']) }}" class="btn btn-warning btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-clock"></i> Në shqyrtim</a>
-                            <a href="{{ route('update.vacation.status', [$vacation->id, 'Refused']) }}" class="btn btn-danger btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-times"></i> Refuzo</a>
+                            @if($canManage)
+                                <hr class="my-3">
+                                <span class="d-block mb-2"><i class="fa-solid fa-arrows-turn-to-dots"></i> Përditëso Statusin</span>
+                                <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo</a>
+                                <a href="{{ route('update.vacation.status', [$vacation->id, 'Reviewing']) }}" class="btn btn-warning btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-clock"></i> Në shqyrtim</a>
+                                <a href="{{ route('update.vacation.status', [$vacation->id, 'Refused']) }}" class="btn btn-danger btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-times"></i> Refuzo</a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -292,3 +321,16 @@
         @endif
     @endif
 @endsection
+
+@if(!isset($editVacation) && $selectedType)
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('vacation-form');
+    if (form) {
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+});
+</script>
+@endpush
+@endif

@@ -16,7 +16,12 @@ class DashboardController extends Controller
     public function dashboard()
     {
         $page = 'Dashboard';
-        $checkIn = $this->checkinService->getActiveCheckIn();
+        $checkIn = null;
+
+        if (session('company_id') && session('role') !== 'admin') {
+            $checkIn = $this->checkinService->getActiveCheckIn();
+        }
+
         return view('management.dashboard')
             ->with('page', $page)
             ->with('checkIn', $checkIn);

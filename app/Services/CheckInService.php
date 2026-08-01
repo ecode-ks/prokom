@@ -12,8 +12,8 @@ class CheckInService
     public function __construct(CheckInRepository $repository)
     {
         $this->repository = $repository;
-        $this->companyId = session('company_id');
-        $this->employeeId = session('employee_id') ?? 0;
+        $this->companyId = (int) (session('company_id') ?? 0);
+        $this->employeeId = (int) (session('employee_id') ?? 0);
     }
     //---------------
     public function getActiveCheckIn()

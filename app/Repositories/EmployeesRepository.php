@@ -75,6 +75,16 @@ class EmployeesRepository
             ->get();
     }
     //---------------
+    public function getEmployeesByRole(int $companyId, string $role)
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('role', $role)
+            ->where('status', 'Active')
+            ->orderBy('employee')
+            ->get();
+    }
+    //---------------
     public function findEmployee(int $id, int $companyId)
     {
         return DB::table($this->table)

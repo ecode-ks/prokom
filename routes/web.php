@@ -21,6 +21,7 @@ use App\Http\Controllers\ProjectReportsController;
 use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TaskReportsController;
 use App\Http\Controllers\WorkingHoursController;
+use App\Http\Controllers\NotificationsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -217,4 +218,11 @@ Route::controller(WorkingHoursController::class)->group(function () {
     Route::post('/create-working-hour', 'create')->name('create.working.hour');
     Route::get('/working-hours', 'read')->name('working.hours');
     Route::get('/delete-working-hour/{id}', 'delete')->name('delete.working.hour');
+});
+
+// Notifications
+Route::controller(NotificationsController::class)->group(function () {
+    Route::get('/notifications', 'read')->name('notifications');
+    Route::get('/notifications/open/{id}', 'open')->name('notifications.open');
+    Route::get('/notifications/mark-all-read', 'markAllRead')->name('notifications.mark.all');
 });

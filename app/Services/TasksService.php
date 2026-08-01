@@ -3,19 +3,49 @@
 namespace App\Services;
 
 use App\Repositories\TasksRepository;
+use App\Repositories\VacationsRepository;
+use Carbon\Carbon;
 
 class TasksService
 {
     protected TasksRepository $repository;
+    protected VacationsRepository $vacations;
+    protected NotificationsService $notifications;
 
-    public function __construct(TasksRepository $repository)
-    {
+    public function __construct(
+        TasksRepository $repository,
+        VacationsRepository $vacations,
+        NotificationsService $notifications
+    ) {
         $this->repository = $repository;
+        $this->vacations = $vacations;
+        $this->notifications = $notifications;
     }
     //---------------
     public function createTask(array $data): bool
     {
-        return $this->repository->create($data);
+        $taskId = $this->repository->create($data);
+        if ($taskId <= 0) {
+            return false;
+        }
+
+        $assigneeIds = array_values(array_filter(array_map('intval', explode(',', (string) ($data['assigned_to'] ?? '')))));
+        $companyId = (int) ($data['company_id'] ?? 0);
+        $title = (string) ($data['title'] ?? 'Detyrë e re');
+
+        foreach ($assigneeIds as $employeeId) {
+            $this->notifications->notify(
+                $companyId,
+                'employee',
+                $employeeId,
+                'task_assigned',
+                'Detyrë e re',
+                'Ju është caktuar detyra: ' . $title,
+                route('task.details', $taskId)
+            );
+        }
+
+        return true;
     }
     //---------------
     public function getTasks(int $limit, string $search, int $companyId)
@@ -34,7 +64,31 @@ class TasksService
     //---------------
     public function getAllEmployees(int $companyId)
     {
-        return $this->repository->getAllEmployees($companyId);
+        $employees = $this->repository->getAllEmployees($companyId);
+        $leaves = $this->vacations->getActiveApprovedLeaves($companyId);
+        $today = Carbon::today()->toDateString();
+
+        foreach ($employees as $employee) {
+            $leave = $leaves[(int) $employee->id] ?? null;
+            if (!$leave) {
+                $employee->on_leave = false;
+                $employee->leave_until = null;
+                $employee->leave_from = null;
+                $employee->leave_label = null;
+                continue;
+            }
+
+            $from = Carbon::parse($leave->from_date)->format('d/m/Y');
+            $to = Carbon::parse($leave->to_date)->format('d/m/Y');
+            $employee->on_leave = true;
+            $employee->leave_from = $leave->from_date;
+            $employee->leave_until = $leave->to_date;
+            $employee->leave_label = $leave->from_date <= $today
+                ? 'Në pushim deri më ' . $to
+                : 'Në pushim ' . $from . ' – ' . $to;
+        }
+
+        return $employees;
     }
     //---------------
     public function getAllProjects(int $companyId)
