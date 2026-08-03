@@ -32,7 +32,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="material_id" class="form-label">Materiali</label>
                             <select name="material_id" id="material_id" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Materialin --</option>
+                                <option value="" disabled {{ old('material_id', $editMaterialStock->material_id) ? '' : 'selected' }}>-- Zgjidh Materialin --</option>
                                 @foreach ($materials as $material)
                                     <option
                                         value="{{ $material->id }}"
@@ -53,7 +53,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="type" class="form-label">Lloji</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Llojin --</option>
+                                <option value="" disabled {{ old('type', $editMaterialStock->type) ? '' : 'selected' }}>-- Zgjidh Llojin --</option>
                                 <option value="in" {{ old('type', $editMaterialStock->type) == 'in' ? 'selected' : '' }}>HYRJE</option>
                                 <option value="out" {{ old('type', $editMaterialStock->type) == 'out' ? 'selected' : '' }}>DALJE</option>
                             </select>
@@ -115,7 +115,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="material_id" class="form-label">Materiali</label>
                             <select name="material_id" id="material_id" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Materialin --</option>
+                                <option value="" disabled {{ old('material_id') ? '' : 'selected' }}>-- Zgjidh Materialin --</option>
                                 @foreach ($materials as $material)
                                     <option
                                         value="{{ $material->id }}"
@@ -136,7 +136,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="type" class="form-label">Lloji</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Llojin --</option>
+                                <option value="" disabled {{ old('type') ? '' : 'selected' }}>-- Zgjidh Llojin --</option>
                                 <option value="in" {{ old('type') == 'in' ? 'selected' : '' }}>HYRJE</option>
                                 <option value="out" {{ old('type') == 'out' ? 'selected' : '' }}>DALJE</option>
                             </select>

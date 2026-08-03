@@ -68,7 +68,7 @@
                     <div class="col-12 col-md-4 col-lg-4">
                         <label for="employee_id" class="form-label">Punëtori</label>
                         <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3" required>
-                            <option value="">-- Zgjidh Punëtorin --</option>
+                            <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punëtorin --</option>
                             @foreach ($employees as $employee)
                                 <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
                             @endforeach

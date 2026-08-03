@@ -29,7 +29,7 @@
                         <div class="col-12 col-md-4">
                             <label for="task_id" class="form-label">Detyra</label>
                             <select name="task_id" id="task_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="">-- Zgjidh Detyrën --</option>
+                                <option value="" disabled {{ old('task_id', $editReport->task_id) ? '' : 'selected' }}>-- Zgjidh Detyrën --</option>
                                 @foreach($tasks as $task)
                                     <option value="{{ $task->id }}" {{ old('task_id', $editReport->task_id) == $task->id ? 'selected' : '' }}>
                                         #{{ $task->id }} - {{ \Illuminate\Support\Str::limit($task->title, 45) }} ({{ $task->project_name }})
@@ -108,7 +108,7 @@
                         <div class="col-12 col-md-4">
                             <label for="task_id" class="form-label">Detyra</label>
                             <select name="task_id" id="task_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="">-- Zgjidh Detyrën --</option>
+                                <option value="" disabled {{ old('task_id') ? '' : 'selected' }}>-- Zgjidh Detyrën --</option>
                                 @foreach($tasks as $task)
                                     <option value="{{ $task->id }}" {{ old('task_id') == $task->id ? 'selected' : '' }}>
                                         #{{ $task->id }} - {{ \Illuminate\Support\Str::limit($task->title, 45) }} ({{ $task->project_name }})

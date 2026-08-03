@@ -36,6 +36,13 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="unit" class="form-label">Njësia</label>
                             <input type="text" name="unit" id="unit" value="{{ old('unit', $editMaterial->unit) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj njësinë e materialit...">
+                            <div class="d-flex flex-wrap gap-2 mt-2" data-unit-target="unit">
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="copë">copë</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="kg">kg</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="m">m</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="m²">m²</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="litër">litër</button>
+                            </div>
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Materialin</button>
@@ -90,6 +97,13 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="unit" class="form-label">Njësia</label>
                             <input type="text" name="unit" id="unit" value="{{ old('unit') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj njësinë...">
+                            <div class="d-flex flex-wrap gap-2 mt-2" data-unit-target="unit">
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="copë">copë</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="kg">kg</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="m">m</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="m²">m²</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" data-unit="litër">litër</button>
+                            </div>
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Materialin</button>
@@ -169,3 +183,25 @@
         @endif
     @endif
 @endsection
+
+@push('scripts')
+<script>
+    document.querySelectorAll('[data-unit-target]').forEach(function (group) {
+        var input = document.getElementById(group.getAttribute('data-unit-target'));
+        if (!input) return;
+
+        group.querySelectorAll('[data-unit]').forEach(function (chip) {
+            chip.addEventListener('click', function () {
+                input.value = chip.getAttribute('data-unit') || '';
+                group.querySelectorAll('[data-unit]').forEach(function (c) {
+                    c.classList.remove('btn-darkblue');
+                    c.classList.add('btn-outline-secondary');
+                });
+                chip.classList.remove('btn-outline-secondary');
+                chip.classList.add('btn-darkblue');
+                input.focus();
+            });
+        });
+    });
+</script>
+@endpush

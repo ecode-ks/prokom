@@ -29,7 +29,7 @@
                         <div class="col-12 col-md-4">
                             <label for="project_id" class="form-label">Projekti</label>
                             <select name="project_id" id="project_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="">-- Zgjidh Projektin --</option>
+                                <option value="" disabled {{ old('project_id', $editReport->project_id) ? '' : 'selected' }}>-- Zgjidh Projektin --</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ old('project_id', $editReport->project_id) == $project->id ? 'selected' : '' }}>{{ $project->project_name }}</option>
                                 @endforeach
@@ -106,7 +106,7 @@
                         <div class="col-12 col-md-4">
                             <label for="project_id" class="form-label">Projekti</label>
                             <select name="project_id" id="project_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="">-- Zgjidh Projektin --</option>
+                                <option value="" disabled {{ old('project_id') ? '' : 'selected' }}>-- Zgjidh Projektin --</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>{{ $project->project_name }}</option>
                                 @endforeach

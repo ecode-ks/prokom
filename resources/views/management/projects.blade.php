@@ -36,7 +36,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="project_manager" class="form-label">Menaxheri i Projektit</label>
                             <select name="project_manager" id="project_manager" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Menaxherin --</option>
+                                <option value="" disabled {{ old('project_manager', $editProject->project_manager) ? '' : 'selected' }}>-- Zgjidh Menaxherin --</option>
                                 @foreach($managers as $manager)
                                     <option value="{{ $manager->id }}" {{ old('project_manager', $editProject->project_manager) == $manager->id ? 'selected' : '' }}>{{ $manager->employee }}</option>
                                 @endforeach
@@ -45,7 +45,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="client_id" class="form-label">Klienti</label>
                             <select name="client_id" id="client_id" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Klientin --</option>
+                                <option value="" disabled {{ old('client_id', $editProject->client_id) ? '' : 'selected' }}>-- Zgjidh Klientin --</option>
                                 @foreach($clients as $client)
                                     <option value="{{ $client->id }}" {{ old('client_id', $editProject->client_id) == $client->id ? 'selected' : '' }}>{{ $client->client }}</option>
                                 @endforeach
@@ -141,7 +141,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="project_manager" class="form-label">Menaxheri i Projektit</label>
                             <select name="project_manager" id="project_manager" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Menaxherin --</option>
+                                <option value="" disabled {{ old('project_manager') ? '' : 'selected' }}>-- Zgjidh Menaxherin --</option>
                                 @foreach($managers as $manager)
                                     <option value="{{ $manager->id }}" {{ old('project_manager') == $manager->id ? 'selected' : '' }}>{{ $manager->employee }}</option>
                                 @endforeach
@@ -150,7 +150,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="client_id" class="form-label">Klienti</label>
                             <select name="client_id" id="client_id" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Klientin --</option>
+                                <option value="" disabled {{ old('client_id') ? '' : 'selected' }}>-- Zgjidh Klientin --</option>
                                 @foreach($clients as $client)
                                     <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>{{ $client->client }}</option>
                                 @endforeach
@@ -175,7 +175,7 @@
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="status" class="form-label">Statusi</label>
                             <select name="status" id="status" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Statusin --</option>
+                                <option value="" disabled {{ old('status') ? '' : 'selected' }}>-- Zgjidh Statusin --</option>
                                 @foreach(['planning' => 'Në planifikim', 'in_progress' => 'Në progres', 'completed' => 'Përfunduar', 'on_hold' => 'Në pritje'] as $value => $label)
                                     <option value="{{ $value }}" {{ old('status') === $value ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach

@@ -54,7 +54,7 @@
                             <div class="col-12 col-md-3 col-lg-3">
                                 <label for="employee_id" class="form-label">Punonjësi</label>
                                 <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                                    <option value="">-- Zgjidh Punonjësin --</option>
+                                    <option value="" disabled {{ old('employee_id', $editVacation->employee_id) ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
                                     @foreach($employees as $employee)
                                         <option value="{{ $employee->id }}" {{ old('employee_id', $editVacation->employee_id) == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
                                     @endforeach
@@ -72,7 +72,7 @@
                         <div class="col-12 col-md-6 col-lg-3">
                             <label for="type" class="form-label">Lloji</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Llojin --</option>
+                                <option value="" disabled {{ old('type', $editVacation->type) ? '' : 'selected' }}>-- Zgjidh Llojin --</option>
                                 <option value="Pushim vjetor" {{ old('type', $editVacation->type) === 'Pushim vjetor' ? 'selected' : '' }}>Pushim vjetor</option>
                                 <option value="Pushim mjekësor" {{ old('type', $editVacation->type) === 'Pushim mjekësor' ? 'selected' : '' }}>Pushim mjekësor</option>
                             </select>
@@ -167,7 +167,7 @@
                             <div class="col-12 col-md-3 col-lg-3">
                                 <label for="employee_id" class="form-label">Punonjësi</label>
                                 <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                                    <option value="">-- Zgjidh Punonjësin --</option>
+                                    <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
                                     @foreach ($employees as $employee)
                                         <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
                                     @endforeach
@@ -185,7 +185,7 @@
                         <div class="col-12 col-md-3 col-lg-3">
                             <label for="type" class="form-label">Lloji</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
-                                <option value="">-- Zgjidh Llojin --</option>
+                                <option value="" disabled {{ old('type', $selectedType) ? '' : 'selected' }}>-- Zgjidh Llojin --</option>
                                 <option value="Pushim vjetor" {{ old('type', $selectedType) === 'Pushim vjetor' ? 'selected' : '' }}>Pushim vjetor</option>
                                 <option value="Pushim mjekësor" {{ old('type', $selectedType) === 'Pushim mjekësor' ? 'selected' : '' }}>Pushim mjekësor</option>
                             </select>

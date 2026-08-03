@@ -24,7 +24,7 @@
                             <div class="col-12 col-md-4 col-lg-4">
                                 <label for="choose_client" class="form-label">Zgjidh Klientin</label>
                                 <select name="choose_client" id="choose_client" class="form-control shadow-sm rounded-3">
-                                    <option value="">-- Zgjidh Klientin --</option>
+                                    <option value="" disabled {{ old('choose_client') ? '' : 'selected' }}>-- Zgjidh Klientin --</option>
                                     @foreach ($clients as $client)
                                         <option value="{{ $client->id }}" {{ (string) old('choose_client') === (string) $client->id ? 'selected' : '' }}>{{ $client->client }}</option>
                                     @endforeach
