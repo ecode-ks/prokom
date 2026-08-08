@@ -162,6 +162,11 @@
                                                 <i class="fa-solid fa-file-invoice-dollar mx-2 opacity-75"></i> Krijo Ofertë
                                             </a>
                                         </li>
+                                        <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Salaries' ? 'sidebar-active' : 'sidebar-link' }}">
+                                            <a href="{{ route('salaries') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-money-bill-wave mx-2 opacity-75"></i> Pagat
+                                            </a>
+                                        </li>
                                     @endif
                                 </ul>
                             @endif
@@ -290,6 +295,7 @@
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Financial Report' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-chart-pie me-2 opacity-75"></i> Financial Report</a></li>
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Offers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('offers') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> Ofertat</a></li>
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Create Offer' ? 'bg-darkblue text-light' : '' }}" href="{{ route('create.offer') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> Krijo Ofertë</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> Pagat</a></li>
                                                 @endif
                                             @endif
 
@@ -375,11 +381,11 @@
                                                     </li>
                                                 @endforeach
                                             @else
-                                                <li><span class="dropdown-item text-muted">Nuk ka njoftime</span></li>
+                                                <li class="text-center"><span class="text-muted">Nuk ka njoftime</span></li>
                                             @endif
                                             <li><hr class="dropdown-divider"></li>
                                             <li>
-                                                <a class="dropdown-item rounded-3 text-center {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}">
+                                                <a class="btn btn-darkblue btn-sm d-block rounded-4 {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}">
                                                     Shiko të gjitha
                                                 </a>
                                             </li>
