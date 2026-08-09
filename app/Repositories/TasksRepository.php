@@ -110,6 +110,106 @@ class TasksRepository
             ->get();
     }
     //---------------
+    public function getManagerTeamTasks(int $managerId, int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table . ' as t')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->where('p.project_manager', $managerId)
+            ->whereRaw('LOWER(t.status) <> ?', ['completed'])
+            ->select(
+                't.id',
+                't.title',
+                't.deadline',
+                't.status',
+                'p.project_name'
+            )
+            ->orderByRaw('CASE WHEN t.deadline IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('t.deadline')
+            ->orderByDesc('t.id')
+            ->limit($limit)
+            ->get();
+    }
+    //---------------
+    public function getManagerTaskCounts(int $managerId, int $companyId): object
+    {
+        $today = date('Y-m-d');
+        $weekEnd = date('Y-m-d', strtotime('+7 days'));
+
+        $openTasks = (int) DB::table($this->table . ' as t')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->where('p.project_manager', $managerId)
+            ->whereRaw('LOWER(t.status) <> ?', ['completed'])
+            ->count();
+
+        $overdueTasks = (int) DB::table($this->table . ' as t')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->where('p.project_manager', $managerId)
+            ->whereRaw('LOWER(t.status) <> ?', ['completed'])
+            ->whereNotNull('t.deadline')
+            ->whereDate('t.deadline', '<', $today)
+            ->count();
+
+        $dueSoonTasks = (int) DB::table($this->table . ' as t')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->where('p.project_manager', $managerId)
+            ->whereRaw('LOWER(t.status) <> ?', ['completed'])
+            ->whereNotNull('t.deadline')
+            ->whereDate('t.deadline', '>=', $today)
+            ->whereDate('t.deadline', '<=', $weekEnd)
+            ->count();
+
+        return (object) [
+            'open_tasks' => $openTasks,
+            'overdue_tasks' => $overdueTasks,
+            'due_soon_tasks' => $dueSoonTasks,
+        ];
+    }
+    //---------------
+    public function getManagerTeamPresence(int $managerId, int $companyId): object
+    {
+        $assignedRows = DB::table($this->table . ' as t')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->where('p.project_manager', $managerId)
+            ->whereRaw('LOWER(t.status) <> ?', ['completed'])
+            ->pluck('t.assigned_to');
+
+        $employeeIds = [];
+        foreach ($assignedRows as $assigned) {
+            foreach (explode(',', (string) $assigned) as $id) {
+                $id = (int) trim($id);
+                if ($id > 0) {
+                    $employeeIds[$id] = true;
+                }
+            }
+        }
+        $employeeIds = array_keys($employeeIds);
+        $teamSize = count($employeeIds);
+
+        if ($teamSize === 0) {
+            return (object) [
+                'team_size' => 0,
+                'checked_in_today' => 0,
+            ];
+        }
+
+        $checkedInToday = (int) DB::table('check_ins')
+            ->where('company_id', $companyId)
+            ->whereIn('employee_id', $employeeIds)
+            ->whereDate('check_in_time', date('Y-m-d'))
+            ->distinct()
+            ->count('employee_id');
+
+        return (object) [
+            'team_size' => $teamSize,
+            'checked_in_today' => $checkedInToday,
+        ];
+    }
+    //---------------
     public function getEmployeeNamesByIds(array $ids): array
     {
         if (count($ids) === 0) {

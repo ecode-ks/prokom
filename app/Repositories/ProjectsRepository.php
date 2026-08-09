@@ -216,4 +216,25 @@ class ProjectsRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function countManagerActiveProjects(int $managerId, int $companyId): int
+    {
+        return (int) DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('project_manager', $managerId)
+            ->whereIn('status', ['planning', 'in_progress'])
+            ->count();
+    }
+    //---------------
+    public function getManagerUpcomingProjects(int $managerId, int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('project_manager', $managerId)
+            ->whereIn('status', ['planning', 'in_progress', 'on_hold'])
+            ->whereNotNull('expected_end_date')
+            ->orderBy('expected_end_date')
+            ->limit($limit)
+            ->get(['id', 'project_name', 'status', 'expected_end_date']);
+    }
 }

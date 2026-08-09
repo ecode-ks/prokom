@@ -192,4 +192,38 @@ class TasksService
 
         return $this->repository->getMyOpenTasks($employeeId, $companyId, $limit);
     }
+    //---------------
+    public function getManagerTeamTasks(int $managerId, int $companyId, int $limit = 5)
+    {
+        if ($managerId <= 0 || $companyId <= 0) {
+            return collect();
+        }
+
+        return $this->repository->getManagerTeamTasks($managerId, $companyId, $limit);
+    }
+    //---------------
+    public function getManagerTaskCounts(int $managerId, int $companyId): object
+    {
+        if ($managerId <= 0 || $companyId <= 0) {
+            return (object) [
+                'open_tasks' => 0,
+                'overdue_tasks' => 0,
+                'due_soon_tasks' => 0,
+            ];
+        }
+
+        return $this->repository->getManagerTaskCounts($managerId, $companyId);
+    }
+    //---------------
+    public function getManagerTeamPresence(int $managerId, int $companyId): object
+    {
+        if ($managerId <= 0 || $companyId <= 0) {
+            return (object) [
+                'team_size' => 0,
+                'checked_in_today' => 0,
+            ];
+        }
+
+        return $this->repository->getManagerTeamPresence($managerId, $companyId);
+    }
 }

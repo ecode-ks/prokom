@@ -113,4 +113,25 @@ class ProjectReportsRepository
                 DB::raw('COALESCE(u.user, c.company) as reporter_name')
             );
     }
+    //---------------
+    public function getManagerPendingReports(int $managerId, int $companyId, int $limit = 4)
+    {
+        return DB::table($this->table . ' as r')
+            ->join('projects as p', 'r.project_id', '=', 'p.id')
+            ->leftJoin('employees as e', 'r.reported_by', '=', 'e.id')
+            ->where('r.company_id', $companyId)
+            ->where('p.project_manager', $managerId)
+            ->whereRaw("LOWER(r.status) IN ('new', 'active', 'under_review')")
+            ->select(
+                'r.id',
+                'r.date',
+                'r.status',
+                'p.project_name',
+                'e.employee as reporter_name'
+            )
+            ->orderByDesc('r.date')
+            ->orderByDesc('r.id')
+            ->limit($limit)
+            ->get();
+    }
 }

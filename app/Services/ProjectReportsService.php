@@ -161,6 +161,15 @@ class ProjectReportsService
         return $this->repository->getReportStatistics($companyId);
     }
     //---------------
+    public function getManagerPendingReports(int $managerId, int $companyId, int $limit = 4)
+    {
+        if ($managerId <= 0 || $companyId <= 0) {
+            return collect();
+        }
+
+        return $this->repository->getManagerPendingReports($managerId, $companyId, $limit);
+    }
+    //---------------
     private function storeImages(array $images): string
     {
         $paths = [];

@@ -114,4 +114,22 @@ class ProjectsService
 
         return $this->repository->updateStatus($id, $status, $companyId);
     }
+    //---------------
+    public function countManagerActiveProjects(int $managerId, int $companyId): int
+    {
+        if ($managerId <= 0 || $companyId <= 0) {
+            return 0;
+        }
+
+        return $this->repository->countManagerActiveProjects($managerId, $companyId);
+    }
+    //---------------
+    public function getManagerUpcomingProjects(int $managerId, int $companyId, int $limit = 5)
+    {
+        if ($managerId <= 0 || $companyId <= 0) {
+            return collect();
+        }
+
+        return $this->repository->getManagerUpcomingProjects($managerId, $companyId, $limit);
+    }
 }

@@ -8,6 +8,40 @@
     <small class="d-block text-uppercase fw-semibold opacity-75" style="letter-spacing:.06em;font-size:.75rem;">Dashboard · {{ date('d/m/Y') }}</small>
     <h3 class="fw-semibold pt-2 mb-4">Mirë se erdhët, <span class="txt-lightblue">{{ session('user') ?? session('company') }}</span></h3>
 
+    @if(!empty($isManager) && $managerKpis)
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3">
+                <div class="dashboard-kpi dashboard-kpi--navy">
+                    <small><i class="fa-solid fa-diagram-project me-1 opacity-75"></i> Projektet e mia</small>
+                    <strong>{{ $managerKpis->active_projects }}</strong>
+                    <span>aktive</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="dashboard-kpi dashboard-kpi--blue">
+                    <small><i class="fa-solid fa-list-check me-1 opacity-75"></i> Detyra të hapura</small>
+                    <strong>{{ $managerKpis->open_tasks }}</strong>
+                    <span>në projektet e mia</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="dashboard-kpi dashboard-kpi--warn">
+                    <small><i class="fa-solid fa-triangle-exclamation me-1 opacity-75"></i> Me vonesë</small>
+                    <strong>{{ $managerKpis->overdue_tasks }}</strong>
+                    <span>detyra të skaduara</span>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="dashboard-kpi dashboard-kpi--teal">
+                    <small><i class="fa-solid fa-calendar-week me-1 opacity-75"></i> Këtë javë</small>
+                    <strong>{{ $managerKpis->due_soon_tasks }}</strong>
+                    <span>afate brenda 7 ditëve</span>
+                </div>
+            </div>
+        </div>
+
+    @endif
+
     @if($canCheckIn)
         @php
             $fmt = function ($value) {
@@ -29,7 +63,7 @@
             }
         @endphp
 
-        <div class="row g-4">
+        <div class="row g-4 mb-4">
             <div class="col-12 col-xl-5">
                 <div class="checkin-panel h-100">
                     <div class="checkin-panel-head">
@@ -117,7 +151,7 @@
                             <h5 class="fw-semibold mb-0">Harta</h5>
                         </div>
                         @if($mapLat !== null)
-                            <a class="small text-decoration-none"
+                            <a class="dashboard-link"
                                href="https://www.google.com/maps?q={{ $mapLat }},{{ $mapLng }}"
                                target="_blank"
                                rel="noopener noreferrer">
@@ -147,49 +181,142 @@
         </div>
     @endif
 
-    @if(!empty($showMyTasks))
-        <div class="checkin-panel {{ $canCheckIn ? 'mt-4' : '' }}">
-            <div class="checkin-panel-head">
-                <div>
-                    <span class="checkin-kicker">Puna ime</span>
-                    <h5 class="fw-semibold mb-0">Detyrat e mia</h5>
+    @if(!empty($isManager) && $managerKpis)
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+                <div class="checkin-panel h-100">
+                    <div class="checkin-panel-head">
+                        <div>
+                            <span class="checkin-kicker">Projektet</span>
+                            <h5 class="fw-semibold mb-0">Afatet që afrohen</h5>
+                        </div>
+                        <a href="{{ route('projects') }}" class="dashboard-link">Shiko të gjitha</a>
+                    </div>
+
+                    @if($managerProjects->isEmpty())
+                        <p class="text-muted mb-0 small">Nuk ka projekte me afat të afërt.</p>
+                    @else
+                        <div class="dashboard-task-list">
+                            @foreach($managerProjects as $project)
+                                @php
+                                    $days = \Carbon\Carbon::parse($project->expected_end_date)->startOfDay()->diffInDays(now()->startOfDay(), false);
+                                    $daysLeft = (int) (-$days);
+                                    $label = $daysLeft < 0
+                                        ? abs($daysLeft) . ' ditë vonesë'
+                                        : ($daysLeft === 0 ? 'Sot' : $daysLeft . ' ditë');
+                                @endphp
+                                <a href="{{ route('project.details', $project->id) }}" class="dashboard-task-item text-decoration-none">
+                                    <div class="min-w-0">
+                                        <strong class="d-block text-truncate">{{ $project->project_name }}</strong>
+                                        <small class="text-muted">{{ $project->status }}</small>
+                                    </div>
+                                    <span class="small text-nowrap fw-semibold {{ $daysLeft < 0 ? 'txt-warn' : 'text-muted' }}">{{ $label }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
-                <a href="{{ route('tasks') }}" class="small text-decoration-none">Shiko të gjitha</a>
             </div>
 
-            @if($myTasks->isEmpty())
-                <p class="text-muted mb-0 small">Nuk ke detyra të hapura për momentin.</p>
-            @else
-                <div class="dashboard-task-list">
-                    @foreach($myTasks as $task)
-                        @php
-                            $status = strtolower((string) ($task->status ?? ''));
-                            $deadlineLabel = $task->deadline
-                                ? \Carbon\Carbon::parse($task->deadline)->format('d/m/Y')
-                                : null;
-                            $isOverdue = $task->deadline
-                                && \Carbon\Carbon::parse($task->deadline)->isPast()
-                                && $status !== 'completed';
-                        @endphp
-                        <a href="{{ route('task.details', $task->id) }}" class="dashboard-task-item text-decoration-none">
-                            <div class="min-w-0">
-                                <strong class="d-block text-truncate">{{ $task->title ?: 'Pa titull' }}</strong>
-                                <small class="text-muted">{{ $task->project_name ?? '-' }}</small>
-                            </div>
-                            <div class="dashboard-task-meta">
-                                @if($deadlineLabel)
-                                    <span class="{{ $isOverdue ? 'text-danger' : 'text-muted' }} small text-nowrap">
-                                        {{ $deadlineLabel }}
-                                    </span>
-                                @endif
-                                <span class="checkin-status {{ $status === 'working' || $status === 'in_progress' ? 'is-work' : 'is-idle' }}">
-                                    {{ $task->status ?: 'new' }}
-                                </span>
-                            </div>
-                        </a>
-                    @endforeach
+            <div class="col-12 col-lg-6">
+                <div class="checkin-panel h-100">
+                    <div class="checkin-panel-head">
+                        <div>
+                            <span class="checkin-kicker">Ekipi</span>
+                            <h5 class="fw-semibold mb-0">Detyrat e projekteve</h5>
+                            @if($managerTeamPresence)
+                                <small class="text-muted">
+                                    Prezenca sot: {{ $managerTeamPresence->checked_in_today }}/{{ $managerTeamPresence->team_size }}
+                                </small>
+                            @endif
+                        </div>
+                        <a href="{{ route('tasks') }}" class="dashboard-link">Shiko të gjitha</a>
+                    </div>
+
+                    @if($managerTeamTasks->isEmpty())
+                        <p class="text-muted mb-0 small">Nuk ka detyra të hapura në projektet e tua.</p>
+                    @else
+                        <div class="dashboard-task-list">
+                            @foreach($managerTeamTasks as $task)
+                                @php
+                                    $status = strtolower((string) ($task->status ?? ''));
+                                    $deadlineLabel = $task->deadline
+                                        ? \Carbon\Carbon::parse($task->deadline)->format('d/m/Y')
+                                        : null;
+                                    $isOverdue = $task->deadline
+                                        && \Carbon\Carbon::parse($task->deadline)->isPast();
+                                @endphp
+                                <a href="{{ route('task.details', $task->id) }}" class="dashboard-task-item text-decoration-none">
+                                    <div class="min-w-0">
+                                        <strong class="d-block text-truncate">{{ $task->title ?: 'Pa titull' }}</strong>
+                                        <small class="text-muted">{{ $task->project_name ?? '-' }}</small>
+                                    </div>
+                                    <div class="dashboard-task-meta">
+                                        @if($deadlineLabel)
+                                            <span class="{{ $isOverdue ? 'txt-warn' : 'text-muted' }} small text-nowrap fw-semibold">{{ $deadlineLabel }}</span>
+                                        @endif
+                                        <span class="checkin-status {{ $status === 'working' || $status === 'in_progress' ? 'is-work' : 'is-idle' }}">{{ $task->status ?: 'new' }}</span>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
-            @endif
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+                <div class="checkin-panel h-100">
+                    <div class="checkin-panel-head">
+                        <div>
+                            <span class="checkin-kicker">Raporte</span>
+                            <h5 class="fw-semibold mb-0">Raporte në pritje</h5>
+                        </div>
+                        <a href="{{ route('project.reports') }}" class="dashboard-link">Shiko të gjitha</a>
+                    </div>
+
+                    @if($managerPendingReports->isEmpty())
+                        <p class="text-muted mb-0 small">Nuk ka raporte të reja për shqyrtim.</p>
+                    @else
+                        <div class="dashboard-task-list">
+                            @foreach($managerPendingReports as $report)
+                                <a href="{{ route('project.report.details', $report->id) }}" class="dashboard-task-item text-decoration-none">
+                                    <div class="min-w-0">
+                                        <strong class="d-block text-truncate">{{ $report->project_name }}</strong>
+                                        <small class="text-muted">{{ $report->reporter_name ?: 'Punonjës' }}</small>
+                                    </div>
+                                    <span class="small text-muted text-nowrap">
+                                        {{ $report->date ? \Carbon\Carbon::parse($report->date)->format('d/m H:i') : '-' }}
+                                    </span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="checkin-panel h-100">
+                    <div class="checkin-panel-head mb-3">
+                        <div>
+                            <span class="checkin-kicker">Veprime</span>
+                            <h5 class="fw-semibold mb-0">Veprime të shpejta</h5>
+                        </div>
+                    </div>
+                    <div class="dashboard-quick-actions">
+                        <a href="{{ route('tasks') }}" class="dashboard-quick-btn">
+                            <i class="fa-solid fa-plus"></i> Cakto detyrë
+                        </a>
+                        <a href="{{ route('projects') }}" class="dashboard-quick-btn">
+                            <i class="fa-solid fa-diagram-project"></i> Projektet
+                        </a>
+                        <a href="{{ route('project.reports') }}" class="dashboard-quick-btn">
+                            <i class="fa-solid fa-clipboard-list"></i> Raportet
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     @endif
 @endsection
