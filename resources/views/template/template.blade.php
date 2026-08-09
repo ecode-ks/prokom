@@ -167,6 +167,11 @@
                                                 <i class="fa-solid fa-money-bill-wave mx-2 opacity-75"></i> Pagat
                                             </a>
                                         </li>
+                                        <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Extra Hours' ? 'sidebar-active' : 'sidebar-link' }}">
+                                            <a href="{{ route('extra.hours') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-business-time mx-2 opacity-75"></i> Orët Shtesë
+                                            </a>
+                                        </li>
                                     @endif
                                 </ul>
                             @endif
@@ -296,6 +301,7 @@
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Offers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('offers') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> Ofertat</a></li>
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Create Offer' ? 'bg-darkblue text-light' : '' }}" href="{{ route('create.offer') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> Krijo Ofertë</a></li>
                                                     <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> Pagat</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Extra Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('extra.hours') }}"><i class="fa-solid fa-business-time me-2 opacity-75"></i> Orët Shtesë</a></li>
                                                 @endif
                                             @endif
 

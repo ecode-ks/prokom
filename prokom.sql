@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
 -- Dumping structure for table prokom.extra_hours
 CREATE TABLE IF NOT EXISTS `extra_hours` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
   `employee_id` int(11) DEFAULT NULL,
   `hours` varchar(255) DEFAULT NULL,
   `type` varchar(50) DEFAULT NULL,

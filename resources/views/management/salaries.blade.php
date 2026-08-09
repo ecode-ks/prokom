@@ -100,9 +100,9 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Data</th>
                                 <th scope="col" class="text-nowrap">Punonjësi</th>
                                 <th scope="col" class="text-nowrap">Paga</th>
+                                <th scope="col" class="text-nowrap">Data</th>
                                 <th scope="col" class="text-nowrap text-end">Operacionet</th>
                             </tr>
                         </thead>
@@ -115,9 +115,9 @@
                                 @foreach ($salaries as $salary)
                                     <tr>
                                         <th scope="row" class="text-nowrap">{{ $salary->id }}</th>
-                                        <td class="text-nowrap">{{ \Carbon\Carbon::parse($salary->date)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap">{{ $salary->employee }}</td>
                                         <td class="text-nowrap">{{ $salary->salary }}€</td>
+                                        <td class="text-nowrap">{{ \Carbon\Carbon::parse($salary->date)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap text-end">
                                             <a href="{{ route('edit.salary', $salary->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
                                             <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $salary->id }}"><i class="fa-solid fa-trash"></i></button>
