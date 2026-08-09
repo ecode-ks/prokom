@@ -118,7 +118,7 @@ header {
     font-size: 14px;
 }
 
-/* Dashboard check-in */
+/* Dashboard */
 .checkin-panel {
     background: #fff;
     border: 1px solid #E8EDF3;
@@ -251,7 +251,6 @@ header {
 .dashboard-task-list {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
 }
 
 .dashboard-task-item {
@@ -259,22 +258,14 @@ header {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.8rem 0.15rem;
-    border: 0;
+    padding: 0.7rem 0;
     border-bottom: 1px solid #EEF2F6;
-    border-radius: 0;
-    background: transparent;
     color: #071838;
 }
 
 .dashboard-task-item:last-child {
     border-bottom: 0;
-    padding-bottom: 0.15rem;
-}
-
-.dashboard-task-item:hover {
-    border-color: #EEF2F6;
-    background: transparent;
+    padding-bottom: 0;
 }
 
 .dashboard-task-item:hover strong {
@@ -286,6 +277,18 @@ header {
     align-items: center;
     gap: 0.65rem;
     flex-shrink: 0;
+}
+
+.dashboard-deadline-label.is-overdue {
+    color: #B91C1C;
+}
+
+.dashboard-deadline-label.is-soon {
+    color: #B45309;
+}
+
+.dashboard-deadline-label.is-ok {
+    color: #1D4ED8;
 }
 
 .dashboard-quick-actions {
@@ -321,53 +324,39 @@ header {
 .dashboard-kpi {
     background: #fff;
     border: 1px solid #E8EDF3;
-    border-radius: 1.1rem;
-    padding: 1.1rem 1.15rem;
+    border-radius: 1.15rem;
+    padding: 1.15rem 1.2rem 1.2rem;
     height: 100%;
 }
 
 .dashboard-kpi small {
     display: block;
     color: #6B7C93;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.45rem;
+    line-height: 1.35;
+    margin-bottom: 0.75rem;
 }
 
 .dashboard-kpi strong {
     display: block;
-    color: #071838;
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 700;
-    line-height: 1.1;
+    line-height: 1;
+    letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
 }
 
-.dashboard-kpi span {
+.dashboard-kpi > span {
     display: block;
-    margin-top: 0.3rem;
+    margin-top: 0.4rem;
     color: #6B7C93;
     font-size: 0.8rem;
 }
 
-.dashboard-kpi--navy small,
-.dashboard-kpi--navy strong {
-    color: #071838;
-}
-
-.dashboard-kpi--blue small,
-.dashboard-kpi--blue strong {
-    color: #0060aa;
-}
-
-.dashboard-kpi--warn small,
-.dashboard-kpi--warn strong {
-    color: #b45309;
-}
-
-.dashboard-kpi--teal small,
-.dashboard-kpi--teal strong {
-    color: #0f766e;
-}
+.dashboard-kpi--navy strong { color: #071838; }
+.dashboard-kpi--blue strong { color: #0060aa; }
+.dashboard-kpi--warn strong { color: #b45309; }
+.dashboard-kpi--teal strong { color: #0f766e; }

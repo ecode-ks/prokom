@@ -12,28 +12,28 @@
         <div class="row g-3 mb-4">
             <div class="col-6 col-lg-3">
                 <div class="dashboard-kpi dashboard-kpi--navy">
-                    <small><i class="fa-solid fa-diagram-project me-1 opacity-75"></i> Projektet e mia</small>
+                    <small>Projektet e mia</small>
                     <strong>{{ $managerKpis->active_projects }}</strong>
                     <span>aktive</span>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="dashboard-kpi dashboard-kpi--blue">
-                    <small><i class="fa-solid fa-list-check me-1 opacity-75"></i> Detyra të hapura</small>
+                    <small>Detyra të hapura</small>
                     <strong>{{ $managerKpis->open_tasks }}</strong>
                     <span>në projektet e mia</span>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="dashboard-kpi dashboard-kpi--warn">
-                    <small><i class="fa-solid fa-triangle-exclamation me-1 opacity-75"></i> Me vonesë</small>
+                    <small>Me vonesë</small>
                     <strong>{{ $managerKpis->overdue_tasks }}</strong>
                     <span>detyra të skaduara</span>
                 </div>
             </div>
             <div class="col-6 col-lg-3">
                 <div class="dashboard-kpi dashboard-kpi--teal">
-                    <small><i class="fa-solid fa-calendar-week me-1 opacity-75"></i> Këtë javë</small>
+                    <small>Këtë javë</small>
                     <strong>{{ $managerKpis->due_soon_tasks }}</strong>
                     <span>afate brenda 7 ditëve</span>
                 </div>
@@ -205,13 +205,21 @@
                                     $label = $daysLeft < 0
                                         ? abs($daysLeft) . ' ditë vonesë'
                                         : ($daysLeft === 0 ? 'Sot' : $daysLeft . ' ditë');
+
+                                    if ($daysLeft < 0) {
+                                        $urgency = 'is-overdue';
+                                    } elseif ($daysLeft <= 7) {
+                                        $urgency = 'is-soon';
+                                    } else {
+                                        $urgency = 'is-ok';
+                                    }
                                 @endphp
                                 <a href="{{ route('project.details', $project->id) }}" class="dashboard-task-item text-decoration-none">
                                     <div class="min-w-0">
                                         <strong class="d-block text-truncate">{{ $project->project_name }}</strong>
                                         <small class="text-muted">{{ $project->status }}</small>
                                     </div>
-                                    <span class="small text-nowrap fw-semibold {{ $daysLeft < 0 ? 'txt-warn' : 'text-muted' }}">{{ $label }}</span>
+                                    <span class="dashboard-deadline-label small text-nowrap fw-semibold {{ $urgency }}">{{ $label }}</span>
                                 </a>
                             @endforeach
                         </div>
