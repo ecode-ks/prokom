@@ -22,8 +22,12 @@ class WorkingHoursRepository
 	public function getWorkingHours(int $limit, int $companyId)
 	{
 		return DB::table($this->table)
-            ->join('employees', 'working_hours.employee_id', '=', 'employees.id')
-            ->select('working_hours.*', 'employees.employee')
+            ->leftJoin('employees', 'working_hours.employee_id', '=', 'employees.id')
+            ->leftJoin('companies', 'working_hours.company_id', '=', 'companies.id')
+            ->select(
+                'working_hours.*',
+                DB::raw("COALESCE(employees.employee, companies.company, 'Kompania') as employee")
+            )
 			->where('working_hours.company_id', $companyId)
 			->orderByDesc('working_hours.id')
 			->cursorPaginate($limit);
@@ -32,10 +36,17 @@ class WorkingHoursRepository
 	public function getSearchedWorkingHours(int $limit, string $search, int $companyId)
 	{
 		return DB::table($this->table)
-			->join('employees', 'working_hours.employee_id', '=', 'employees.id')
-			->select('working_hours.*', 'employees.employee')
-			->where('employees.employee', 'like', "%{$search}%")
+			->leftJoin('employees', 'working_hours.employee_id', '=', 'employees.id')
+            ->leftJoin('companies', 'working_hours.company_id', '=', 'companies.id')
+			->select(
+                'working_hours.*',
+                DB::raw("COALESCE(employees.employee, companies.company, 'Kompania') as employee")
+            )
 			->where('working_hours.company_id', $companyId)
+            ->where(function ($q) use ($search) {
+                $q->where('employees.employee', 'like', "%{$search}%")
+                    ->orWhere('companies.company', 'like', "%{$search}%");
+            })
 			->orderByDesc('working_hours.id')
 			->cursorPaginate($limit);
 	}

@@ -18,7 +18,6 @@ class CheckInController extends Controller
     public function startWork(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'check_in_time' => 'required|date',
             'check_in_location' => 'required|string|max:255'
         ]);
 
@@ -27,7 +26,10 @@ class CheckInController extends Controller
         }
 
         try {
-            $this->service->startWork($request->only(['check_in_time', 'check_in_location']));
+            $this->service->startWork([
+                'check_in_time' => now()->format('Y-m-d H:i:s'),
+                'check_in_location' => $request->input('check_in_location'),
+            ]);
             return redirect()->route('dashboard')->with('success', 'Fillimi i punës u regjistrua me sukses.');
         } catch (\Exception $e) {
             return redirect()->route('dashboard')->with('error', 'Regjistrimi dështoi: ' . $e->getMessage());
@@ -38,7 +40,6 @@ class CheckInController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:check_ins,id',
-            'pause_start_time' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -48,7 +49,7 @@ class CheckInController extends Controller
         try {
             $ok = $this->service->startBreak(
                 (int) $request->input('id'),
-                $request->only(['pause_start_time'])
+                ['pause_start_time' => now()->format('Y-m-d H:i:s')]
             );
             if (!$ok) {
                 return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');
@@ -63,7 +64,6 @@ class CheckInController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:check_ins,id',
-            'pause_end_time' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -73,7 +73,7 @@ class CheckInController extends Controller
         try {
             $ok = $this->service->endBreak(
                 (int) $request->input('id'),
-                $request->only(['pause_end_time'])
+                ['pause_end_time' => now()->format('Y-m-d H:i:s')]
             );
             if (!$ok) {
                 return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');
@@ -88,7 +88,6 @@ class CheckInController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:check_ins,id',
-            'check_out_time' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -98,7 +97,7 @@ class CheckInController extends Controller
         try {
             $ok = $this->service->endWork(
                 (int) $request->input('id'),
-                $request->only(['check_out_time'])
+                ['check_out_time' => now()->format('Y-m-d H:i:s')]
             );
             if (!$ok) {
                 return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');

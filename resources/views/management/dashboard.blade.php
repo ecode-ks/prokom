@@ -72,7 +72,6 @@
                             <form action="{{ route('start.work') }}" method="post" id="startWorkForm" class="w-100">
                                 @csrf
                                 <input type="hidden" name="check_in_location" id="check_in_location">
-                                <input type="hidden" name="check_in_time" id="check_in_time">
                                 <button type="submit" class="btn btn-darkblue w-100 rounded-3 py-3 fw-semibold">
                                     <i class="fa-solid fa-play me-2"></i> Starto Punën
                                 </button>
@@ -82,7 +81,6 @@
                                 <form action="{{ route('start.break') }}" method="post" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $checkIn->id }}">
-                                    <input type="hidden" name="pause_start_time" value="{{ now()->format('Y-m-d H:i:s') }}">
                                     <button type="submit" class="btn btn-outline-secondary w-100 rounded-3 py-3 fw-semibold">
                                         <i class="fa-solid fa-mug-saucer me-2"></i> Starto Pauzën
                                     </button>
@@ -91,7 +89,6 @@
                                 <form action="{{ route('end.break') }}" method="post" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $checkIn->id }}">
-                                    <input type="hidden" name="pause_end_time" value="{{ now()->format('Y-m-d H:i:s') }}">
                                     <button type="submit" class="btn btn-outline-secondary w-100 rounded-3 py-3 fw-semibold">
                                         <i class="fa-solid fa-play me-2"></i> Përfundo Pauzën
                                     </button>
@@ -102,7 +99,6 @@
                                 <form action="{{ route('end.work') }}" method="post" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $checkIn->id }}">
-                                    <input type="hidden" name="check_out_time" value="{{ now()->format('Y-m-d H:i:s') }}">
                                     <button type="submit" class="btn btn-darkblue w-100 rounded-3 py-3 fw-semibold">
                                         <i class="fa-solid fa-stop me-2"></i> Përfundo Punën
                                     </button>
@@ -159,16 +155,6 @@
     const form = document.getElementById('startWorkForm');
     if (!form) return;
 
-    function pad(n) {
-        return String(n).padStart(2, '0');
-    }
-
-    function nowString() {
-        const d = new Date();
-        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' +
-            pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
-    }
-
     form.addEventListener('submit', function (e) {
         if (form.dataset.ready === '1') return;
         e.preventDefault();
@@ -186,7 +172,6 @@
         navigator.geolocation.getCurrentPosition(
             function (pos) {
                 document.getElementById('check_in_location').value = pos.coords.latitude + ',' + pos.coords.longitude;
-                document.getElementById('check_in_time').value = nowString();
                 form.dataset.ready = '1';
                 form.submit();
             },

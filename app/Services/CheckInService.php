@@ -3,15 +3,20 @@
 namespace App\Services;
 
 use App\Repositories\CheckInRepository;
+use App\Repositories\WorkingHoursRepository;
+use Carbon\Carbon;
 
 class CheckInService
 {
     protected int $companyId;
     protected int $employeeId;
     protected CheckInRepository $repository;
-    public function __construct(CheckInRepository $repository)
+    protected WorkingHoursRepository $workingHoursRepository;
+
+    public function __construct(CheckInRepository $repository, WorkingHoursRepository $workingHoursRepository)
     {
         $this->repository = $repository;
+        $this->workingHoursRepository = $workingHoursRepository;
         $this->companyId = (int) (session('company_id') ?? 0);
         $this->employeeId = (int) (session('employee_id') ?? 0);
     }
@@ -84,10 +89,53 @@ class CheckInService
     //---------------
     public function endWork(int $id, array $data): bool
     {
-        $checkin = $this->repository->checkCheckinExist($id, $this->companyId);
+        $checkin = $this->repository->findById($id, $this->companyId);
         if (!$checkin) {
             return false;
         }
-        return $this->repository->endWork($id, $data, $this->companyId);
+
+        $ok = $this->repository->endWork($id, $data, $this->companyId);
+        if (!$ok) {
+            return false;
+        }
+
+        $this->syncToWorkingHours($checkin, $data['check_out_time'] ?? null);
+
+        return true;
+    }
+    //---------------
+    private function syncToWorkingHours(object $checkin, ?string $checkOutTime): void
+    {
+        if (empty($checkin->check_in_time) || empty($checkOutTime)) {
+            return;
+        }
+
+        $checkInAt = Carbon::parse($checkin->check_in_time);
+        $checkOutAt = Carbon::parse($checkOutTime);
+
+        $pauseSeconds = 0;
+        if (!empty($checkin->pause_start_time)) {
+            $pauseStart = Carbon::parse($checkin->pause_start_time);
+            $pauseEnd = !empty($checkin->pause_end_time)
+                ? Carbon::parse($checkin->pause_end_time)
+                : $checkOutAt;
+            $pauseSeconds = max(0, $pauseStart->diffInSeconds($pauseEnd));
+        }
+
+        $workedSeconds = max(0, $checkInAt->diffInSeconds($checkOutAt) - $pauseSeconds);
+        $hours = sprintf(
+            '%02d:%02d',
+            intdiv($workedSeconds, 3600),
+            intdiv($workedSeconds % 3600, 60)
+        );
+
+        $this->workingHoursRepository->create([
+            'date' => $checkInAt->toDateString(),
+            'employee_id' => $checkin->employee_id ?: null,
+            'check_in' => $checkin->check_in_time,
+            'check_out' => $checkOutTime,
+            'hours' => $hours,
+            'company_id' => $this->companyId,
+        ]);
     }
 }

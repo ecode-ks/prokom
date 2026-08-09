@@ -60,6 +60,14 @@ class CheckInRepository
             ->exists();
     }
     //---------------
+    public function findById(int $id, int $companyId)
+    {
+        return DB::table($this->table)
+            ->where('id', $id)
+            ->where('company_id', $companyId)
+            ->first();
+    }
+    //---------------
     public function startBreak(int $id, array $data, int $companyId): bool
     {
         return DB::table($this->table)
