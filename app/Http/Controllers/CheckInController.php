@@ -88,6 +88,7 @@ class CheckInController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:check_ins,id',
+            'check_out_location' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -97,7 +98,10 @@ class CheckInController extends Controller
         try {
             $ok = $this->service->endWork(
                 (int) $request->input('id'),
-                ['check_out_time' => now()->format('Y-m-d H:i:s')]
+                [
+                    'check_out_time' => now()->format('Y-m-d H:i:s'),
+                    'check_out_location' => $request->input('check_out_location'),
+                ]
             );
             if (!$ok) {
                 return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');

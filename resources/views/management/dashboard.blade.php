@@ -130,9 +130,10 @@
                             @endif
 
                             @if(!$checkIn->pause_start_time || $checkIn->pause_end_time)
-                                <form action="{{ route('end.work') }}" method="post" class="flex-fill">
+                                <form action="{{ route('end.work') }}" method="post" id="endWorkForm" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $checkIn->id }}">
+                                    <input type="hidden" name="check_out_location" id="check_out_location">
                                     <button type="submit" class="btn btn-darkblue w-100 rounded-3 py-3 fw-semibold">
                                         <i class="fa-solid fa-stop me-2"></i> Përfundo Punën
                                     </button>
@@ -322,40 +323,45 @@
 @endsection
 
 @push('scripts')
-@if($canCheckIn && empty($isActive))
+@if($canCheckIn)
 <script>
 (function () {
-    const form = document.getElementById('startWorkForm');
-    if (!form) return;
+    function wireLocationForm(formId, locationFieldId) {
+        const form = document.getElementById(formId);
+        if (!form) return;
 
-    form.addEventListener('submit', function (e) {
-        if (form.dataset.ready === '1') return;
-        e.preventDefault();
+        form.addEventListener('submit', function (e) {
+            if (form.dataset.ready === '1') return;
+            e.preventDefault();
 
-        if (!navigator.geolocation) {
-            alert('Ky shfletues nuk e mbështet marrjen e lokacionit.');
-            return;
-        }
+            if (!navigator.geolocation) {
+                alert('Ky shfletues nuk e mbështet marrjen e lokacionit.');
+                return;
+            }
 
-        const button = form.querySelector('button');
-        const original = button.innerHTML;
-        button.disabled = true;
-        button.innerHTML = 'Duke marrë lokacionin...';
+            const button = form.querySelector('button');
+            const original = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = 'Duke marrë lokacionin...';
 
-        navigator.geolocation.getCurrentPosition(
-            function (pos) {
-                document.getElementById('check_in_location').value = pos.coords.latitude + ',' + pos.coords.longitude;
-                form.dataset.ready = '1';
-                form.submit();
-            },
-            function () {
-                button.disabled = false;
-                button.innerHTML = original;
-                alert('Duhet të lejoni qasjen në lokacion.');
-            },
-            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-        );
-    });
+            navigator.geolocation.getCurrentPosition(
+                function (pos) {
+                    document.getElementById(locationFieldId).value = pos.coords.latitude + ',' + pos.coords.longitude;
+                    form.dataset.ready = '1';
+                    form.submit();
+                },
+                function () {
+                    button.disabled = false;
+                    button.innerHTML = original;
+                    alert('Duhet të lejoni qasjen në lokacion.');
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        });
+    }
+
+    wireLocationForm('startWorkForm', 'check_in_location');
+    wireLocationForm('endWorkForm', 'check_out_location');
 })();
 </script>
 @endif

@@ -24,9 +24,16 @@ class WorkingHoursRepository
 		return DB::table($this->table)
             ->leftJoin('employees', 'working_hours.employee_id', '=', 'employees.id')
             ->leftJoin('companies', 'working_hours.company_id', '=', 'companies.id')
+            ->leftJoin('check_ins as ci', function ($join) {
+                $join->on('working_hours.company_id', '=', 'ci.company_id')
+                    ->on('working_hours.check_in', '=', 'ci.check_in_time')
+                    ->whereRaw('(working_hours.employee_id = ci.employee_id OR (working_hours.employee_id IS NULL AND ci.employee_id IS NULL))');
+            })
             ->select(
                 'working_hours.*',
-                DB::raw("COALESCE(employees.employee, companies.company, 'Kompania') as employee")
+                DB::raw("COALESCE(employees.employee, companies.company, 'Kompania') as employee"),
+                'ci.check_in_location',
+                'ci.check_out_location'
             )
 			->where('working_hours.company_id', $companyId)
 			->orderByDesc('working_hours.id')
@@ -38,9 +45,16 @@ class WorkingHoursRepository
 		return DB::table($this->table)
 			->leftJoin('employees', 'working_hours.employee_id', '=', 'employees.id')
             ->leftJoin('companies', 'working_hours.company_id', '=', 'companies.id')
+            ->leftJoin('check_ins as ci', function ($join) {
+                $join->on('working_hours.company_id', '=', 'ci.company_id')
+                    ->on('working_hours.check_in', '=', 'ci.check_in_time')
+                    ->whereRaw('(working_hours.employee_id = ci.employee_id OR (working_hours.employee_id IS NULL AND ci.employee_id IS NULL))');
+            })
 			->select(
                 'working_hours.*',
-                DB::raw("COALESCE(employees.employee, companies.company, 'Kompania') as employee")
+                DB::raw("COALESCE(employees.employee, companies.company, 'Kompania') as employee"),
+                'ci.check_in_location',
+                'ci.check_out_location'
             )
 			->where('working_hours.company_id', $companyId)
             ->where(function ($q) use ($search) {

@@ -108,7 +108,9 @@
                             <th scope="col" class="text-nowrap">Data</th>
                             <th scope="col" class="text-nowrap">Punëtori</th>
                             <th scope="col" class="text-nowrap">Hyrja</th>
+                            <th scope="col" class="text-nowrap">Lok. hyrjes</th>
                             <th scope="col" class="text-nowrap">Dalja</th>
+                            <th scope="col" class="text-nowrap">Lok. daljes</th>
                             <th scope="col" class="text-nowrap">Orë:Min</th>
                             <th scope="col" class="text-nowrap text-end">Veprimet</th>
                         </tr>
@@ -116,7 +118,7 @@
                     <tbody>
                         @if($workingHours && count($workingHours) === 0)
                             <tr>
-                                <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjet asnjë e dhënë...</td>
+                                <td colspan="9" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjet asnjë e dhënë...</td>
                             </tr>
                         @elseif($workingHours)
                             @foreach ($workingHours as $workingHour)
@@ -125,7 +127,33 @@
                                     <td class="text-nowrap">{{ $workingHour->date ? \Carbon\Carbon::parse($workingHour->date)->format('d/m/Y') : '-' }}</td>
                                     <td class="text-nowrap">{{ $workingHour->employee }}</td>
                                     <td class="text-nowrap">{{ $workingHour->check_in ? \Carbon\Carbon::parse($workingHour->check_in)->format('d/m/Y - H:i') : '-' }}</td>
+                                    <td class="text-nowrap">
+                                        @if(!empty($workingHour->check_in_location))
+                                            <a href="https://www.google.com/maps?q={{ urlencode($workingHour->check_in_location) }}"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="text-decoration-none"
+                                               title="{{ $workingHour->check_in_location }}">
+                                                <i class="fa-solid fa-location-dot"></i> Harta
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td class="text-nowrap">{{ $workingHour->check_out ? \Carbon\Carbon::parse($workingHour->check_out)->format('d/m/Y - H:i') : '-' }}</td>
+                                    <td class="text-nowrap">
+                                        @if(!empty($workingHour->check_out_location))
+                                            <a href="https://www.google.com/maps?q={{ urlencode($workingHour->check_out_location) }}"
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               class="text-decoration-none"
+                                               title="{{ $workingHour->check_out_location }}">
+                                                <i class="fa-solid fa-location-dot"></i> Harta
+                                            </a>
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
                                     <td class="text-nowrap">{{ $workingHour->hours }}</td>
                                     <td class="text-nowrap text-end">
                                         <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $workingHour->id }}"><i class="fa-solid fa-trash"></i></button>
