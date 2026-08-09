@@ -15,15 +15,14 @@ class DashboardController extends Controller
     //---------------
     public function dashboard()
     {
-        $page = 'Dashboard';
-        $checkIn = null;
-
-        if (session('company_id') && session('role') !== 'admin') {
-            $checkIn = $this->checkinService->getActiveCheckIn();
-        }
+        $canCheckIn = $this->checkinService->canCheckIn();
+        $checkIn = $canCheckIn ? $this->checkinService->getTodayCheckIn() : null;
+        $isActive = $checkIn && empty($checkIn->check_out_time);
 
         return view('management.dashboard')
-            ->with('page', $page)
-            ->with('checkIn', $checkIn);
+            ->with('page', 'Dashboard')
+            ->with('canCheckIn', $canCheckIn)
+            ->with('checkIn', $checkIn)
+            ->with('isActive', $isActive);
     }
 }

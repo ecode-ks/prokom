@@ -13,12 +13,36 @@ class CheckInRepository
         $this->table = $model->getTable();
     }
     //---------------
-    public function getActiveCheckIn(int $userId, int $companyId)
+    private function applyOwner($query, ?int $employeeId, int $companyId)
     {
-        return DB::table($this->table)
-            ->where('employee_id', $userId)
-            ->where('company_id', $companyId)
+        $query->where('company_id', $companyId);
+
+        if ($employeeId === null || $employeeId <= 0) {
+            $query->whereNull('employee_id');
+        } else {
+            $query->where('employee_id', $employeeId);
+        }
+
+        return $query;
+    }
+    //---------------
+    public function getActiveCheckIn(?int $employeeId, int $companyId)
+    {
+        return $this->applyOwner(DB::table($this->table), $employeeId, $companyId)
             ->whereNull('check_out_time')
+            ->first();
+    }
+    //---------------
+    public function getTodayCheckIn(?int $employeeId, int $companyId)
+    {
+        $active = $this->getActiveCheckIn($employeeId, $companyId);
+        if ($active) {
+            return $active;
+        }
+
+        return $this->applyOwner(DB::table($this->table), $employeeId, $companyId)
+            ->whereDate('check_in_time', date('Y-m-d'))
+            ->orderByDesc('id')
             ->first();
     }
     //---------------

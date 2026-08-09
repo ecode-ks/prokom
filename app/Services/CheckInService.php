@@ -16,15 +16,49 @@ class CheckInService
         $this->employeeId = (int) (session('employee_id') ?? 0);
     }
     //---------------
+    public function canCheckIn(): bool
+    {
+        if (session('role') === 'company' && $this->companyId > 0) {
+            return true;
+        }
+
+        return $this->employeeId > 0;
+    }
+    //---------------
+    private function ownerEmployeeId(): ?int
+    {
+        if (session('role') === 'company') {
+            return null;
+        }
+
+        return $this->employeeId > 0 ? $this->employeeId : null;
+    }
+    //---------------
     public function getActiveCheckIn()
     {
-        $userId = session('user_id') ?? 0;
-        return $this->repository->getActiveCheckIn($userId, $this->companyId);
+        if (!$this->canCheckIn()) {
+            return null;
+        }
+
+        return $this->repository->getActiveCheckIn($this->ownerEmployeeId(), $this->companyId);
+    }
+    //---------------
+    public function getTodayCheckIn()
+    {
+        if (!$this->canCheckIn()) {
+            return null;
+        }
+
+        return $this->repository->getTodayCheckIn($this->ownerEmployeeId(), $this->companyId);
     }
     //---------------
     public function startWork(array $data): bool
     {
-        $data['employee_id'] = $this->employeeId;
+        if (!$this->canCheckIn()) {
+            throw new \Exception('Nuk keni të drejtë për check-in.');
+        }
+
+        $data['employee_id'] = $this->ownerEmployeeId();
         $data['status'] = 'Under Review';
         $data['company_id'] = $this->companyId;
         return $this->repository->create($data);

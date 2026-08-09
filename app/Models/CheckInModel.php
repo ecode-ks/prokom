@@ -14,9 +14,12 @@ class CheckInModel extends Model
         'check_in_time',
         'check_in_location',
         'pause_start_time',
+        'pause_start_location',
         'pause_end_time',
+        'pause_end_location',
         'check_out_time',
         'check_out_location',
-        'status'
+        'status',
+        'company_id',
     ];
 }
