@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Models\ContractsModel;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ContractsRepository
@@ -81,12 +80,19 @@ class ContractsRepository
     //---------------
     public function updateContractsStatus(int $companyId): bool
     {
+        $today = date('Y-m-d');
+        $limitDate = date('Y-m-d', strtotime('+30 days'));
+
+        DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('to_date', '<', $today)
+            ->update(['status' => 'Expired']);
+
         return DB::table($this->table)
             ->where('company_id', $companyId)
-            ->whereDate('to_date', '<=', Carbon::today()->copy()->addDays(30))
-            ->update([
-                'status' => DB::raw("CASE WHEN to_date < CURDATE() THEN 'Expired' ELSE 'Expiring' END"),
-            ]) > 0;
+            ->where('to_date', '>=', $today)
+            ->where('to_date', '<=', $limitDate)
+            ->update(['status' => 'Expiring']) > 0;
     }
     //---------------
     public function findContract(int $id, int $companyId)
