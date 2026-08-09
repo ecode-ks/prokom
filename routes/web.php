@@ -22,6 +22,7 @@ use App\Http\Controllers\TasksController;
 use App\Http\Controllers\TaskReportsController;
 use App\Http\Controllers\WorkingHoursController;
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\SalariesController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -213,6 +214,7 @@ Route::controller(TaskReportsController::class)->group(function () {
     Route::get('/delete-task-report/{id}', 'delete')->name('delete.task.report');
     Route::get('/update-task-report-status/{id}/{status}', 'updateStatus')->name('update.task.report.status');
 });
+
 // Working Hours
 Route::controller(WorkingHoursController::class)->group(function () {
     Route::post('/create-working-hour', 'create')->name('create.working.hour');
@@ -225,4 +227,13 @@ Route::controller(NotificationsController::class)->group(function () {
     Route::get('/notifications', 'read')->name('notifications');
     Route::get('/notifications/open/{id}', 'open')->name('notifications.open');
     Route::get('/notifications/mark-all-read', 'markAllRead')->name('notifications.mark.all');
+});
+
+// Salaries
+Route::controller(SalariesController::class)->group(function () {
+    Route::post('/create-salary', 'create')->name('create.salary');
+    Route::get('/salaries', 'read')->name('salaries');
+    Route::get('/edit-salary/{id}', 'edit')->name('edit.salary');
+    Route::post('/update-salary', 'update')->name('update.salary');
+    Route::get('/delete-salary/{id}', 'delete')->name('delete.salary');
 });
