@@ -146,6 +146,52 @@
             </div>
         </div>
     @endif
+
+    @if(!empty($showMyTasks))
+        <div class="checkin-panel {{ $canCheckIn ? 'mt-4' : '' }}">
+            <div class="checkin-panel-head">
+                <div>
+                    <span class="checkin-kicker">Puna ime</span>
+                    <h5 class="fw-semibold mb-0">Detyrat e mia</h5>
+                </div>
+                <a href="{{ route('tasks') }}" class="small text-decoration-none">Shiko të gjitha</a>
+            </div>
+
+            @if($myTasks->isEmpty())
+                <p class="text-muted mb-0 small">Nuk ke detyra të hapura për momentin.</p>
+            @else
+                <div class="dashboard-task-list">
+                    @foreach($myTasks as $task)
+                        @php
+                            $status = strtolower((string) ($task->status ?? ''));
+                            $deadlineLabel = $task->deadline
+                                ? \Carbon\Carbon::parse($task->deadline)->format('d/m/Y')
+                                : null;
+                            $isOverdue = $task->deadline
+                                && \Carbon\Carbon::parse($task->deadline)->isPast()
+                                && $status !== 'completed';
+                        @endphp
+                        <a href="{{ route('task.details', $task->id) }}" class="dashboard-task-item text-decoration-none">
+                            <div class="min-w-0">
+                                <strong class="d-block text-truncate">{{ $task->title ?: 'Pa titull' }}</strong>
+                                <small class="text-muted">{{ $task->project_name ?? '-' }}</small>
+                            </div>
+                            <div class="dashboard-task-meta">
+                                @if($deadlineLabel)
+                                    <span class="{{ $isOverdue ? 'text-danger' : 'text-muted' }} small text-nowrap">
+                                        {{ $deadlineLabel }}
+                                    </span>
+                                @endif
+                                <span class="checkin-status {{ $status === 'working' || $status === 'in_progress' ? 'is-work' : 'is-idle' }}">
+                                    {{ $task->status ?: 'new' }}
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    @endif
 @endsection
 
 @push('scripts')

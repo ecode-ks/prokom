@@ -228,3 +228,33 @@ header {
     text-align: center;
     padding: 1.5rem;
 }
+
+.dashboard-task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dashboard-task-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid #E5EAF1;
+    border-radius: 0.8rem;
+    background: #F8FAFC;
+    color: #071838;
+}
+
+.dashboard-task-item:hover {
+    border-color: #0060aa;
+    background: #fff;
+}
+
+.dashboard-task-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-shrink: 0;
+}

@@ -89,6 +89,27 @@ class TasksRepository
             ->get(['id', 'employee']);
     }
     //---------------
+    public function getMyOpenTasks(int $employeeId, int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table . ' as t')
+            ->join('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
+            ->whereRaw('LOWER(t.status) <> ?', ['completed'])
+            ->select(
+                't.id',
+                't.title',
+                't.deadline',
+                't.status',
+                'p.project_name'
+            )
+            ->orderByRaw('CASE WHEN t.deadline IS NULL THEN 1 ELSE 0 END')
+            ->orderBy('t.deadline')
+            ->orderByDesc('t.id')
+            ->limit($limit)
+            ->get();
+    }
+    //---------------
     public function getEmployeeNamesByIds(array $ids): array
     {
         if (count($ids) === 0) {

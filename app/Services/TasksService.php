@@ -183,4 +183,13 @@ class TasksService
     {
         return $this->repository->getTaskStatistics($companyId, $search);
     }
+    //---------------
+    public function getMyOpenTasks(int $employeeId, int $companyId, int $limit = 5)
+    {
+        if ($employeeId <= 0 || $companyId <= 0) {
+            return collect();
+        }
+
+        return $this->repository->getMyOpenTasks($employeeId, $companyId, $limit);
+    }
 }
