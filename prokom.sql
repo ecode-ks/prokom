@@ -134,7 +134,12 @@ CREATE TABLE IF NOT EXISTS `extra_hours` (
   `employee_id` int(11) DEFAULT NULL,
   `hours` varchar(255) DEFAULT NULL,
   `type` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `company_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_extra_hours_companies` (`company_id`),
+  KEY `FK_extra_hours_employees` (`employee_id`),
+  CONSTRAINT `FK_extra_hours_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_extra_hours_employees` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.
@@ -264,9 +269,12 @@ CREATE TABLE IF NOT EXISTS `salaries` (
   `date` date DEFAULT NULL,
   `employee_id` int(11) DEFAULT NULL,
   `salary` decimal(20,2) DEFAULT NULL,
+  `company_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_salaries_employees` (`employee_id`),
-  CONSTRAINT `FK_salaries_employees` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+  KEY `FK_salaries_companies` (`company_id`),
+  CONSTRAINT `FK_salaries_employees` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `FK_salaries_companies` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Data exporting was unselected.
