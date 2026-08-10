@@ -104,6 +104,97 @@ class CheckInService
         return true;
     }
     //---------------
+    public function getCheckIns(int $limit, string $search = '')
+    {
+        $limit = $limit ?: 10;
+        if (!empty($search)) {
+            return $this->repository->getSearchedCheckIns($limit, $this->companyId, $search);
+        }
+
+        return $this->repository->getCheckIns($limit, $this->companyId);
+    }
+    //---------------
+    public function findOrFail(int $id): bool
+    {
+        return $this->repository->checkCheckinExist($id, $this->companyId);
+    }
+    //---------------
+    public function getCheckInById(int $id)
+    {
+        return $this->repository->findCheckInDetails($id, $this->companyId);
+    }
+    //---------------
+    public function acceptCheckIn(int $id): bool
+    {
+        if (!$this->repository->checkCheckinExist($id, $this->companyId)) {
+            return false;
+        }
+
+        return $this->repository->accept($id, $this->companyId);
+    }
+    //---------------
+    public function deleteCheckIn(int $id): bool
+    {
+        if (!$this->repository->checkCheckinExist($id, $this->companyId)) {
+            return false;
+        }
+
+        return $this->repository->delete($id, $this->companyId);
+    }
+    //---------------
+    public function getMapLocations(): array
+    {
+        $rows = $this->repository->getActiveMapLocations($this->companyId);
+        $locations = [];
+
+        foreach ($rows as $row) {
+            $onPause = !empty($row->pause_start_time) && empty($row->pause_end_time);
+            $rawLocation = $onPause && !empty($row->pause_start_location)
+                ? $row->pause_start_location
+                : ($row->check_in_location ?? null);
+
+            $coords = $this->parseLatLng($rawLocation);
+            if (!$coords) {
+                continue;
+            }
+
+            $statusLabel = $onPause
+                ? 'Në pauzë'
+                : (!empty($row->status) ? $row->status : 'Under Review');
+
+            $locations[] = [
+                'id' => (int) $row->id,
+                'name' => $row->employee,
+                'lat' => $coords['lat'],
+                'lng' => $coords['lng'],
+                'status' => $statusLabel,
+                'project' => $row->project_names ?: '-',
+                'check_in_time' => $row->check_in_time
+                    ? Carbon::parse($row->check_in_time)->format('d/m/Y H:i')
+                    : '-',
+            ];
+        }
+
+        return $locations;
+    }
+    //---------------
+    private function parseLatLng(?string $value): ?array
+    {
+        if (empty($value) || !str_contains($value, ',')) {
+            return null;
+        }
+
+        [$lat, $lng] = array_map('trim', explode(',', $value, 2));
+        if (!is_numeric($lat) || !is_numeric($lng)) {
+            return null;
+        }
+
+        return [
+            'lat' => (float) $lat,
+            'lng' => (float) $lng,
+        ];
+    }
+    //---------------
     private function syncToWorkingHours(object $checkin, ?string $checkOutTime): void
     {
         if (empty($checkin->check_in_time) || empty($checkOutTime)) {

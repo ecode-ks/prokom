@@ -8,6 +8,14 @@
     <small class="d-block text-uppercase fw-semibold opacity-75" style="letter-spacing:.06em;font-size:.75rem;">Dashboard · {{ date('d/m/Y') }}</small>
     <h3 class="fw-semibold pt-2 mb-4">Mirë se erdhët, <span class="txt-lightblue">{{ session('user') ?? session('company') }}</span></h3>
 
+    @if(session('role') === 'company')
+        <div class="mb-4">
+            <a href="{{ route('checkins.map') }}" class="btn btn-darkblue rounded-3">
+                <i class="fa-solid fa-map-location-dot me-1"></i> Harta e prezencës
+            </a>
+        </div>
+    @endif
+
     @if(!empty($isManager) && $managerKpis)
         <div class="row g-3 mb-4">
             <div class="col-6 col-lg-3">
@@ -112,17 +120,19 @@
                             </form>
                         @else
                             @if(!$checkIn->pause_start_time)
-                                <form action="{{ route('start.break') }}" method="post" class="flex-fill">
+                                <form action="{{ route('start.break') }}" method="post" id="startBreakForm" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $checkIn->id }}">
+                                    <input type="hidden" name="pause_start_location" id="pause_start_location">
                                     <button type="submit" class="btn btn-outline-secondary w-100 rounded-3 py-3 fw-semibold">
                                         <i class="fa-solid fa-mug-saucer me-2"></i> Starto Pauzën
                                     </button>
                                 </form>
                             @elseif(!$checkIn->pause_end_time)
-                                <form action="{{ route('end.break') }}" method="post" class="flex-fill">
+                                <form action="{{ route('end.break') }}" method="post" id="endBreakForm" class="flex-fill">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $checkIn->id }}">
+                                    <input type="hidden" name="pause_end_location" id="pause_end_location">
                                     <button type="submit" class="btn btn-outline-secondary w-100 rounded-3 py-3 fw-semibold">
                                         <i class="fa-solid fa-play me-2"></i> Përfundo Pauzën
                                     </button>
@@ -369,6 +379,8 @@
     }
 
     wireLocationForm('startWorkForm', 'check_in_location');
+    wireLocationForm('startBreakForm', 'pause_start_location');
+    wireLocationForm('endBreakForm', 'pause_end_location');
     wireLocationForm('endWorkForm', 'check_out_location');
 })();
 </script>

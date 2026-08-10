@@ -1,82 +1,96 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Check In Details')
+@section('title', 'Detajet e Check-in')
 
 {{-- Page Content --}}
 @section('content')
-    <small class="d-block text-uppercase"><a href="{{ route('checkins') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> All Check In Requests</a></small>
-    <h3 class="fw-semibold pt-2">Check In <span class="txt-lightblue fw-semibold">Details</span></h3>
-    <p class="text-muted">Review check in and check out facts, timestamps, and captured location.</p>
+    <small class="d-block text-uppercase"><a href="{{ route('checkins') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
+    <h3 class="fw-semibold pt-2">Detajet e Check-in</h3>
+    <p class="text-muted">Shiko kohët, lokacionin dhe statusin e check-in.</p>
     <hr class="mb-4">
 
     <div class="card">
         <div class="card-header rounded-top-4 bg-white">
-            <span><i class="fa-solid fa-circle-info txt-lightblue py-2"></i> Request Details</span>
+            <span><i class="fa-solid fa-circle-info txt-lightblue py-2"></i> Detajet</span>
         </div>
         <div class="card-body py-4">
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-hashtag"></i> Request ID : </span>{{ $checkinDetails->id }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user"></i> Employee : </span>{{ $checkinDetails->employee }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-phone"></i> Phone : </span>{{ $checkinDetails->phone }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-envelope"></i> Email : </span>{{ $checkinDetails->email }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Status : </span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-hashtag"></i> ID : </span>{{ $checkinDetails->id }}</span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user"></i> Punëtori : </span>{{ $checkinDetails->employee }}</span>
+            @if(!empty($checkinDetails->phone))
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-phone"></i> Telefoni : </span>{{ $checkinDetails->phone }}</span>
+            @endif
+            @if(!empty($checkinDetails->email))
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-envelope"></i> Email : </span>{{ $checkinDetails->email }}</span>
+            @endif
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span>
                 @if(strtolower((string) $checkinDetails->status) === 'accepted')
                     <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ $checkinDetails->status }}</span>
                 @else
-                    <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ $checkinDetails->status }}</span>
+                    <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ $checkinDetails->status ?: 'Under Review' }}</span>
                 @endif
             </span>
 
             @if(session('role') !== 'employee')
-                <div class="mb-3">
+                <div class="mb-3 mt-3">
                     @if(strtolower((string) $checkinDetails->status) !== 'accepted')
-                        <a href="{{ route('accept.checkin', $checkinDetails->id) }}" class="btn btn-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-check"></i> Accept</a>
+                        <a href="{{ route('accept.checkin', $checkinDetails->id) }}" class="btn btn-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-check"></i> Prano</a>
                     @endif
-                    <a href="{{ route('delete.checkin', $checkinDetails->id) }}" class="btn btn-danger btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-trash"></i> Delete</a>
+                    <a href="{{ route('delete.checkin', $checkinDetails->id) }}" class="btn btn-danger btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-trash"></i> Fshi</a>
                 </div>
             @endif
 
             <hr>
 
-            <h6 class="fw-semibold">Check In</h6>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-clock"></i> Time : </span>{{ $checkinDetails->check_in_time ? \Carbon\Carbon::parse($checkinDetails->check_in_time)->format('d/m/Y H:i') : '-' }}</span>
-            <span class="d-block mb-2">
-                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> Location : </span>
+            <h6 class="fw-semibold">Check-in</h6>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-clock"></i> Koha : </span>{{ $checkinDetails->check_in_time ? \Carbon\Carbon::parse($checkinDetails->check_in_time)->format('d/m/Y H:i') : '-' }}</span>
+            <span class="d-block mb-3">
+                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> Lokacioni : </span>
                 @if(!empty($checkinDetails->check_in_location))
                     <a href="https://www.google.com/maps?q={{ urlencode($checkinDetails->check_in_location) }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                        <i class="fa-solid fa-up-right-from-square"></i> Open in Maps
+                        <i class="fa-solid fa-up-right-from-square"></i> Hap në Maps
                     </a>
                 @else
                     -
                 @endif
             </span>
-            <div class="card card-body rounded-4 mb-4">
-                @if(!empty($checkinDetails->check_in_fact))
-                    <img src="{{ Storage::url($checkinDetails->check_in_fact) }}" alt="Check In Fact" class="img-fluid rounded-3 border" style="max-height: 420px; object-fit: contain;">
-                @else
-                    <span class="text-muted">No check in fact uploaded.</span>
-                @endif
-            </div>
 
-            <h6 class="fw-semibold">Check Out</h6>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-clock"></i> Time : </span>{{ $checkinDetails->check_out_time ? \Carbon\Carbon::parse($checkinDetails->check_out_time)->format('d/m/Y H:i') : '-' }}</span>
+            <h6 class="fw-semibold">Pauza</h6>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-clock"></i> Fillimi : </span>{{ $checkinDetails->pause_start_time ? \Carbon\Carbon::parse($checkinDetails->pause_start_time)->format('d/m/Y H:i') : '-' }}</span>
             <span class="d-block mb-2">
-                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> Location : </span>
+                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> Lok. fillimit : </span>
+                @if(!empty($checkinDetails->pause_start_location))
+                    <a href="https://www.google.com/maps?q={{ urlencode($checkinDetails->pause_start_location) }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        <i class="fa-solid fa-up-right-from-square"></i> Hap në Maps
+                    </a>
+                @else
+                    -
+                @endif
+            </span>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-clock"></i> Mbarimi : </span>{{ $checkinDetails->pause_end_time ? \Carbon\Carbon::parse($checkinDetails->pause_end_time)->format('d/m/Y H:i') : '-' }}</span>
+            <span class="d-block mb-3">
+                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> Lok. mbarimit : </span>
+                @if(!empty($checkinDetails->pause_end_location))
+                    <a href="https://www.google.com/maps?q={{ urlencode($checkinDetails->pause_end_location) }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        <i class="fa-solid fa-up-right-from-square"></i> Hap në Maps
+                    </a>
+                @else
+                    -
+                @endif
+            </span>
+
+            <h6 class="fw-semibold">Check-out</h6>
+            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-clock"></i> Koha : </span>{{ $checkinDetails->check_out_time ? \Carbon\Carbon::parse($checkinDetails->check_out_time)->format('d/m/Y H:i') : '-' }}</span>
+            <span class="d-block mb-2">
+                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> Lokacioni : </span>
                 @if(!empty($checkinDetails->check_out_location))
                     <a href="https://www.google.com/maps?q={{ urlencode($checkinDetails->check_out_location) }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-                        <i class="fa-solid fa-up-right-from-square"></i> Open in Maps
+                        <i class="fa-solid fa-up-right-from-square"></i> Hap në Maps
                     </a>
                 @else
                     -
                 @endif
             </span>
-            <div class="card card-body rounded-4">
-                @if(!empty($checkinDetails->check_out_fact))
-                    <img src="{{ Storage::url($checkinDetails->check_out_fact) }}" alt="Check Out Fact" class="img-fluid rounded-3 border" style="max-height: 420px; object-fit: contain;">
-                @else
-                    <span class="text-muted">No check out fact uploaded yet.</span>
-                @endif
-            </div>
         </div>
     </div>
 @endsection

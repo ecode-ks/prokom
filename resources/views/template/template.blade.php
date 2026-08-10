@@ -9,6 +9,7 @@
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
+        @stack('styles')
     </head>
     <body>
         {{-- Load spinner --}}
@@ -189,8 +190,8 @@
                                 @endif
                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Check In' ? 'sidebar-active' : 'sidebar-link' }}">
-                                        <a href="" class="text-decoration-none text-light">
-                                            <i class="fa-solid fa-user-check mx-2 opacity-75"></i> Check In
+                                        <a href="{{ route('checkins') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-user-check mx-2 opacity-75"></i> Prezenca
                                         </a>
                                     </li>
                                 @endif
@@ -311,7 +312,7 @@
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employees' ? 'bg-darkblue text-light' : '' }}" href="{{ route('employees') }}"><i class="fa-solid fa-users me-2 opacity-75"></i> Punëtorët</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href=""><i class="fa-solid fa-user-check me-2 opacity-75"></i> Check In</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href="{{ route('checkins') }}"><i class="fa-solid fa-user-check me-2 opacity-75"></i> Prezenca </a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('working.hours') }}"><i class="fa-solid fa-clock me-2 opacity-75"></i> Orët e Punës</a></li>
