@@ -56,4 +56,9 @@ class SalariesService
         }
         return $this->repository->delete($id, $this->companyId);
     }
+    //---------------
+    public function calculateSalary(string $fromDate, string $toDate, int $employeeId)
+    {
+        return $this->repository->calculate($fromDate, $toDate, $employeeId, $this->companyId);
+    }
 }

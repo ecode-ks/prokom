@@ -163,6 +163,11 @@
                                                 <i class="fa-solid fa-file-invoice-dollar mx-2 opacity-75"></i> Krijo Ofertë
                                             </a>
                                         </li>
+                                        <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Calculate Salary' ? 'sidebar-active' : 'sidebar-link' }}">
+                                            <a href="{{ route('calculate.salary') }}" class="text-decoration-none text-light">
+                                                <i class="fa-solid fa-calculator mx-2 opacity-75"></i> Kalkulo Pagat
+                                            </a>
+                                        </li>
                                         <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Salaries' ? 'sidebar-active' : 'sidebar-link' }}">
                                             <a href="{{ route('salaries') }}" class="text-decoration-none text-light">
                                                 <i class="fa-solid fa-money-bill-wave mx-2 opacity-75"></i> Pagat
