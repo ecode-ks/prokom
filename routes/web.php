@@ -244,6 +244,7 @@ Route::controller(SalariesController::class)->group(function () {
     Route::get('/delete-salary/{id}', 'delete')->name('delete.salary');
     Route::get('/calculate-salary', 'calculateSalary')->name('calculate.salary');
     Route::get('/calculate', 'calculate')->name('calculate');
+    Route::post('/save-calculated-salaries', 'saveCalculated')->name('save.calculated.salaries');
 });
 
 // Extra Hours

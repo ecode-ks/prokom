@@ -360,3 +360,238 @@ header {
 .dashboard-kpi--blue strong { color: #0060aa; }
 .dashboard-kpi--warn strong { color: #b45309; }
 .dashboard-kpi--teal strong { color: #0f766e; }
+
+/* Calculate salary */
+.salary-calc-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.salary-calc-filters {
+    background: #fff;
+    border: 1px solid #E8EDF3;
+    border-radius: 1.15rem;
+    padding: 1.25rem 1.35rem;
+}
+
+.salary-calc-filters-head {
+    margin-bottom: 1.1rem;
+}
+
+.salary-calc-list {
+    background: #fff;
+    border: 1px solid #E8EDF3;
+    border-radius: 1.15rem;
+    overflow: hidden;
+}
+
+.salary-calc-list-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.35rem;
+    border-bottom: 1px solid #EEF2F6;
+}
+
+.salary-calc-count {
+    color: #6B7C93;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.salary-calc-item {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.1fr) minmax(0, 2fr);
+    gap: 1.25rem;
+    padding: 1.15rem 1.35rem;
+    border-bottom: 1px solid #EEF2F6;
+    transition: background-color 0.15s ease;
+}
+
+.salary-calc-item:last-child {
+    border-bottom: 0;
+}
+
+.salary-calc-item:hover {
+    background: #F8FAFC;
+}
+
+.salary-calc-item-main {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-width: 0;
+}
+
+.salary-calc-avatar {
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.85rem;
+    background: #071838;
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+}
+
+.salary-calc-name {
+    display: block;
+    color: #071838;
+    font-size: 1rem;
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+}
+
+.salary-calc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    color: #6B7C93;
+    font-size: 0.8rem;
+}
+
+.salary-calc-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #C5D0DC;
+}
+
+.salary-calc-metrics {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
+    align-items: stretch;
+}
+
+.salary-calc-metric {
+    background: #F8FAFC;
+    border: 1px solid #E8EDF3;
+    border-radius: 0.85rem;
+    padding: 0.7rem 0.8rem;
+    min-width: 0;
+    text-align: center;
+}
+
+.salary-calc-metric small {
+    display: block;
+    color: #6B7C93;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+}
+
+.salary-calc-metric strong {
+    display: block;
+    color: #071838;
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+}
+
+.salary-calc-metric > span {
+    display: block;
+    margin-top: 0.25rem;
+    color: #6B7C93;
+    font-size: 0.72rem;
+    line-height: 1.3;
+}
+
+.salary-calc-metric--extra {
+    text-align: center;
+}
+
+.salary-calc-extra-total {
+    display: block;
+    text-align: center;
+    margin: 0.15rem 0 0.45rem;
+}
+
+.salary-calc-extra-eq {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    color: #6B7C93;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.salary-calc-extra-x {
+    color: #071838;
+    font-weight: 700;
+}
+
+.salary-calc-metric--total {
+    background: #071838;
+    border-color: #071838;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.salary-calc-metric--total small,
+.salary-calc-metric--total strong {
+    color: #fff;
+}
+
+.salary-calc-empty {
+    background: #fff;
+    border: 1px dashed #D7E0EA;
+    border-radius: 1.15rem;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.salary-calc-empty-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    margin: 0 auto 1rem;
+    border-radius: 1rem;
+    background: #F3F6FA;
+    color: #6B7C93;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.salary-calc-pagination {
+    padding: 1rem 1.35rem 1.25rem;
+    border-top: 1px solid #EEF2F6;
+}
+
+@media (max-width: 991.98px) {
+    .salary-calc-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .salary-calc-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .salary-calc-metric--total {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .salary-calc-metrics {
+        grid-template-columns: 1fr;
+    }
+}

@@ -126,7 +126,7 @@ class SalariesController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'from_date' => 'required|date',
-            'to_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
             'employee_id' => 'nullable|integer',
         ]);
         if ($validator->fails()) {
@@ -138,10 +138,13 @@ class SalariesController extends Controller
             $employees = $this->employeeService->getAllEmployees();
 
             try {
-                $calculations = $this->service->calculateSalary($fromDate, $toDate, $employeeId ?? 0);
+                $employeeFilter = (int) ($employeeId ?? 0);
+                $calculations = $this->service->calculateSalary($fromDate, $toDate, $employeeFilter, 10);
+                $summary = $this->service->getCalculationSummary($fromDate, $toDate, $employeeFilter);
                 return view('management.calculate-salary')
                     ->with('page', 'Calculate Salary')
                     ->with('calculations', $calculations)
+                    ->with('summary', $summary)
                     ->with('fromDate', $fromDate)
                     ->with('toDate', $toDate)
                     ->with('employeeId', $employeeId)
@@ -149,6 +152,36 @@ class SalariesController extends Controller
             } catch (\Exception $e) {
                 return redirect()->route('calculate.salary')->with('error', 'Ndodhi një problem gjatë kalkulimit të pagës. Ju lutem provoni përsëri.'. $e->getMessage());
             }
+        }
+    }
+    //---------------
+    public function saveCalculated(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'from_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+            'employee_id' => 'nullable|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->route('calculate.salary')->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+        }
+
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+        $employeeId = (int) ($request->input('employee_id') ?? 0);
+
+        try {
+            $this->service->saveCalculatedSalaries($fromDate, $toDate, $employeeId);
+            return redirect()->route('salaries')->with('success', 'Pagat u ruajtën me sukses dhe u regjistruan si shpenzim.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('calculate', [
+                    'from_date' => $fromDate,
+                    'to_date' => $toDate,
+                    'employee_id' => $employeeId ?: null,
+                ])
+                ->with('error', 'Ndodhi një problem gjatë ruajtjes së pagave. ' . $e->getMessage());
         }
     }
 }
