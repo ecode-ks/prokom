@@ -108,4 +108,47 @@ class SalariesController extends Controller
             }
         }
     }
+    //---------------
+    public function calculateSalary()
+    {
+        $page = 'Calculate Salary';
+        $employees = $this->employeeService->getAllEmployees();
+        if($employees->isEmpty()) {
+            return redirect()->route('calculate.salary')->with('error', 'Ju lutem regjistroni punonjës para se të kalkuloni paga.');
+        }
+        return view('management.calculate-salary')
+            ->with('page', $page)
+            ->with('calculations', collect())
+            ->with('employees', $employees);
+    }
+    //---------------
+    public function calculate(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'from_date' => 'required|date',
+            'to_date' => 'required|date',
+            'employee_id' => 'nullable|integer',
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('calculate.salary')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+        } else {
+            $fromDate = $request->input('from_date');
+            $toDate = $request->input('to_date');
+            $employeeId = $request->input('employee_id');
+            $employees = $this->employeeService->getAllEmployees();
+
+            try {
+                $calculations = $this->service->calculateSalary($fromDate, $toDate, $employeeId ?? 0);
+                return view('management.calculate-salary')
+                    ->with('page', 'Calculate Salary')
+                    ->with('calculations', $calculations)
+                    ->with('fromDate', $fromDate)
+                    ->with('toDate', $toDate)
+                    ->with('employeeId', $employeeId)
+                    ->with('employees', $employees);
+            } catch (\Exception $e) {
+                return redirect()->route('calculate.salary')->with('error', 'Ndodhi një problem gjatë kalkulimit të pagës. Ju lutem provoni përsëri.'. $e->getMessage());
+            }
+        }
+    }
 }

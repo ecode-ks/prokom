@@ -72,4 +72,8 @@ class SalariesRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function calculate(string $fromDate, string $toDate, int $employeeId, ?int $companyId)
+    {
+    }
 }

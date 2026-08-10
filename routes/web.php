@@ -237,6 +237,8 @@ Route::controller(SalariesController::class)->group(function () {
     Route::get('/edit-salary/{id}', 'edit')->name('edit.salary');
     Route::post('/update-salary', 'update')->name('update.salary');
     Route::get('/delete-salary/{id}', 'delete')->name('delete.salary');
+    Route::get('/calculate-salary', 'calculateSalary')->name('calculate.salary');
+    Route::get('/calculate', 'calculate')->name('calculate');
 });
 
 // Extra Hours
