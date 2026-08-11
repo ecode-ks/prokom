@@ -317,9 +317,53 @@ class TasksRepository
 
         return $query
             ->selectRaw('COUNT(*) as total_count')
-            ->selectRaw("SUM(CASE WHEN t.status = 'new' THEN 1 ELSE 0 END) as new_count")
-            ->selectRaw("SUM(CASE WHEN t.status = 'working' THEN 1 ELSE 0 END) as working_count")
-            ->selectRaw("SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END) as completed_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN t.status = 'new' THEN 1 ELSE 0 END), 0) as new_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN t.status = 'working' THEN 1 ELSE 0 END), 0) as working_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN t.status = 'completed' THEN 1 ELSE 0 END), 0) as completed_count")
             ->first();
+    }
+    //---------------
+    public function getEmployeeFinishedTasksStatistics(int $companyId, int $employeeId, string $fromDate, string $toDate): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('status', 'completed')
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->whereRaw('FIND_IN_SET(?, assigned_to)', [$employeeId])
+            ->selectRaw('COUNT(*) as finished_tasks_count')
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed_count")
+            ->first();
+    }
+    //---------------
+    public function getEmployeeTaskCompletionStatistics(int $companyId, int $employeeId, string $fromDate, string $toDate): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->whereRaw('FIND_IN_SET(?, assigned_to)', [$employeeId])
+            ->selectRaw('COUNT(*) as total_count')
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END), 0) as completed_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status <> 'completed' THEN 1 ELSE 0 END), 0) as uncompleted_count")
+            ->first();
+    }
+    //---------------
+    public function getEmployeeTaskEntries(int $companyId, int $employeeId, string $fromDate, string $toDate, int $limit = 10, string $cursorName = 'tasks_cursor')
+    {
+        return DB::table($this->table . ' as t')
+            ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
+            ->where('t.company_id', $companyId)
+            ->whereBetween('t.date', [$fromDate, $toDate])
+            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
+            ->orderByDesc('t.date')
+            ->orderByDesc('t.id')
+            ->cursorPaginate($limit, [
+                't.id',
+                't.date',
+                't.title',
+                't.status',
+                't.deadline',
+                'p.project_name',
+            ], $cursorName)
+            ->withQueryString();
     }
 }

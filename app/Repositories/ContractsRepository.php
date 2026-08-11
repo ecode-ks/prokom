@@ -62,10 +62,36 @@ class ContractsRepository
         }
 
         return $query
-            ->selectRaw("SUM(CASE WHEN c.status = 'Active' THEN 1 ELSE 0 END) as active_count")
-            ->selectRaw("SUM(CASE WHEN c.status = 'Expiring' THEN 1 ELSE 0 END) as expiring_count")
-            ->selectRaw("SUM(CASE WHEN c.status = 'Expired' THEN 1 ELSE 0 END) as expired_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN c.status = 'Active' THEN 1 ELSE 0 END), 0) as active_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN c.status = 'Expiring' THEN 1 ELSE 0 END), 0) as expiring_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN c.status = 'Expired' THEN 1 ELSE 0 END), 0) as expired_count")
             ->first();
+    }
+    //---------------
+    public function getEmployeeContractStatistics(int $companyId, int $employeeId, string $fromDate, string $toDate): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->whereDate('from_date', '<=', $toDate)
+            ->whereDate('to_date', '>=', $fromDate)
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END), 0) as active_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Expiring' THEN 1 ELSE 0 END), 0) as expiring_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Expired' THEN 1 ELSE 0 END), 0) as expired_count")
+            ->selectRaw('COUNT(*) as total_count')
+            ->first();
+    }
+    //---------------
+    public function getEmployeeContractEntries(int $companyId, int $employeeId, string $fromDate, string $toDate, int $limit = 10, string $cursorName = 'contracts_cursor')
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->whereDate('from_date', '<=', $toDate)
+            ->whereDate('to_date', '>=', $fromDate)
+            ->orderByDesc('id')
+            ->cursorPaginate($limit, ['id', 'position', 'from_date', 'to_date', 'status', 'salary', 'extra_hours_price', 'weekend_hours_price'], $cursorName)
+            ->withQueryString();
     }
     //---------------
     public function getContractDetails(int $id, int $companyId)

@@ -75,6 +75,11 @@ class SalariesService
         return $this->repository->calculateSummary($fromDate, $toDate, $employeeId, $this->companyId);
     }
     //---------------
+    public function generateEmployeeSalaryReport(string $fromDate, string $toDate, int $employeeId): array
+    {
+        return $this->getCalculationSummary($fromDate, $toDate, $employeeId);
+    }
+    //---------------
     public function saveCalculatedSalaries(string $fromDate, string $toDate, int $employeeId): float
     {
         $calculations = $this->repository->calculateAll($fromDate, $toDate, $employeeId, $this->companyId);

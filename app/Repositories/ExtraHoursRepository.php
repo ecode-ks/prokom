@@ -72,4 +72,35 @@ class ExtraHoursRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function getEmployeeExtraHoursStatistics(int $companyId, int $employeeId, string $fromDate, string $toDate, string $type): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->where('type', $type)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->selectRaw('COALESCE(COUNT(*), 0) as entry_count')
+            ->selectRaw('COALESCE(SUM(CAST(hours AS DECIMAL(12,2))), 0) as total_hours')
+            ->first();
+    }
+    //---------------
+    public function getEmployeeExtraHoursEntries(int $companyId, int $employeeId, string $fromDate, string $toDate, string $type, int $limit = 10, string $cursorName = 'extra_hours_cursor')
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->where('type', $type)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->cursorPaginate($limit, [
+                'id',
+                'date',
+                'type',
+                'hours',
+                DB::raw('COALESCE(CAST(hours AS DECIMAL(12,2)), 0) as hours_decimal'),
+            ], $cursorName)
+            ->withQueryString();
+    }
 }

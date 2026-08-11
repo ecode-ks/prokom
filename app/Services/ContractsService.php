@@ -42,6 +42,20 @@ class ContractsService
         return $this->repository->getContractStatistics($companyId, $search);
     }
     //---------------
+    public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        $companyId = (int) (session('company_id') ?? 0);
+
+        return $this->repository->getEmployeeContractStatistics($companyId, $employeeId, $fromDate, $toDate);
+    }
+    //---------------
+    public function getEmployeeReportEntries(string $fromDate, string $toDate, int $employeeId, int $limit = 10, string $cursorName = 'contracts_cursor')
+    {
+        $companyId = (int) (session('company_id') ?? 0);
+
+        return $this->repository->getEmployeeContractEntries($companyId, $employeeId, $fromDate, $toDate, $limit, $cursorName);
+    }
+    //---------------
     public function getContractDetails(int $id, int $companyId)
     {
         return $this->repository->getContractDetails($id, $companyId);

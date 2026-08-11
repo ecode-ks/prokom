@@ -83,11 +83,37 @@ class VacationsRepository
         }
 
         return $query
-            ->selectRaw("SUM(CASE WHEN v.status IN ('Pending Manager', 'Reviewing') THEN 1 ELSE 0 END) as pending_manager_count")
-            ->selectRaw("SUM(CASE WHEN v.status = 'Pending HR' THEN 1 ELSE 0 END) as pending_hr_count")
-            ->selectRaw("SUM(CASE WHEN v.status = 'Approved' THEN 1 ELSE 0 END) as approved_count")
-            ->selectRaw("SUM(CASE WHEN v.status = 'Refused' THEN 1 ELSE 0 END) as refused_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN v.status IN ('Pending Manager', 'Reviewing') THEN 1 ELSE 0 END), 0) as pending_manager_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN v.status = 'Pending HR' THEN 1 ELSE 0 END), 0) as pending_hr_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN v.status = 'Approved' THEN 1 ELSE 0 END), 0) as approved_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN v.status = 'Refused' THEN 1 ELSE 0 END), 0) as refused_count")
             ->first();
+    }
+    //---------------
+    public function getEmployeeVacationStatistics(int $companyId, int $employeeId, string $fromDate, string $toDate): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->whereBetween('from_date', [$fromDate, $toDate])
+            ->selectRaw("COALESCE(SUM(CASE WHEN status IN ('Pending Manager', 'Reviewing') THEN 1 ELSE 0 END), 0) as pending_manager_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Pending HR' THEN 1 ELSE 0 END), 0) as pending_hr_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Approved' THEN 1 ELSE 0 END), 0) as approved_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Refused' THEN 1 ELSE 0 END), 0) as refused_count")
+            ->selectRaw('COUNT(*) as total_count')
+            ->first();
+    }
+    //---------------
+    public function getEmployeeVacationEntries(int $companyId, int $employeeId, string $fromDate, string $toDate, int $limit = 10, string $cursorName = 'vacations_cursor')
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->whereDate('from_date', '<=', $toDate)
+            ->whereDate('to_date', '>=', $fromDate)
+            ->orderByDesc('from_date')
+            ->cursorPaginate($limit, ['id', 'date', 'from_date', 'to_date', 'type', 'status', 'comment'], $cursorName)
+            ->withQueryString();
     }
     //---------------
     public function getActiveApprovedLeaves(int $companyId): array
