@@ -122,6 +122,21 @@ class TasksService
         return ['new', 'working', 'review', 'blocked', 'completed'];
     }
     //---------------
+    public function generateEmployeeFinishedTasksReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        return $this->repository->getEmployeeFinishedTasksStatistics((int) (session('company_id') ?? 0), $employeeId, $fromDate, $toDate);
+    }
+    //---------------
+    public function getEmployeeTaskCompletionReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        return $this->repository->getEmployeeTaskCompletionStatistics((int) (session('company_id') ?? 0), $employeeId, $fromDate, $toDate);
+    }
+    //---------------
+    public function getEmployeeTaskEntriesReport(string $fromDate, string $toDate, int $employeeId, int $limit = 10, string $cursorName = 'tasks_cursor')
+    {
+        return $this->repository->getEmployeeTaskEntries((int) (session('company_id') ?? 0), $employeeId, $fromDate, $toDate, $limit, $cursorName);
+    }
+    //---------------
     public function updateTask(int $id, array $data, int $companyId): bool
     {
         $task = $this->repository->findTask($id, $companyId);

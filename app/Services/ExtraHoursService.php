@@ -56,4 +56,26 @@ class ExtraHoursService
         }
         return $this->repository->delete($id, $this->companyId);
     }
+    //---------------
+    public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        return $this->repository->getEmployeeExtraHoursStatistics($this->companyId, $employeeId, $fromDate, $toDate, 'Orët jashtë orarit');
+    }
+    //---------------
+    public function generateExtraWeekendHoursReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        return $this->repository->getEmployeeExtraHoursStatistics($this->companyId, $employeeId, $fromDate, $toDate, 'Orët në vikend');
+    }
+    //---------------
+    public function getEmployeeReportEntries(string $fromDate, string $toDate, int $employeeId, string $type, float $pricePerHour = 0.0, int $limit = 10, string $cursorName = 'extra_hours_cursor')
+    {
+        return $this->repository->getEmployeeExtraHoursEntries($this->companyId, $employeeId, $fromDate, $toDate, $type, $limit, $cursorName)
+            ->through(function ($row) use ($pricePerHour) {
+            $hours = (float) ($row->hours_decimal ?? 0);
+            $row->price_per_hour = $pricePerHour;
+            $row->value_eur = round($hours * $pricePerHour, 2);
+
+            return $row;
+            });
+    }
 }

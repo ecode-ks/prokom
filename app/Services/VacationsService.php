@@ -138,6 +138,20 @@ class VacationsService
         return $this->repository->getVacationStatistics($companyId, $search, $employeeId);
     }
     //---------------
+    public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        $companyId = (int) session('company_id');
+
+        return $this->repository->getEmployeeVacationStatistics($companyId, $employeeId, $fromDate, $toDate);
+    }
+    //---------------
+    public function getEmployeeReportEntries(string $fromDate, string $toDate, int $employeeId, int $limit = 10, string $cursorName = 'vacations_cursor')
+    {
+        $companyId = (int) session('company_id');
+
+        return $this->repository->getEmployeeVacationEntries($companyId, $employeeId, $fromDate, $toDate, $limit, $cursorName);
+    }
+    //---------------
     public function findOrFail(int $id, ?int $companyId = null): bool
     {
         $companyId = $companyId ?: (int) session('company_id');

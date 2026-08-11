@@ -48,4 +48,14 @@ class WorkingHoursService
     {
         return $this->repository->getWorkingHoursStatistics((int) $this->companyId);
     }
+    //---------------
+    public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId): object
+    {
+        return $this->repository->getEmployeeWorkingHoursStatistics($this->companyId, $employeeId, $fromDate, $toDate);
+    }
+    //---------------
+    public function getEmployeeReportEntries(string $fromDate, string $toDate, int $employeeId, int $limit = 10, string $cursorName = 'working_hours_cursor')
+    {
+        return $this->repository->getEmployeeWorkingHoursEntries($this->companyId, $employeeId, $fromDate, $toDate, $limit, $cursorName);
+    }
 }

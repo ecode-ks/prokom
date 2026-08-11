@@ -24,6 +24,7 @@ use App\Http\Controllers\WorkingHoursController;
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SalariesController;
 use App\Http\Controllers\ExtraHoursController;
+use App\Http\Controllers\ReportsController;
 
 // Users
 Route::controller(UsersController::class)->group(function () {
@@ -254,4 +255,10 @@ Route::controller(ExtraHoursController::class)->group(function () {
     Route::get('/edit-extra-hour/{id}', 'edit')->name('edit.extra.hour');
     Route::post('/update-extra-hour', 'update')->name('update.extra.hour');
     Route::get('/delete-extra-hour/{id}', 'delete')->name('delete.extra.hour');
+});
+
+// Reports
+Route::controller(ReportsController::class)->group(function () {
+    Route::get('/employee-report', 'read')->name('employee.report');
+    Route::get('/generate-employee-report', 'generate')->name('generate.employee.report');
 });

@@ -101,10 +101,34 @@ class WorkingHoursRepository
     {
         return DB::table($this->table)
             ->where('company_id', $companyId)
-            ->selectRaw('SUM(CASE WHEN `date` = CURDATE() THEN 1 ELSE 0 END) as today_count')
+            ->selectRaw('COALESCE(SUM(CASE WHEN `date` = CURDATE() THEN 1 ELSE 0 END), 0) as today_count')
             ->selectRaw('COALESCE(SUM(CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN TIMESTAMPDIFF(MINUTE, check_in, check_out) ELSE 0 END), 0) as month_minutes')
             ->selectRaw('COUNT(DISTINCT CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN employee_id END) as active_employees_count')
             ->selectRaw('COUNT(DISTINCT CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN `date` END) as month_days_count')
             ->first();
+    }
+    //---------------
+    public function getEmployeeWorkingHoursStatistics(int $companyId, int $employeeId, string $fromDate, string $toDate): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->selectRaw('COALESCE(COUNT(*), 0) as entry_count')
+            ->selectRaw('COALESCE(SUM(TIME_TO_SEC(hours)), 0) / 3600 as total_hours')
+            ->selectRaw('COALESCE(AVG(TIME_TO_SEC(hours)), 0) / 3600 as average_hours')
+            ->first();
+    }
+    //---------------
+    public function getEmployeeWorkingHoursEntries(int $companyId, int $employeeId, string $fromDate, string $toDate, int $limit = 10, string $cursorName = 'working_hours_cursor')
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId)
+            ->whereBetween('date', [$fromDate, $toDate])
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->cursorPaginate($limit, ['id', 'date', 'check_in', 'check_out', 'hours'], $cursorName)
+            ->withQueryString();
     }
 }
