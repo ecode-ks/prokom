@@ -34,6 +34,13 @@ class PackagesRepository
             ->cursorPaginate($limit);
     }
     //---------------
+    public function getAllPackages()
+    {
+        return DB::table($this->table)
+            ->orderByDesc('id')
+            ->get();
+    }
+    //---------------
     public function findPackage(int $id)
     {
         return DB::table($this->table)
@@ -69,5 +76,13 @@ class PackagesRepository
             ->selectRaw('COALESCE(AVG(price), 0) as avg_price')
             ->selectRaw('COALESCE(AVG(months), 0) as avg_months')
             ->first();
+    }
+    //---------------
+    public function change(string $username, int $company_id, string $package, string $paymentExpire): bool
+    {
+        return DB::table('companies')
+            ->where('username', $username)
+            ->where('id', $company_id)
+            ->update(['package' => $package, 'payment_expire' => $paymentExpire]) > 0;
     }
 }

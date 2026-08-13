@@ -66,6 +66,8 @@ class UsersService
             session()->put('company', $company->company);
             session()->put('username', $company->username);
             session()->put('role', 'company');
+            session()->put('expire_date', $company->payment_expire);
+            session()->put('package', $company->package);
 
             if ($isExpired) {
                 session()->put('payment_expired', true);

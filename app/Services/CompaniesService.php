@@ -85,4 +85,13 @@ class CompaniesService
     {
         return $this->companiesRepository->getCompanyStatistics();
     }
+    //---------------
+    public function getPayments(int $limit, string $search = '')
+    {
+        $limit = (int) $limit ?: 10;
+        if (!empty($search)) {
+            return $this->companiesRepository->getSearchedPayments($limit, $search);
+        }
+        return $this->companiesRepository->getPayments($limit);
+    }
 }

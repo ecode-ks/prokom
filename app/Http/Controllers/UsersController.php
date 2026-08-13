@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\UsersService;
+use App\Services\PackagesService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -10,9 +11,11 @@ class UsersController extends Controller
 {
     //---------------
     protected UsersService $usersService;
-    public function __construct(UsersService $usersService)
+    protected PackagesService $packagesService;
+    public function __construct(UsersService $usersService, PackagesService $packagesService)
     {
         $this->usersService = $usersService;
+        $this->packagesService = $packagesService;
     }
     //---------------
     public function login()
@@ -51,8 +54,10 @@ class UsersController extends Controller
     public function profile()
     {
         $page = 'My Profile';
+        $packages = $this->packagesService->getAllPackages();
         return view('management.profile')
-            ->with('page', $page);
+            ->with('page', $page)
+            ->with('packages', $packages);
     }
     //---------------
     public function updateProfilePassword(Request $request)
