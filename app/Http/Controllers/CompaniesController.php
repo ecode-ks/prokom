@@ -111,4 +111,14 @@ class CompaniesController extends Controller
             return redirect()->route('companies')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
         }
     }
+    //---------------
+    public function payments(Request $request)
+    {
+        $page = 'Payments';
+        $search = $request->query('search', '');
+        $payments = $this->companiesService->getPayments(10, $search);
+        return view('management.payments')
+            ->with('page', $page)
+            ->with('payments', $payments);
+    }
 }

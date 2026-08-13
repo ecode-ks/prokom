@@ -6,10 +6,13 @@
     <small class="d-block text-uppercase fw-semibold opacity-75" style="letter-spacing:.06em;font-size:.75rem;">Dashboard · {{ date('d/m/Y') }}</small>
     <h3 class="fw-semibold pt-2 mb-4">Mirë se erdhët, <span class="txt-lightblue">{{ session('user') ?? session('company') }}</span></h3>
 
-    <div class="mb-4">
+    <div class="mb-3">
         <a href="{{ route('checkins.map') }}" class="btn btn-darkblue rounded-3">
             <i class="fa-solid fa-map-location-dot me-1"></i> Harta e prezencës
         </a>
+    </div>
+    <div class="alert alert-primary shadow-sm rounded-4" role="alert">
+        <span>Pakoja juaj e abonimit skadon me datën <strong>{{ session('expire_date') ? \Carbon\Carbon::parse(session('expire_date'))->format('d/m/Y') : '--/--/----' }}.</strong> Mund të riabonoheni <a href="{{ route('profile') }}" class="text-decoration-none txt-darkblue fw-bold">këtu</a>.</span>
     </div>
 
     @if($canCheckIn)
