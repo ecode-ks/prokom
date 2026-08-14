@@ -18,9 +18,12 @@
             </div>
         </div>
         <div class="col-12 col-md-8 d-flex align-items-end justify-content-md-end">
-            <a href="{{ route('notifications.mark.all') }}" class="btn btn-darkblue rounded-3 shadow-sm">
-                <i class="fa-solid fa-check-double"></i> Shëno të gjitha si të lexuara
-            </a>
+            <form action="{{ route('notifications.mark.all') }}" method="post" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-darkblue rounded-3 shadow-sm">
+                    <i class="fa-solid fa-check-double"></i> Shëno të gjitha si të lexuara
+                </button>
+            </form>
         </div>
     </div>
 
@@ -61,9 +64,12 @@
                                         @endif
                                     </td>
                                     <td class="text-nowrap text-end">
-                                        <a href="{{ route('notifications.open', $notification->id) }}" class="btn btn-outline-primary btn-sm rounded-3 shadow-sm">
-                                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Hap
-                                        </a>
+                                        <form action="{{ route('notifications.open', $notification->id) }}" method="post" class="d-inline">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-primary btn-sm rounded-3 shadow-sm">
+                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Hap
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

@@ -234,8 +234,8 @@ Route::controller(WorkingHoursController::class)->group(function () {
 // Notifications
 Route::controller(NotificationsController::class)->group(function () {
     Route::get('/notifications', 'read')->name('notifications');
-    Route::get('/notifications/open/{id}', 'open')->name('notifications.open');
-    Route::get('/notifications/mark-all-read', 'markAllRead')->name('notifications.mark.all');
+    Route::post('/notifications/open/{id}', 'open')->name('notifications.open');
+    Route::post('/notifications/mark-all-read', 'markAllRead')->name('notifications.mark.all');
 });
 
 // Salaries

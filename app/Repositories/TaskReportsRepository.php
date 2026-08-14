@@ -61,7 +61,7 @@ class TaskReportsRepository
         return DB::table('tasks')
             ->where('id', $taskId)
             ->where('company_id', $companyId)
-            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
+            ->whereRaw('FIND_IN_SET(?, assigned_to)', [$employeeId])
             ->exists();
     }
     //---------------

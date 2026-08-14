@@ -141,7 +141,6 @@
                                 </div>
                                 <div class="small text-muted mb-3">Norma e aprovimit: {{ number_format($approvedVacationRate, 1) }}%</div>
                                 <div class="row g-2 small">
-                                    <div class="col-6 d-flex justify-content-between"><span>Në pritje menaxher</span><strong>{{ (int) ($vacations->pending_manager_count ?? 0) }}</strong></div>
                                     <div class="col-6 d-flex justify-content-between"><span>Në pritje HR</span><strong>{{ (int) ($vacations->pending_hr_count ?? 0) }}</strong></div>
                                     <div class="col-6 d-flex justify-content-between"><span>Aprovuar</span><strong class="text-success">{{ (int) ($vacations->approved_count ?? 0) }}</strong></div>
                                     <div class="col-6 d-flex justify-content-between"><span>Refuzuar</span><strong class="text-danger">{{ (int) ($vacations->refused_count ?? 0) }}</strong></div>

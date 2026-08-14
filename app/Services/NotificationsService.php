@@ -43,7 +43,7 @@ class NotificationsService
             'type' => $type,
             'title' => $title,
             'message' => $message,
-            'link' => $link,
+            'link' => $this->toAppPath($link),
             'is_read' => 0,
             'created_at' => now(),
         ]);
@@ -165,7 +165,7 @@ class NotificationsService
             );
         }
 
-        return $notification->link ?: route('notifications');
+        return $this->toAppPath($notification->link) ?: '/notifications';
     }
     //---------------
     public function markAllAsRead(): bool
@@ -180,5 +180,21 @@ class NotificationsService
             $recipient['recipient_type'],
             $recipient['recipient_id']
         );
+    }
+    //---------------
+    private function toAppPath(?string $link): ?string
+    {
+        if ($link === null || trim($link) === '') {
+            return null;
+        }
+
+        $path = parse_url($link, PHP_URL_PATH);
+        if (!$path) {
+            return null;
+        }
+
+        $query = parse_url($link, PHP_URL_QUERY);
+
+        return $query ? $path . '?' . $query : $path;
     }
 }

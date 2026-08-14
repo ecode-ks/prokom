@@ -396,16 +396,22 @@
                                         <ul class="dropdown-menu dropdown-menu-end rounded-3 shadow-sm p-2" style="min-width: 320px; max-height: 70vh; overflow-y: auto;">
                                             <div class="d-flex align-items-center justify-content-between border-bottom pb-2 px-2 mb-2">
                                                 <span class="fw-semibold">Njoftimet</span>
-                                                <a href="{{ route('notifications.mark.all') }}" class="small text-decoration-none txt-lightblue">Lexo të gjitha</a>
+                                                <form action="{{ route('notifications.mark.all') }}" method="post" class="d-inline">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-link small text-decoration-none txt-lightblue p-0">Lexo të gjitha</button>
+                                                </form>
                                             </div>
                                             @if(isset($topbarNotifications) && count($topbarNotifications) > 0)
                                                 @foreach($topbarNotifications as $notification)
                                                     <li>
-                                                        <a class="dropdown-item rounded-3 mb-1 {{ !(int) $notification->is_read ? 'bg-light' : '' }}" href="{{ route('notifications.open', $notification->id) }}">
-                                                            <span class="d-block fw-semibold text-truncate">{{ $notification->title }}</span>
-                                                            <small class="d-block text-muted text-truncate">{{ $notification->message }}</small>
-                                                            <small class="d-block opacity-50">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : '' }}</small>
-                                                        </a>
+                                                        <form action="{{ route('notifications.open', $notification->id) }}" method="post" class="mb-1">
+                                                            @csrf
+                                                            <button type="submit" class="dropdown-item rounded-3 text-start w-100 {{ !(int) $notification->is_read ? 'bg-light' : '' }}">
+                                                                <span class="d-block fw-semibold text-truncate">{{ $notification->title }}</span>
+                                                                <small class="d-block text-muted text-truncate">{{ $notification->message }}</small>
+                                                                <small class="d-block opacity-50">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : '' }}</small>
+                                                            </button>
+                                                        </form>
                                                     </li>
                                                 @endforeach
                                             @else

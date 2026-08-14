@@ -73,7 +73,7 @@ class VacationsRepository
         return DB::table($this->table . ' as v')
             ->join('employees as e', 'v.employee_id', '=', 'e.id')
             ->where('v.company_id', $companyId)
-            ->whereIn('v.status', ['Pending Manager', 'Reviewing', 'Pending HR'])
+            ->whereIn('v.status', ['Pending HR', 'Pending Manager', 'Reviewing'])
             ->select('v.id', 'v.from_date', 'v.to_date', 'v.type', 'v.status', 'e.employee')
             ->orderByDesc('v.id')
             ->limit($limit)
@@ -95,8 +95,7 @@ class VacationsRepository
         }
 
         return $query
-            ->selectRaw("COALESCE(SUM(CASE WHEN v.status IN ('Pending Manager', 'Reviewing') THEN 1 ELSE 0 END), 0) as pending_manager_count")
-            ->selectRaw("COALESCE(SUM(CASE WHEN v.status = 'Pending HR' THEN 1 ELSE 0 END), 0) as pending_hr_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN v.status IN ('Pending HR', 'Pending Manager', 'Reviewing') THEN 1 ELSE 0 END), 0) as pending_hr_count")
             ->selectRaw("COALESCE(SUM(CASE WHEN v.status = 'Approved' THEN 1 ELSE 0 END), 0) as approved_count")
             ->selectRaw("COALESCE(SUM(CASE WHEN v.status = 'Refused' THEN 1 ELSE 0 END), 0) as refused_count")
             ->first();
@@ -108,8 +107,7 @@ class VacationsRepository
             ->where('company_id', $companyId)
             ->where('employee_id', $employeeId)
             ->whereBetween('from_date', [$fromDate, $toDate])
-            ->selectRaw("COALESCE(SUM(CASE WHEN status IN ('Pending Manager', 'Reviewing') THEN 1 ELSE 0 END), 0) as pending_manager_count")
-            ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Pending HR' THEN 1 ELSE 0 END), 0) as pending_hr_count")
+            ->selectRaw("COALESCE(SUM(CASE WHEN status IN ('Pending HR', 'Pending Manager', 'Reviewing') THEN 1 ELSE 0 END), 0) as pending_hr_count")
             ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Approved' THEN 1 ELSE 0 END), 0) as approved_count")
             ->selectRaw("COALESCE(SUM(CASE WHEN status = 'Refused' THEN 1 ELSE 0 END), 0) as refused_count")
             ->selectRaw('COUNT(*) as total_count')

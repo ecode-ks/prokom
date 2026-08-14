@@ -147,8 +147,7 @@ class DashboardController extends Controller
             $vacationStats = $this->vacationsService->getVacationStatistics('', $companyId);
             $contractStats = $this->contractsService->getContractStatistics('', $companyId);
             $presence = $this->checkinService->getCompanyPresenceToday($companyId);
-            $pendingVacations = (int) ($vacationStats->pending_manager_count ?? 0)
-                + (int) ($vacationStats->pending_hr_count ?? 0);
+            $pendingVacations = (int) ($vacationStats->pending_hr_count ?? 0);
 
             $data['companyKpis'] = (object) [
                 'projects' => $this->projectsService->countCompanyProjects($companyId),

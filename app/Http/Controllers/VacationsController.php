@@ -83,9 +83,8 @@ class VacationsController extends Controller
 
         $vacations = $this->service->getVacations(10, $search, $statuses, $companyId, $employeeId, null);
         $vacationStats = $this->service->getVacationStatistics($search, $companyId, $employeeId);
-        $canApproveManager = in_array($role, ['company', 'manager'], true);
         $canApproveHr = in_array($role, ['company', 'hr'], true);
-        $canManage = $canApproveManager || $canApproveHr;
+        $canManage = $canApproveHr;
         $isCompany = $role === 'company';
 
         return view('management.vacations')
@@ -96,7 +95,6 @@ class VacationsController extends Controller
             ->with('selectedType', $selectedType)
             ->with('isEmployee', $isEmployee)
             ->with('canManage', $canManage)
-            ->with('canApproveManager', $canApproveManager)
             ->with('canApproveHr', $canApproveHr)
             ->with('isCompany', $isCompany)
             ->with('role', $role);
@@ -129,8 +127,7 @@ class VacationsController extends Controller
             ->with('employees', $employees)
             ->with('editVacation', $editVacation)
             ->with('isEmployee', $isEmployee)
-            ->with('canManage', in_array($role, ['company', 'hr', 'manager'], true))
-            ->with('canApproveManager', in_array($role, ['company', 'manager'], true))
+            ->with('canManage', in_array($role, ['company', 'hr'], true))
             ->with('canApproveHr', in_array($role, ['company', 'hr'], true))
             ->with('isCompany', $role === 'company')
             ->with('role', $role)
@@ -211,11 +208,11 @@ class VacationsController extends Controller
         $role = (string) session('role');
         $status = urldecode($status);
 
-        if (!in_array($role, ['company', 'hr', 'manager'], true)) {
+        if (!in_array($role, ['company', 'hr'], true)) {
             return redirect()->route('vacations')->with('error', 'Nuk keni të drejtë të ndryshoni statusin.');
         }
 
-        $allowed = ['Pending Manager', 'Pending HR', 'Approved', 'Refused'];
+        $allowed = ['Approved', 'Refused'];
         if (!in_array($status, $allowed, true)) {
             return redirect()->route('vacations')->with('error', 'Statusi nuk është i vlefshëm.');
         }
