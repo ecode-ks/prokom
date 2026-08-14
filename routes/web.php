@@ -44,6 +44,7 @@ Route::controller(CompaniesController::class)->group(function () {
     Route::get('/company-details/{id}', 'details')->name('company.details');
     Route::get('/update-company-status/{id}/{status}', 'updateStatus')->name('update.company.status');
     Route::get('/delete-company/{id}', 'delete')->name('delete.company');
+    Route::get('/payments', 'payments')->name('payments');
 });
 
 // Dashboard
@@ -71,6 +72,7 @@ Route::controller(PackagesController::class)->group(function () {
     Route::get('/edit-package/{id}', 'edit')->name('edit.package');
     Route::post('/update-package', 'update')->name('update.package');
     Route::get('/delete-package/{id}', 'delete')->name('delete.package');
+    Route::get('/change-package/{id}', 'change')->name('change.package');
 });
 
 // Company News

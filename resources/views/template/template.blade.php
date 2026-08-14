@@ -62,6 +62,11 @@
                                             <i class="fa-solid fa-building mx-2 opacity-75"></i> Kompanitë
                                         </a>
                                     </li>
+                                    <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Payments' ? 'sidebar-active' : 'sidebar-link' }}">
+                                        <a href="{{ route('payments') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-money-bill mx-2 opacity-75"></i> Pagesat
+                                        </a>
+                                    </li>
                                 @endif
                                 @if(session('role') === 'company' || session('role') === 'manager')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Company News' ? 'sidebar-active' : 'sidebar-link' }}">
@@ -274,6 +279,7 @@
                                             @if(session('role') === 'admin')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> Paketat</a></li>
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Companies' ? 'bg-darkblue text-light' : '' }}" href="{{ route('companies') }}"><i class="fa-solid fa-building me-2 opacity-75"></i> Kompanitë</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Payments' ? 'bg-darkblue text-light' : '' }}" href="{{ route('payments') }}"><i class="fa-solid fa-money-bill me-2 opacity-75"></i> Pagesat</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager')

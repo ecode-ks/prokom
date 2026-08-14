@@ -127,4 +127,25 @@ class CompaniesRepository
             ->selectRaw('SUM(CASE WHEN payment_expire IS NOT NULL AND payment_expire >= CURDATE() AND payment_expire <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 1 ELSE 0 END) as expiring_soon_count')
             ->first();
     }
+    //---------------
+    public function savePayment(array $data): bool
+    {
+        return DB::table('payments')
+            ->insert($data);
+    }
+    //---------------
+    public function getPayments(int $limit)
+    {
+        return DB::table('payments')
+            ->orderByDesc('id')
+            ->cursorPaginate($limit);
+    }
+    //---------------
+    public function getSearchedPayments(int $limit, string $search)
+    {
+        return DB::table('payments')
+            ->where('company', 'like', "%{$search}%")
+            ->orderByDesc('id')
+            ->cursorPaginate($limit);
+    }
 }

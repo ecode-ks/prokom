@@ -109,4 +109,22 @@ class PackagesController extends Controller
             }
         }
     }
+    //---------------
+    public function change(int $id)
+    {
+        if (!$this->service->findOrFail($id)) {
+            return redirect()->route('profile')->with('error','Paketa nuk u gjet');
+        } else {
+            try {
+                $changed = $this->service->changePackage($id);
+                if(!$changed) {
+                    return redirect()->route('profile')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                }else {
+                    return redirect()->route('profile')->with('success', 'Paketa u ndryshua me sukses.');
+                }
+            } catch (\Exception $e) {
+                return redirect()->route('profile')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.'. e($e->getMessage()));
+            }
+        }
+    }
 }
