@@ -177,7 +177,7 @@
             </div>
     @endif
 
-    {{-- KPI: company (financa + staf) --}}
+    {{-- KPI: company --}}
     @if($isCompany && $companyKpis)
         <div class="row g-3 mb-3">
             <div class="col-6 col-xl-3">

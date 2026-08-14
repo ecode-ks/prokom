@@ -10,7 +10,6 @@ class NotificationsService
     protected NotificationsRepository $repository;
     protected EmployeesRepository $employees;
 
-    /** Roles that receive personal (employee) notifications only */
     protected array $employeeRoles = ['manager', 'employee', 'finance', 'hr'];
 
     public function __construct(NotificationsRepository $repository, EmployeesRepository $employees)
@@ -58,7 +57,6 @@ class NotificationsService
             return null;
         }
 
-        // Company account: only notifications addressed to this company
         if ($role === 'company') {
             return [
                 'company_id' => $companyId,
@@ -67,14 +65,12 @@ class NotificationsService
             ];
         }
 
-        // Employee roles (employee, manager, finance, hr): only their personal notifications
         if (!in_array($role, $this->employeeRoles, true)) {
             return null;
         }
 
         $employeeId = (int) session('employee_id');
 
-        // Fallback if session lost employee_id but username is present
         if ($employeeId <= 0 && session('username')) {
             $employee = $this->employees->findEmployeeByUsername((string) session('username'));
             if ($employee && (int) $employee->company_id === $companyId) {

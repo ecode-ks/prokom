@@ -27,7 +27,6 @@ class VacationsService
         $data['company_id'] = $companyId;
         $employeeId = (int) ($data['employee_id'] ?? 0);
 
-        // Të gjitha kërkesat shkojnë direkt te HR (pa aprovim menaxheri)
         if (empty($data['status'])) {
             $data['status'] = 'Pending HR';
         }
@@ -94,7 +93,6 @@ class VacationsService
         $companyId = $companyId ?: (int) session('company_id');
         $limit = $limit ?: 10;
 
-        // Legacy: “Pending Manager/Reviewing” i trajtojmë si në pritje të HR
         if (in_array('Pending HR', $statuses, true)) {
             $statuses[] = 'Pending Manager';
             $statuses[] = 'Reviewing';
