@@ -157,6 +157,31 @@ class CheckInRepository
             ->delete() > 0;
     }
     //---------------
+    public function getCompanyPresenceToday(int $companyId): object
+    {
+        $today = date('Y-m-d');
+
+        $checkedInToday = (int) DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereDate('check_in_time', $today)
+            ->whereNotNull('employee_id')
+            ->distinct()
+            ->count('employee_id');
+
+        $currentlyWorking = (int) DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereDate('check_in_time', $today)
+            ->whereNull('check_out_time')
+            ->whereNotNull('employee_id')
+            ->distinct()
+            ->count('employee_id');
+
+        return (object) [
+            'checked_in_today' => $checkedInToday,
+            'currently_working' => $currentlyWorking,
+        ];
+    }
+    //---------------
     public function getActiveMapLocations(int $companyId)
     {
         return DB::table($this->table . ' as ci')

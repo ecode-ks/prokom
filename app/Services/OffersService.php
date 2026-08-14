@@ -62,4 +62,9 @@ class OffersService
 	{
 		return $this->repository->getOfferStatistics((int) $this->companyId);
 	}
+	//---------------
+	public function getLatestForDashboard(int $limit = 5)
+	{
+		return $this->repository->getLatestForDashboard((int) $this->companyId, $limit);
+	}
 }

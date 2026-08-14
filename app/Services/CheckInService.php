@@ -142,6 +142,11 @@ class CheckInService
         return $this->repository->delete($id, $this->companyId);
     }
     //---------------
+    public function getCompanyPresenceToday(int $companyId): object
+    {
+        return $this->repository->getCompanyPresenceToday($companyId);
+    }
+    //---------------
     public function getMapLocations(): array
     {
         $rows = $this->repository->getActiveMapLocations($this->companyId);

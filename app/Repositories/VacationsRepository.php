@@ -68,6 +68,18 @@ class VacationsRepository
             ->withQueryString();
     }
     //---------------
+    public function getPendingForDashboard(int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table . ' as v')
+            ->join('employees as e', 'v.employee_id', '=', 'e.id')
+            ->where('v.company_id', $companyId)
+            ->whereIn('v.status', ['Pending Manager', 'Reviewing', 'Pending HR'])
+            ->select('v.id', 'v.from_date', 'v.to_date', 'v.type', 'v.status', 'e.employee')
+            ->orderByDesc('v.id')
+            ->limit($limit)
+            ->get();
+    }
+    //---------------
     public function getVacationStatistics(int $companyId, string $search = '', ?int $employeeId = null): object
     {
         $query = DB::table($this->table . ' as v')

@@ -14,6 +14,10 @@ class CompanyNewsService
 	//---------------
 	public function createCompanyNews(array $data): bool
 	{
+		$data['company_id'] = (int) (session('company_id') ?? 0);
+		if (empty($data['date'])) {
+			$data['date'] = now()->toDateString();
+		}
 		return $this->repository->create($data);
 	}
 	//---------------
@@ -62,5 +66,14 @@ class CompanyNewsService
 	public function getCompanyNewsStatistics(int $companyId): object
 	{
 		return $this->repository->getCompanyNewsStatistics($companyId);
+	}
+	//---------------
+	public function getLatestForDashboard(int $companyId, int $limit = 5)
+	{
+		if ($companyId <= 0) {
+			return collect();
+		}
+
+		return $this->repository->getLatestForDashboard($companyId, $limit);
 	}
 }

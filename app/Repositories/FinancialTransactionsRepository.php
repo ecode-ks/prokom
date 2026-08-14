@@ -40,6 +40,15 @@ class FinancialTransactionsRepository
             ->cursorPaginate($limit);
     }
     //---------------
+    public function getLatestForDashboard(int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get(['id', 'date', 'comment', 'type', 'amount']);
+    }
+    //---------------
     public function getRevenues(int $companyId)
     {
         $query = DB::table($this->table);

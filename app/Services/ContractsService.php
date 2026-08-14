@@ -42,6 +42,13 @@ class ContractsService
         return $this->repository->getContractStatistics($companyId, $search);
     }
     //---------------
+    public function getExpiringForDashboard(int $companyId, int $limit = 5)
+    {
+        $this->repository->updateContractsStatus($companyId);
+
+        return $this->repository->getExpiringForDashboard($companyId, $limit);
+    }
+    //---------------
     public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId): object
     {
         $companyId = (int) (session('company_id') ?? 0);

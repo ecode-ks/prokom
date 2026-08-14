@@ -138,6 +138,11 @@ class VacationsService
         return $this->repository->getVacationStatistics($companyId, $search, $employeeId);
     }
     //---------------
+    public function getPendingForDashboard(int $companyId, int $limit = 5)
+    {
+        return $this->repository->getPendingForDashboard($companyId, $limit);
+    }
+    //---------------
     public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId): object
     {
         $companyId = (int) session('company_id');

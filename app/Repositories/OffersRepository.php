@@ -102,4 +102,15 @@ class OffersRepository
 			->selectRaw('COALESCE(SUM(price), 0) as total_value')
 			->first();
 	}
+	//---------------
+	public function getLatestForDashboard(int $companyId, int $limit = 5)
+	{
+		return DB::table($this->table)
+			->selectRaw('MAX(id) as id, offer_number, MAX(date) as date, MAX(client) as client, MAX(status) as status, COALESCE(SUM(price), 0) as total_price')
+			->where('company_id', $companyId)
+			->groupBy('offer_number')
+			->orderByDesc('id')
+			->limit($limit)
+			->get();
+	}
 }

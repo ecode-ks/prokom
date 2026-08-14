@@ -208,6 +208,27 @@ class TasksService
         return $this->repository->getMyOpenTasks($employeeId, $companyId, $limit);
     }
     //---------------
+    public function getEmployeeTaskCounts(int $employeeId, int $companyId): object
+    {
+        if ($employeeId <= 0 || $companyId <= 0) {
+            return (object) [
+                'my_tasks' => 0,
+                'working_tasks' => 0,
+                'review_tasks' => 0,
+                'open_tasks' => 0,
+            ];
+        }
+
+        $row = $this->repository->getEmployeeTaskCounts($employeeId, $companyId);
+
+        return (object) [
+            'my_tasks' => (int) ($row->my_tasks ?? 0),
+            'working_tasks' => (int) ($row->working_tasks ?? 0),
+            'review_tasks' => (int) ($row->review_tasks ?? 0),
+            'open_tasks' => (int) ($row->open_tasks ?? 0),
+        ];
+    }
+    //---------------
     public function getManagerTeamTasks(int $managerId, int $companyId, int $limit = 5)
     {
         if ($managerId <= 0 || $companyId <= 0) {

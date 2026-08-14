@@ -132,4 +132,22 @@ class ProjectsService
 
         return $this->repository->getManagerUpcomingProjects($managerId, $companyId, $limit);
     }
+    //---------------
+    public function getCompanyUpcomingProjects(int $companyId, int $limit = 5)
+    {
+        if ($companyId <= 0) {
+            return collect();
+        }
+
+        return $this->repository->getCompanyUpcomingProjects($companyId, $limit);
+    }
+    //---------------
+    public function countCompanyProjects(int $companyId): int
+    {
+        if ($companyId <= 0) {
+            return 0;
+        }
+
+        return $this->repository->countCompanyProjects($companyId);
+    }
 }

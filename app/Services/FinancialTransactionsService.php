@@ -26,6 +26,11 @@ class FinancialTransactionsService
         return $this->repository->getTransactions($limit, $companyId);
     }
     //---------------
+    public function getLatestForDashboard(int $companyId, int $limit = 5)
+    {
+        return $this->repository->getLatestForDashboard($companyId, $limit);
+    }
+    //---------------
     public function getRevenues(int $companyId)
     {
         return $this->repository->getRevenues($companyId);

@@ -237,4 +237,22 @@ class ProjectsRepository
             ->limit($limit)
             ->get(['id', 'project_name', 'status', 'expected_end_date']);
     }
+    //---------------
+    public function getCompanyUpcomingProjects(int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereIn('status', ['planning', 'in_progress', 'on_hold'])
+            ->whereNotNull('expected_end_date')
+            ->orderBy('expected_end_date')
+            ->limit($limit)
+            ->get(['id', 'project_name', 'status', 'expected_end_date']);
+    }
+    //---------------
+    public function countCompanyProjects(int $companyId): int
+    {
+        return (int) DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->count();
+    }
 }

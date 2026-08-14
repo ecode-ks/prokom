@@ -85,4 +85,16 @@ class CompanyNewsRepository
 			->selectRaw('SUM(CASE WHEN project_id IS NOT NULL THEN 1 ELSE 0 END) as with_project_count')
 			->first();
 	}
+	//---------------
+	public function getLatestForDashboard(int $companyId, int $limit = 5)
+	{
+		return DB::table($this->table . ' as cn')
+			->leftJoin('projects as p', 'cn.project_id', '=', 'p.id')
+			->select('cn.id', 'cn.date', 'cn.info', 'cn.project_id', 'p.project_name')
+			->where('cn.company_id', $companyId)
+			->orderByDesc('cn.date')
+			->orderByDesc('cn.id')
+			->limit($limit)
+			->get();
+	}
 }

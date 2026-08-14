@@ -110,6 +110,18 @@ class TasksRepository
             ->get();
     }
     //---------------
+    public function getEmployeeTaskCounts(int $employeeId, int $companyId): object
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereRaw('FIND_IN_SET(?, assigned_to)', [$employeeId])
+            ->selectRaw('COUNT(*) as my_tasks')
+            ->selectRaw("SUM(CASE WHEN LOWER(status) IN ('working', 'in_progress') THEN 1 ELSE 0 END) as working_tasks")
+            ->selectRaw("SUM(CASE WHEN LOWER(status) IN ('review', 'under_review', 'in_review') THEN 1 ELSE 0 END) as review_tasks")
+            ->selectRaw("SUM(CASE WHEN LOWER(status) <> 'completed' THEN 1 ELSE 0 END) as open_tasks")
+            ->first();
+    }
+    //---------------
     public function getManagerTeamTasks(int $managerId, int $companyId, int $limit = 5)
     {
         return DB::table($this->table . ' as t')

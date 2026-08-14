@@ -51,6 +51,18 @@ class ContractsRepository
             ->withQueryString();
     }
     //---------------
+    public function getExpiringForDashboard(int $companyId, int $limit = 5)
+    {
+        return DB::table($this->table . ' as c')
+            ->join('employees as e', 'c.employee_id', '=', 'e.id')
+            ->where('c.company_id', $companyId)
+            ->where('c.status', 'Expiring')
+            ->select('c.id', 'c.position', 'c.to_date', 'c.status', 'e.employee')
+            ->orderBy('c.to_date')
+            ->limit($limit)
+            ->get();
+    }
+    //---------------
     public function getContractStatistics(int $companyId, string $search = ''): object
     {
         $query = DB::table($this->table . ' as c')
