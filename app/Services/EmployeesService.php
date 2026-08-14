@@ -18,7 +18,7 @@ class EmployeesService
         $this->repository = $repository;
         $this->companiesRepository = $companiesRepository;
         $this->usersRepository = $usersRepository;
-        $this->companyId = session('company_id');
+        $this->companyId = (session('company_id') ?? 0);
     }
     //---------------
     public function createEmployee(array $data): bool

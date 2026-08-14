@@ -11,7 +11,7 @@ class WorkingHoursService
     public function __construct(WorkingHoursRepository $repository)
     {
         $this->repository = $repository;
-        $this->companyId = session('company_id');
+        $this->companyId = (session('company_id') ?? 0);
     }
     //---------------
     public function createWorkingHour(array $data): bool

@@ -11,7 +11,7 @@ class OffersService
 	public function __construct(OffersRepository $repository)
 	{
 		$this->repository = $repository;
-        $this->companyId = session('company_id');
+        $this->companyId = (session('company_id') ?? 0);
 	}
 	//---------------
 	public function createOffer(array $data): bool

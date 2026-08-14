@@ -11,7 +11,7 @@ class ReportsService
     public function __construct(ReportsRepository $repository)
     {
         $this->repository = $repository;
-        $this->companyId = session('company_id');
+        $this->companyId = (session('company_id') ?? 0);
     }
     //---------------
     public function generateEmployeeReport(string $fromDate, string $toDate, int $employeeId)
