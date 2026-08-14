@@ -22,6 +22,126 @@
         </div>
     </div>
 
+    {{-- KPI: admin --}}
+    @if(!empty($isAdmin) && $adminKpis)
+        <div class="row g-3 mb-3">
+            <div class="col-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted text-uppercase d-block mb-2">Kompanitë</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format($adminKpis->companies) }}</h4>
+                        <small class="text-muted">aktive: {{ number_format($adminKpis->active_companies) }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted text-uppercase d-block mb-2">Abonim skadon së shpejti</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format($adminKpis->expiring_soon) }}</h4>
+                        <small class="text-muted">brenda 30 ditëve</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted text-uppercase d-block mb-2">Paketat</small>
+                        <h4 class="fw-semibold mb-0">{{ number_format($adminKpis->packages) }}</h4>
+                        <small class="text-muted">jo aktive: {{ number_format($adminKpis->inactive_companies) }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <small class="text-muted text-uppercase d-block mb-2">Të ardhura (muaji)</small>
+                        <h4 class="fw-semibold mb-0">€{{ number_format($adminKpis->revenue_month, 2) }}</h4>
+                        <small class="text-muted">{{ number_format($adminKpis->payments_month) }} pagesa</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold"><i class="fa-solid fa-building txt-lightblue me-1"></i> Kompanitë e fundit</span>
+                        <a href="{{ route('companies') }}" class="dashboard-link">Shiko</a>
+                    </div>
+                    <div class="card-body px-4 pb-3 pt-0">
+                        @if(($adminLatestCompanies ?? collect())->isEmpty())
+                            <p class="text-muted mb-0 small">Nuk ka kompani.</p>
+                        @else
+                            @foreach($adminLatestCompanies as $company)
+                                <a href="{{ route('company.details', $company->id) }}" class="dashboard-task-item text-decoration-none">
+                                    <div class="min-w-0">
+                                        <strong class="d-block text-truncate">{{ $company->company }}</strong>
+                                        <small class="text-muted">{{ $company->package ?: 'Pa paketë' }} · {{ $company->status }}</small>
+                                    </div>
+                                    <span class="small text-muted text-nowrap">
+                                        {{ $company->payment_expire ? \Carbon\Carbon::parse($company->payment_expire)->format('d/m/Y') : '-' }}
+                                    </span>
+                                </a>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
+                        <span class="fw-semibold"><i class="fa-solid fa-hourglass-half txt-lightblue me-1"></i> Abonime që skadojnë</span>
+                        <a href="{{ route('companies') }}" class="dashboard-link">Shiko</a>
+                    </div>
+                    <div class="card-body px-4 pb-3 pt-0">
+                        @if(($adminExpiringCompanies ?? collect())->isEmpty())
+                            <p class="text-muted mb-0 small">Nuk ka abonime që skadojnë së shpejti.</p>
+                        @else
+                            @foreach($adminExpiringCompanies as $company)
+                                <a href="{{ route('company.details', $company->id) }}" class="dashboard-task-item text-decoration-none">
+                                    <div class="min-w-0">
+                                        <strong class="d-block text-truncate">{{ $company->company }}</strong>
+                                        <small class="text-muted">{{ $company->package ?: 'Pa paketë' }}</small>
+                                    </div>
+                                    <span class="dashboard-deadline-label small text-nowrap fw-semibold is-soon">
+                                        {{ \Carbon\Carbon::parse($company->payment_expire)->format('d/m/Y') }}
+                                    </span>
+                                </a>
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 pt-3 px-4 d-flex justify-content-between align-items-center">
+                <span class="fw-semibold"><i class="fa-solid fa-money-bill txt-lightblue me-1"></i> Pagesat e fundit</span>
+                <a href="{{ route('payments') }}" class="dashboard-link">Shiko</a>
+            </div>
+            <div class="card-body px-4 pb-3 pt-0">
+                @if(($adminLatestPayments ?? collect())->isEmpty())
+                    <p class="text-muted mb-0 small">Nuk ka pagesa.</p>
+                @else
+                    @foreach($adminLatestPayments as $payment)
+                        <div class="dashboard-task-item">
+                            <div class="min-w-0">
+                                <strong class="d-block text-truncate">{{ $payment->company ?: 'Kompani' }}</strong>
+                                <small class="text-muted">
+                                    {{ $payment->date ? \Carbon\Carbon::parse($payment->date)->format('d/m/Y') : '-' }}
+                                    · {{ $payment->package }}
+                                </small>
+                            </div>
+                            <span class="small text-nowrap fw-semibold">€{{ number_format((float) $payment->price, 2) }}</span>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+        </div>
+    @endif
+
     @if($isCompany)
         <div class="alert alert-primary shadow-sm rounded-4" role="alert">
             <span>Pakoja juaj e abonimit skadon me datën <strong>{{ session('expire_date') ? \Carbon\Carbon::parse(session('expire_date'))->format('d/m/Y') : '--/--/----' }}.</strong> Mund të riabonoheni <a href="{{ route('profile') }}" class="text-decoration-none txt-darkblue fw-bold">këtu</a>.</span>
@@ -632,7 +752,11 @@
             </div>
             <div class="card-body px-4 pb-4">
                 <div class="dashboard-quick-actions">
-                    @if($isCompany)
+                    @if(!empty($isAdmin))
+                        <a href="{{ route('companies') }}" class="dashboard-quick-btn"><i class="fa-solid fa-building"></i> Kompanitë</a>
+                        <a href="{{ route('packages') }}" class="dashboard-quick-btn"><i class="fa-brands fa-trello"></i> Paketat</a>
+                        <a href="{{ route('payments') }}" class="dashboard-quick-btn"><i class="fa-solid fa-money-bill"></i> Pagesat</a>
+                    @elseif($isCompany)
                         <a href="{{ route('projects') }}" class="dashboard-quick-btn"><i class="fa-solid fa-diagram-project"></i> Projektet</a>
                         <a href="{{ route('employees') }}" class="dashboard-quick-btn"><i class="fa-solid fa-users"></i> Punëtorët</a>
                         <a href="{{ route('financial.transactions') }}" class="dashboard-quick-btn"><i class="fa-solid fa-wallet"></i> Transaksionet</a>

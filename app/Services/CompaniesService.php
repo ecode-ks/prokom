@@ -86,6 +86,26 @@ class CompaniesService
         return $this->companiesRepository->getCompanyStatistics();
     }
     //---------------
+    public function getLatestForDashboard(int $limit = 5)
+    {
+        return $this->companiesRepository->getLatestForDashboard($limit);
+    }
+    //---------------
+    public function getExpiringSoonForDashboard(int $limit = 5)
+    {
+        return $this->companiesRepository->getExpiringSoonForDashboard($limit);
+    }
+    //---------------
+    public function getPaymentStatistics(): object
+    {
+        return $this->companiesRepository->getPaymentStatistics();
+    }
+    //---------------
+    public function getLatestPaymentsForDashboard(int $limit = 5)
+    {
+        return $this->companiesRepository->getLatestPaymentsForDashboard($limit);
+    }
+    //---------------
     public function getPayments(int $limit, string $search = '')
     {
         $limit = (int) $limit ?: 10;

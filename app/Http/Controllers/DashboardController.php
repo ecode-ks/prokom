@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Services\CheckInService;
 use App\Services\ClientsService;
+use App\Services\CompaniesService;
 use App\Services\CompanyNewsService;
 use App\Services\ContractsService;
 use App\Services\EmployeesService;
 use App\Services\FinancialTransactionsService;
 use App\Services\OffersService;
+use App\Services\PackagesService;
 use App\Services\ProjectReportsService;
 use App\Services\ProjectsService;
 use App\Services\TaskReportsService;
@@ -29,6 +31,8 @@ class DashboardController extends Controller
     protected VacationsService $vacationsService;
     protected ContractsService $contractsService;
     protected CompanyNewsService $companyNewsService;
+    protected CompaniesService $companiesService;
+    protected PackagesService $packagesService;
 
     public function __construct(
         CheckInService $checkinService,
@@ -42,7 +46,9 @@ class DashboardController extends Controller
         EmployeesService $employeesService,
         VacationsService $vacationsService,
         ContractsService $contractsService,
-        CompanyNewsService $companyNewsService
+        CompanyNewsService $companyNewsService,
+        CompaniesService $companiesService,
+        PackagesService $packagesService
     ) {
         $this->checkinService = $checkinService;
         $this->tasksService = $tasksService;
@@ -56,6 +62,8 @@ class DashboardController extends Controller
         $this->vacationsService = $vacationsService;
         $this->contractsService = $contractsService;
         $this->companyNewsService = $companyNewsService;
+        $this->companiesService = $companiesService;
+        $this->packagesService = $packagesService;
     }
     //---------------
     public function dashboard()
@@ -74,13 +82,18 @@ class DashboardController extends Controller
             'isEmployee' => $role === 'employee',
             'isFinance' => $role === 'finance',
             'isHr' => $role === 'hr',
+            'isAdmin' => $role === 'admin',
             'showCheckIn' => in_array($role, ['employee', 'manager', 'finance', 'hr'], true),
             'showTeamMap' => $role === 'company',
-            'showQuickActions' => in_array($role, ['company', 'manager', 'finance', 'hr'], true),
+            'showQuickActions' => in_array($role, ['admin', 'company', 'manager', 'finance', 'hr'], true),
             'showLists' => in_array($role, ['company', 'manager', 'employee'], true),
             'dashboardNews' => $companyId > 0
                 ? $this->companyNewsService->getLatestForDashboard($companyId, 5)
                 : collect(),
+            'adminKpis' => null,
+            'adminLatestCompanies' => collect(),
+            'adminExpiringCompanies' => collect(),
+            'adminLatestPayments' => collect(),
             'companyKpis' => null,
             'managerKpis' => null,
             'employeeKpis' => null,
@@ -106,7 +119,25 @@ class DashboardController extends Controller
             $data['isActive'] = false;
         }
 
-        if ($role === 'company') {
+        if ($role === 'admin') {
+            $companyStats = $this->companiesService->getCompanyStatistics();
+            $packageStats = $this->packagesService->getPackageStatistics();
+            $paymentStats = $this->companiesService->getPaymentStatistics();
+
+            $data['adminKpis'] = (object) [
+                'companies' => (int) ($companyStats->total_count ?? 0),
+                'active_companies' => (int) ($companyStats->active_count ?? 0),
+                'inactive_companies' => (int) ($companyStats->inactive_count ?? 0),
+                'expiring_soon' => (int) ($companyStats->expiring_soon_count ?? 0),
+                'packages' => (int) ($packageStats->total_count ?? 0),
+                'payments_month' => (int) ($paymentStats->month_count ?? 0),
+                'revenue_month' => (float) ($paymentStats->month_revenue ?? 0),
+                'revenue_total' => (float) ($paymentStats->total_revenue ?? 0),
+            ];
+            $data['adminLatestCompanies'] = $this->companiesService->getLatestForDashboard(5);
+            $data['adminExpiringCompanies'] = $this->companiesService->getExpiringSoonForDashboard(5);
+            $data['adminLatestPayments'] = $this->companiesService->getLatestPaymentsForDashboard(5);
+        } elseif ($role === 'company') {
             $projectStats = $this->projectsService->getProjectStatistics([], $companyId);
             $fromDate = now()->startOfMonth()->toDateString();
             $toDate = now()->toDateString();

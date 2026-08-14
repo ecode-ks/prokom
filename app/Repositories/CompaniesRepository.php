@@ -128,6 +128,58 @@ class CompaniesRepository
             ->first();
     }
     //---------------
+    public function getLatestForDashboard(int $limit = 5)
+    {
+        return DB::table($this->table)
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get(['id', 'company', 'email', 'package', 'payment_expire', 'status', 'created_at']);
+    }
+    //---------------
+    public function getExpiringSoonForDashboard(int $limit = 5)
+    {
+        return DB::table($this->table)
+            ->whereNotNull('payment_expire')
+            ->whereDate('payment_expire', '>=', now()->toDateString())
+            ->whereDate('payment_expire', '<=', now()->addDays(30)->toDateString())
+            ->orderBy('payment_expire')
+            ->limit($limit)
+            ->get(['id', 'company', 'package', 'payment_expire', 'status']);
+    }
+    //---------------
+    public function getPaymentStatistics(): object
+    {
+        $fromDate = now()->startOfMonth()->toDateString();
+        $toDate = now()->toDateString();
+
+        $totals = DB::table('payments')
+            ->selectRaw('COUNT(*) as total_count')
+            ->selectRaw('COALESCE(SUM(price), 0) as total_revenue')
+            ->first();
+
+        $month = DB::table('payments')
+            ->whereDate('date', '>=', $fromDate)
+            ->whereDate('date', '<=', $toDate)
+            ->selectRaw('COUNT(*) as month_count')
+            ->selectRaw('COALESCE(SUM(price), 0) as month_revenue')
+            ->first();
+
+        return (object) [
+            'total_count' => (int) ($totals->total_count ?? 0),
+            'total_revenue' => (float) ($totals->total_revenue ?? 0),
+            'month_count' => (int) ($month->month_count ?? 0),
+            'month_revenue' => (float) ($month->month_revenue ?? 0),
+        ];
+    }
+    //---------------
+    public function getLatestPaymentsForDashboard(int $limit = 5)
+    {
+        return DB::table('payments')
+            ->orderByDesc('id')
+            ->limit($limit)
+            ->get(['id', 'date', 'company', 'package', 'price']);
+    }
+    //---------------
     public function savePayment(array $data): bool
     {
         return DB::table('payments')
