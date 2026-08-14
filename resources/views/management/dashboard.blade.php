@@ -22,6 +22,12 @@
         </div>
     </div>
 
+    @if($isCompany)
+        <div class="alert alert-primary shadow-sm rounded-4" role="alert">
+            <span>Pakoja juaj e abonimit skadon me datën <strong>{{ session('expire_date') ? \Carbon\Carbon::parse(session('expire_date'))->format('d/m/Y') : '--/--/----' }}.</strong> Mund të riabonoheni <a href="{{ route('profile') }}" class="text-decoration-none txt-darkblue fw-bold">këtu</a>.</span>
+        </div>
+    @endif
+
     {{-- Lajme --}}
     @if(in_array($role, ['company', 'manager', 'employee', 'finance', 'hr'], true))
             <div class="card border-0 shadow-sm mb-4">
