@@ -222,6 +222,18 @@ CREATE TABLE IF NOT EXISTS `packages` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table prokom.payments
+CREATE TABLE IF NOT EXISTS `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL DEFAULT current_timestamp(),
+  `company` varchar(255) DEFAULT NULL,
+  `package` varchar(255) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table prokom.projects
 CREATE TABLE IF NOT EXISTS `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
