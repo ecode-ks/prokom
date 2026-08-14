@@ -385,45 +385,66 @@
 
                                 @if(session('role') && session('role') !== 'admin')
                                     <div class="dropdown d-inline-block me-2">
-                                        <button class="btn bg-custom rounded-3 border position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Njoftimet">
+                                        <button class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Njoftimet">
                                             <i class="fa-regular fa-bell"></i>
                                             @if(($topbarUnreadNotifications ?? 0) > 0)
-                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                                                <span class="notifications-bell-badge">
                                                     {{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }}
                                                 </span>
                                             @endif
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end rounded-3 shadow-sm p-2" style="min-width: 320px; max-height: 70vh; overflow-y: auto;">
-                                            <div class="d-flex align-items-center justify-content-between border-bottom pb-2 px-2 mb-2">
-                                                <span class="fw-semibold">Njoftimet</span>
-                                                <form action="{{ route('notifications.mark.all') }}" method="post" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-link small text-decoration-none txt-lightblue p-0">Lexo të gjitha</button>
-                                                </form>
+                                        <div class="dropdown-menu dropdown-menu-end notifications-panel border-0 shadow">
+                                            <div class="notifications-panel__header">
+                                                <div>
+                                                    <span class="notifications-panel__title">Njoftimet</span>
+                                                    @if(($topbarUnreadNotifications ?? 0) > 0)
+                                                        <span class="notifications-panel__count">{{ $topbarUnreadNotifications }} të palexuara</span>
+                                                    @endif
+                                                </div>
+                                                @if(($topbarUnreadNotifications ?? 0) > 0)
+                                                    <form action="{{ route('notifications.mark.all') }}" method="post">
+                                                        @csrf
+                                                        <button type="submit" class="notifications-panel__mark-all">Lexo të gjitha</button>
+                                                    </form>
+                                                @endif
                                             </div>
-                                            @if(isset($topbarNotifications) && count($topbarNotifications) > 0)
-                                                @foreach($topbarNotifications as $notification)
-                                                    <li>
-                                                        <form action="{{ route('notifications.open', $notification->id) }}" method="post" class="mb-1">
+
+                                            <div class="notifications-panel__list">
+                                                @if(isset($topbarNotifications) && count($topbarNotifications) > 0)
+                                                    @foreach($topbarNotifications as $notification)
+                                                        @php $unread = !(int) $notification->is_read; @endphp
+                                                        <form action="{{ route('notifications.open', $notification->id) }}" method="post">
                                                             @csrf
-                                                            <button type="submit" class="dropdown-item rounded-3 text-start w-100 {{ !(int) $notification->is_read ? 'bg-light' : '' }}">
-                                                                <span class="d-block fw-semibold text-truncate">{{ $notification->title }}</span>
-                                                                <small class="d-block text-muted text-truncate">{{ $notification->message }}</small>
-                                                                <small class="d-block opacity-50">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : '' }}</small>
+                                                            <button type="submit" class="notifications-item {{ $unread ? 'is-unread' : '' }}">
+                                                                <span class="notifications-item__icon">
+                                                                    <i class="fa-regular fa-bell"></i>
+                                                                </span>
+                                                                <span class="notifications-item__body">
+                                                                    <span class="notifications-item__title">{{ $notification->title }}</span>
+                                                                    <span class="notifications-item__message">{{ $notification->message }}</span>
+                                                                    <span class="notifications-item__time">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : '' }}</span>
+                                                                </span>
+                                                                @if($unread)
+                                                                    <span class="notifications-item__dot" aria-hidden="true"></span>
+                                                                @endif
                                                             </button>
                                                         </form>
-                                                    </li>
-                                                @endforeach
-                                            @else
-                                                <li class="text-center"><span class="text-muted">Nuk ka njoftime</span></li>
-                                            @endif
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li>
-                                                <a class="btn btn-darkblue btn-sm d-block rounded-4 {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}">
-                                                    Shiko të gjitha
+                                                    @endforeach
+                                                @else
+                                                    <div class="notifications-panel__empty">
+                                                        <i class="fa-regular fa-bell-slash"></i>
+                                                        <span>Nuk ka njoftime për momentin</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="notifications-panel__footer">
+                                                <a href="{{ route('notifications') }}" class="notifications-panel__all-link">
+                                                    Shiko të gjitha njoftimet
+                                                    <i class="fa-solid fa-arrow-right ms-1"></i>
                                                 </a>
-                                            </li>
-                                        </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endif
 
