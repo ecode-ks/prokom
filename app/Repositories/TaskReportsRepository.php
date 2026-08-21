@@ -75,27 +75,39 @@ class TaskReportsRepository
             ->exists();
     }
     //---------------
-    public function getReports(int $limit, int $companyId)
+    public function getReports(int $limit, int $companyId, string $search = '')
     {
-        return $this->baseQuery($companyId)
+        $query = $this->baseQuery($companyId);
+        $this->applySearch($query, $search);
+
+        return $query
             ->orderByDesc('tr.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
-    public function getReportsForEmployee(int $limit, int $companyId, int $employeeId)
+    public function getReportsForEmployee(int $limit, int $companyId, int $employeeId, string $search = '')
     {
-        return $this->baseQuery($companyId)
-            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId])
+        $query = $this->baseQuery($companyId)
+            ->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        $this->applySearch($query, $search);
+
+        return $query
             ->orderByDesc('tr.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
-    public function getReportsForManager(int $limit, int $companyId, int $managerId)
+    public function getReportsForManager(int $limit, int $companyId, int $managerId, string $search = '')
     {
-        return $this->baseQuery($companyId)
-            ->where('p.project_manager', $managerId)
+        $query = $this->baseQuery($companyId)
+            ->where('p.project_manager', $managerId);
+        $this->applySearch($query, $search);
+
+        return $query
             ->orderByDesc('tr.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
     public function getReportDetails(int $id, int $companyId)
@@ -195,5 +207,17 @@ class TaskReportsRepository
                 DB::raw('COALESCE(ab.employee, c.company) as assigned_by_name'),
                 DB::raw('COALESCE(e.employee, c.company) as reporter_name')
             );
+    }
+
+    private function applySearch($query, string $search): void
+    {
+        if ($search === '') {
+            return;
+        }
+
+        $query->where(function ($query) use ($search) {
+            $query->where('t.title', 'like', "%{$search}%")
+                ->orWhere('p.project_name', 'like', "%{$search}%");
+        });
     }
 }

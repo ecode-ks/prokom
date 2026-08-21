@@ -19,11 +19,18 @@ class ProjectReportsRepository
         return (int) DB::table($this->table)->insertGetId($data);
     }
     //---------------
-    public function getReports(int $limit, int $companyId)
+    public function getReports(int $limit, int $companyId, string $search = '')
     {
-        return $this->baseQuery($companyId)
+        $query = $this->baseQuery($companyId);
+
+        if ($search !== '') {
+            $query->where('p.project_name', 'like', "%{$search}%");
+        }
+
+        return $query
             ->orderByDesc('pr.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
     public function getReportDetails(int $id, int $companyId)

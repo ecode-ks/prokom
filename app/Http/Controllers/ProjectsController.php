@@ -49,7 +49,7 @@ class ProjectsController extends Controller
                 $this->service->createProject($data);
                 return redirect()->route('projects')->with('success', 'Projekti u krijua me sukses.');
             } catch (\Exception $e) {
-                return redirect()->route('projects')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.')->withInput();
+                return redirect()->route('projects')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.'. $e->getMessage())->withInput();
             }
         }
     }

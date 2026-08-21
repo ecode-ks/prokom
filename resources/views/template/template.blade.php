@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>PROKOM | @yield('title')</title>
+        <title>WORKOM | @yield('title')</title>
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -29,7 +29,7 @@
                                     <i class="fa-solid fa-city"></i>
                                 </div>
                                 <div>
-                                    <small class="d-block fw-semibold">PROKOM</small>
+                                    <small class="d-block fw-semibold">WORKOM</small>
                                     <small class="d-block opacity-50">Paneli Menaxhimit</small>
                                 </div>
                             </div>
@@ -261,7 +261,7 @@
                     {{-- Topbar --}}
                     <header class="pb-3 bg-white sticky-top py-3 px-4 d-print-none">
                         <div class="row align-items-center">
-                            <div class="col-4 col-lg-6">
+                            <div class="col-6 col-md-4 col-lg-6">
                                 <div class="d-flex align-items-center gap-2">
 
                                     {{-- Dropdown Menu for SM Devices --}}
@@ -347,104 +347,28 @@
                                         </ul>
                                     </div>
 
-                                    {{-- Change Project Dropdown --}}
-                                    @if(session('role') === 'company' || session('role') === 'manager')
-                                        <div class="dropdown">
-                                            <button class="btn bg-custom rounded-3 border text-truncate" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $selectedProjectName ?? 'Zgjidh Projektin' }}" style="max-width: 250px;">
-                                                <i class="fa-regular fa-building"></i> <span class="d-none d-md-inline">{{ $selectedProjectName ?? 'Zgjidh Projektin' }} <i class="fa-solid fa-up-down ms-1" style="font-size: 10px;"></i></span>
-                                            </button>
-                                            <ul class="dropdown-menu rounded-3 shadow-sm p-2">
-                                                <span class="d-block border-bottom pb-2 ps-3 mb-2 fw-semibold">Projektet</span>
-                                                @if(isset($topbarProjects) && count($topbarProjects) > 0)
-                                                    @foreach($topbarProjects as $project)
-                                                        <li>
-                                                            <a class="dropdown-item rounded-3 d-flex align-items-center gap-2 mb-1" href="{{ route('set.project.context', $project->id) }}">
-                                                                @if((int) ($selectedProjectId ?? 0) === (int) $project->id)
-                                                                    <i class="fa-solid fa-circle" style="font-size: 8px;"></i>
-                                                                @else
-                                                                    <i class="fa-regular fa-circle" style="font-size: 8px;"></i>
-                                                                @endif
-                                                                {{ $project->project_name }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                @else
-                                                    <li><span class="dropdown-item text-muted">Nuk u gjetën projekte</span></li>
-                                                @endif
-                                            </ul>
-                                        </div>
-                                    @endif
+                                    {{-- Current Package --}}
+                                    <a href="{{ route('profile') }}" class="btn bg-custom rounded-3 border text-truncate d-none d-lg-inline" style="max-width: 250px;">
+                                        <i class="fa-brands fa-trello text-primary"></i> BizHub</span>
+                                    </a>
                                 </div>
                             </div>
-
-                            <div class="col-4 d-lg-none text-center fw-semibold" style="letter-spacing: 0.5px;">PROKOM</div>
-                            <div class="col-4 col-lg-6 text-end">
+                            <div class="d-none d-md-inline col-md-4 d-lg-none text-center fw-semibold" style="letter-spacing: 0.5px;">WORKOM</div>
+                            <div class="col-6 col-md-4 col-lg-6 text-end">
                                 @php
                                     $profileName = session('user') ?: session('company');
                                 @endphp
 
                                 @if(session('role') && session('role') !== 'admin')
                                     <div class="dropdown d-inline-block me-2">
-                                        <button class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" title="Njoftimet">
+                                        <a href="{{ route('notifications') }}" class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" title="Njoftimet">
                                             <i class="fa-regular fa-bell"></i>
                                             @if(($topbarUnreadNotifications ?? 0) > 0)
                                                 <span class="notifications-bell-badge">
                                                     {{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }}
                                                 </span>
                                             @endif
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end notifications-panel border-0 shadow">
-                                            <div class="notifications-panel__header">
-                                                <div>
-                                                    <span class="notifications-panel__title">Njoftimet</span>
-                                                    @if(($topbarUnreadNotifications ?? 0) > 0)
-                                                        <span class="notifications-panel__count">{{ $topbarUnreadNotifications }} të palexuara</span>
-                                                    @endif
-                                                </div>
-                                                @if(($topbarUnreadNotifications ?? 0) > 0)
-                                                    <form action="{{ route('notifications.mark.all') }}" method="post">
-                                                        @csrf
-                                                        <button type="submit" class="notifications-panel__mark-all">Lexo të gjitha</button>
-                                                    </form>
-                                                @endif
-                                            </div>
-
-                                            <div class="notifications-panel__list">
-                                                @if(isset($topbarNotifications) && count($topbarNotifications) > 0)
-                                                    @foreach($topbarNotifications as $notification)
-                                                        @php $unread = !(int) $notification->is_read; @endphp
-                                                        <form action="{{ route('notifications.open', $notification->id) }}" method="post">
-                                                            @csrf
-                                                            <button type="submit" class="notifications-item {{ $unread ? 'is-unread' : '' }}">
-                                                                <span class="notifications-item__icon">
-                                                                    <i class="fa-regular fa-bell"></i>
-                                                                </span>
-                                                                <span class="notifications-item__body">
-                                                                    <span class="notifications-item__title">{{ $notification->title }}</span>
-                                                                    <span class="notifications-item__message">{{ $notification->message }}</span>
-                                                                    <span class="notifications-item__time">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : '' }}</span>
-                                                                </span>
-                                                                @if($unread)
-                                                                    <span class="notifications-item__dot" aria-hidden="true"></span>
-                                                                @endif
-                                                            </button>
-                                                        </form>
-                                                    @endforeach
-                                                @else
-                                                    <div class="notifications-panel__empty">
-                                                        <i class="fa-regular fa-bell-slash"></i>
-                                                        <span>Nuk ka njoftime për momentin</span>
-                                                    </div>
-                                                @endif
-                                            </div>
-
-                                            <div class="notifications-panel__footer">
-                                                <a href="{{ route('notifications') }}" class="notifications-panel__all-link">
-                                                    Shiko të gjitha njoftimet
-                                                    <i class="fa-solid fa-arrow-right ms-1"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 @endif
 

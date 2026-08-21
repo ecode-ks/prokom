@@ -49,9 +49,10 @@ class TaskReportsController extends Controller
         return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u krijua me sukses.');
     }
     //---------------
-    public function read()
+    public function read(Request $request)
     {
         $page = 'Task Reports';
+        $search = trim((string) $request->query('search', ''));
         $companyId = session('company_id');
         $role = session('role');
         $employeeId = session('employee_id') ? session('employee_id') : null;
@@ -62,7 +63,7 @@ class TaskReportsController extends Controller
             return redirect()->route('tasks')->with('error', 'Ju lutemi regjistroni së pari detyrat.');
         }
 
-        $reports = $this->service->getReports(10, $companyId, $role, $employeeId);
+        $reports = $this->service->getReports(10, $companyId, $role, $employeeId, $search);
         $reportStats = $this->service->getReportStatistics((int) $companyId, $role, $employeeId ? (int) $employeeId : null);
 
         return view('management.task-reports')

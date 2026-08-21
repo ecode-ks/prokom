@@ -89,16 +89,16 @@ class TaskReportsService
         return true;
     }
     //---------------
-    public function getReports(int $limit, int $companyId, string $role, ?int $employeeId)
+    public function getReports(int $limit, int $companyId, string $role, ?int $employeeId, string $search = '')
     {
         $limit = $limit ?: 10;
 
         if ($role === 'manager' && $employeeId) {
-            $reports = $this->repository->getReportsForManager($limit, $companyId, $employeeId);
+            $reports = $this->repository->getReportsForManager($limit, $companyId, $employeeId, $search);
         } elseif ($role === 'employee' && $employeeId) {
-            $reports = $this->repository->getReportsForEmployee($limit, $companyId, $employeeId);
+            $reports = $this->repository->getReportsForEmployee($limit, $companyId, $employeeId, $search);
         } else {
-            $reports = $this->repository->getReports($limit, $companyId);
+            $reports = $this->repository->getReports($limit, $companyId, $search);
         }
 
         return $reports->through(function ($report) {

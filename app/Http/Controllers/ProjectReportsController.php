@@ -50,9 +50,10 @@ class ProjectReportsController extends Controller
         }
     }
     //---------------
-    public function read()
+    public function read(Request $request)
     {
         $page = 'Project Reports';
+        $search = trim((string) $request->query('search', ''));
         $companyId = session('company_id');
         $projects = $this->service->getAllProjects($companyId);
 
@@ -60,7 +61,7 @@ class ProjectReportsController extends Controller
             return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
         }
 
-        $reports = $this->service->getReports(10, $companyId);
+        $reports = $this->service->getReports(10, $companyId, $search);
         $reportStats = $this->service->getReportStatistics((int) $companyId);
 
         return view('management.project-reports')

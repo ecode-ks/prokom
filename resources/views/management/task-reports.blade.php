@@ -137,6 +137,10 @@
                 <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Raporteve të Detyrave</span>
             </div>
             <div class="card-body">
+                <form action="{{ route('task.reports') }}" method="get" class="input-group mb-3">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
+                    <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
                 <div class="table-responsive">
                     <table class="table align-middle">
                         <thead>

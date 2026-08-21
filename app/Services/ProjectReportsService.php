@@ -68,11 +68,11 @@ class ProjectReportsService
         return true;
     }
     //---------------
-    public function getReports(int $limit, int $companyId)
+    public function getReports(int $limit, int $companyId, string $search = '')
     {
         $limit = $limit ?: 10;
 
-        return $this->repository->getReports($limit, $companyId);
+        return $this->repository->getReports($limit, $companyId, $search);
     }
     //---------------
     public function getAllProjects(int $companyId)
