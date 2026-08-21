@@ -85,30 +85,11 @@ class DashboardController extends Controller
             'isAdmin' => $role === 'admin',
             'showCheckIn' => in_array($role, ['employee', 'manager', 'finance', 'hr'], true),
             'showTeamMap' => $role === 'company',
-            'showQuickActions' => in_array($role, ['admin', 'company', 'manager', 'finance', 'hr'], true),
-            'showLists' => in_array($role, ['company', 'manager', 'employee'], true),
+            'showQuickActions' => in_array($role, ['admin', 'company', 'manager', 'employee', 'finance', 'hr'], true),
             'dashboardNews' => $companyId > 0
-                ? $this->companyNewsService->getLatestForDashboard($companyId, 5)
+                ? $this->companyNewsService->getLatestForDashboard($companyId, 3)
                 : collect(),
-            'adminKpis' => null,
-            'adminLatestCompanies' => collect(),
-            'adminExpiringCompanies' => collect(),
-            'adminLatestPayments' => collect(),
             'companyKpis' => null,
-            'managerKpis' => null,
-            'employeeKpis' => null,
-            'financeKpis' => null,
-            'hrKpis' => null,
-            'companyProjects' => collect(),
-            'companyLatestTransactions' => collect(),
-            'companyPendingVacations' => collect(),
-            'companyLatestOffers' => collect(),
-            'companyExpiringContracts' => collect(),
-            'managerProjects' => collect(),
-            'managerTeamTasks' => collect(),
-            'managerPendingReports' => collect(),
-            'managerTeamPresence' => null,
-            'employeeTasks' => collect(),
         ];
 
         if (in_array($role, ['employee', 'manager', 'finance', 'hr'], true)) {
@@ -119,104 +100,15 @@ class DashboardController extends Controller
             $data['isActive'] = false;
         }
 
-        if ($role === 'admin') {
-            $companyStats = $this->companiesService->getCompanyStatistics();
-            $packageStats = $this->packagesService->getPackageStatistics();
-            $paymentStats = $this->companiesService->getPaymentStatistics();
-
-            $data['adminKpis'] = (object) [
-                'companies' => (int) ($companyStats->total_count ?? 0),
-                'active_companies' => (int) ($companyStats->active_count ?? 0),
-                'inactive_companies' => (int) ($companyStats->inactive_count ?? 0),
-                'expiring_soon' => (int) ($companyStats->expiring_soon_count ?? 0),
-                'packages' => (int) ($packageStats->total_count ?? 0),
-                'payments_month' => (int) ($paymentStats->month_count ?? 0),
-                'revenue_month' => (float) ($paymentStats->month_revenue ?? 0),
-                'revenue_total' => (float) ($paymentStats->total_revenue ?? 0),
-            ];
-            $data['adminLatestCompanies'] = $this->companiesService->getLatestForDashboard(5);
-            $data['adminExpiringCompanies'] = $this->companiesService->getExpiringSoonForDashboard(5);
-            $data['adminLatestPayments'] = $this->companiesService->getLatestPaymentsForDashboard(5);
-        } elseif ($role === 'company') {
-            $projectStats = $this->projectsService->getProjectStatistics([], $companyId);
-            $fromDate = now()->startOfMonth()->toDateString();
-            $toDate = now()->toDateString();
-            $report = $this->financialTransactionsService->getFinancialReport($fromDate, $toDate, 1, $companyId);
-            $summary = $report['summary'] ?? [];
-            $offerStats = $this->offersService->getOfferStatistics();
-            $vacationStats = $this->vacationsService->getVacationStatistics('', $companyId);
-            $contractStats = $this->contractsService->getContractStatistics('', $companyId);
-            $presence = $this->checkinService->getCompanyPresenceToday($companyId);
-            $pendingVacations = (int) ($vacationStats->pending_hr_count ?? 0);
-
-            $data['companyKpis'] = (object) [
-                'projects' => $this->projectsService->countCompanyProjects($companyId),
-                'active_projects' => (int) ($projectStats->active_count ?? 0),
-                'employees' => $this->employeesService->countAllEmployees(),
-                'active_employees' => $this->employeesService->countActiveEmployees(),
-                'balance' => (float) ($summary['balance'] ?? 0),
-                'revenues' => (float) ($summary['revenues'] ?? 0),
-                'expenses' => (float) ($summary['expenses'] ?? 0),
-                'pending_offers' => (int) ($offerStats->pending_count ?? 0),
-                'checked_in_today' => (int) ($presence->checked_in_today ?? 0),
-                'currently_working' => (int) ($presence->currently_working ?? 0),
-                'pending_vacations' => $pendingVacations,
-                'expiring_contracts' => (int) ($contractStats->expiring_count ?? 0),
-            ];
-            $data['companyProjects'] = $this->projectsService->getCompanyUpcomingProjects($companyId, 5);
-            $data['companyLatestTransactions'] = $this->financialTransactionsService->getLatestForDashboard($companyId, 5);
-            $data['companyLatestOffers'] = $this->offersService->getLatestForDashboard(5);
-            $data['companyPendingVacations'] = $this->vacationsService->getPendingForDashboard($companyId, 5);
-            $data['companyExpiringContracts'] = $this->contractsService->getExpiringForDashboard($companyId, 5);
-        } elseif ($role === 'manager') {
-            $taskCounts = $this->tasksService->getManagerTaskCounts($employeeId, $companyId);
-            $data['managerKpis'] = (object) [
-                'active_projects' => $this->projectsService->countManagerActiveProjects($employeeId, $companyId),
-                'open_tasks' => $taskCounts->open_tasks,
-                'overdue_tasks' => $taskCounts->overdue_tasks,
-                'due_soon_tasks' => $taskCounts->due_soon_tasks,
-            ];
-            $data['managerProjects'] = $this->projectsService->getManagerUpcomingProjects($employeeId, $companyId, 5);
-            $data['managerTeamTasks'] = $this->tasksService->getManagerTeamTasks($employeeId, $companyId, 5);
-            $data['managerPendingReports'] = $this->projectReportsService->getManagerPendingReports($employeeId, $companyId, 4);
-            $data['managerTeamPresence'] = $this->tasksService->getManagerTeamPresence($employeeId, $companyId);
-        } elseif ($role === 'employee') {
-            $taskCounts = $this->tasksService->getEmployeeTaskCounts($employeeId, $companyId);
-            $reportStats = $this->taskReportsService->getReportStatistics($companyId, 'employee', $employeeId);
-            $data['employeeKpis'] = (object) [
-                'my_tasks' => $taskCounts->my_tasks,
-                'working_tasks' => $taskCounts->working_tasks,
-                'review_tasks' => $taskCounts->review_tasks,
-                'my_reports' => (int) (($reportStats->active_count ?? 0)
-                    + ($reportStats->under_review_count ?? 0)
-                    + ($reportStats->resolved_count ?? 0)
-                    + ($reportStats->closed_count ?? 0)),
-            ];
-            $data['employeeTasks'] = $this->tasksService->getMyOpenTasks($employeeId, $companyId, 5);
-        } elseif ($role === 'finance') {
-            $fromDate = now()->startOfMonth()->toDateString();
-            $toDate = now()->toDateString();
-            $report = $this->financialTransactionsService->getFinancialReport($fromDate, $toDate, 1, $companyId);
-            $summary = $report['summary'] ?? [];
+        if ($role === 'company') {
             $clientStats = $this->clientsService->getClientStatistics($companyId);
             $offerStats = $this->offersService->getOfferStatistics();
 
-            $data['financeKpis'] = (object) [
-                'balance' => (float) ($summary['balance'] ?? 0),
-                'revenues' => (float) ($summary['revenues'] ?? 0),
-                'expenses' => (float) ($summary['expenses'] ?? 0),
-                'clients' => (int) ($clientStats->total_count ?? 0),
-                'pending_offers' => (int) ($offerStats->pending_count ?? 0),
-            ];
-        } elseif ($role === 'hr') {
-            $vacationStats = $this->vacationsService->getVacationStatistics('', $companyId);
-            $contractStats = $this->contractsService->getContractStatistics('', $companyId);
-
-            $data['hrKpis'] = (object) [
+            $data['companyKpis'] = (object) [
                 'employees' => $this->employeesService->countAllEmployees(),
-                'active_employees' => $this->employeesService->countActiveEmployees(),
-                'pending_vacations' => (int) ($vacationStats->pending_hr_count ?? 0),
-                'active_contracts' => (int) ($contractStats->active_count ?? 0),
+                'projects' => $this->projectsService->countCompanyProjects($companyId),
+                'clients' => (int) ($clientStats->total_count ?? 0),
+                'offers' => (int) ($offerStats->offer_count ?? 0),
             ];
         }
 

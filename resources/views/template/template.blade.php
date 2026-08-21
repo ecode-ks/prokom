@@ -364,9 +364,7 @@
                                         <a href="{{ route('notifications') }}" class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" title="Njoftimet">
                                             <i class="fa-regular fa-bell"></i>
                                             @if(($topbarUnreadNotifications ?? 0) > 0)
-                                                <span class="notifications-bell-badge">
-                                                    {{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }}
-                                                </span>
+                                                <small class="text-danger fw-semibold">({{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }})</small>
                                             @endif
                                         </a>
                                     </div>

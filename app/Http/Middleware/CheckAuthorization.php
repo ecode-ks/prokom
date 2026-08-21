@@ -8,13 +8,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckAuthorization
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string ...$allowedRoles): Response
     {
+        if (session('active') !== true) {
+            return redirect()->route('login');
+        }
+
+        if ($allowedRoles !== [] && !in_array((string) session('role'), $allowedRoles, true)) {
+            abort(404);
+        }
+
         return $next($request);
     }
 }

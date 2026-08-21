@@ -32,28 +32,32 @@ Route::controller(UsersController::class)->group(function () {
     Route::post('/check-login', 'checkLogin')->name('check.login');
     Route::post('/register-admin', 'registerAdmin')->name('register.admin');
     Route::get('/logout', 'logout')->name('logout');
-    Route::get('/profile', 'profile')->name('profile');
-    Route::post('/profile-password', 'updateProfilePassword')->name('update.profile.password');
+    Route::get('/profile', 'profile')->middleware('authorization:admin,company,manager,employee,finance,hr')->name('profile');
+    Route::post('/profile-password', 'updateProfilePassword')->middleware('authorization:admin,company,manager,employee,finance,hr')->name('update.profile.password');
 });
 
 // Companies
 Route::controller(CompaniesController::class)->group(function () {
     Route::get('/register', 'register')->name('register');
     Route::post('/register-company', 'registerCompany')->name('register.company');
-    Route::get('/companies', 'read')->name('companies');
-    Route::get('/company-details/{id}', 'details')->name('company.details');
-    Route::get('/update-company-status/{id}/{status}', 'updateStatus')->name('update.company.status');
-    Route::get('/delete-company/{id}', 'delete')->name('delete.company');
-    Route::get('/payments', 'payments')->name('payments');
+    Route::middleware('authorization:admin')->group(function () {
+        Route::get('/companies', 'read')->name('companies');
+        Route::get('/company-details/{id}', 'details')->name('company.details');
+        Route::get('/update-company-status/{id}/{status}', 'updateStatus')->name('update.company.status');
+        Route::get('/delete-company/{id}', 'delete')->name('delete.company');
+        Route::get('/payments', 'payments')->name('payments');
+    });
 });
 
 // Dashboard
 Route::controller(DashboardController::class)->group(function () {
-    Route::get('/dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', 'dashboard')
+        ->middleware('authorization:admin,company,manager,employee,finance,hr')
+        ->name('dashboard');
 });
 
 // Check In
-Route::controller(CheckInController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr')->controller(CheckInController::class)->group(function () {
     Route::get('/checkins', 'read')->name('checkins');
     Route::get('/checkins-map', 'map')->name('checkins.map');
     Route::get('/checkin-details/{id}', 'details')->name('checkin.details');
@@ -66,7 +70,7 @@ Route::controller(CheckInController::class)->group(function () {
 });
 
 // Packages
-Route::controller(PackagesController::class)->group(function () {
+Route::middleware('authorization:admin')->controller(PackagesController::class)->group(function () {
     Route::post('/create-package', 'create')->name('create.package');
     Route::get('/packages', 'read')->name('packages');
     Route::get('/edit-package/{id}', 'edit')->name('edit.package');
@@ -76,7 +80,7 @@ Route::controller(PackagesController::class)->group(function () {
 });
 
 // Company News
-Route::controller(CompanyNewsController::class)->group(function () {
+Route::middleware('authorization:company,manager')->controller(CompanyNewsController::class)->group(function () {
     Route::post('/create-company-news', 'create')->name('create.company.news');
     Route::get('/company-news', 'read')->name('company.news');
     Route::get('/edit-company-news/{id}', 'edit')->name('edit.company.news');
@@ -85,7 +89,7 @@ Route::controller(CompanyNewsController::class)->group(function () {
 });
 
 // Clients
-Route::controller(ClientsController::class)->group(function () {
+Route::middleware('authorization:company,manager,finance')->controller(ClientsController::class)->group(function () {
     Route::post('/create-client', 'create')->name('create.client');
     Route::get('/clients', 'read')->name('clients');
     Route::get('/edit-client/{id}', 'edit')->name('edit.client');
@@ -94,7 +98,7 @@ Route::controller(ClientsController::class)->group(function () {
 });
 
 // Materials
-Route::controller(MaterialsController::class)->group(function () {
+Route::middleware('authorization:company,manager')->controller(MaterialsController::class)->group(function () {
     Route::post('/create-material', 'create')->name('create.material');
     Route::get('/materials', 'read')->name('materials');
     Route::get('/edit-material/{id}', 'edit')->name('edit.material');
@@ -103,7 +107,7 @@ Route::controller(MaterialsController::class)->group(function () {
 });
 
 // Materials Stock
-Route::controller(MaterialsStockController::class)->group(function () {
+Route::middleware('authorization:company,manager')->controller(MaterialsStockController::class)->group(function () {
     Route::post('/create-material-stock', 'create')->name('create.material.stock');
     Route::get('/materials-stock', 'read')->name('materials.stock');
     Route::get('/materials-stock-report', 'report')->name('materials.stock.report');
@@ -113,7 +117,7 @@ Route::controller(MaterialsStockController::class)->group(function () {
 });
 
 // Offers
-Route::controller(OffersController::class)->group(function () {
+Route::middleware('authorization:company,finance')->controller(OffersController::class)->group(function () {
     Route::get('/create-offer', 'createForm')->name('create.offer');
     Route::post('/create-offer-client', 'saveClientSession')->name('save.offer.client.session');
     Route::post('/create-offer-details', 'saveDetailsSession')->name('save.offer.details.session');
@@ -130,7 +134,7 @@ Route::controller(OffersController::class)->group(function () {
 });
 
 // Suppliers
-Route::controller(SuppliersController::class)->group(function () {
+Route::middleware('authorization:company,manager,finance')->controller(SuppliersController::class)->group(function () {
     Route::post('/create-supplier', 'create')->name('create.supplier');
     Route::get('/suppliers', 'read')->name('suppliers');
     Route::get('/edit-supplier/{id}', 'edit')->name('edit.supplier');
@@ -139,7 +143,7 @@ Route::controller(SuppliersController::class)->group(function () {
 });
 
 // Financial Transactions
-Route::controller(FinancialTransactionsController::class)->group(function () {
+Route::middleware('authorization:company,finance')->controller(FinancialTransactionsController::class)->group(function () {
     Route::post('/create-transaction', 'create')->name('create.transaction');
     Route::get('/transactions', 'read')->name('financial.transactions');
     Route::get('/financial-report', 'report')->name('financial.report');
@@ -149,7 +153,7 @@ Route::controller(FinancialTransactionsController::class)->group(function () {
 });
 
 // Employees
-Route::controller(EmployeesController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr')->controller(EmployeesController::class)->group(function () {
     Route::post('/create-employee', 'create')->name('create.employee');
     Route::get('/employees', 'read')->name('employees');
     Route::get('/edit-employee/{id}', 'edit')->name('edit.employee');
@@ -160,7 +164,7 @@ Route::controller(EmployeesController::class)->group(function () {
 });
 
 // Vacations
-Route::controller(VacationsController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr,employee')->controller(VacationsController::class)->group(function () {
     Route::post('/create-vacation', 'create')->name('create.vacation');
     Route::get('/vacations', 'read')->name('vacations');
     Route::get('/edit-vacation/{id}', 'edit')->name('edit.vacation');
@@ -170,7 +174,7 @@ Route::controller(VacationsController::class)->group(function () {
 });
 
 // Contracts
-Route::controller(ContractsController::class)->group(function () {
+Route::middleware('authorization:company,hr')->controller(ContractsController::class)->group(function () {
     Route::post('/create-contract', 'create')->name('create.contract');
     Route::get('/contracts', 'read')->name('contracts');
     Route::get('/contract-details/{id}', 'contractDetails')->name('contract.details');
@@ -180,7 +184,7 @@ Route::controller(ContractsController::class)->group(function () {
 });
 
 // Projects
-Route::controller(ProjectsController::class)->group(function () {
+Route::middleware('authorization:company,manager')->controller(ProjectsController::class)->group(function () {
     Route::post('/create-project', 'create')->name('create.project');
     Route::get('/projects', 'read')->name('projects');
     Route::get('/project/{id}', 'projectDetails')->name('project.details');
@@ -192,7 +196,7 @@ Route::controller(ProjectsController::class)->group(function () {
 });
 
 // Project Reports
-Route::controller(ProjectReportsController::class)->group(function () {
+Route::middleware('authorization:company,manager')->controller(ProjectReportsController::class)->group(function () {
     Route::post('/create-project-report', 'create')->name('create.project.report');
     Route::get('/project-reports', 'read')->name('project.reports');
     Route::get('/project-report/{id}', 'reportDetails')->name('project.report.details');
@@ -203,7 +207,7 @@ Route::controller(ProjectReportsController::class)->group(function () {
 });
 
 // Tasks
-Route::controller(TasksController::class)->group(function () {
+Route::middleware('authorization:company,manager,employee')->controller(TasksController::class)->group(function () {
     Route::post('/create-task', 'create')->name('create.task');
     Route::get('/tasks', 'read')->name('tasks');
     Route::get('/task/{id}', 'taskDetails')->name('task.details');
@@ -214,7 +218,7 @@ Route::controller(TasksController::class)->group(function () {
 });
 
 // Task Reports
-Route::controller(TaskReportsController::class)->group(function () {
+Route::middleware('authorization:company,manager,employee')->controller(TaskReportsController::class)->group(function () {
     Route::post('/create-task-report', 'create')->name('create.task.report');
     Route::get('/task-reports', 'read')->name('task.reports');
     Route::get('/task-report/{id}', 'details')->name('task.report.details');
@@ -225,21 +229,21 @@ Route::controller(TaskReportsController::class)->group(function () {
 });
 
 // Working Hours
-Route::controller(WorkingHoursController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr,employee')->controller(WorkingHoursController::class)->group(function () {
     Route::post('/create-working-hour', 'create')->name('create.working.hour');
     Route::get('/working-hours', 'read')->name('working.hours');
     Route::get('/delete-working-hour/{id}', 'delete')->name('delete.working.hour');
 });
 
 // Notifications
-Route::controller(NotificationsController::class)->group(function () {
+Route::middleware('authorization:company,manager,employee,finance,hr')->controller(NotificationsController::class)->group(function () {
     Route::get('/notifications', 'read')->name('notifications');
     Route::post('/notifications/open/{id}', 'open')->name('notifications.open');
     Route::post('/notifications/mark-all-read', 'markAllRead')->name('notifications.mark.all');
 });
 
 // Salaries
-Route::controller(SalariesController::class)->group(function () {
+Route::middleware('authorization:company,finance')->controller(SalariesController::class)->group(function () {
     Route::post('/create-salary', 'create')->name('create.salary');
     Route::get('/salaries', 'read')->name('salaries');
     Route::get('/edit-salary/{id}', 'edit')->name('edit.salary');
@@ -251,7 +255,7 @@ Route::controller(SalariesController::class)->group(function () {
 });
 
 // Extra Hours
-Route::controller(ExtraHoursController::class)->group(function () {
+Route::middleware('authorization:company,finance')->controller(ExtraHoursController::class)->group(function () {
     Route::post('/create-extra-hour', 'create')->name('create.extra.hour');
     Route::get('/extra-hours', 'read')->name('extra.hours');
     Route::get('/edit-extra-hour/{id}', 'edit')->name('edit.extra.hour');
@@ -260,7 +264,7 @@ Route::controller(ExtraHoursController::class)->group(function () {
 });
 
 // Reports
-Route::controller(ReportsController::class)->group(function () {
+Route::middleware('authorization:company,manager,employee,hr')->controller(ReportsController::class)->group(function () {
     Route::get('/employee-report', 'read')->name('employee.report');
     Route::get('/generate-employee-report', 'generate')->name('generate.employee.report');
 });
