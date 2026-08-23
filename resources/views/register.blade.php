@@ -21,7 +21,7 @@
                             <i class="fa-solid fa-city"></i>
                         </div>
                         <div>
-                            <span class="d-block fw-semibold">PROKOM</span>
+                            <span class="d-block fw-semibold">WORKOM</span>
                             <small class="d-block opacity-50">Paneli Menaxhimit</small>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between opacity-50">
-                            <small>&copy; {{ date('Y') }} PROKOM</small>
+                            <small>&copy; {{ date('Y') }} WORKOM</small>
                             <small><i class="fa-solid fa-shield-alt"></i> ISO 27001</small>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                 {{-- Registration Form --}}
                 <div class="col-12 col-md-12 col-lg-6 bg-custom vh-100 overflow-y-auto">
                     <div class="col-12 col-md-8 mx-auto py-5">
-                        <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini në PROKOM</span>
+                        <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini në WORKOM</span>
                         <h1 class="fw-bold col-12 mt-3">Krijoni një llogari për kompaninë tuaj</h1>
                         <form action="{{ route('register.company') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                             @csrf

@@ -49,7 +49,7 @@
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-euro-sign"></i> Paga : </span>{{ $contractDetails->salary }}€</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-clock"></i> Çmimi i Orëve Shtesë : </span>{{ $contractDetails->extra_hours_price }}€</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-calendar-week"></i> Çmimi i Orëve të Fundjavës : </span>{{ $contractDetails->weekend_hours_price }}€</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Periudha e Kontratës : </span>{{ $contractDetails->from_date }} &rarr; {{ $contractDetails->to_date }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Periudha e Kontratës : </span>{{ Carbon\Carbon::parse($contractDetails->from_date)->format('d/m/Y') }} &rarr; {{ Carbon\Carbon::parse($contractDetails->to_date)->format('d/m/Y') }}</span>
                 <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> Dokumentet</span>
                 <div class="card card-body rounded-4">
                     @if(!empty($docs))
@@ -110,27 +110,14 @@
                             <input type="number" step="0.01" name="weekend_hours_price" id="weekend_hours_price" value="{{ old('weekend_hours_price', $editContract->weekend_hours_price) }}" class="form-control shadow-sm rounded-3">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label for="docs" class="form-label">Dokumentet <small class="text-muted">(opsionale – lëreni bosh për të ruajtur ekzistueset)</small></label>
+                            <label for="docs" class="form-label">Dokumentet <small class="text-muted">(opsionale)</small></label>
                             <input type="file" name="docs[]" id="docs" class="form-control shadow-sm rounded-3" multiple>
-                            @php
-                                $existingDocs = is_array($editContract->docs ?? null)
-                                    ? $editContract->docs
-                                    : json_decode($editContract->docs ?? '[]', true);
-                            @endphp
-                            @if(!empty($existingDocs))
-                                <small class="d-block text-muted mt-1">
-                                    Skedarët aktualë:
-                                    @foreach($existingDocs as $doc)
-                                        {{ basename($doc) }}@if(!$loop->last), @endif
-                                    @endforeach
-                                </small>
-                            @endif
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <label for="from_date" class="form-label">Valide Nga</label>
                             <input type="date" name="from_date" id="from_date" value="{{ old('from_date', $editContract->from_date) }}" class="form-control shadow-sm rounded-3">
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <label for="to_date" class="form-label">Valide Deri</label>
                             <input type="date" name="to_date" id="to_date" value="{{ old('to_date', $editContract->to_date) }}" class="form-control shadow-sm rounded-3">
                         </div>
@@ -233,11 +220,11 @@
                             <label for="docs" class="form-label">Dokumentet</label>
                             <input type="file" name="docs[]" id="docs" class="form-control shadow-sm rounded-3" multiple>
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <label for="from_date" class="form-label">Valide Nga</label>
                             <input type="date" name="from_date" id="from_date" value="{{ old('from_date') }}" class="form-control shadow-sm rounded-3">
                         </div>
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4">
                             <label for="to_date" class="form-label">Valide Deri</label>
                             <input type="date" name="to_date" id="to_date" value="{{ old('to_date') }}" class="form-control shadow-sm rounded-3">
                         </div>
@@ -269,9 +256,7 @@
                                 <th scope="col" class="text-nowrap">#</th>
                                 <th scope="col" class="text-nowrap">Punonjësi</th>
                                 <th scope="col" class="text-nowrap">Pozita</th>
-                                <th scope="col" class="text-nowrap">Paga</th>
                                 <th scope="col" class="text-nowrap">Telefoni</th>
-                                <th scope="col" class="text-nowrap">Email</th>
                                 <th scope="col" class="text-nowrap">Vlefshmëria</th>
                                 <th scope="col" class="text-nowrap">Statusi</th>
                                 <th scope="col" class="text-nowrap text-end">Veprimet</th>
@@ -288,10 +273,8 @@
                                         <th scope="row" class="text-nowrap">{{ $contract->id }}</th>
                                         <td class="text-nowrap">{{ $contract->employee }}</td>
                                         <td class="text-nowrap">{{ $contract->position }}</td>
-                                        <td class="text-nowrap">{{ $contract->salary }}</td>
                                         <td class="text-nowrap">{{ $contract->phone }}</td>
-                                        <td class="text-nowrap">{{ $contract->email }}</td>
-                                        <td class="text-nowrap">{{ $contract->to_date }}</td>
+                                        <td class="text-nowrap">{{ Carbon\Carbon::parse($contract->to_date)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap">
                                             @if($contract->status === 'Active')
                                                 <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Aktive</span>

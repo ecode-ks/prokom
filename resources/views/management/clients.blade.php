@@ -50,42 +50,6 @@
         </div>
     @else
 
-        {{-- Info Cards --}}
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-users text-primary"></i> Total klientë</small>
-                        <h4 class="fw-semibold mb-0">{{ $clientStats->total_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-diagram-project text-success"></i> Me projekte</small>
-                        <h4 class="fw-semibold mb-0">{{ $clientStats->with_projects_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-location-dot text-warning"></i> Lokacione</small>
-                        <h4 class="fw-semibold mb-0">{{ $clientStats->locations_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-link text-info"></i> Projekte të lidhura</small>
-                        <h4 class="fw-semibold mb-0">{{ $clientStats->linked_projects_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Create Client --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">

@@ -53,34 +53,6 @@
         </div>
     @else
 
-        {{-- Info Cards --}}
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-layer-group text-primary"></i> Total materiale</small>
-                        <h4 class="fw-semibold mb-0">{{ $materialStats->total_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrows-rotate text-info"></i> Me lëvizje stoku</small>
-                        <h4 class="fw-semibold mb-0">{{ $materialStats->with_movement_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-box-open text-danger"></i> Pa stok</small>
-                        <h4 class="fw-semibold mb-0">{{ $materialStats->no_stock_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Create Material --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">

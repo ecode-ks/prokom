@@ -46,12 +46,10 @@ class MaterialsStockController extends Controller
             return redirect()->route('materials')->with('error', 'Duhet të regjistroni materialet së pari.');
         }
         $materialsStock = $this->service->getMaterialsStock(10, $companyId, $search);
-        $stockStats = $this->service->getStockStatistics($companyId);
         return view('management.materials-stock')
             ->with('page', $page)
             ->with('materials', $materials)
-            ->with('materialsStock', $materialsStock)
-            ->with('stockStats', $stockStats);
+            ->with('materialsStock', $materialsStock);
     }
     //---------------
     public function report()
@@ -59,12 +57,10 @@ class MaterialsStockController extends Controller
         $page = 'Stock Report';
         $companyId = (int) session('company_id');
         $stockReport = $this->service->getStockReport(10, $companyId);
-        $stockStats = $this->service->getStockReportSummary($companyId);
 
         return view('management.materials-stock-report')
             ->with('page', $page)
-            ->with('stockReport', $stockReport)
-            ->with('stockStats', $stockStats);
+            ->with('stockReport', $stockReport);
     }
     //---------------
     public function edit(int $id)

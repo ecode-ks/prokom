@@ -67,42 +67,6 @@
         </div>
     @else
 
-        {{-- Info Cards --}}
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-down text-success"></i> Hyrje</small>
-                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($stockStats->in_qty ?? 0), 2) }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-up text-danger"></i> Dalje</small>
-                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($stockStats->out_qty ?? 0), 2) }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-receipt text-primary"></i> Transaksione</small>
-                        <h4 class="fw-semibold mb-0">{{ $stockStats->transaction_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-scale-balanced text-warning"></i> Bilanci neto</small>
-                        <h4 class="fw-semibold mb-0">{{ number_format((float) ($stockStats->net_balance ?? 0), 2) }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Create Stock Transaction --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">

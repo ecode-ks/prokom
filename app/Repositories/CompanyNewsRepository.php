@@ -76,16 +76,6 @@ class CompanyNewsRepository
 			->delete() > 0;
 	}
 	//---------------
-	public function getCompanyNewsStatistics(int $companyId): object
-	{
-		return DB::table($this->table)
-			->where('company_id', $companyId)
-			->selectRaw('COUNT(*) as total_count')
-			->selectRaw('SUM(CASE WHEN MONTH(`date`) = MONTH(CURRENT_DATE()) AND YEAR(`date`) = YEAR(CURRENT_DATE()) THEN 1 ELSE 0 END) as this_month_count')
-			->selectRaw('SUM(CASE WHEN project_id IS NOT NULL THEN 1 ELSE 0 END) as with_project_count')
-			->first();
-	}
-	//---------------
 	public function getLatestForDashboard(int $companyId, int $limit = 5)
 	{
 		return DB::table($this->table . ' as cn')

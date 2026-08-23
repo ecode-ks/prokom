@@ -8,7 +8,7 @@
     @php
         $isEmployee = $isEmployee ?? false;
         $canManage = $canManage ?? false;
-        $canApproveHr = $canApproveHr ?? false;
+        $canApproveStatus = $canApproveStatus ?? false;
         $isCompany = $isCompany ?? false;
         $selectedType = $selectedType ?? '';
         $pendingHrCount = (int) ($vacationStats->pending_hr_count ?? 0);
@@ -25,9 +25,9 @@
         <h3 class="fw-semibold pt-2">Pushimet</h3>
         <p class="text-muted">
             @if($isEmployee)
-                Kërko pushim dhe ndiq statusin e kërkesave tua. Aprovimi bëhet nga HR.
+                Kërko pushim dhe ndiq statusin e kërkesave tua. Statusi ndryshohet direkt nga menaxheri ose HR.
             @else
-                Kërkesat për pushim aprovohen nga HR.
+                Kërkesat për pushim mund të aprovohen ose refuzohen direkt nga menaxheri ose HR.
             @endif
         </p>
         <hr class="mb-4">
@@ -92,8 +92,8 @@
 
         @if($pendingTotal > 0)
             <div class="alert bg-warning border-warning rounded-4 shadow-sm bg-opacity-25" role="alert">
-                <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $pendingTotal }} kërkes{{ $pendingTotal === 1 ? 'ë' : 'a' }} në pritje ({{ $pendingManagerCount }} menaxher · {{ $pendingHrCount }} HR)</span>
-                <small class="d-block text-muted">Aprovimi bëhet fillimisht nga menaxheri, pastaj nga HR.</small>
+                <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $pendingTotal }} kërkes{{ $pendingTotal === 1 ? 'ë' : 'a' }} në pritje</span>
+                <small class="d-block text-muted">Statusi mund të ndryshohet direkt nga menaxheri ose HR.</small>
             </div>
         @else
             <div class="alert bg-success border-success rounded-4 shadow-sm bg-opacity-25" role="alert">
@@ -107,7 +107,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-building-user text-primary"></i> Në pritje të HR</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-primary"></i> Në pritje</small>
                         <div class="d-flex align-items-center justify-content-between gap-2">
                             <h4 class="fw-semibold mb-0">{{ $pendingHrCount }}</h4>
                             <a href="{{ route('vacations', ['search' => request('search'), 'statuses' => ['Pending HR'], 'type' => $selectedType ?: null]) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
@@ -239,7 +239,7 @@
                                             @if($vacation->status === 'Approved')
                                                 <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Aprovuar</span>
                                             @elseif(in_array($vacation->status, ['Pending HR', 'Pending Manager', 'Reviewing'], true))
-                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në pritje të HR</span>
+                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në pritje</span>
                                             @else
                                                 <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Refuzuar</span>
                                             @endif
@@ -301,7 +301,7 @@
                             @if($vacation->status === 'Approved')
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Aprovuar</span></span>
                             @elseif(in_array($vacation->status, ['Pending HR', 'Pending Manager', 'Reviewing'], true))
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në pritje të HR</span></span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në pritje</span></span>
                             @else
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Refuzuar</span></span>
                             @endif
@@ -318,8 +318,8 @@
                             @if($canManage)
                                 <hr class="my-3">
                                 <span class="d-block mb-2"><i class="fa-solid fa-arrows-turn-to-dots"></i> Përditëso Statusin</span>
-                                @if($canApproveHr && $currentStatus === 'Pending HR')
-                                    <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo (HR)</a>
+                                @if($canApproveStatus && in_array($currentStatus, ['Pending HR', 'Pending Manager', 'Reviewing'], true))
+                                    <a href="{{ route('update.vacation.status', [$vacation->id, 'Approved']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-check"></i> Aprovo</a>
                                     <a href="{{ route('update.vacation.status', [$vacation->id, 'Refused']) }}" class="btn btn-danger btn-sm rounded-4 shadow-sm m-1"><i class="fa-solid fa-times"></i> Refuzo</a>
                                 @elseif(in_array($currentStatus, ['Approved', 'Refused'], true))
                                     <small class="d-block text-muted">Ky pushim është i mbyllur.</small>

@@ -83,8 +83,8 @@ class VacationsController extends Controller
 
         $vacations = $this->service->getVacations(10, $search, $statuses, $companyId, $employeeId, null);
         $vacationStats = $this->service->getVacationStatistics($search, $companyId, $employeeId);
-        $canApproveHr = in_array($role, ['company', 'hr'], true);
-        $canManage = $canApproveHr;
+        $canApproveStatus = in_array($role, ['company', 'manager', 'hr'], true);
+        $canManage = $canApproveStatus;
         $isCompany = $role === 'company';
 
         return view('management.vacations')
@@ -95,7 +95,7 @@ class VacationsController extends Controller
             ->with('selectedType', $selectedType)
             ->with('isEmployee', $isEmployee)
             ->with('canManage', $canManage)
-            ->with('canApproveHr', $canApproveHr)
+            ->with('canApproveStatus', $canApproveStatus)
             ->with('isCompany', $isCompany)
             ->with('role', $role);
     }
@@ -128,7 +128,7 @@ class VacationsController extends Controller
             ->with('editVacation', $editVacation)
             ->with('isEmployee', $isEmployee)
             ->with('canManage', in_array($role, ['company', 'hr'], true))
-            ->with('canApproveHr', in_array($role, ['company', 'hr'], true))
+            ->with('canApproveStatus', in_array($role, ['company', 'manager', 'hr'], true))
             ->with('isCompany', $role === 'company')
             ->with('role', $role)
             ->with('selectedType', $editVacation->type ?? '');

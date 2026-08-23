@@ -10,7 +10,7 @@
     <p class="text-muted">Shikoni të dhënat e kompanisë dhe menaxhoni statusin e llogarisë.</p>
     <hr class="mb-4">
 
-    <div class="card border-0 shadow-sm mb-4">
+    <div class="card shadow-sm mb-4">
         <div class="card-body p-4" style="background: linear-gradient(135deg, rgba(13,110,253,0.08), rgba(13,110,253,0.02)); border-radius: 1rem;">
             <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                 <div>
@@ -31,7 +31,7 @@
 
     <div class="row g-3">
         <div class="col-12 col-xl-8">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card shadow-sm h-100">
                 <div class="card-header rounded-top-4 bg-white">
                     <span><i class="fa-solid fa-circle-info txt-lightblue py-2"></i> Informacionet e Kompanisë</span>
                 </div>
@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="col-12 col-xl-4">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card shadow-sm h-100">
                 <div class="card-header rounded-top-4 bg-white">
                     <span><i class="fa-solid fa-shield-halved txt-lightblue py-2"></i> Kontrolli i Llogarisë</span>
                 </div>

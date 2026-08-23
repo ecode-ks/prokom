@@ -10,48 +10,6 @@
     <p class="text-muted">Lista e orëve të punës të miratuara.</p>
     <hr class="mb-4">
 
-    @php
-        $monthHours = ((float) ($workingHoursStats->month_minutes ?? 0)) / 60;
-        $monthDays = (int) ($workingHoursStats->month_days_count ?? 0);
-        $avgHoursPerDay = $monthDays > 0 ? $monthHours / $monthDays : 0;
-    @endphp
-
-    {{-- Info Cards --}}
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-calendar-day text-primary"></i> Regjistrime sot</small>
-                    <h4 class="fw-semibold mb-0">{{ $workingHoursStats->today_count ?? 0 }}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-clock text-success"></i> Orë këtë muaj</small>
-                    <h4 class="fw-semibold mb-0">{{ number_format($monthHours, 1) }}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-users text-info"></i> Punonjës aktivë</small>
-                    <h4 class="fw-semibold mb-0">{{ $workingHoursStats->active_employees_count ?? 0 }}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6 col-lg-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-chart-line text-warning"></i> Mesatare orë/ditë</small>
-                    <h4 class="fw-semibold mb-0">{{ number_format($avgHoursPerDay, 1) }}</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- Create Working Hour --}}
     <div class="card mb-4">
         <div class="card-header rounded-top-4 bg-white">
@@ -133,9 +91,7 @@
                             <th scope="col" class="text-nowrap">Data</th>
                             <th scope="col" class="text-nowrap">Punëtori</th>
                             <th scope="col" class="text-nowrap">Hyrja</th>
-                            <th scope="col" class="text-nowrap">Lok. hyrjes</th>
                             <th scope="col" class="text-nowrap">Dalja</th>
-                            <th scope="col" class="text-nowrap">Lok. daljes</th>
                             <th scope="col" class="text-nowrap">Orë:Min</th>
                             <th scope="col" class="text-nowrap text-end">Veprimet</th>
                         </tr>
@@ -152,33 +108,7 @@
                                     <td class="text-nowrap">{{ $workingHour->date ? \Carbon\Carbon::parse($workingHour->date)->format('d/m/Y') : '-' }}</td>
                                     <td class="text-nowrap">{{ $workingHour->employee }}</td>
                                     <td class="text-nowrap">{{ $workingHour->check_in ? \Carbon\Carbon::parse($workingHour->check_in)->format('d/m/Y - H:i') : '-' }}</td>
-                                    <td class="text-nowrap">
-                                        @if(!empty($workingHour->check_in_location))
-                                            <a href="https://www.google.com/maps?q={{ urlencode($workingHour->check_in_location) }}"
-                                               target="_blank"
-                                               rel="noopener noreferrer"
-                                               class="text-decoration-none"
-                                               title="{{ $workingHour->check_in_location }}">
-                                                <i class="fa-solid fa-location-dot"></i> Harta
-                                            </a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
                                     <td class="text-nowrap">{{ $workingHour->check_out ? \Carbon\Carbon::parse($workingHour->check_out)->format('d/m/Y - H:i') : '-' }}</td>
-                                    <td class="text-nowrap">
-                                        @if(!empty($workingHour->check_out_location))
-                                            <a href="https://www.google.com/maps?q={{ urlencode($workingHour->check_out_location) }}"
-                                               target="_blank"
-                                               rel="noopener noreferrer"
-                                               class="text-decoration-none"
-                                               title="{{ $workingHour->check_out_location }}">
-                                                <i class="fa-solid fa-location-dot"></i> Harta
-                                            </a>
-                                        @else
-                                            -
-                                        @endif
-                                    </td>
                                     <td class="text-nowrap">{{ $workingHour->hours }}</td>
                                     <td class="text-nowrap text-end">
                                         <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $workingHour->id }}"><i class="fa-solid fa-trash"></i></button>

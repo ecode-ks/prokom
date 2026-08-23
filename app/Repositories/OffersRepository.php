@@ -96,11 +96,9 @@ class OffersRepository
 	{
 		return DB::table($this->table)
 			->where('company_id', $companyId)
-			->selectRaw('COUNT(DISTINCT offer_number) as offer_count')
-			->selectRaw("COUNT(DISTINCT CASE WHEN LOWER(status) IN ('new', 'pending') THEN offer_number END) as pending_count")
-			->selectRaw("COUNT(DISTINCT CASE WHEN LOWER(status) = 'completed' THEN offer_number END) as completed_count")
-			->selectRaw('COALESCE(SUM(price), 0) as total_value')
-			->first();
+            ->selectRaw('COUNT(*) as total_count')
+            ->selectRaw('COUNT(DISTINCT offer_number) as offer_count')
+            ->first();
 	}
 	//---------------
 	public function getLatestForDashboard(int $companyId, int $limit = 5)

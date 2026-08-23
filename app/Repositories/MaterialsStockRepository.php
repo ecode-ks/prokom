@@ -113,28 +113,4 @@ class MaterialsStockRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
-    //---------------
-    public function getStockStatistics(int $companyId): object
-    {
-        return DB::table($this->table)
-            ->where('company_id', $companyId)
-            ->selectRaw("COALESCE(SUM(CASE WHEN type = 'in' THEN qty ELSE 0 END), 0) as in_qty")
-            ->selectRaw("COALESCE(SUM(CASE WHEN type = 'out' THEN qty ELSE 0 END), 0) as out_qty")
-            ->selectRaw('COUNT(*) as transaction_count')
-            ->selectRaw("COALESCE(SUM(CASE WHEN type = 'in' THEN qty WHEN type = 'out' THEN -qty ELSE 0 END), 0) as net_balance")
-            ->first();
-    }
-    //---------------
-    public function getStockReportSummary(int $companyId): object
-    {
-        $movement = $this->getStockStatistics($companyId);
-
-        $movement->materials_count = DB::table('materials')->where('company_id', $companyId)->count();
-
-        $movement->in_stock_count = $this->getAllStockReport($companyId)
-            ->filter(fn ($row) => (float) $row->qty > 0)
-            ->count();
-
-        return $movement;
-    }
 }

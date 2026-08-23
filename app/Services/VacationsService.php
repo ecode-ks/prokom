@@ -53,7 +53,7 @@ class VacationsService
                 $employeeId,
                 'vacation_created',
                 'Kërkesë pushimi',
-                $message . ' Në pritje të HR.',
+                $message . ' Në pritje.',
                 route('vacations')
             );
         }
@@ -80,7 +80,7 @@ class VacationsService
                 (int) $hr->id,
                 'vacation_request',
                 'Kërkesë e re pushimi',
-                $message . ' Në pritje të HR.',
+                $message . ' Në pritje.',
                 route('vacations')
             );
         }
@@ -182,8 +182,9 @@ class VacationsService
         }
 
         $allowed = false;
-        if (in_array($role, ['company', 'hr'], true)) {
-            if ($current === 'Pending HR' && in_array($status, ['Approved', 'Refused'], true)) {
+        if (in_array($role, ['company', 'manager', 'hr'], true)) {
+            if (in_array($current, ['Pending HR', 'Pending Manager', 'Reviewing'], true)
+                && in_array($status, ['Approved', 'Refused'], true)) {
                 $allowed = true;
             }
         }

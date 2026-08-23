@@ -101,7 +101,7 @@
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="date" class="form-label">Data</label>
-                            <input type="date" name="date" id="date" value="{{ old('date') }}" class="form-control shadow-sm rounded-3" required>
+                            <input type="date" name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" class="form-control shadow-sm rounded-3" required>
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Orët Shtesë</button>

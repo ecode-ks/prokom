@@ -28,7 +28,7 @@ class ContractsController extends Controller
             'from_date' => 'required|date',
             'to_date' => 'required|date|after:from_date',
             'docs' => 'required|array|min:1',
-            'docs.*' => 'file'
+            'docs.*' => 'file|max:51200',
         ]);
         if ($validator->fails()) {
             return redirect()->route('contracts')->with('error','Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();

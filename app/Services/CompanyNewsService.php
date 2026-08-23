@@ -63,11 +63,6 @@ class CompanyNewsService
 		return $this->repository->delete($id);
 	}
 	//---------------
-	public function getCompanyNewsStatistics(int $companyId): object
-	{
-		return $this->repository->getCompanyNewsStatistics($companyId);
-	}
-	//---------------
 	public function getLatestForDashboard(int $companyId, int $limit = 5)
 	{
 		if ($companyId <= 0) {

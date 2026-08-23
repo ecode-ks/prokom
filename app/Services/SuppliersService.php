@@ -53,9 +53,4 @@ class SuppliersService
         }
         return $this->repository->delete($id, $companyId);
     }
-    //---------------
-    public function getSupplierStatistics(int $companyId): object
-    {
-        return $this->repository->getSupplierStatistics($companyId);
-    }
 }

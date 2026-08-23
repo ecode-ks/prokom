@@ -51,34 +51,6 @@
         </div>
     @else
 
-        {{-- Info Cards --}}
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-regular fa-newspaper text-primary"></i> Total</small>
-                        <h4 class="fw-semibold mb-0">{{ $newsStats->total_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-calendar text-success"></i> Këtë muaj</small>
-                        <h4 class="fw-semibold mb-0">{{ $newsStats->this_month_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-diagram-project text-warning"></i> Me projekt</small>
-                        <h4 class="fw-semibold mb-0">{{ $newsStats->with_project_count ?? 0 }}</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {{-- Create News --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">

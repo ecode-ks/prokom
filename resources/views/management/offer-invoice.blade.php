@@ -14,8 +14,9 @@
 
     {{-- Offer Details --}}
     <div class="card mb-4">
-        <div class="card-header rounded-top-4 bg-white">
+        <div class="card-header rounded-top-4 bg-white justify-content-between d-flex">
             <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Detajet e Ofertës</span>
+            <button class="btn btn-primary btn-sm d-print-none" onclick="window.print()"><i class="fa-solid fa-print"></i> Print</button>
         </div>
         <div class="card-body">
             <span class="d-block mb-3 mt-4"><i class="fa-solid fa-circle-info"></i> ONR : <strong>#{{ $offer->offer_number }}</strong></span>
@@ -39,13 +40,10 @@
                             </tr>
                         @endforeach
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td class="text-nowrap"><strong>Totali</strong></td>
-                            <td class="text-nowrap text-end"><strong>€{{ number_format(collect($offerRows)->sum(function ($row) { return (float) $row->price; }), 2) }}</strong></td>
-                        </tr>
-                    </tfoot>
                 </table>
+            </div>
+            <div class="card card-body mt-3 text-center">
+                <span class="d-block"><i class="fa-solid fa-circle-dollar-to-slot"></i> Totali i Ofertës: <strong>€{{ number_format(collect($offerRows)->sum(function ($row) { return (float) $row->price; }), 2) }}</strong></span>
             </div>
         </div>
     </div>

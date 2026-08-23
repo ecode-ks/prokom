@@ -35,7 +35,7 @@ class ContractsRepository
         $query = DB::table($this->table . ' as c')
             ->join('employees as e', 'c.employee_id', '=', 'e.id')
             ->where('c.company_id', $companyId)
-            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'e.employee');
+            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'e.phone', 'e.employee');
 
         if (!empty($search)) {
             $query->where('e.employee', 'like', "%{$search}%");

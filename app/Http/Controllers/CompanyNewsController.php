@@ -45,13 +45,11 @@ class CompanyNewsController extends Controller
         $projects = $this->service->getAllProjects();
         $companyNews = $this->service->getCompanyNews(10, $search);
         $companyId = (int) session('company_id');
-        $newsStats = $this->service->getCompanyNewsStatistics($companyId);
 
         return view('management.company-news')
             ->with('page', $page)
             ->with('projects', $projects)
-            ->with('companyNews', $companyNews)
-            ->with('newsStats', $newsStats);
+            ->with('companyNews', $companyNews);
     }
     //---------------
     public function edit(int $id)

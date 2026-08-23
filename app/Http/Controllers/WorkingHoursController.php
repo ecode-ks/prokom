@@ -47,7 +47,6 @@ class WorkingHoursController extends Controller
         $role = session('role');
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
         $employees = $this->employeeservice->getAllEmployees();
-        $workingHoursStats = $this->service->getWorkingHoursStatistics();
         $fromDate = null;
         $toDate = null;
         $workingHoursTotal = null;
@@ -66,7 +65,6 @@ class WorkingHoursController extends Controller
             ->with('workingHours', $workingHours)
             ->with('workingHoursTotal', $workingHoursTotal)
             ->with('employees', $employees)
-            ->with('workingHoursStats', $workingHoursStats)
             ->with('role', $role)
             ->with('fromDate', $fromDate)
             ->with('toDate', $toDate);

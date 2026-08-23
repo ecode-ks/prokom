@@ -25,7 +25,7 @@ class MaterialsRepository
             ->where('company_id', $companyId)
             ->orderByDesc('id')
             ->cursorPaginate($limit);
-    }   
+    }
     //---------------
     public function getSearchedMaterials(int $limit, int $companyId, string $search)
     {
@@ -43,7 +43,7 @@ class MaterialsRepository
             ->orderBy('material')
             ->get();
     }
-    //---------------   
+    //---------------
     public function findMaterial(int $id, int $companyId)
     {
         return DB::table($this->table)
@@ -74,31 +74,5 @@ class MaterialsRepository
             ->where('id', $id)
             ->where('company_id', $companyId)
             ->delete() > 0;
-    }
-    //---------------
-    public function getMaterialStatistics(int $companyId): object
-    {
-        $stats = DB::table($this->table . ' as m')
-            ->leftJoin('materials_stock as ms', function ($join) use ($companyId) {
-                $join->on('ms.material_id', '=', 'm.id')
-                    ->where('ms.company_id', '=', $companyId);
-            })
-            ->where('m.company_id', $companyId)
-            ->selectRaw('COUNT(DISTINCT m.id) as total_count')
-            ->selectRaw('COUNT(DISTINCT ms.material_id) as with_movement_count')
-            ->first();
-
-        $noStockCount = DB::table($this->table . ' as m')
-            ->leftJoin(DB::raw("(SELECT material_id, SUM(CASE WHEN type = 'in' THEN qty WHEN type = 'out' THEN -qty ELSE 0 END) as net_qty FROM materials_stock WHERE company_id = {$companyId} GROUP BY material_id) as balances"), 'balances.material_id', '=', 'm.id')
-            ->where('m.company_id', $companyId)
-            ->where(function ($query) {
-                $query->whereNull('balances.material_id')
-                    ->orWhere('balances.net_qty', '<=', 0);
-            })
-            ->count();
-
-        $stats->no_stock_count = $noStockCount;
-
-        return $stats;
     }
 }

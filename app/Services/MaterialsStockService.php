@@ -98,16 +98,6 @@ class MaterialsStockService
         return $this->repository->delete($id, $companyId);
     }
     //---------------
-    public function getStockStatistics(int $companyId): object
-    {
-        return $this->repository->getStockStatistics($companyId);
-    }
-    //---------------
-    public function getStockReportSummary(int $companyId): object
-    {
-        return $this->repository->getStockReportSummary($companyId);
-    }
-    //---------------
     protected function assertSufficientStock(
         int $materialId,
         int $companyId,
