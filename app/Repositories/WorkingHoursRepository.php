@@ -131,4 +131,46 @@ class WorkingHoursRepository
             ->cursorPaginate($limit, ['id', 'date', 'check_in', 'check_out', 'hours'], $cursorName)
             ->withQueryString();
     }
+    //---------------
+    public function getEmployeeWorkingHoursList(int $companyId, int $employeeId, ?string $fromDate, ?string $toDate, int $limit = 10)
+    {
+        $query = DB::table($this->table)
+            ->leftJoin('employees', 'working_hours.employee_id', '=', 'employees.id')
+            ->leftJoin('check_ins as ci', function ($join) {
+                $join->on('working_hours.company_id', '=', 'ci.company_id')
+                    ->on('working_hours.check_in', '=', 'ci.check_in_time')
+                    ->whereRaw('(working_hours.employee_id = ci.employee_id OR (working_hours.employee_id IS NULL AND ci.employee_id IS NULL))');
+            })
+            ->select(
+                'working_hours.*',
+                DB::raw("COALESCE(employees.employee, 'Kompania') as employee"),
+                'ci.check_in_location',
+                'ci.check_out_location'
+            )
+            ->where('working_hours.company_id', $companyId)
+            ->where('working_hours.employee_id', $employeeId);
+
+        if (!empty($fromDate) && !empty($toDate)) {
+            $query->whereBetween('working_hours.date', [$fromDate, $toDate]);
+        }
+
+        return $query
+            ->orderByDesc('working_hours.date')
+            ->orderByDesc('working_hours.id')
+            ->cursorPaginate($limit)
+            ->withQueryString();
+    }
+    //---------------
+    public function getEmployeeWorkingHoursTotalHours(int $companyId, int $employeeId, ?string $fromDate, ?string $toDate): float
+    {
+        $query = DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('employee_id', $employeeId);
+
+        if (!empty($fromDate) && !empty($toDate)) {
+            $query->whereBetween('date', [$fromDate, $toDate]);
+        }
+
+        return (float) $query->selectRaw('COALESCE(SUM(TIME_TO_SEC(hours)), 0) / 3600 as total_hours')->value('total_hours');
+    }
 }

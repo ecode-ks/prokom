@@ -58,4 +58,14 @@ class WorkingHoursService
     {
         return $this->repository->getEmployeeWorkingHoursEntries($this->companyId, $employeeId, $fromDate, $toDate, $limit, $cursorName);
     }
+    //---------------
+    public function getEmployeeWorkingHours(int $employeeId, ?string $fromDate, ?string $toDate, int $limit = 10)
+    {
+        return $this->repository->getEmployeeWorkingHoursList($this->companyId, $employeeId, $fromDate, $toDate, $limit);
+    }
+    //---------------
+    public function getEmployeeWorkingHoursTotal(int $employeeId, ?string $fromDate, ?string $toDate): float
+    {
+        return $this->repository->getEmployeeWorkingHoursTotalHours($this->companyId, $employeeId, $fromDate, $toDate);
+    }
 }

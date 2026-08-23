@@ -96,10 +96,35 @@
             <span><i class="fa-solid fa-clock txt-lightblue py-2"></i> Lista e orëve të punës</span>
         </div>
         <div class="card-body">
-            <form action="{{ route('working.hours') }}" method="get" class="input-group mb-3">
-                <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..."  aria-label="Search..." aria-describedby="basic-addon2">
-                <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </form>
+            @if($role === 'employee')
+                <form action="{{ route('working.hours') }}" method="get" class="row g-2 mb-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label for="from_date" class="form-label small text-muted mb-1">Nga data</label>
+                        <input type="date" name="from_date" id="from_date" value="{{ $fromDate }}" class="form-control shadow-sm rounded-3">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="to_date" class="form-label small text-muted mb-1">Deri me</label>
+                        <input type="date" name="to_date" id="to_date" value="{{ $toDate }}" class="form-control shadow-sm rounded-3">
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="submit" class="btn btn-darkblue shadow-sm rounded-3"><i class="fa-solid fa-filter"></i> Filtro</button>
+                        @if($fromDate || $toDate)
+                            <a href="{{ route('working.hours') }}" class="btn btn-outline-secondary shadow-sm rounded-3"><i class="fa-solid fa-xmark"></i> Pastro</a>
+                        @endif
+                    </div>
+                </form>
+                @if($workingHoursTotal !== null)
+                    <div class="alert alert-info d-flex justify-content-between align-items-center rounded-3">
+                        <span><i class="fa-solid fa-clock"></i> Totali i orëve {{ ($fromDate || $toDate) ? 'për periudhën e zgjedhur' : '' }}</span>
+                        <strong>{{ number_format($workingHoursTotal, 2) }} orë</strong>
+                    </div>
+                @endif
+            @else
+                <form action="{{ route('working.hours') }}" method="get" class="input-group mb-3">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..."  aria-label="Search..." aria-describedby="basic-addon2">
+                    <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            @endif
             <div class="table-responsive">
                 <table class="table align-middle">
                     <thead>

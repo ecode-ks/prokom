@@ -33,6 +33,21 @@ class ProjectReportsRepository
             ->withQueryString();
     }
     //---------------
+    public function getReportsForManager(int $limit, int $companyId, int $managerId, string $search = '')
+    {
+        $query = $this->baseQuery($companyId)
+            ->where('p.project_manager', $managerId);
+
+        if ($search !== '') {
+            $query->where('p.project_name', 'like', "%{$search}%");
+        }
+
+        return $query
+            ->orderByDesc('pr.id')
+            ->cursorPaginate($limit)
+            ->withQueryString();
+    }
+    //---------------
     public function getReportDetails(int $id, int $companyId)
     {
         return $this->baseQuery($companyId)
@@ -80,14 +95,21 @@ class ProjectReportsRepository
             ->delete() > 0;
     }
     //---------------
-    public function getReportStatistics(int $companyId): object
+    public function getReportStatistics(int $companyId, ?int $managerId = null): object
     {
-        return DB::table($this->table)
-            ->where('company_id', $companyId)
-            ->selectRaw("SUM(CASE WHEN status IN ('active', 'new') THEN 1 ELSE 0 END) as active_count")
-            ->selectRaw("SUM(CASE WHEN status = 'under_review' THEN 1 ELSE 0 END) as under_review_count")
-            ->selectRaw("SUM(CASE WHEN status = 'resolved' THEN 1 ELSE 0 END) as resolved_count")
-            ->selectRaw("SUM(CASE WHEN status = 'closed' THEN 1 ELSE 0 END) as closed_count")
+        $query = DB::table($this->table . ' as pr')
+            ->where('pr.company_id', $companyId);
+
+        if ($managerId) {
+            $query->join('projects as p', 'pr.project_id', '=', 'p.id')
+                ->where('p.project_manager', $managerId);
+        }
+
+        return $query
+            ->selectRaw("SUM(CASE WHEN pr.status IN ('active', 'new') THEN 1 ELSE 0 END) as active_count")
+            ->selectRaw("SUM(CASE WHEN pr.status = 'under_review' THEN 1 ELSE 0 END) as under_review_count")
+            ->selectRaw("SUM(CASE WHEN pr.status = 'resolved' THEN 1 ELSE 0 END) as resolved_count")
+            ->selectRaw("SUM(CASE WHEN pr.status = 'closed' THEN 1 ELSE 0 END) as closed_count")
             ->first();
     }
     //---------------

@@ -55,14 +55,16 @@ class ProjectReportsController extends Controller
         $page = 'Project Reports';
         $search = trim((string) $request->query('search', ''));
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
         $projects = $this->service->getAllProjects($companyId);
 
         if (count($projects) === 0) {
             return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
         }
 
-        $reports = $this->service->getReports(10, $companyId, $search);
-        $reportStats = $this->service->getReportStatistics((int) $companyId);
+        $reports = $this->service->getReports(10, $companyId, $search, $role, $employeeId);
+        $reportStats = $this->service->getReportStatistics((int) $companyId, $role, $employeeId);
 
         return view('management.project-reports')
             ->with('page', $page)

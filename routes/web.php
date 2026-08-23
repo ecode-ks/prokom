@@ -207,8 +207,10 @@ Route::middleware('authorization:company,manager')->controller(ProjectReportsCon
 });
 
 // Tasks
-Route::middleware('authorization:company,manager,employee')->controller(TasksController::class)->group(function () {
+Route::middleware('authorization:company')->controller(TasksController::class)->group(function () {
     Route::post('/create-task', 'create')->name('create.task');
+});
+Route::middleware('authorization:company,manager,employee')->controller(TasksController::class)->group(function () {
     Route::get('/tasks', 'read')->name('tasks');
     Route::get('/task/{id}', 'taskDetails')->name('task.details');
     Route::get('/update-task-status/{id}/{status}', 'updateStatus')->name('update.task.status');

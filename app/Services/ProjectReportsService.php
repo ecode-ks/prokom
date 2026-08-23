@@ -68,9 +68,13 @@ class ProjectReportsService
         return true;
     }
     //---------------
-    public function getReports(int $limit, int $companyId, string $search = '')
+    public function getReports(int $limit, int $companyId, string $search = '', string $role = '', ?int $employeeId = null)
     {
         $limit = $limit ?: 10;
+
+        if ($role === 'manager' && $employeeId) {
+            return $this->repository->getReportsForManager($limit, $companyId, $employeeId, $search);
+        }
 
         return $this->repository->getReports($limit, $companyId, $search);
     }
@@ -156,9 +160,11 @@ class ProjectReportsService
         return $this->repository->updateStatus($id, $status, $companyId);
     }
     //---------------
-    public function getReportStatistics(int $companyId): object
+    public function getReportStatistics(int $companyId, string $role = '', ?int $employeeId = null): object
     {
-        return $this->repository->getReportStatistics($companyId);
+        $managerId = ($role === 'manager' && $employeeId) ? $employeeId : null;
+
+        return $this->repository->getReportStatistics($companyId, $managerId);
     }
     //---------------
     public function getManagerPendingReports(int $managerId, int $companyId, int $limit = 4)

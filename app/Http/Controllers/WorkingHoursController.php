@@ -44,14 +44,32 @@ class WorkingHoursController extends Controller
     {
         $page = 'Working Hours';
         $search = $request->query('search', '');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
         $employees = $this->employeeservice->getAllEmployees();
-        $workingHours = $this->service->getWorkingHours(10, $search);
         $workingHoursStats = $this->service->getWorkingHoursStatistics();
+        $fromDate = null;
+        $toDate = null;
+        $workingHoursTotal = null;
+
+        if ($role === 'employee' && $employeeId) {
+            $fromDate = $request->query('from_date') ?: null;
+            $toDate = $request->query('to_date') ?: null;
+            $workingHours = $this->service->getEmployeeWorkingHours($employeeId, $fromDate, $toDate, 10);
+            $workingHoursTotal = $this->service->getEmployeeWorkingHoursTotal($employeeId, $fromDate, $toDate);
+        } else {
+            $workingHours = $this->service->getWorkingHours(10, $search);
+        }
+
         return view('management.working-hours')
             ->with('page', $page)
             ->with('workingHours', $workingHours)
+            ->with('workingHoursTotal', $workingHoursTotal)
             ->with('employees', $employees)
-            ->with('workingHoursStats', $workingHoursStats);
+            ->with('workingHoursStats', $workingHoursStats)
+            ->with('role', $role)
+            ->with('fromDate', $fromDate)
+            ->with('toDate', $toDate);
     }
     //---------------
     public function delete(int $id)
