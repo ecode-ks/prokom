@@ -20,25 +20,45 @@ class ExtraHoursRepository
             ->insert($data);
     }
     //---------------
-    public function getExtraHours(int $limit, int $companyId)
+    public function getExtraHours(int $limit, int $companyId, ?int $employeeId = null)
     {
-        return DB::table($this->table)
+        $query = DB::table($this->table)
             ->join('employees', 'extra_hours.employee_id', '=', 'employees.id')
             ->select('extra_hours.*', 'employees.employee')
-            ->where('extra_hours.company_id', $companyId)
+            ->where('extra_hours.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->where('extra_hours.employee_id', $employeeId);
+        }
+
+        return $query
             ->orderByDesc('extra_hours.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
-    public function getSearchedExtraHours(int $limit, int $companyId, string $search)
+    public function getSearchedExtraHours(int $limit, int $companyId, string $search, ?int $employeeId = null)
     {
-        return DB::table($this->table)
+        $query = DB::table($this->table)
             ->join('employees', 'extra_hours.employee_id', '=', 'employees.id')
             ->select('extra_hours.*', 'employees.employee')
-            ->where('employees.employee', 'like', "%{$search}%")
-            ->where('extra_hours.company_id', $companyId)
+            ->where('extra_hours.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->where('extra_hours.employee_id', $employeeId)
+                ->where(function ($q) use ($search) {
+                    $q->where('employees.employee', 'like', "%{$search}%")
+                        ->orWhere('extra_hours.type', 'like', "%{$search}%")
+                        ->orWhere('extra_hours.date', 'like', "%{$search}%");
+                });
+        } else {
+            $query->where('employees.employee', 'like', "%{$search}%");
+        }
+
+        return $query
             ->orderByDesc('extra_hours.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
     public function findExtraHour(int $id, int $companyId)

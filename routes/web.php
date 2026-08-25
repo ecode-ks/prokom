@@ -176,11 +176,13 @@ Route::middleware('authorization:company,manager,hr,employee')->controller(Vacat
 // Contracts
 Route::middleware('authorization:company,hr')->controller(ContractsController::class)->group(function () {
     Route::post('/create-contract', 'create')->name('create.contract');
-    Route::get('/contracts', 'read')->name('contracts');
-    Route::get('/contract-details/{id}', 'contractDetails')->name('contract.details');
     Route::get('/edit-contract/{id}', 'edit')->name('edit.contract');
     Route::post('/update-contract', 'update')->name('update.contract');
     Route::get('/delete-contract/{id}', 'delete')->name('delete.contract');
+});
+Route::middleware('authorization:company,hr,employee')->controller(ContractsController::class)->group(function () {
+    Route::get('/contracts', 'read')->name('contracts');
+    Route::get('/contract-details/{id}', 'contractDetails')->name('contract.details');
 });
 
 // Projects
@@ -210,13 +212,15 @@ Route::middleware('authorization:company,manager')->controller(ProjectReportsCon
 Route::middleware('authorization:company')->controller(TasksController::class)->group(function () {
     Route::post('/create-task', 'create')->name('create.task');
 });
+Route::middleware('authorization:company,manager')->controller(TasksController::class)->group(function () {
+    Route::get('/edit-task/{id}', 'edit')->name('edit.task');
+    Route::post('/update-task', 'update')->name('update.task');
+    Route::get('/delete-task/{id}', 'delete')->name('delete.task');
+});
 Route::middleware('authorization:company,manager,employee')->controller(TasksController::class)->group(function () {
     Route::get('/tasks', 'read')->name('tasks');
     Route::get('/task/{id}', 'taskDetails')->name('task.details');
     Route::get('/update-task-status/{id}/{status}', 'updateStatus')->name('update.task.status');
-    Route::get('/edit-task/{id}', 'edit')->name('edit.task');
-    Route::post('/update-task', 'update')->name('update.task');
-    Route::get('/delete-task/{id}', 'delete')->name('delete.task');
 });
 
 // Task Reports
@@ -231,10 +235,12 @@ Route::middleware('authorization:company,manager,employee')->controller(TaskRepo
 });
 
 // Working Hours
-Route::middleware('authorization:company,manager,hr,employee')->controller(WorkingHoursController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr')->controller(WorkingHoursController::class)->group(function () {
     Route::post('/create-working-hour', 'create')->name('create.working.hour');
-    Route::get('/working-hours', 'read')->name('working.hours');
     Route::get('/delete-working-hour/{id}', 'delete')->name('delete.working.hour');
+});
+Route::middleware('authorization:company,manager,hr,employee')->controller(WorkingHoursController::class)->group(function () {
+    Route::get('/working-hours', 'read')->name('working.hours');
 });
 
 // Notifications
@@ -247,7 +253,6 @@ Route::middleware('authorization:company,manager,employee,finance,hr')->controll
 // Salaries
 Route::middleware('authorization:company,finance')->controller(SalariesController::class)->group(function () {
     Route::post('/create-salary', 'create')->name('create.salary');
-    Route::get('/salaries', 'read')->name('salaries');
     Route::get('/edit-salary/{id}', 'edit')->name('edit.salary');
     Route::post('/update-salary', 'update')->name('update.salary');
     Route::get('/delete-salary/{id}', 'delete')->name('delete.salary');
@@ -255,14 +260,19 @@ Route::middleware('authorization:company,finance')->controller(SalariesControlle
     Route::get('/calculate', 'calculate')->name('calculate');
     Route::post('/save-calculated-salaries', 'saveCalculated')->name('save.calculated.salaries');
 });
+Route::middleware('authorization:company,finance,employee')->controller(SalariesController::class)->group(function () {
+    Route::get('/salaries', 'read')->name('salaries');
+});
 
 // Extra Hours
 Route::middleware('authorization:company,finance')->controller(ExtraHoursController::class)->group(function () {
     Route::post('/create-extra-hour', 'create')->name('create.extra.hour');
-    Route::get('/extra-hours', 'read')->name('extra.hours');
     Route::get('/edit-extra-hour/{id}', 'edit')->name('edit.extra.hour');
     Route::post('/update-extra-hour', 'update')->name('update.extra.hour');
     Route::get('/delete-extra-hour/{id}', 'delete')->name('delete.extra.hour');
+});
+Route::middleware('authorization:company,finance,employee')->controller(ExtraHoursController::class)->group(function () {
+    Route::get('/extra-hours', 'read')->name('extra.hours');
 });
 
 // Reports

@@ -54,6 +54,23 @@ class TasksController extends Controller
         $page = 'Tasks';
         $search = $request->query('search', '');
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+        $scopedEmployeeId = $role === 'employee' ? (int) ($employeeId ?? 0) : null;
+
+        if ($role === 'employee') {
+            $tasks = $this->service->getTasks(10, $search, $companyId, $scopedEmployeeId);
+            $taskStats = $this->service->getTaskStatistics($search, (int) $companyId, $scopedEmployeeId);
+
+            return view('management.tasks')
+                ->with('page', $page)
+                ->with('employees', collect())
+                ->with('projects', collect())
+                ->with('tasks', $tasks)
+                ->with('taskStats', $taskStats)
+                ->with('role', $role);
+        }
+
         $employees = $this->service->getAllEmployees($companyId);
         $projects = $this->service->getAllProjects($companyId);
 
@@ -72,7 +89,8 @@ class TasksController extends Controller
             ->with('employees', $employees)
             ->with('projects', $projects)
             ->with('tasks', $tasks)
-            ->with('taskStats', $taskStats);
+            ->with('taskStats', $taskStats)
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)
@@ -92,15 +110,22 @@ class TasksController extends Controller
             ->with('page', $page)
             ->with('employees', $employees)
             ->with('projects', $projects)
-            ->with('editTask', $editTask);
+            ->with('editTask', $editTask)
+            ->with('role', session('role'));
     }
     //---------------
     public function taskDetails(int $id)
     {
         $page = 'Tasks';
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+        }
+
+        if ($role === 'employee' && !$this->service->employeeIsAssigned($id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
         }
 
@@ -110,7 +135,8 @@ class TasksController extends Controller
         return view('management.task-details')
             ->with('page', $page)
             ->with('taskDetails', $taskDetails)
-            ->with('taskStatuses', $taskStatuses);
+            ->with('taskStatuses', $taskStatuses)
+            ->with('role', $role);
     }
     //---------------
     public function update(Request $request)
@@ -169,8 +195,14 @@ class TasksController extends Controller
     public function updateStatus(int $id, string $status)
     {
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+        }
+
+        if ($role === 'employee' && !$this->service->employeeIsAssigned($id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
         }
 

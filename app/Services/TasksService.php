@@ -48,13 +48,13 @@ class TasksService
         return true;
     }
     //---------------
-    public function getTasks(int $limit, string $search, int $companyId)
+    public function getTasks(int $limit, string $search, int $companyId, ?int $employeeId = null)
     {
         $limit = $limit ?: 10;
 
         $tasks = !empty($search)
-            ? $this->repository->getSearchedTasks($limit, $companyId, $search)
-            : $this->repository->getTasks($limit, $companyId);
+            ? $this->repository->getSearchedTasks($limit, $companyId, $search, $employeeId)
+            : $this->repository->getTasks($limit, $companyId, $employeeId);
 
         return $tasks->through(function ($task) {
             $task->assigned_to_names = $this->formatAssignedEmployees($task->assigned_to ?? '');
@@ -194,9 +194,25 @@ class TasksService
         return count($orderedNames) > 0 ? implode(', ', $orderedNames) : '-';
     }
     //---------------
-    public function getTaskStatistics(string $search, int $companyId): object
+    public function getTaskStatistics(string $search, int $companyId, ?int $employeeId = null): object
     {
-        return $this->repository->getTaskStatistics($companyId, $search);
+        return $this->repository->getTaskStatistics($companyId, $search, $employeeId);
+    }
+    //---------------
+    public function employeeIsAssigned(int $taskId, int $companyId, int $employeeId): bool
+    {
+        if ($employeeId <= 0) {
+            return false;
+        }
+
+        $task = $this->repository->findTask($taskId, $companyId);
+        if (!$task) {
+            return false;
+        }
+
+        $assigneeIds = array_map('intval', array_filter(explode(',', (string) ($task->assigned_to ?? ''))));
+
+        return in_array($employeeId, $assigneeIds, true);
     }
     //---------------
     public function getMyOpenTasks(int $employeeId, int $companyId, int $limit = 5)

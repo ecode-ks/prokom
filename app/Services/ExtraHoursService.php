@@ -20,13 +20,13 @@ class ExtraHoursService
         return $this->repository->create($data);
     }
     //---------------
-    public function getExtraHours(int $limit, string $search = '')
+    public function getExtraHours(int $limit, string $search = '', ?int $employeeId = null)
     {
         $limit = $limit ?: 10;
         if (!empty($search)) {
-            return $this->repository->getSearchedExtraHours($limit, $this->companyId, $search);
+            return $this->repository->getSearchedExtraHours($limit, $this->companyId, $search, $employeeId);
         }
-        return $this->repository->getExtraHours($limit, $this->companyId);
+        return $this->repository->getExtraHours($limit, $this->companyId, $employeeId);
     }
     //---------------
     public function findOrFail(int $id): bool

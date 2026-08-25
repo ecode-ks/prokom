@@ -28,13 +28,13 @@ class SalariesService
         return $this->repository->create($data);
     }
     //---------------
-    public function getSalaries(int $limit, string $search = '')
+    public function getSalaries(int $limit, string $search = '', ?int $employeeId = null)
     {
         $limit = $limit ?: 10;
         if (!empty($search)) {
-            return $this->repository->getSearchedSalaries($limit, $this->companyId, $search);
+            return $this->repository->getSearchedSalaries($limit, $this->companyId, $search, $employeeId);
         }
-        return $this->repository->getSalaries($limit, $this->companyId);
+        return $this->repository->getSalaries($limit, $this->companyId, $employeeId);
     }
     //---------------
     public function findOrFail(int $id): bool

@@ -50,14 +50,20 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-4 col-lg-4">
                         <label for="employee_id" class="form-label">Punëtori</label>
-                        <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                            <option value="">-- Zgjidh Punëtorin --</option>
-                            @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}" {{ (string) request('employee_id', $employeeId ?? '') === (string) $employee->id ? 'selected' : '' }}>
-                                    {{ $employee->employee }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @if(($role ?? session('role')) === 'employee')
+                            @php $selfEmployee = collect($employees ?? [])->first(); @endphp
+                            <input type="hidden" name="employee_id" value="{{ $selfEmployee->id ?? session('employee_id') }}">
+                            <input type="text" class="form-control shadow-sm rounded-3" value="{{ $selfEmployee->employee ?? '' }}" readonly>
+                        @else
+                            <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
+                                <option value="">-- Zgjidh Punëtorin --</option>
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}" {{ (string) request('employee_id', $employeeId ?? '') === (string) $employee->id ? 'selected' : '' }}>
+                                        {{ $employee->employee }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
                     </div>
 
                     <div class="col-12 col-md-4 col-lg-4">

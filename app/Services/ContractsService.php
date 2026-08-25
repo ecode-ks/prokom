@@ -23,23 +23,23 @@ class ContractsService
         return $this->repository->create($data);
     }
     //---------------
-    public function getContracts(int $limit, string $search, string $status, int $companyId)
+    public function getContracts(int $limit, string $search, string $status, int $companyId, ?int $employeeId = null)
     {
         $limit = (int) $limit ?: 10;
         $this->repository->updateContractsStatus($companyId);
 
         if (!empty($search) || !empty($status)) {
-            return $this->repository->getSearchedContracts($limit, $companyId, $search, $status);
+            return $this->repository->getSearchedContracts($limit, $companyId, $search, $status, $employeeId);
         }
 
-        return $this->repository->getContracts($limit, $companyId);
+        return $this->repository->getContracts($limit, $companyId, $employeeId);
     }
     //---------------
-    public function getContractStatistics(string $search, int $companyId): object
+    public function getContractStatistics(string $search, int $companyId, ?int $employeeId = null): object
     {
         $this->repository->updateContractsStatus($companyId);
 
-        return $this->repository->getContractStatistics($companyId, $search);
+        return $this->repository->getContractStatistics($companyId, $search, $employeeId);
     }
     //---------------
     public function getExpiringForDashboard(int $companyId, int $limit = 5)

@@ -59,8 +59,12 @@ class WorkingHoursService
         return $this->repository->getEmployeeWorkingHoursList($this->companyId, $employeeId, $fromDate, $toDate, $limit);
     }
     //---------------
-    public function getEmployeeWorkingHoursTotal(int $employeeId, ?string $fromDate, ?string $toDate): float
+    public function getEmployeeWorkingHoursTotal(int $employeeId, ?string $fromDate, ?string $toDate): string
     {
-        return $this->repository->getEmployeeWorkingHoursTotalHours($this->companyId, $employeeId, $fromDate, $toDate);
+        $totalSeconds = $this->repository->getEmployeeWorkingHoursTotalHours($this->companyId, $employeeId, $fromDate, $toDate);
+        $hours = intdiv($totalSeconds, 3600);
+        $minutes = intdiv($totalSeconds % 3600, 60);
+
+        return $hours . ' orë ' . $minutes . ' min';
     }
 }

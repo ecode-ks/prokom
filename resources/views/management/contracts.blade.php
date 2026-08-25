@@ -5,6 +5,8 @@
 
 {{-- Page Content --}}
 @section('content')
+    @php $isEmployee = ($role ?? '') === 'employee'; @endphp
+
     @if(isset($contractDetails))
         <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('contracts') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu mbrapa</a></small>
         <h3 class="fw-semibold pt-2">Detajet e Kontratës</h3>
@@ -16,9 +18,9 @@
         <p class="text-muted">Përditëso të dhënat e kontratës së zgjedhur.</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">HR</small>
-        <h3 class="fw-semibold pt-2">Kontratat</h3>
-        <p class="text-muted">Kontratat e punës me pagë, orë shtesë dhe afat. Kontratat që skadojnë theksohen.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ $isEmployee ? 'Kontratat' : 'HR' }}</small>
+        <h3 class="fw-semibold pt-2">{{ $isEmployee ? 'Kontratat e Mia' : 'Kontratat' }}</h3>
+        <p class="text-muted">{{ $isEmployee ? 'Shiko kontratat e tua të punës.' : 'Kontratat e punës me pagë, orë shtesë dhe afat. Kontratat që skadojnë theksohen.' }}</p>
         <hr class="mb-4">
     @endif
 
@@ -133,108 +135,110 @@
         </div>
     @else
 
-        @if(($contractStats->expiring_count ?? 0) > 0)
-            <div class="alert bg-warning border-warning rounded-4 shadow-sm bg-opacity-25" role="alert">
-                <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $contractStats->expiring_count }} kontrat{{ ($contractStats->expiring_count ?? 0) === 1 ? 'ë' : 'a' }} duke skaduar</span>
-                <small class="d-block text-muted">Duhet planifikuar rinovimi ose përfundimi.</small>
+        @if(!$isEmployee)
+            @if(($contractStats->expiring_count ?? 0) > 0)
+                <div class="alert bg-warning border-warning rounded-4 shadow-sm bg-opacity-25" role="alert">
+                    <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $contractStats->expiring_count }} kontrat{{ ($contractStats->expiring_count ?? 0) === 1 ? 'ë' : 'a' }} duke skaduar</span>
+                    <small class="d-block text-muted">Duhet planifikuar rinovimi ose përfundimi.</small>
+                </div>
+            @else
+                <div class="alert bg-success border-success rounded-4 shadow-sm bg-opacity-25" role="alert">
+                    <span class="d-block fw-semibold"><i class="fa-solid fa-circle-check"></i> Nuk ka kontrata afër skadimit</span>
+                    <small class="d-block text-muted">Kontratat aktive dhe të skaduara janë ende të disponueshme në listën më poshtë.</small>
+                </div>
+            @endif
+
+            {{-- Info Cards --}}
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-signature text-success"></i> Aktive</small>
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <h4 class="fw-semibold mb-0">{{ $contractStats->active_count ?? 0 }}</h4>
+                                <a href="{{ route('contracts', ['search' => request('search'), 'status' => 'Active']) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Duke skaduar</small>
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <h4 class="fw-semibold mb-0">{{ $contractStats->expiring_count ?? 0 }}</h4>
+                                <a href="{{ route('contracts', ['search' => request('search'), 'status' => 'Expiring']) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-circle-xmark text-danger"></i> Skaduar</small>
+                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                <h4 class="fw-semibold mb-0">{{ $contractStats->expired_count ?? 0 }}</h4>
+                                <a href="{{ route('contracts', ['search' => request('search'), 'status' => 'Expired']) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        @else
-            <div class="alert bg-success border-success rounded-4 shadow-sm bg-opacity-25" role="alert">
-                <span class="d-block fw-semibold"><i class="fa-solid fa-circle-check"></i> Nuk ka kontrata afër skadimit</span>
-                <small class="d-block text-muted">Kontratat aktive dhe të skaduara janë ende të disponueshme në listën më poshtë.</small>
+
+            {{-- Create Contract --}}
+            <div class="card mb-4">
+                <div class="card-header rounded-top-4 bg-white">
+                    <span><i class="fa-solid fa-file-contract txt-lightblue py-2"></i> Krijo Kontratë të Re</span>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('create.contract') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="employee_id" class="form-label">Punonjësi</label>
+                                <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
+                                    <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="position" class="form-label">Pozita</label>
+                                <input type="text" name="position" id="position" value="{{ old('position') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani pozitën këtu...">
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="salary" class="form-label">Paga</label>
+                                <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani pagën këtu...">
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="extra_hours_price" class="form-label">Çmimi i Orëve Shtesë</label>
+                                <input type="number" step="0.01" name="extra_hours_price" id="extra_hours_price" value="{{ old('extra_hours_price') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani çmimin e orëve shtesë...">
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="weekend_hours_price" class="form-label">Çmimi i Orëve të Fundjavës</label>
+                                <input type="number" step="0.01" name="weekend_hours_price" id="weekend_hours_price" value="{{ old('weekend_hours_price') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani çmimin e orëve të fundjavës...">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="docs" class="form-label">Dokumentet</label>
+                                <input type="file" name="docs[]" id="docs" class="form-control shadow-sm rounded-3" multiple>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="from_date" class="form-label">Valide Nga</label>
+                                <input type="date" name="from_date" id="from_date" value="{{ old('from_date') }}" class="form-control shadow-sm rounded-3">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="to_date" class="form-label">Valide Deri</label>
+                                <input type="date" name="to_date" id="to_date" value="{{ old('to_date') }}" class="form-control shadow-sm rounded-3">
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Kontratën</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         @endif
-
-        {{-- Info Cards --}}
-        <div class="row g-3 mb-4">
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-signature text-success"></i> Aktive</small>
-                        <div class="d-flex align-items-center justify-content-between gap-2">
-                            <h4 class="fw-semibold mb-0">{{ $contractStats->active_count ?? 0 }}</h4>
-                            <a href="{{ route('contracts', ['search' => request('search'), 'status' => 'Active']) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-hourglass-half text-warning"></i> Duke skaduar</small>
-                        <div class="d-flex align-items-center justify-content-between gap-2">
-                            <h4 class="fw-semibold mb-0">{{ $contractStats->expiring_count ?? 0 }}</h4>
-                            <a href="{{ route('contracts', ['search' => request('search'), 'status' => 'Expiring']) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-file-circle-xmark text-danger"></i> Skaduar</small>
-                        <div class="d-flex align-items-center justify-content-between gap-2">
-                            <h4 class="fw-semibold mb-0">{{ $contractStats->expired_count ?? 0 }}</h4>
-                            <a href="{{ route('contracts', ['search' => request('search'), 'status' => 'Expired']) }}" class="btn btn-darkblue btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Create Contract --}}
-        <div class="card mb-4">
-            <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-file-contract txt-lightblue py-2"></i> Krijo Kontratë të Re</span>
-            </div>
-            <div class="card-body">
-                <form action="{{ route('create.contract') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="employee_id" class="form-label">Punonjësi</label>
-                            <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                                <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
-                                @foreach ($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="position" class="form-label">Pozita</label>
-                            <input type="text" name="position" id="position" value="{{ old('position') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani pozitën këtu...">
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="salary" class="form-label">Paga</label>
-                            <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani pagën këtu...">
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="extra_hours_price" class="form-label">Çmimi i Orëve Shtesë</label>
-                            <input type="number" step="0.01" name="extra_hours_price" id="extra_hours_price" value="{{ old('extra_hours_price') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani çmimin e orëve shtesë...">
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="weekend_hours_price" class="form-label">Çmimi i Orëve të Fundjavës</label>
-                            <input type="number" step="0.01" name="weekend_hours_price" id="weekend_hours_price" value="{{ old('weekend_hours_price') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani çmimin e orëve të fundjavës...">
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="docs" class="form-label">Dokumentet</label>
-                            <input type="file" name="docs[]" id="docs" class="form-control shadow-sm rounded-3" multiple>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="from_date" class="form-label">Valide Nga</label>
-                            <input type="date" name="from_date" id="from_date" value="{{ old('from_date') }}" class="form-control shadow-sm rounded-3">
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <label for="to_date" class="form-label">Valide Deri</label>
-                            <input type="date" name="to_date" id="to_date" value="{{ old('to_date') }}" class="form-control shadow-sm rounded-3">
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Kontratën</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
 
         {{-- Contracts List --}}
         <div class="card">
@@ -285,8 +289,10 @@
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">
-                                            <a href="{{ route('edit.contract', $contract->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
-                                            <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $contract->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            @if(!$isEmployee)
+                                                <a href="{{ route('edit.contract', $contract->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
+                                                <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $contract->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            @endif
                                             <a href="{{ route('contract.details', $contract->id) }}" class="btn btn-outline-dark btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-eye"></i></a>
                                         </td>
                                     </tr>
@@ -303,7 +309,7 @@
             </div>
         </div>
 
-        @if(count($contracts) !== 0)
+        @if(!$isEmployee && count($contracts) !== 0)
 
             <!-- Delete Modal -->
             @foreach ($contracts as $contract)

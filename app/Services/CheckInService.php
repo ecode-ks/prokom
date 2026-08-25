@@ -94,14 +94,7 @@ class CheckInService
             return false;
         }
 
-        $ok = $this->repository->endWork($id, $data, $this->companyId);
-        if (!$ok) {
-            return false;
-        }
-
-        $this->syncToWorkingHours($checkin, $data['check_out_time'] ?? null);
-
-        return true;
+        return $this->repository->endWork($id, $data, $this->companyId);
     }
     //---------------
     public function getCheckIns(int $limit, string $search = '')
@@ -126,9 +119,20 @@ class CheckInService
     //---------------
     public function acceptCheckIn(int $id): bool
     {
-        if (!$this->repository->checkCheckinExist($id, $this->companyId)) {
+        $checkin = $this->repository->findById($id, $this->companyId);
+        if (!$checkin) {
             return false;
         }
+
+        if (strtolower((string) ($checkin->status ?? '')) === 'accepted') {
+            return true;
+        }
+
+        if (empty($checkin->check_out_time)) {
+            throw new \Exception('Nuk mund të pranohet check-in pa check-out.');
+        }
+
+        $this->syncToWorkingHours($checkin, $checkin->check_out_time);
 
         return $this->repository->accept($id, $this->companyId);
     }

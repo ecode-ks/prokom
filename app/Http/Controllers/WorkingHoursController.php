@@ -49,13 +49,13 @@ class WorkingHoursController extends Controller
         $employees = $this->employeeservice->getAllEmployees();
         $fromDate = null;
         $toDate = null;
-        $workingHoursTotal = null;
+        $workingHoursTotalLabel = null;
 
         if ($role === 'employee' && $employeeId) {
             $fromDate = $request->query('from_date') ?: null;
             $toDate = $request->query('to_date') ?: null;
             $workingHours = $this->service->getEmployeeWorkingHours($employeeId, $fromDate, $toDate, 10);
-            $workingHoursTotal = $this->service->getEmployeeWorkingHoursTotal($employeeId, $fromDate, $toDate);
+            $workingHoursTotalLabel = $this->service->getEmployeeWorkingHoursTotal($employeeId, $fromDate, $toDate);
         } else {
             $workingHours = $this->service->getWorkingHours(10, $search);
         }
@@ -63,7 +63,7 @@ class WorkingHoursController extends Controller
         return view('management.working-hours')
             ->with('page', $page)
             ->with('workingHours', $workingHours)
-            ->with('workingHoursTotal', $workingHoursTotal)
+            ->with('workingHoursTotalLabel', $workingHoursTotalLabel)
             ->with('employees', $employees)
             ->with('role', $role)
             ->with('fromDate', $fromDate)

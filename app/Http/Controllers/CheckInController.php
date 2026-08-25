@@ -61,9 +61,9 @@ class CheckInController extends Controller
 
         try {
             $this->service->acceptCheckIn($id);
-            return redirect()->route('checkins')->with('success', 'Check-in u pranua me sukses.');
+            return redirect()->route('checkins')->with('success', 'Check-in u pranua dhe orët e punës u regjistruan.');
         } catch (\Exception $e) {
-            return redirect()->route('checkins')->with('error', 'Pranimi dështoi. Provo përsëri.');
+            return redirect()->route('checkins')->with('error', $e->getMessage() ?: 'Pranimi dështoi. Provo përsëri.');
         }
     }
     //---------------

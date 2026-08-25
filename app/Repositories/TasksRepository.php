@@ -19,13 +19,19 @@ class TasksRepository
         return (int) DB::table($this->table)->insertGetId($data);
     }
     //---------------
-    public function getTasks(int $limit, int $companyId)
+    public function getTasks(int $limit, int $companyId, ?int $employeeId = null)
     {
-        return DB::table($this->table . ' as t')
+        $query = DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
-            ->where('t.company_id', $companyId)
+            ->where('t.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
+
+        return $query
             ->select(
                 't.id',
                 't.date',
@@ -41,25 +47,33 @@ class TasksRepository
                 DB::raw('COALESCE(ab.employee, c.company) as assigned_by_name')
             )
             ->orderByDesc('t.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
-    public function getSearchedTasks(int $limit, int $companyId, string $search)
+    public function getSearchedTasks(int $limit, int $companyId, string $search, ?int $employeeId = null)
     {
-        return DB::table($this->table . ' as t')
+        $query = DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
-            ->where('t.company_id', $companyId)
-            ->where(function ($query) use ($search) {
-                $query->where('t.title', 'like', "%{$search}%")
-                    ->orWhere('t.task', 'like', "%{$search}%")
-                    ->orWhere('t.status', 'like', "%{$search}%")
-                    ->orWhere('t.assigned_to', 'like', "%{$search}%")
-                    ->orWhere('p.project_name', 'like', "%{$search}%")
-                    ->orWhere('ab.employee', 'like', "%{$search}%")
-                    ->orWhere('c.company', 'like', "%{$search}%");
-            })
+            ->where('t.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
+
+        $query->where(function ($q) use ($search) {
+            $q->where('t.title', 'like', "%{$search}%")
+                ->orWhere('t.task', 'like', "%{$search}%")
+                ->orWhere('t.status', 'like', "%{$search}%")
+                ->orWhere('t.assigned_to', 'like', "%{$search}%")
+                ->orWhere('p.project_name', 'like', "%{$search}%")
+                ->orWhere('ab.employee', 'like', "%{$search}%")
+                ->orWhere('c.company', 'like', "%{$search}%");
+        });
+
+        return $query
             ->select(
                 't.id',
                 't.date',
@@ -307,13 +321,17 @@ class TasksRepository
             ->delete() > 0;
     }
     //---------------
-    public function getTaskStatistics(int $companyId, string $search = ''): object
+    public function getTaskStatistics(int $companyId, string $search = '', ?int $employeeId = null): object
     {
         $query = DB::table($this->table . ' as t')
             ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
             ->leftJoin('employees as ab', 't.assigned_by', '=', 'ab.id')
             ->leftJoin('companies as c', 't.company_id', '=', 'c.id')
             ->where('t.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {

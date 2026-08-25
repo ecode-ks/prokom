@@ -295,8 +295,10 @@
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">
-                                            <a href="{{ route('edit.task', $task->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
-                                            <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $task->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            @if(($role ?? session('role')) !== 'employee')
+                                                <a href="{{ route('edit.task', $task->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
+                                                <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $task->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            @endif
                                             <a href="{{ route('task.details', $task->id) }}" class="btn btn-outline-dark btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-eye"></i></a>
                                         </td>
                                     </tr>
@@ -313,7 +315,7 @@
             </div>
         </div>
 
-        @if(count($tasks) !== 0)
+        @if(($role ?? session('role')) !== 'employee' && count($tasks) !== 0)
 
             <!-- Delete Modal -->
             @foreach ($tasks as $task)

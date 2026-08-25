@@ -29,25 +29,45 @@ class SalariesRepository
         return DB::table($this->table)->insert($rows);
     }
     //---------------
-    public function getSalaries(int $limit, int $companyId)
+    public function getSalaries(int $limit, int $companyId, ?int $employeeId = null)
     {
-        return DB::table($this->table)
+        $query = DB::table($this->table)
             ->join('employees', 'salaries.employee_id', '=', 'employees.id')
             ->select('salaries.*', 'employees.employee')
-            ->where('salaries.company_id', $companyId)
+            ->where('salaries.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->where('salaries.employee_id', $employeeId);
+        }
+
+        return $query
             ->orderByDesc('salaries.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
-    public function getSearchedSalaries(int $limit, int $companyId, string $search)
+    public function getSearchedSalaries(int $limit, int $companyId, string $search, ?int $employeeId = null)
     {
-        return DB::table($this->table)
+        $query = DB::table($this->table)
             ->join('employees', 'salaries.employee_id', '=', 'employees.id')
             ->select('salaries.*', 'employees.employee')
-            ->where('employees.employee', 'like', "%{$search}%")
-            ->where('salaries.company_id', $companyId)
+            ->where('salaries.company_id', $companyId);
+
+        if ($employeeId !== null) {
+            $query->where('salaries.employee_id', $employeeId)
+                ->where(function ($q) use ($search) {
+                    $q->where('employees.employee', 'like', "%{$search}%")
+                        ->orWhere('salaries.salary', 'like', "%{$search}%")
+                        ->orWhere('salaries.date', 'like', "%{$search}%");
+                });
+        } else {
+            $query->where('employees.employee', 'like', "%{$search}%");
+        }
+
+        return $query
             ->orderByDesc('salaries.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
     public function findSalary(int $id, int $companyId)

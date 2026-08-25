@@ -150,7 +150,7 @@ class WorkingHoursRepository
             ->withQueryString();
     }
     //---------------
-    public function getEmployeeWorkingHoursTotalHours(int $companyId, int $employeeId, ?string $fromDate, ?string $toDate): float
+    public function getEmployeeWorkingHoursTotalHours(int $companyId, int $employeeId, ?string $fromDate, ?string $toDate): int
     {
         $query = DB::table($this->table)
             ->where('company_id', $companyId)
@@ -160,6 +160,6 @@ class WorkingHoursRepository
             $query->whereBetween('date', [$fromDate, $toDate]);
         }
 
-        return (float) $query->selectRaw('COALESCE(SUM(TIME_TO_SEC(hours)), 0) / 3600 as total_hours')->value('total_hours');
+        return (int) $query->selectRaw('COALESCE(SUM(TIME_TO_SEC(hours)), 0) as total_seconds')->value('total_seconds');
     }
 }

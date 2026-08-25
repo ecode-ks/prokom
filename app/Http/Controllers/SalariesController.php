@@ -40,17 +40,30 @@ class SalariesController extends Controller
     {
         $page = 'Salaries';
         $search = $request->query('search', '');
-        $salaries = $this->service->getSalaries(10, $search);
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
+        $scopedEmployeeId = $role === 'employee' ? (int) ($employeeId ?? 0) : null;
+        $salaries = $this->service->getSalaries(10, $search, $scopedEmployeeId);
+
+        if ($role === 'employee') {
+            return view('management.salaries')
+                ->with('page', $page)
+                ->with('salaries', $salaries)
+                ->with('employees', collect())
+                ->with('role', $role);
+        }
         $employees = $this->employeeService->getAllEmployees();
 
-        if($employees->isEmpty()) {
+        if ($employees->isEmpty()) {
             return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni paga.');
         }
 
         return view('management.salaries')
             ->with('page', $page)
             ->with('salaries', $salaries)
-            ->with('employees', $employees);
+            ->with('employees', $employees)
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)

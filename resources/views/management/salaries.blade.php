@@ -5,6 +5,8 @@
 
 {{-- Page Content --}}
 @section('content')
+    @php $isEmployee = ($role ?? '') === 'employee'; @endphp
+
     @if(isset($editSalary))
         <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('salaries') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
         <h3 class="fw-semibold pt-2">Përditëso Pagën</h3>
@@ -12,8 +14,8 @@
         <hr class="mb-4">
     @else
         <small class="d-block txt-lightblue fw-semibold text-uppercase">Pagat</small>
-        <h3 class="fw-semibold pt-2">Menaxho Pagat</h3>
-        <p class="text-muted">Monitoro dhe menaxho pagat e punonjësve.</p>
+        <h3 class="fw-semibold pt-2">{{ $isEmployee ? 'Pagat e Mia' : 'Menaxho Pagat' }}</h3>
+        <p class="text-muted">{{ $isEmployee ? 'Shiko pagat e tua.' : 'Monitoro dhe menaxho pagat e punonjësve.' }}</p>
         <hr class="mb-4">
     @endif
 
@@ -53,37 +55,39 @@
         </div>
     @else
 
-        {{-- Create Salary --}}
-        <div class="card mb-4">
-            <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-layer-group txt-lightblue py-2"></i> Regjistro Pagë të Re</span>
+        @if(!$isEmployee)
+            {{-- Create Salary --}}
+            <div class="card mb-4">
+                <div class="card-header rounded-top-4 bg-white">
+                    <span><i class="fa-solid fa-layer-group txt-lightblue py-2"></i> Regjistro Pagë të Re</span>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('create.salary') }}" method="post">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="employee_id" class="form-label">Punonjësi</label>
+                                <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
+                                    <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
+                                            {{ $employee->employee }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="salary" class="form-label">Paga</label>
+                                <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj pagën...">
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Pagën</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <form action="{{ route('create.salary') }}" method="post">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="employee_id" class="form-label">Punonjësi</label>
-                            <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                                <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
-                                @foreach ($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
-                                        {{ $employee->employee }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="salary" class="form-label">Paga</label>
-                            <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj pagën...">
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Pagën</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+        @endif
 
         {{-- Salaries List --}}
         <div class="card">
@@ -103,13 +107,15 @@
                                 <th scope="col" class="text-nowrap">Punonjësi</th>
                                 <th scope="col" class="text-nowrap">Paga</th>
                                 <th scope="col" class="text-nowrap">Data</th>
-                                <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                @if(!$isEmployee)
+                                    <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($salaries) === 0)
                                 <tr>
-                                    <td colspan="5" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="{{ $isEmployee ? 4 : 5 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($salaries as $salary)
@@ -118,10 +124,12 @@
                                         <td class="text-nowrap">{{ $salary->employee }}</td>
                                         <td class="text-nowrap">{{ $salary->salary }}€</td>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($salary->date)->format('d/m/Y') }}</td>
-                                        <td class="text-nowrap text-end">
-                                            <a href="{{ route('edit.salary', $salary->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
-                                            <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $salary->id }}"><i class="fa-solid fa-trash"></i></button>
-                                        </td>
+                                        @if(!$isEmployee)
+                                            <td class="text-nowrap text-end">
+                                                <a href="{{ route('edit.salary', $salary->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
+                                                <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $salary->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -136,7 +144,7 @@
             </div>
         </div>
 
-        @if(count($salaries) !== 0)
+        @if(!$isEmployee && count($salaries) !== 0)
 
             <!-- Delete Modal -->
             @foreach ($salaries as $salary)

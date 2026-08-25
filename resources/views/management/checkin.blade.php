@@ -60,7 +60,7 @@
                                         @endif
                                     </td>
                                     <td class="text-nowrap text-end">
-                                        @if(!$isAccepted)
+                                        @if(!$isAccepted && !empty($checkIn->check_out_time))
                                             <a href="{{ route('accept.checkin', $checkIn->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-check"></i></a>
                                         @endif
                                         <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $checkIn->id }}"><i class="fa-solid fa-trash"></i></button>

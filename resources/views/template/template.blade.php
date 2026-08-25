@@ -212,7 +212,19 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(session('role') === 'company' || session('role') === 'hr')
+                                @if(session('role') === 'employee')
+                                    <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Salaries' ? 'sidebar-active' : 'sidebar-link' }}">
+                                        <a href="{{ route('salaries') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-money-bill-wave mx-2 opacity-75"></i> Pagat
+                                        </a>
+                                    </li>
+                                    <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Extra Hours' ? 'sidebar-active' : 'sidebar-link' }}">
+                                        <a href="{{ route('extra.hours') }}" class="text-decoration-none text-light">
+                                            <i class="fa-solid fa-business-time mx-2 opacity-75"></i> Orët Shtesë
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
                                     <li class="list-group-item mb-1 rounded-3 p-1" id="{{ isset($page) && $page === 'Contracts' ? 'sidebar-active' : 'sidebar-link' }}">
                                         <a href="{{ route('contracts') }}" class="text-decoration-none text-light">
                                             <i class="fa-solid fa-file-contract mx-2 opacity-75"></i> Kontratat
@@ -335,7 +347,11 @@
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('working.hours') }}"><i class="fa-solid fa-clock me-2 opacity-75"></i> Orët e Punës</a></li>
                                             @endif
-                                            @if(session('role') === 'company' || session('role') === 'hr')
+                                            @if(session('role') === 'employee')
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> Pagat</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Extra Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('extra.hours') }}"><i class="fa-solid fa-business-time me-2 opacity-75"></i> Orët Shtesë</a></li>
+                                            @endif
+                                            @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href="{{ route('contracts') }}"><i class="fa-solid fa-file-contract me-2 opacity-75"></i> Kontratat</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee' || session('role') === 'manager')

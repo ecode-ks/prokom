@@ -20,25 +20,43 @@ class ContractsRepository
             ->insert($data);
     }
     //---------------
-    public function getContracts(int $limit, int $companyId)
+    public function getContracts(int $limit, int $companyId, ?int $employeeId = null)
     {
-        return DB::table($this->table . ' as c')
+        $query = DB::table($this->table . ' as c')
             ->join('employees as e', 'c.employee_id', '=', 'e.id')
             ->where('c.company_id', $companyId)
-            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'c.salary', 'c.extra_hours_price', 'c.weekend_hours_price', 'e.employee', 'e.phone', 'e.email')
+            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'c.salary', 'c.extra_hours_price', 'c.weekend_hours_price', 'e.employee', 'e.phone', 'e.email');
+
+        if ($employeeId !== null) {
+            $query->where('c.employee_id', $employeeId);
+        }
+
+        return $query
             ->orderByDesc('c.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
-    public function getSearchedContracts(int $limit, int $companyId, string $search = '', string $status = '')
+    public function getSearchedContracts(int $limit, int $companyId, string $search = '', string $status = '', ?int $employeeId = null)
     {
         $query = DB::table($this->table . ' as c')
             ->join('employees as e', 'c.employee_id', '=', 'e.id')
             ->where('c.company_id', $companyId)
             ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'e.phone', 'e.employee');
 
+        if ($employeeId !== null) {
+            $query->where('c.employee_id', $employeeId);
+        }
+
         if (!empty($search)) {
-            $query->where('e.employee', 'like', "%{$search}%");
+            if ($employeeId !== null) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('e.employee', 'like', "%{$search}%")
+                        ->orWhere('c.position', 'like', "%{$search}%");
+                });
+            } else {
+                $query->where('e.employee', 'like', "%{$search}%");
+            }
         }
 
         if (!empty($status)) {
@@ -63,14 +81,25 @@ class ContractsRepository
             ->get();
     }
     //---------------
-    public function getContractStatistics(int $companyId, string $search = ''): object
+    public function getContractStatistics(int $companyId, string $search = '', ?int $employeeId = null): object
     {
         $query = DB::table($this->table . ' as c')
             ->join('employees as e', 'c.employee_id', '=', 'e.id')
             ->where('c.company_id', $companyId);
 
+        if ($employeeId !== null) {
+            $query->where('c.employee_id', $employeeId);
+        }
+
         if (!empty($search)) {
-            $query->where('e.employee', 'like', "%{$search}%");
+            if ($employeeId !== null) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('e.employee', 'like', "%{$search}%")
+                        ->orWhere('c.position', 'like', "%{$search}%");
+                });
+            } else {
+                $query->where('e.employee', 'like', "%{$search}%");
+            }
         }
 
         return $query

@@ -49,7 +49,20 @@ class ExtraHoursController extends Controller
     {
         $page = 'Extra Hours';
         $search = $request->query('search', '');
-        $extraHours = $this->service->getExtraHours(10, $search);
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
+        $scopedEmployeeId = $role === 'employee' ? (int) ($employeeId ?? 0) : null;
+        $extraHours = $this->service->getExtraHours(10, $search, $scopedEmployeeId);
+
+        if ($role === 'employee') {
+            return view('management.extra-hours')
+                ->with('page', $page)
+                ->with('extraHours', $extraHours)
+                ->with('employees', collect())
+                ->with('types', self::TYPES)
+                ->with('role', $role);
+        }
         $employees = $this->employeeService->getAllEmployees();
 
         if ($employees->isEmpty()) {
@@ -60,7 +73,8 @@ class ExtraHoursController extends Controller
             ->with('page', $page)
             ->with('extraHours', $extraHours)
             ->with('employees', $employees)
-            ->with('types', self::TYPES);
+            ->with('types', self::TYPES)
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)

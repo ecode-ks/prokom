@@ -5,6 +5,8 @@
 
 {{-- Page Content --}}
 @section('content')
+    @php $isEmployee = ($role ?? '') === 'employee'; @endphp
+
     @if(isset($editExtraHour))
         <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('extra.hours') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
         <h3 class="fw-semibold pt-2">Përditëso Orët Shtesë</h3>
@@ -12,8 +14,8 @@
         <hr class="mb-4">
     @else
         <small class="d-block txt-lightblue fw-semibold text-uppercase">Orët Shtesë</small>
-        <h3 class="fw-semibold pt-2">Menaxho Orët Shtesë</h3>
-        <p class="text-muted">Monitoro dhe menaxho orët jashtë orarit dhe orët në vikend.</p>
+        <h3 class="fw-semibold pt-2">{{ $isEmployee ? 'Orët e Mia Shtesë' : 'Menaxho Orët Shtesë' }}</h3>
+        <p class="text-muted">{{ $isEmployee ? 'Shiko orët jashtë orarit dhe orët në vikend.' : 'Monitoro dhe menaxho orët jashtë orarit dhe orët në vikend.' }}</p>
         <hr class="mb-4">
     @endif
 
@@ -66,50 +68,52 @@
         </div>
     @else
 
-        {{-- Create Extra Hours --}}
-        <div class="card mb-4">
-            <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-business-time txt-lightblue py-2"></i> Regjistro Orë Shtesë</span>
+        @if(!$isEmployee)
+            {{-- Create Extra Hours --}}
+            <div class="card mb-4">
+                <div class="card-header rounded-top-4 bg-white">
+                    <span><i class="fa-solid fa-business-time txt-lightblue py-2"></i> Regjistro Orë Shtesë</span>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('create.extra.hour') }}" method="post">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="employee_id" class="form-label">Punonjësi</label>
+                                <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3" required>
+                                    <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
+                                            {{ $employee->employee }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="hours" class="form-label">Orët</label>
+                                <input type="number" step="0.01" min="0.01" name="hours" id="hours" value="{{ old('hours') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj orët..." required>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="type" class="form-label">Tipi</label>
+                                <select name="type" id="type" class="form-control shadow-sm rounded-3" required>
+                                    <option value="" disabled {{ old('type') ? '' : 'selected' }}>-- Zgjidh Tipin --</option>
+                                    @foreach ($types as $type)
+                                        <option value="{{ $type }}" {{ old('type') === $type ? 'selected' : '' }}>{{ $type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="date" class="form-label">Data</label>
+                                <input type="date" name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" class="form-control shadow-sm rounded-3" required>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Orët Shtesë</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="card-body">
-                <form action="{{ route('create.extra.hour') }}" method="post">
-                    @csrf
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="employee_id" class="form-label">Punonjësi</label>
-                            <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
-                                @foreach ($employees as $employee)
-                                    <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
-                                        {{ $employee->employee }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="hours" class="form-label">Orët</label>
-                            <input type="number" step="0.01" min="0.01" name="hours" id="hours" value="{{ old('hours') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj orët..." required>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="type" class="form-label">Tipi</label>
-                            <select name="type" id="type" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('type') ? '' : 'selected' }}>-- Zgjidh Tipin --</option>
-                                @foreach ($types as $type)
-                                    <option value="{{ $type }}" {{ old('type') === $type ? 'selected' : '' }}>{{ $type }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-4 col-lg-4">
-                            <label for="date" class="form-label">Data</label>
-                            <input type="date" name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" class="form-control shadow-sm rounded-3" required>
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Orët Shtesë</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+        @endif
 
         {{-- Extra Hours List --}}
         <div class="card">
@@ -130,13 +134,15 @@
                                 <th scope="col" class="text-nowrap">Orët</th>
                                 <th scope="col" class="text-nowrap">Tipi</th>
                                 <th scope="col" class="text-nowrap">Data</th>
-                                <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                @if(!$isEmployee)
+                                    <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($extraHours) === 0)
                                 <tr>
-                                    <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="{{ $isEmployee ? 5 : 6 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($extraHours as $extraHour)
@@ -146,10 +152,12 @@
                                         <td class="text-nowrap">{{ $extraHour->hours }}</td>
                                         <td class="text-nowrap">{{ $extraHour->type }}</td>
                                         <td class="text-nowrap">{{ $extraHour->date ? \Carbon\Carbon::parse($extraHour->date)->format('d/m/Y') : '-' }}</td>
-                                        <td class="text-nowrap text-end">
-                                            <a href="{{ route('edit.extra.hour', $extraHour->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
-                                            <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $extraHour->id }}"><i class="fa-solid fa-trash"></i></button>
-                                        </td>
+                                        @if(!$isEmployee)
+                                            <td class="text-nowrap text-end">
+                                                <a href="{{ route('edit.extra.hour', $extraHour->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
+                                                <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $extraHour->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif
@@ -164,7 +172,7 @@
             </div>
         </div>
 
-        @if(count($extraHours) !== 0)
+        @if(!$isEmployee && count($extraHours) !== 0)
 
             <!-- Delete Modal -->
             @foreach ($extraHours as $extraHour)

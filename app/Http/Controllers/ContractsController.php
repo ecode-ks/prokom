@@ -50,9 +50,26 @@ class ContractsController extends Controller
         $search = $request->query('search', '');
         $status = $request->query('status', '');
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
+        $scopedEmployeeId = $role === 'employee' ? (int) ($employeeId ?? 0) : null;
+
+        if ($role === 'employee') {
+            $contracts = $this->service->getContracts(10, $search, $status, $companyId, $scopedEmployeeId);
+            $contractStats = $this->service->getContractStatistics($search, $companyId, $scopedEmployeeId);
+
+            return view('management.contracts')
+                ->with('page', $page)
+                ->with('employees', collect())
+                ->with('contracts', $contracts)
+                ->with('contractStats', $contractStats)
+                ->with('role', $role);
+        }
+
         $employees = $this->employees->getAllEmployees($companyId);
-        if(count($employees) === 0){
-            return redirect()->route('employees')->with('error','Ju lutemi regjistroni së pari punonjësit.');
+        if (count($employees) === 0) {
+            return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari punonjësit.');
         }
         $contracts = $this->service->getContracts(10, $search, $status, $companyId);
         $contractStats = $this->service->getContractStatistics($search, $companyId);
@@ -60,21 +77,31 @@ class ContractsController extends Controller
             ->with('page', $page)
             ->with('employees', $employees)
             ->with('contracts', $contracts)
-            ->with('contractStats', $contractStats);
+            ->with('contractStats', $contractStats)
+            ->with('role', $role);
     }
     //---------------
     public function contractDetails(int $id)
     {
         $page = 'Contracts';
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('contracts')->with('error','Kontrata nuk u gjet.');
-        } else {
-            $contractDetails = $this->service->getContractDetails($id, $companyId);
-            return view('management.contracts')
-                ->with('page', $page)
-                ->with('contractDetails', $contractDetails);
+            return redirect()->route('contracts')->with('error', 'Kontrata nuk u gjet.');
         }
+
+        $contractDetails = $this->service->getContractDetails($id, $companyId);
+
+        if ($role === 'employee' && (int) ($contractDetails->employee_id ?? 0) !== (int) $employeeId) {
+            return redirect()->route('contracts')->with('error', 'Kontrata nuk u gjet.');
+        }
+
+        return view('management.contracts')
+            ->with('page', $page)
+            ->with('contractDetails', $contractDetails)
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)

@@ -33,7 +33,7 @@
 
             @if(session('role') !== 'employee')
                 <div class="mb-3 mt-3">
-                    @if(strtolower((string) $checkinDetails->status) !== 'accepted')
+                    @if(strtolower((string) $checkinDetails->status) !== 'accepted' && !empty($checkinDetails->check_out_time))
                         <a href="{{ route('accept.checkin', $checkinDetails->id) }}" class="btn btn-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-check"></i> Prano</a>
                     @endif
                     <a href="{{ route('delete.checkin', $checkinDetails->id) }}" class="btn btn-danger btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-trash"></i> Fshi</a>
