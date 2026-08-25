@@ -90,7 +90,12 @@
         </div>
     @else
 
-        @if($pendingTotal > 0)
+        @if($pendingTotal >= 3)
+            <div class="alert bg-danger border-danger rounded-4 shadow-sm bg-opacity-25" role="alert">
+                <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $pendingTotal }} kërkesa pushimi në pritje</span>
+                <small class="d-block text-muted">Ju lutemi trajtoni këto kërkesa sa më shpejt të jetë e mundur.</small>
+            </div>
+        @elseif($pendingTotal > 0)
             <div class="alert bg-warning border-warning rounded-4 shadow-sm bg-opacity-25" role="alert">
                 <span class="d-block fw-semibold"><i class="fa-solid fa-triangle-exclamation"></i> {{ $pendingTotal }} kërkes{{ $pendingTotal === 1 ? 'ë' : 'a' }} në pritje</span>
                 <small class="d-block text-muted">Statusi mund të ndryshohet direkt nga menaxheri ose HR.</small>

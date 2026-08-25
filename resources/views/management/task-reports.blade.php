@@ -40,12 +40,6 @@
                         <div class="col-12 col-md-8">
                             <label for="images" class="form-label">Imazhet / Faktet <small class="text-muted">(opsionale – lëreni bosh për të ruajtur ekzistueset)</small></label>
                             <input type="file" name="images[]" id="images" class="form-control shadow-sm rounded-3" multiple accept="image/*">
-                            @php
-                                $existingImages = json_decode($editReport->images ?? '[]', true);
-                            @endphp
-                            @if(!empty($existingImages) && is_array($existingImages))
-                                <small class="d-block text-muted mt-1">{{ count($existingImages) }} imazh(e) ekzistuese</small>
-                            @endif
                         </div>
                         <div class="col-12">
                             <label for="report" class="form-label">Raporti</label>
@@ -149,7 +143,6 @@
                                 <th scope="col" class="text-nowrap">Data</th>
                                 <th scope="col" class="text-nowrap">Titulli i Detyrës</th>
                                 <th scope="col" class="text-nowrap">Projekti</th>
-                                <th scope="col" class="text-nowrap">Punonjësit</th>
                                 <th scope="col" class="text-nowrap">Raportuar Nga</th>
                                 <th scope="col" class="text-nowrap">Statusi</th>
                                 <th scope="col" class="text-nowrap text-end">Veprimet</th>
@@ -158,7 +151,7 @@
                         <tbody>
                             @if(count($reports) === 0)
                                 <tr>
-                                    <td colspan="8" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach($reports as $report)
@@ -167,7 +160,6 @@
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($report->date)->format('d/m/Y') }}</td>
                                         <td class="text-truncate" style="max-width: 260px;">{{ $report->title }}</td>
                                         <td class="text-nowrap">{{ $report->project_name }}</td>
-                                        <td class="text-nowrap">{{ $report->assigned_to_names ?? '-' }}</td>
                                         <td class="text-nowrap">{{ $report->reporter_name ?? '-' }}</td>
                                         <td class="text-nowrap">
                                             @if($report->status === 'active' || $report->status === 'new')
