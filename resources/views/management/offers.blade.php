@@ -141,9 +141,9 @@
                                         <td class="text-nowrap">{{ $offer->client }}</td>
                                         <td class="text-nowrap">
                                             @if($offer->status === 'completed')
-                                                <span class="badge rounded-pill text-dark text-bg-success bg-opacity-25 border border-success text-capitalize">{{ str_replace('_', ' ', $offer->status) }}</span>
+                                                <span class="badge rounded-pill text-dark text-bg-success bg-opacity-25 border border-success">Përfunduar</span>
                                             @else
-                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning text-capitalize">{{ str_replace('_', ' ', $offer->status) }}</span>
+                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në pritje</span>
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">

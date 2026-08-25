@@ -95,6 +95,27 @@ class ProjectReportsRepository
             ->delete() > 0;
     }
     //---------------
+    public function getImagePayloadsByCompany(int $companyId): array
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereNotNull('images')
+            ->where('images', '!=', '')
+            ->pluck('images')
+            ->all();
+    }
+    //---------------
+    public function getImagePayloadsByProject(int $projectId, int $companyId): array
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('project_id', $projectId)
+            ->whereNotNull('images')
+            ->where('images', '!=', '')
+            ->pluck('images')
+            ->all();
+    }
+    //---------------
     public function getReportStatistics(int $companyId, ?int $managerId = null): object
     {
         $query = DB::table($this->table . ' as pr')

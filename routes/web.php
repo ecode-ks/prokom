@@ -32,6 +32,12 @@ Route::controller(UsersController::class)->group(function () {
     Route::post('/check-login', 'checkLogin')->name('check.login');
     Route::post('/register-admin', 'registerAdmin')->name('register.admin');
     Route::get('/logout', 'logout')->name('logout');
+});
+
+Route::middleware('payment.expired')->group(function () {
+
+// Users (authenticated)
+Route::controller(UsersController::class)->group(function () {
     Route::get('/profile', 'profile')->middleware('authorization:admin,company,manager,employee,finance,hr')->name('profile');
     Route::post('/profile-password', 'updateProfilePassword')->middleware('authorization:admin,company,manager,employee,finance,hr')->name('update.profile.password');
 });
@@ -76,6 +82,8 @@ Route::middleware('authorization:admin')->controller(PackagesController::class)-
     Route::get('/edit-package/{id}', 'edit')->name('edit.package');
     Route::post('/update-package', 'update')->name('update.package');
     Route::get('/delete-package/{id}', 'delete')->name('delete.package');
+});
+Route::middleware('authorization:company')->controller(PackagesController::class)->group(function () {
     Route::get('/change-package/{id}', 'change')->name('change.package');
 });
 
@@ -153,7 +161,7 @@ Route::middleware('authorization:company,finance')->controller(FinancialTransact
 });
 
 // Employees
-Route::middleware('authorization:company,manager,hr')->controller(EmployeesController::class)->group(function () {
+Route::middleware('authorization:company,hr')->controller(EmployeesController::class)->group(function () {
     Route::post('/create-employee', 'create')->name('create.employee');
     Route::get('/employees', 'read')->name('employees');
     Route::get('/edit-employee/{id}', 'edit')->name('edit.employee');
@@ -186,15 +194,17 @@ Route::middleware('authorization:company,hr,employee')->controller(ContractsCont
 });
 
 // Projects
-Route::middleware('authorization:company,manager')->controller(ProjectsController::class)->group(function () {
+Route::middleware('authorization:company')->controller(ProjectsController::class)->group(function () {
     Route::post('/create-project', 'create')->name('create.project');
-    Route::get('/projects', 'read')->name('projects');
-    Route::get('/project/{id}', 'projectDetails')->name('project.details');
-    Route::get('/set-project-context/{id}', 'setProjectContext')->name('set.project.context');
-    Route::get('/update-project-status/{id}/{status}', 'updateStatus')->name('update.project.status');
     Route::get('/edit-project/{id}', 'edit')->name('edit.project');
     Route::post('/update-project', 'update')->name('update.project');
     Route::get('/delete-project/{id}', 'delete')->name('delete.project');
+    Route::get('/update-project-status/{id}/{status}', 'updateStatus')->name('update.project.status');
+});
+Route::middleware('authorization:company,manager')->controller(ProjectsController::class)->group(function () {
+    Route::get('/projects', 'read')->name('projects');
+    Route::get('/project/{id}', 'projectDetails')->name('project.details');
+    Route::get('/set-project-context/{id}', 'setProjectContext')->name('set.project.context');
 });
 
 // Project Reports
@@ -209,10 +219,8 @@ Route::middleware('authorization:company,manager')->controller(ProjectReportsCon
 });
 
 // Tasks
-Route::middleware('authorization:company')->controller(TasksController::class)->group(function () {
-    Route::post('/create-task', 'create')->name('create.task');
-});
 Route::middleware('authorization:company,manager')->controller(TasksController::class)->group(function () {
+    Route::post('/create-task', 'create')->name('create.task');
     Route::get('/edit-task/{id}', 'edit')->name('edit.task');
     Route::post('/update-task', 'update')->name('update.task');
     Route::get('/delete-task/{id}', 'delete')->name('delete.task');
@@ -265,13 +273,13 @@ Route::middleware('authorization:company,finance,employee')->controller(Salaries
 });
 
 // Extra Hours
-Route::middleware('authorization:company,finance')->controller(ExtraHoursController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr')->controller(ExtraHoursController::class)->group(function () {
     Route::post('/create-extra-hour', 'create')->name('create.extra.hour');
     Route::get('/edit-extra-hour/{id}', 'edit')->name('edit.extra.hour');
     Route::post('/update-extra-hour', 'update')->name('update.extra.hour');
     Route::get('/delete-extra-hour/{id}', 'delete')->name('delete.extra.hour');
 });
-Route::middleware('authorization:company,finance,employee')->controller(ExtraHoursController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr,employee')->controller(ExtraHoursController::class)->group(function () {
     Route::get('/extra-hours', 'read')->name('extra.hours');
 });
 
@@ -280,3 +288,5 @@ Route::middleware('authorization:company,manager,employee,hr')->controller(Repor
     Route::get('/employee-report', 'read')->name('employee.report');
     Route::get('/generate-employee-report', 'generate')->name('generate.employee.report');
 });
+
+}); // payment.expired

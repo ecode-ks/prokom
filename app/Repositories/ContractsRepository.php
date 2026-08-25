@@ -193,4 +193,14 @@ class ContractsRepository
             ->where('company_id', $companyId)
             ->delete() > 0;
     }
+    //---------------
+    public function getDocPayloadsByCompany(int $companyId): array
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereNotNull('docs')
+            ->where('docs', '!=', '')
+            ->pluck('docs')
+            ->all();
+    }
 }

@@ -6,6 +6,10 @@ use App\Repositories\UsersRepository;
 use App\Repositories\CompaniesRepository;
 use App\Repositories\PackagesRepository;
 use App\Repositories\EmployeesRepository;
+use App\Repositories\ContractsRepository;
+use App\Repositories\ProjectReportsRepository;
+use App\Repositories\TaskReportsRepository;
+use App\Support\StoredFiles;
 use Illuminate\Support\Facades\Hash;
 
 class CompaniesService
@@ -15,12 +19,26 @@ class CompaniesService
     protected UsersRepository $usersRepository;
     protected PackagesRepository $packagesRepository;
     protected EmployeesRepository $employeesRepository;
-    public function __construct(CompaniesRepository $companiesRepository, UsersRepository $usersRepository, PackagesRepository $packagesRepository, EmployeesRepository $employeesRepository)
-    {
+    protected ContractsRepository $contractsRepository;
+    protected ProjectReportsRepository $projectReportsRepository;
+    protected TaskReportsRepository $taskReportsRepository;
+
+    public function __construct(
+        CompaniesRepository $companiesRepository,
+        UsersRepository $usersRepository,
+        PackagesRepository $packagesRepository,
+        EmployeesRepository $employeesRepository,
+        ContractsRepository $contractsRepository,
+        ProjectReportsRepository $projectReportsRepository,
+        TaskReportsRepository $taskReportsRepository
+    ) {
         $this->companiesRepository = $companiesRepository;
         $this->usersRepository = $usersRepository;
         $this->packagesRepository = $packagesRepository;
         $this->employeesRepository = $employeesRepository;
+        $this->contractsRepository = $contractsRepository;
+        $this->projectReportsRepository = $projectReportsRepository;
+        $this->taskReportsRepository = $taskReportsRepository;
     }
     //---------------
     public function registerCompany(array $data): bool
@@ -77,6 +95,10 @@ class CompaniesService
         if (!$company) {
             return false;
         }
+
+        StoredFiles::deleteMany($this->contractsRepository->getDocPayloadsByCompany($id));
+        StoredFiles::deleteMany($this->projectReportsRepository->getImagePayloadsByCompany($id));
+        StoredFiles::deleteMany($this->taskReportsRepository->getImagePayloadsByCompany($id));
 
         return $this->companiesRepository->delete($id);
     }

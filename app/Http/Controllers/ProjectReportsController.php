@@ -33,6 +33,12 @@ class ProjectReportsController extends Controller
             return redirect()->route('project.reports')->with('error', 'Projekti nuk u gjet.')->withInput();
         }
 
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+        if ($role === 'manager' && !$this->service->getAllProjects($companyId, $employeeId)->contains('id', (int) $request->project_id)) {
+            return redirect()->route('project.reports')->with('error', 'Mund të raportoni vetëm për projektet tuaja.')->withInput();
+        }
+
         $data = [
             'project_id' => (int) $request->project_id,
             'report' => $request->report,
@@ -57,7 +63,8 @@ class ProjectReportsController extends Controller
         $companyId = session('company_id');
         $role = session('role');
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
-        $projects = $this->service->getAllProjects($companyId);
+        $scopedManagerId = $role === 'manager' ? (int) ($employeeId ?? 0) : null;
+        $projects = $this->service->getAllProjects($companyId, $scopedManagerId);
 
         if (count($projects) === 0) {
             return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
@@ -70,15 +77,22 @@ class ProjectReportsController extends Controller
             ->with('page', $page)
             ->with('projects', $projects)
             ->with('reports', $reports)
-            ->with('reportStats', $reportStats);
+            ->with('reportStats', $reportStats)
+            ->with('role', $role);
     }
     //---------------
     public function reportDetails(int $id)
     {
         $page = 'Project Reports';
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+        }
+
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
         }
 
@@ -87,7 +101,7 @@ class ProjectReportsController extends Controller
         return view('management.project-reports-details')
             ->with('page', $page)
             ->with('reportDetails', $reportDetails)
-            ->with('role', session('role'));
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)

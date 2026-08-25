@@ -40,11 +40,13 @@
                 <small class="text-muted"><i class="fa-solid fa-pen"></i> Krijuar më {{ \Carbon\Carbon::parse($projectDetails->created_at)->format('d/m/Y') }}</small>
             </div>
             <hr class="my-3">
+            @if(($role ?? session('role')) !== 'manager')
             <span class="d-block mb-2"><i class="fa-solid fa-arrows-turn-to-dots"></i> Përditëso Statusin</span>
             <a href="{{ route('update.project.status', ['id' => $projectDetails->id, 'status' => 'completed']) }}" class="btn btn-success btn-sm rounded-4 shadow-sm m-1 {{ $projectDetails->status === 'completed' ? 'disabled' : '' }}"><i class="fa-solid fa-check"></i> Përfunduar</a>
             <a href="{{ route('update.project.status', ['id' => $projectDetails->id, 'status' => 'in_progress']) }}" class="btn btn-primary btn-sm rounded-4 shadow-sm m-1 {{ $projectDetails->status === 'in_progress' ? 'disabled' : '' }}"><i class="fa-solid fa-clock"></i> Në progres</a>
             <a href="{{ route('update.project.status', ['id' => $projectDetails->id, 'status' => 'on_hold']) }}" class="btn btn-secondary btn-sm rounded-4 shadow-sm m-1 {{ $projectDetails->status === 'on_hold' ? 'disabled' : '' }}"><i class="fa-solid fa-times"></i> Në pritje</a>
             <a href="{{ route('update.project.status', ['id' => $projectDetails->id, 'status' => 'planning']) }}" class="btn btn-warning btn-sm rounded-4 shadow-sm m-1 {{ $projectDetails->status === 'planning' ? 'disabled' : '' }}"><i class="fa-solid fa-list-check"></i> Në planifikim</a>
+            @endif
         </div>
     </div>
 @endsection

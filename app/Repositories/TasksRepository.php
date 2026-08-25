@@ -19,7 +19,7 @@ class TasksRepository
         return (int) DB::table($this->table)->insertGetId($data);
     }
     //---------------
-    public function getTasks(int $limit, int $companyId, ?int $employeeId = null)
+    public function getTasks(int $limit, int $companyId, ?int $employeeId = null, ?int $managerId = null)
     {
         $query = DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
@@ -29,6 +29,10 @@ class TasksRepository
 
         if ($employeeId !== null) {
             $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
+
+        if ($managerId !== null) {
+            $query->where('p.project_manager', $managerId);
         }
 
         return $query
@@ -51,7 +55,7 @@ class TasksRepository
             ->withQueryString();
     }
     //---------------
-    public function getSearchedTasks(int $limit, int $companyId, string $search, ?int $employeeId = null)
+    public function getSearchedTasks(int $limit, int $companyId, string $search, ?int $employeeId = null, ?int $managerId = null)
     {
         $query = DB::table($this->table . ' as t')
             ->join('projects as p', 't.project_id', '=', 'p.id')
@@ -61,6 +65,10 @@ class TasksRepository
 
         if ($employeeId !== null) {
             $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
+
+        if ($managerId !== null) {
+            $query->where('p.project_manager', $managerId);
         }
 
         $query->where(function ($q) use ($search) {
@@ -248,12 +256,27 @@ class TasksRepository
             ->toArray();
     }
     //---------------
-    public function getAllProjects(int $companyId)
+    public function getAllProjects(int $companyId, ?int $managerId = null)
     {
-        return DB::table('projects')
-            ->where('company_id', $companyId)
+        $query = DB::table('projects')
+            ->where('company_id', $companyId);
+
+        if ($managerId !== null) {
+            $query->where('project_manager', $managerId);
+        }
+
+        return $query
             ->orderBy('project_name')
             ->get(['id', 'project_name']);
+    }
+    //---------------
+    public function isProjectManagedBy(int $projectId, int $companyId, int $managerId): bool
+    {
+        return DB::table('projects')
+            ->where('id', $projectId)
+            ->where('company_id', $companyId)
+            ->where('project_manager', $managerId)
+            ->exists();
     }
     //---------------
     public function getTaskDetails(int $id, int $companyId)
@@ -321,7 +344,7 @@ class TasksRepository
             ->delete() > 0;
     }
     //---------------
-    public function getTaskStatistics(int $companyId, string $search = '', ?int $employeeId = null): object
+    public function getTaskStatistics(int $companyId, string $search = '', ?int $employeeId = null, ?int $managerId = null): object
     {
         $query = DB::table($this->table . ' as t')
             ->leftJoin('projects as p', 't.project_id', '=', 'p.id')
@@ -331,6 +354,10 @@ class TasksRepository
 
         if ($employeeId !== null) {
             $query->whereRaw('FIND_IN_SET(?, t.assigned_to)', [$employeeId]);
+        }
+
+        if ($managerId !== null) {
+            $query->where('p.project_manager', $managerId);
         }
 
         if (!empty($search)) {

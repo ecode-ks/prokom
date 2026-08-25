@@ -5,6 +5,8 @@
 
 {{-- Page Content --}}
 @section('content')
+    @php $isManager = ($role ?? session('role')) === 'manager'; @endphp
+
     @if(isset($editProject))
         <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('projects') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu mbrapa</a></small>
         <h3 class="fw-semibold pt-2">Përditëso Projektin</h3>
@@ -126,6 +128,7 @@
         </div>
 
         {{-- Create Project --}}
+        @if(!$isManager)
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
                 <span><i class="fa-regular fa-bell txt-lightblue py-2"></i> Krijo Projekt</span>
@@ -192,6 +195,7 @@
                 </form>
             </div>
         </div>
+        @endif
 
         {{-- Project List --}}
         <div class="card">
@@ -250,8 +254,10 @@
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">
-                                            <a href="{{ route('edit.project', $project->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
-                                            <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $project->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            @if(!$isManager)
+                                                <a href="{{ route('edit.project', $project->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
+                                                <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $project->id }}"><i class="fa-solid fa-trash"></i></button>
+                                            @endif
                                             <a href="{{ route('project.details', $project->id) }}" class="btn btn-outline-dark btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-eye"></i></a>
                                         </td>
                                     </tr>
@@ -268,7 +274,7 @@
             </div>
         </div>
 
-        @if(count($projects) !== 0)
+        @if(!$isManager && count($projects) !== 0)
 
             <!-- Delete Modal -->
             @foreach ($projects as $project)

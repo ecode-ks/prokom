@@ -58,14 +58,20 @@ class ProjectsController extends Controller
     {
         $page = 'Projects';
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+        $scopedManagerId = $role === 'manager' ? (int) ($employeeId ?? 0) : null;
+
         $managers = $this->service->getAllManagers($companyId);
         $clients = $this->service->getAllClients($companyId);
 
-        if (count($managers) === 0) {
-            return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari menaxherët.');
-        }
-        if (count($clients) === 0) {
-            return redirect()->route('clients')->with('error', 'Ju lutemi regjistroni së pari klientët.');
+        if ($role !== 'manager') {
+            if (count($managers) === 0) {
+                return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari menaxherët.');
+            }
+            if (count($clients) === 0) {
+                return redirect()->route('clients')->with('error', 'Ju lutemi regjistroni së pari klientët.');
+            }
         }
 
         $statuses = array_values(array_filter((array) $request->query('statuses', [])));
@@ -83,8 +89,8 @@ class ProjectsController extends Controller
             'to_date' => $request->query('to_date', ''),
         ];
 
-        $projects = $this->service->getProjects(10, $filters, $companyId);
-        $projectStats = $this->service->getProjectStatistics($filters, $companyId);
+        $projects = $this->service->getProjects(10, $filters, $companyId, $scopedManagerId);
+        $projectStats = $this->service->getProjectStatistics($filters, $companyId, $scopedManagerId);
 
         return view('management.projects')
             ->with('page', $page)
@@ -92,7 +98,8 @@ class ProjectsController extends Controller
             ->with('clients', $clients)
             ->with('projects', $projects)
             ->with('projectStats', $projectStats)
-            ->with('filters', $filters);
+            ->with('filters', $filters)
+            ->with('role', $role);
     }
     //---------------
     public function edit(int $id)
@@ -125,14 +132,22 @@ class ProjectsController extends Controller
     {
         $page = 'Projects';
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+        }
+
+        if ($role === 'manager' && !$this->service->isManagedBy($id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
         }
 
         $projectDetails = $this->service->getProjectDetails($id, $companyId);
         return view('management.project-details')
             ->with('page', $page)
-            ->with('projectDetails', $projectDetails);
+            ->with('projectDetails', $projectDetails)
+            ->with('role', $role);
     }
     //---------------
     public function update(Request $request)
@@ -195,7 +210,14 @@ class ProjectsController extends Controller
     public function updateStatus(int $id, string $status)
     {
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+        }
+
+        if ($role === 'manager' && !$this->service->isManagedBy($id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
         }
 
@@ -218,7 +240,14 @@ class ProjectsController extends Controller
         }
 
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return back()->with('error', 'Projekti nuk u gjet.');
+        }
+
+        if ($role === 'manager' && !$this->service->isManagedBy($id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return back()->with('error', 'Projekti nuk u gjet.');
         }
 

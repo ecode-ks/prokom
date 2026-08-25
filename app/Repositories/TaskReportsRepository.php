@@ -157,6 +157,64 @@ class TaskReportsRepository
             ->delete() > 0;
     }
     //---------------
+    public function getImagePayloadsByCompany(int $companyId): array
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereNotNull('images')
+            ->where('images', '!=', '')
+            ->pluck('images')
+            ->all();
+    }
+    //---------------
+    public function getImagePayloadsByTask(int $taskId, int $companyId): array
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('task_id', $taskId)
+            ->whereNotNull('images')
+            ->where('images', '!=', '')
+            ->pluck('images')
+            ->all();
+    }
+    //---------------
+    public function getImagePayloadsByProject(int $projectId, int $companyId): array
+    {
+        return DB::table($this->table . ' as tr')
+            ->join('tasks as t', 'tr.task_id', '=', 't.id')
+            ->where('tr.company_id', $companyId)
+            ->where('t.project_id', $projectId)
+            ->whereNotNull('tr.images')
+            ->where('tr.images', '!=', '')
+            ->pluck('tr.images')
+            ->all();
+    }
+    //---------------
+    public function deleteByTask(int $taskId, int $companyId): int
+    {
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->where('task_id', $taskId)
+            ->delete();
+    }
+    //---------------
+    public function deleteByProject(int $projectId, int $companyId): int
+    {
+        $taskIds = DB::table('tasks')
+            ->where('company_id', $companyId)
+            ->where('project_id', $projectId)
+            ->pluck('id');
+
+        if ($taskIds->isEmpty()) {
+            return 0;
+        }
+
+        return DB::table($this->table)
+            ->where('company_id', $companyId)
+            ->whereIn('task_id', $taskIds)
+            ->delete();
+    }
+    //---------------
     public function getReportStatistics(int $companyId, ?int $managerId = null, ?int $employeeId = null): object
     {
         $query = DB::table($this->table . ' as tr')

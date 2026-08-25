@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'authorization' => \App\Http\Middleware\CheckAuthorization::class,
+            'payment.expired' => \App\Http\Middleware\CheckPaymentExpired::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

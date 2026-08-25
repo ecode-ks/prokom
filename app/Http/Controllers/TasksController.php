@@ -30,15 +30,24 @@ class TasksController extends Controller
             return redirect()->route('tasks')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
         }
 
+        $companyId = (int) session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+        $projectId = (int) $request->project_id;
+
+        if ($role === 'manager' && !$this->service->isProjectManagedBy($projectId, $companyId, (int) ($employeeId ?? 0))) {
+            return redirect()->route('tasks')->with('error', 'Mund të shtoni detyra vetëm për projektet tuaja.')->withInput();
+        }
+
         $data = [
             'assigned_to' => implode(',', array_map('intval', $request->assigned_to)),
-            'assigned_by' => session('employee_id') ? (int) session('employee_id') : null,
-            'project_id' => (int) $request->project_id,
+            'assigned_by' => $employeeId,
+            'project_id' => $projectId,
             'deadline' => $request->deadline,
             'title' => trim((string) $request->title),
             'task' => trim((string) $request->task),
             'status' => 'new',
-            'company_id' => session('company_id'),
+            'company_id' => $companyId,
         ];
 
         try {
@@ -57,6 +66,7 @@ class TasksController extends Controller
         $role = session('role');
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
         $scopedEmployeeId = $role === 'employee' ? (int) ($employeeId ?? 0) : null;
+        $scopedManagerId = $role === 'manager' ? (int) ($employeeId ?? 0) : null;
 
         if ($role === 'employee') {
             $tasks = $this->service->getTasks(10, $search, $companyId, $scopedEmployeeId);
@@ -72,17 +82,17 @@ class TasksController extends Controller
         }
 
         $employees = $this->service->getAllEmployees($companyId);
-        $projects = $this->service->getAllProjects($companyId);
+        $projects = $this->service->getAllProjects($companyId, $scopedManagerId);
 
-        if (count($employees) === 0) {
+        if ($role !== 'manager' && count($employees) === 0) {
             return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari punonjësit.');
         }
         if (count($projects) === 0) {
             return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
         }
 
-        $tasks = $this->service->getTasks(10, $search, $companyId);
-        $taskStats = $this->service->getTaskStatistics($search, (int) $companyId);
+        $tasks = $this->service->getTasks(10, $search, $companyId, null, $scopedManagerId);
+        $taskStats = $this->service->getTaskStatistics($search, (int) $companyId, null, $scopedManagerId);
 
         return view('management.tasks')
             ->with('page', $page)
@@ -97,21 +107,28 @@ class TasksController extends Controller
     {
         $page = 'Tasks';
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+        $scopedManagerId = $role === 'manager' ? (int) ($employeeId ?? 0) : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
             return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
         }
 
-        $employees = $this->service->getAllEmployees($companyId);
-        $projects = $this->service->getAllProjects($companyId);
         $editTask = $this->service->getTaskById($id, $companyId);
+        if ($role === 'manager' && !$this->service->isProjectManagedBy((int) $editTask->project_id, (int) $companyId, (int) ($employeeId ?? 0))) {
+            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+        }
+
+        $employees = $this->service->getAllEmployees($companyId);
+        $projects = $this->service->getAllProjects($companyId, $scopedManagerId);
 
         return view('management.tasks')
             ->with('page', $page)
             ->with('employees', $employees)
             ->with('projects', $projects)
             ->with('editTask', $editTask)
-            ->with('role', session('role'));
+            ->with('role', $role);
     }
     //---------------
     public function taskDetails(int $id)
@@ -130,6 +147,9 @@ class TasksController extends Controller
         }
 
         $taskDetails = $this->service->getTaskDetails($id, $companyId);
+        if ($role === 'manager' && !$this->service->isProjectManagedBy((int) $taskDetails->project_id, (int) $companyId, (int) ($employeeId ?? 0))) {
+            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+        }
         $taskStatuses = $this->service->getTaskStatuses();
 
         return view('management.task-details')
@@ -157,9 +177,17 @@ class TasksController extends Controller
 
         $id = (int) $request->id;
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+        $projectId = (int) $request->project_id;
+
+        if ($role === 'manager' && !$this->service->isProjectManagedBy($projectId, (int) $companyId, (int) ($employeeId ?? 0))) {
+            return back()->with('error', 'Mund të përditësoni detyra vetëm për projektet tuaja.')->withInput();
+        }
+
         $data = [
             'assigned_to' => implode(',', array_map('intval', $request->assigned_to)),
-            'project_id' => (int) $request->project_id,
+            'project_id' => $projectId,
             'deadline' => $request->deadline,
             'title' => trim((string) $request->title),
             'task' => trim((string) $request->task),
@@ -179,8 +207,15 @@ class TasksController extends Controller
     public function delete(int $id)
     {
         $companyId = session('company_id');
+        $role = session('role');
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
+            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+        }
+
+        $task = $this->service->getTaskById($id, $companyId);
+        if ($role === 'manager' && !$this->service->isProjectManagedBy((int) $task->project_id, (int) $companyId, (int) ($employeeId ?? 0))) {
             return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
         }
 

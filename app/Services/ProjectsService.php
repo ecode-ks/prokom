@@ -2,17 +2,28 @@
 
 namespace App\Services;
 
+use App\Repositories\ProjectReportsRepository;
 use App\Repositories\ProjectsRepository;
+use App\Repositories\TaskReportsRepository;
+use App\Support\StoredFiles;
 
 class ProjectsService
 {
     protected ProjectsRepository $repository;
     protected ClientsService $clients;
+    protected ProjectReportsRepository $projectReports;
+    protected TaskReportsRepository $taskReports;
 
-    public function __construct(ProjectsRepository $repository, ClientsService $clients)
-    {
+    public function __construct(
+        ProjectsRepository $repository,
+        ClientsService $clients,
+        ProjectReportsRepository $projectReports,
+        TaskReportsRepository $taskReports
+    ) {
         $this->repository = $repository;
         $this->clients = $clients;
+        $this->projectReports = $projectReports;
+        $this->taskReports = $taskReports;
     }
     //---------------
     public function createProject(array $data): bool
@@ -20,19 +31,27 @@ class ProjectsService
         return $this->repository->create($data);
     }
     //---------------
-    public function getProjects(int $limit, array $filters, int $companyId)
+    public function getProjects(int $limit, array $filters, int $companyId, ?int $managerId = null)
     {
         $limit = $limit ?: 10;
+
+        if ($managerId !== null) {
+            $filters['project_manager'] = $managerId;
+        }
 
         if ($this->hasActiveFilters($filters)) {
             return $this->repository->getSearchedProjects($limit, $companyId, $filters);
         }
 
-        return $this->repository->getProjects($limit, $companyId);
+        return $this->repository->getProjects($limit, $companyId, $managerId);
     }
     //---------------
-    public function getProjectStatistics(array $filters, int $companyId): object
+    public function getProjectStatistics(array $filters, int $companyId, ?int $managerId = null): object
     {
+        if ($managerId !== null) {
+            $filters['project_manager'] = $managerId;
+        }
+
         return $this->repository->getProjectStatistics($companyId, $filters);
     }
     //---------------
@@ -51,9 +70,14 @@ class ProjectsService
         return $this->repository->getAllManagers($companyId);
     }
     //---------------
-    public function getAllProjects(int $companyId)
+    public function getAllProjects(int $companyId, ?int $managerId = null)
     {
-        return $this->repository->getAllProjects($companyId);
+        return $this->repository->getAllProjects($companyId, $managerId);
+    }
+    //---------------
+    public function isManagedBy(int $projectId, int $companyId, int $managerId): bool
+    {
+        return $this->repository->isManagedBy($projectId, $companyId, $managerId);
     }
     //---------------
     public function getAllClients(int $companyId)
@@ -92,6 +116,11 @@ class ProjectsService
         if (!$project) {
             return false;
         }
+
+        // Cascade DB deletes leave orphan files — clean storage first.
+        StoredFiles::deleteMany($this->projectReports->getImagePayloadsByProject($id, $companyId));
+        StoredFiles::deleteMany($this->taskReports->getImagePayloadsByProject($id, $companyId));
+        $this->taskReports->deleteByProject($id, $companyId);
 
         return $this->repository->delete($id, $companyId);
     }

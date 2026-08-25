@@ -54,9 +54,9 @@
                                     <td class="text-nowrap">{{ $checkIn->check_out_time ? \Carbon\Carbon::parse($checkIn->check_out_time)->format('d/m/Y H:i') : '-' }}</td>
                                     <td class="text-nowrap">
                                         @if($isAccepted)
-                                            <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ $checkIn->status }}</span>
+                                            <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Pranuar</span>
                                         @else
-                                            <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ $checkIn->status ?: 'Under Review' }}</span>
+                                            <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
                                         @endif
                                     </td>
                                     <td class="text-nowrap text-end">

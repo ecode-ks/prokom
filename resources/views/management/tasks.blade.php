@@ -149,7 +149,7 @@
         </div>
 
         {{-- Create Task --}}
-        @if(session('role') === 'company')
+        @if(session('role') === 'company' || session('role') === 'manager')
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
                 <span><i class="fa-solid fa-chart-gantt txt-lightblue py-2"></i> Krijo Detyrë të Re</span>

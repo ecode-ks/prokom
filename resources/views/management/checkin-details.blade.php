@@ -25,9 +25,9 @@
             @endif
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Statusi : </span>
                 @if(strtolower((string) $checkinDetails->status) === 'accepted')
-                    <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ $checkinDetails->status }}</span>
+                    <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Pranuar</span>
                 @else
-                    <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ $checkinDetails->status ?: 'Under Review' }}</span>
+                    <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
                 @endif
             </span>
 

@@ -20,12 +20,18 @@ class ProjectsRepository
             ->insert($data);
     }
     //---------------
-    public function getProjects(int $limit, int $companyId)
+    public function getProjects(int $limit, int $companyId, ?int $managerId = null)
     {
-        return DB::table($this->table . ' as p')
+        $query = DB::table($this->table . ' as p')
             ->join('employees as e', 'p.project_manager', '=', 'e.id')
             ->join('clients as c', 'p.client_id', '=', 'c.id')
-            ->where('p.company_id', $companyId)
+            ->where('p.company_id', $companyId);
+
+        if ($managerId !== null) {
+            $query->where('p.project_manager', $managerId);
+        }
+
+        return $query
             ->select(
                 'p.id',
                 'p.project_name',
@@ -42,7 +48,8 @@ class ProjectsRepository
                 'c.client as client_name'
             )
             ->orderByDesc('p.id')
-            ->cursorPaginate($limit);
+            ->cursorPaginate($limit)
+            ->withQueryString();
     }
     //---------------
     public function getSearchedProjects(int $limit, int $companyId, array $filters = [])
@@ -144,12 +151,27 @@ class ProjectsRepository
             ->get(['id', 'employee']);
     }
     //---------------
-    public function getAllProjects(int $companyId)
+    public function getAllProjects(int $companyId, ?int $managerId = null)
     {
-        return DB::table($this->table)
-            ->where('company_id', $companyId)
+        $query = DB::table($this->table)
+            ->where('company_id', $companyId);
+
+        if ($managerId !== null) {
+            $query->where('project_manager', $managerId);
+        }
+
+        return $query
             ->orderBy('project_name')
             ->get(['id', 'project_name']);
+    }
+    //---------------
+    public function isManagedBy(int $projectId, int $companyId, int $managerId): bool
+    {
+        return DB::table($this->table)
+            ->where('id', $projectId)
+            ->where('company_id', $companyId)
+            ->where('project_manager', $managerId)
+            ->exists();
     }
     //---------------
     public function getProjectDetails(int $id, int $companyId)

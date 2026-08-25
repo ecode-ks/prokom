@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ContractsRepository;
-use Illuminate\Support\Facades\Storage;
+use App\Support\StoredFiles;
 
 class ContractsService
 {
@@ -86,14 +86,7 @@ class ContractsService
         }
 
         if (!empty($data['docs'])) {
-            if (!empty($contract->docs)) {
-                $oldFiles = json_decode($contract->docs, true);
-
-                if (is_array($oldFiles)) {
-                    Storage::disk('public')->delete($oldFiles);
-                }
-            }
-
+            StoredFiles::delete($contract->docs ?? null);
             $data['docs'] = $this->storeDocs($data['docs']);
         } else {
             unset($data['docs']);
@@ -111,15 +104,14 @@ class ContractsService
             return false;
         }
 
-        if (!empty($contract->docs)) {
-            $files = json_decode($contract->docs, true);
-
-            if (is_array($files)) {
-                Storage::disk('public')->delete($files);
-            }
-        }
+        StoredFiles::delete($contract->docs ?? null);
 
         return $this->repository->delete($id, $companyId);
+    }
+    //---------------
+    public function deleteStoredFilesForCompany(int $companyId): void
+    {
+        StoredFiles::deleteMany($this->repository->getDocPayloadsByCompany($companyId));
     }
     //---------------
     private function storeDocs(array $docs): string

@@ -80,6 +80,7 @@ class PackagesService
 
         session()->put('package', $package->title);
         session()->put('expire_date', $paymentExpire);
+        session()->put('payment_expired', false);
 
         $changed = $this->repository->change($username, $company_id, (string) $package->title, $paymentExpire);
         if (!$changed) {

@@ -40,11 +40,13 @@ class ReportsController extends Controller
     {
         $page = 'Employee Report';
         $role = session('role');
+        $canSelectEmployee = $this->canSelectAnyEmployee($role);
         $employees = $this->employeesForReport($role);
 
         return view('management.employee-report')
             ->with('page', $page)
             ->with('employees', $employees)
+            ->with('canSelectEmployee', $canSelectEmployee)
             ->with('role', $role);
     }
     //---------------
@@ -52,6 +54,7 @@ class ReportsController extends Controller
     {
         $role = session('role');
         $sessionEmployeeId = session('employee_id') ? (int) session('employee_id') : 0;
+        $canSelectEmployee = $this->canSelectAnyEmployee($role);
 
         $validator = Validator::make($request->all(), [
             'from_date' => 'required|date',
@@ -66,7 +69,7 @@ class ReportsController extends Controller
         $toDate = $request->input('to_date');
         $employeeId = (int) $request->input('employee_id');
 
-        if ($role === 'employee') {
+        if (!$canSelectEmployee) {
             if ($sessionEmployeeId <= 0 || $employeeId !== $sessionEmployeeId) {
                 return redirect()->route('employee.report')->with('error', 'Nuk keni të drejtë të shikoni raportin e një punonjësi tjetër.');
             }
@@ -110,6 +113,7 @@ class ReportsController extends Controller
                 ->with('page', 'Employee Report')
                 ->with('reportData', $reportData)
                 ->with('employees', $this->employeesForReport($role))
+                ->with('canSelectEmployee', $canSelectEmployee)
                 ->with('fromDate', $fromDate)
                 ->with('toDate', $toDate)
                 ->with('employeeId', $employeeId)
@@ -119,19 +123,24 @@ class ReportsController extends Controller
         }
     }
     //---------------
+    private function canSelectAnyEmployee(?string $role): bool
+    {
+        return in_array($role, ['company', 'hr'], true);
+    }
+    //---------------
     private function employeesForReport(?string $role)
     {
-        if ($role === 'employee') {
-            $employeeId = session('employee_id') ? (int) session('employee_id') : 0;
-            if ($employeeId <= 0) {
-                return collect();
-            }
-
-            $self = $this->employeeService->getEmployeeById($employeeId);
-
-            return $self ? collect([$self]) : collect();
+        if ($this->canSelectAnyEmployee($role)) {
+            return $this->employeeService->getAllEmployees();
         }
 
-        return $this->employeeService->getAllEmployees();
+        $employeeId = session('employee_id') ? (int) session('employee_id') : 0;
+        if ($employeeId <= 0) {
+            return collect();
+        }
+
+        $self = $this->employeeService->getEmployeeById($employeeId);
+
+        return $self ? collect([$self]) : collect();
     }
 }

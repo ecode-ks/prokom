@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\ProjectReportsRepository;
-use Illuminate\Support\Facades\Storage;
+use App\Support\StoredFiles;
 
 class ProjectReportsService
 {
@@ -79,9 +79,19 @@ class ProjectReportsService
         return $this->repository->getReports($limit, $companyId, $search);
     }
     //---------------
-    public function getAllProjects(int $companyId)
+    public function getAllProjects(int $companyId, ?int $managerId = null)
     {
-        return $this->projects->getAllProjects($companyId);
+        return $this->projects->getAllProjects($companyId, $managerId);
+    }
+    //---------------
+    public function managerOwnsReport(int $reportId, int $companyId, int $managerId): bool
+    {
+        $report = $this->repository->findReport($reportId, $companyId);
+        if (!$report) {
+            return false;
+        }
+
+        return $this->projects->isManagedBy((int) $report->project_id, $companyId, $managerId);
     }
     //---------------
     public function findOrFail(int $id, int $companyId): bool
@@ -112,14 +122,7 @@ class ProjectReportsService
         }
 
         if (!empty($data['images'])) {
-            if (!empty($report->images)) {
-                $oldFiles = json_decode($report->images, true);
-
-                if (is_array($oldFiles)) {
-                    Storage::disk('public')->delete($oldFiles);
-                }
-            }
-
+            StoredFiles::delete($report->images ?? null);
             $data['images'] = $this->storeImages($data['images']);
         } else {
             unset($data['images']);
@@ -135,15 +138,19 @@ class ProjectReportsService
             return false;
         }
 
-        if (!empty($report->images)) {
-            $files = json_decode($report->images, true);
-
-            if (is_array($files)) {
-                Storage::disk('public')->delete($files);
-            }
-        }
+        StoredFiles::delete($report->images ?? null);
 
         return $this->repository->delete($id, $companyId);
+    }
+    //---------------
+    public function deleteStoredFilesForCompany(int $companyId): void
+    {
+        StoredFiles::deleteMany($this->repository->getImagePayloadsByCompany($companyId));
+    }
+    //---------------
+    public function deleteStoredFilesForProject(int $projectId, int $companyId): void
+    {
+        StoredFiles::deleteMany($this->repository->getImagePayloadsByProject($projectId, $companyId));
     }
     //---------------
     public function updateReportStatus(int $id, string $status, int $companyId): bool

@@ -66,6 +66,9 @@ class ExtraHoursController extends Controller
         $employees = $this->employeeService->getAllEmployees();
 
         if ($employees->isEmpty()) {
+            if (session('role') === 'manager') {
+                return redirect()->route('dashboard')->with('error', 'Nuk ka punonjës të regjistruar.');
+            }
             return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni orë shtesë.');
         }
 
@@ -87,6 +90,9 @@ class ExtraHoursController extends Controller
             $employees = $this->employeeService->getAllEmployees();
 
             if ($employees->isEmpty()) {
+                if (session('role') === 'manager') {
+                    return redirect()->route('dashboard')->with('error', 'Nuk ka punonjës të regjistruar.');
+                }
                 return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni orë shtesë.');
             }
 
@@ -94,7 +100,8 @@ class ExtraHoursController extends Controller
                 ->with('page', $page)
                 ->with('editExtraHour', $editExtraHour)
                 ->with('employees', $employees)
-                ->with('types', self::TYPES);
+                ->with('types', self::TYPES)
+                ->with('role', session('role'));
         }
     }
     //---------------

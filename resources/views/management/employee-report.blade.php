@@ -37,8 +37,8 @@
     @endphp
 
     <small class="d-block txt-lightblue fw-semibold text-uppercase">Punëtorët</small>
-    <h3 class="fw-semibold pt-2">Raporti i Punëtorëve</h3>
-    <p class="text-muted">Filtro periudhën dhe shiko përmbledhjen e punëtorëve.</p>
+    <h3 class="fw-semibold pt-2">{{ ($canSelectEmployee ?? false) ? 'Raporti i Punëtorëve' : 'Raporti Im' }}</h3>
+    <p class="text-muted">{{ ($canSelectEmployee ?? false) ? 'Filtro periudhën dhe shiko përmbledhjen e punëtorëve.' : 'Filtro periudhën dhe shiko përmbledhjen e të dhënave tua.' }}</p>
     <hr class="mb-4">
 
     <div class="card mb-4">
@@ -50,11 +50,7 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-4 col-lg-4">
                         <label for="employee_id" class="form-label">Punëtori</label>
-                        @if(($role ?? session('role')) === 'employee')
-                            @php $selfEmployee = collect($employees ?? [])->first(); @endphp
-                            <input type="hidden" name="employee_id" value="{{ $selfEmployee->id ?? session('employee_id') }}">
-                            <input type="text" class="form-control shadow-sm rounded-3" value="{{ $selfEmployee->employee ?? '' }}" readonly>
-                        @else
+                        @if($canSelectEmployee ?? false)
                             <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
                                 <option value="">-- Zgjidh Punëtorin --</option>
                                 @foreach($employees as $employee)
@@ -63,6 +59,10 @@
                                     </option>
                                 @endforeach
                             </select>
+                        @else
+                            @php $selfEmployee = collect($employees ?? [])->first(); @endphp
+                            <input type="hidden" name="employee_id" value="{{ $selfEmployee->id ?? session('employee_id') }}">
+                            <input type="text" class="form-control shadow-sm rounded-3" value="{{ $selfEmployee->employee ?? '' }}" readonly>
                         @endif
                     </div>
 

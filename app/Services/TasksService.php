@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Repositories\TasksRepository;
+use App\Repositories\TaskReportsRepository;
 use App\Repositories\VacationsRepository;
+use App\Support\StoredFiles;
 use Carbon\Carbon;
 
 class TasksService
@@ -11,15 +13,18 @@ class TasksService
     protected TasksRepository $repository;
     protected VacationsRepository $vacations;
     protected NotificationsService $notifications;
+    protected TaskReportsRepository $taskReports;
 
     public function __construct(
         TasksRepository $repository,
         VacationsRepository $vacations,
-        NotificationsService $notifications
+        NotificationsService $notifications,
+        TaskReportsRepository $taskReports
     ) {
         $this->repository = $repository;
         $this->vacations = $vacations;
         $this->notifications = $notifications;
+        $this->taskReports = $taskReports;
     }
     //---------------
     public function createTask(array $data): bool
@@ -48,13 +53,13 @@ class TasksService
         return true;
     }
     //---------------
-    public function getTasks(int $limit, string $search, int $companyId, ?int $employeeId = null)
+    public function getTasks(int $limit, string $search, int $companyId, ?int $employeeId = null, ?int $managerId = null)
     {
         $limit = $limit ?: 10;
 
         $tasks = !empty($search)
-            ? $this->repository->getSearchedTasks($limit, $companyId, $search, $employeeId)
-            : $this->repository->getTasks($limit, $companyId, $employeeId);
+            ? $this->repository->getSearchedTasks($limit, $companyId, $search, $employeeId, $managerId)
+            : $this->repository->getTasks($limit, $companyId, $employeeId, $managerId);
 
         return $tasks->through(function ($task) {
             $task->assigned_to_names = $this->formatAssignedEmployees($task->assigned_to ?? '');
@@ -91,9 +96,14 @@ class TasksService
         return $employees;
     }
     //---------------
-    public function getAllProjects(int $companyId)
+    public function getAllProjects(int $companyId, ?int $managerId = null)
     {
-        return $this->repository->getAllProjects($companyId);
+        return $this->repository->getAllProjects($companyId, $managerId);
+    }
+    //---------------
+    public function isProjectManagedBy(int $projectId, int $companyId, int $managerId): bool
+    {
+        return $this->repository->isProjectManagedBy($projectId, $companyId, $managerId);
     }
     //---------------
     public function findOrFail(int $id, int $companyId): bool
@@ -154,6 +164,9 @@ class TasksService
             return false;
         }
 
+        StoredFiles::deleteMany($this->taskReports->getImagePayloadsByTask($id, $companyId));
+        $this->taskReports->deleteByTask($id, $companyId);
+
         return $this->repository->delete($id, $companyId);
     }
     //---------------
@@ -194,9 +207,9 @@ class TasksService
         return count($orderedNames) > 0 ? implode(', ', $orderedNames) : '-';
     }
     //---------------
-    public function getTaskStatistics(string $search, int $companyId, ?int $employeeId = null): object
+    public function getTaskStatistics(string $search, int $companyId, ?int $employeeId = null, ?int $managerId = null): object
     {
-        return $this->repository->getTaskStatistics($companyId, $search, $employeeId);
+        return $this->repository->getTaskStatistics($companyId, $search, $employeeId, $managerId);
     }
     //---------------
     public function employeeIsAssigned(int $taskId, int $companyId, int $employeeId): bool
