@@ -57,7 +57,7 @@ Route::controller(DashboardController::class)->group(function () {
 });
 
 // Check In
-Route::middleware('authorization:company,manager,hr')->controller(CheckInController::class)->group(function () {
+Route::middleware('authorization:company,manager,hr,employee')->controller(CheckInController::class)->group(function () {
     Route::get('/checkins', 'read')->name('checkins');
     Route::get('/checkins-map', 'map')->name('checkins.map');
     Route::get('/checkin-details/{id}', 'details')->name('checkin.details');
