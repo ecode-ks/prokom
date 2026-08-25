@@ -125,7 +125,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-sparkles text-info"></i> Të reja</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-bolt text-info"></i> Të reja</small>
                         <h4 class="fw-semibold mb-0">{{ $taskStats->new_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -254,8 +254,6 @@
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
                                 <th scope="col" class="text-nowrap">Data</th>
-                                <th scope="col" class="text-nowrap">Punonjësit</th>
-                                <th scope="col" class="text-nowrap">Caktuar Nga</th>
                                 <th scope="col" class="text-nowrap">Titulli</th>
                                 <th scope="col" class="text-nowrap">Projekti</th>
                                 <th scope="col" class="text-nowrap">Afati</th>
@@ -266,7 +264,7 @@
                         <tbody>
                             @if(count($tasks) === 0)
                                 <tr>
-                                    <td colspan="9" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($tasks as $task)
@@ -276,8 +274,6 @@
                                     <tr>
                                         <th scope="row" class="text-nowrap">{{ $task->id }}</th>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($task->date)->format('d/m/Y') }}</td>
-                                        <td class="text-nowrap">{{ $task->assigned_to_names ?? '-' }}</td>
-                                        <td class="text-nowrap">{{ $task->assigned_by_name ?? '-' }}</td>
                                         <td class="text-nowrap">{{ $task->title }}</td>
                                         <td class="text-nowrap">{{ $task->project_name }}</td>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($task->deadline)->format('d/m/Y') }}</td>

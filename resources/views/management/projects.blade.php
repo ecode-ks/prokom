@@ -211,13 +211,9 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Emri i Projektit</th>
+                                <th scope="col" class="text-nowrap">Projekti</th>
                                 <th scope="col" class="text-nowrap">Menaxheri</th>
                                 <th scope="col" class="text-nowrap">Klienti</th>
-                                <th scope="col" class="text-nowrap">Lokacioni</th>
-                                <th scope="col" class="text-nowrap">Data e Fillimit</th>
-                                <th scope="col" class="text-nowrap">Përfundimi i Pritur</th>
-                                <th scope="col" class="text-nowrap">Buxheti</th>
                                 <th scope="col" class="text-nowrap">Statusi</th>
                                 <th scope="col" class="text-nowrap text-end">Veprimet</th>
                             </tr>
@@ -225,7 +221,7 @@
                         <tbody>
                             @if(count($projects) === 0)
                                 <tr>
-                                    <td colspan="10" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
                                 </tr>
                             @else
                                 @foreach ($projects as $project)
@@ -234,10 +230,6 @@
                                         <td class="text-nowrap">{{ $project->project_name }}</td>
                                         <td class="text-nowrap">{{ $project->manager_name }}</td>
                                         <td class="text-nowrap">{{ $project->client_name }}</td>
-                                        <td class="text-nowrap">{{ $project->location }}</td>
-                                        <td class="text-nowrap">{{ $project->start_date ? \Carbon\Carbon::parse($project->start_date)->format('d/m/Y') : '-' }}</td>
-                                        <td class="text-nowrap">{{ $project->expected_end_date ? \Carbon\Carbon::parse($project->expected_end_date)->format('d/m/Y') : '-' }}</td>
-                                        <td class="text-nowrap">{{ number_format((float) $project->budget, 2) }}€</td>
                                         <td class="text-nowrap">
                                             @if($project->status === 'planning')
                                                 <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në planifikim</span>

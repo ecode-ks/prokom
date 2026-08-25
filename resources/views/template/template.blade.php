@@ -374,11 +374,6 @@
                                             @endif
                                         </ul>
                                     </div>
-
-                                    {{-- Current Package --}}
-                                    <a href="{{ route('profile') }}" class="btn bg-custom rounded-3 border text-truncate d-none d-lg-inline" style="max-width: 250px;">
-                                        <i class="fa-brands fa-trello text-primary"></i> BizHub</span>
-                                    </a>
                                 </div>
                             </div>
                             <div class="d-none d-md-inline col-md-4 d-lg-none text-center fw-semibold" style="letter-spacing: 0.5px;">WORKOM</div>

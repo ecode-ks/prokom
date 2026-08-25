@@ -54,7 +54,7 @@
                                 <tr class="{{ !(int) $notification->is_read ? 'table-light' : '' }}">
                                     <th scope="row" class="text-nowrap">{{ $notification->id }}</th>
                                     <td class="text-nowrap fw-semibold">{{ $notification->title }}</td>
-                                    <td>{{ $notification->message }}</td>
+                                    <td class="text-nowrap">{{ $notification->message }}</td>
                                     <td class="text-nowrap">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->format('d/m/Y H:i') : '-' }}</td>
                                     <td class="text-nowrap">
                                         @if(!(int) $notification->is_read)
