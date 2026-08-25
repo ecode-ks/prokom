@@ -257,7 +257,19 @@
                                 <div class="row align-items-center">
                                     <div class="col-9">
                                         <small class="d-block col-12 text-truncate" title="{{ $profileName }}">{{ $profileName }}</small>
-                                        <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ session('role') }}">{{ session('role') }}</small>
+                                        @if(session('role') == 'admin')
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Administrator">Administrator</small>
+                                        @elseif(session('role') == 'company')
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="CEO">CEO</small>
+                                        @elseif(session('role') == 'manager')
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Menagjer">Menagjer</small>
+                                        @elseif(session('role') == 'employee')
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Punëtor">Punëtor</small>
+                                        @elseif(session('role') == 'finance')
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Financa">Financa</small>
+                                        @elseif(session('role') == 'hr')
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="HR">HR</small>
+                                        @endif
                                     </div>
                                     <div class="col-3">
                                         <a href="{{ route('logout') }}" class="btn btn-darkblue rounded-3 btn-sm"><i class="fa-solid fa-right-from-bracket text-danger"></i></a>
@@ -393,7 +405,21 @@
                                     </button>
                                     <ul class="dropdown-menu rounded-3 shadow-sm p-2">
                                         <span class="d-block px-3 fw-semibold">{{ $profileName }}</span>
-                                        <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize">{{ session('role') }}</small>
+                                        <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize">
+                                            @if(session('role') == 'admin')
+                                                Administrator
+                                            @elseif(session('role') == 'company')
+                                                CEO
+                                            @elseif(session('role') == 'manager')
+                                                Menagjer
+                                            @elseif(session('role') == 'employee')
+                                                Punëtor
+                                            @elseif(session('role') == 'finance')
+                                                Financa
+                                            @elseif(session('role') == 'hr')
+                                                HR
+                                            @endif
+                                        </small>
                                         <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href="{{ route('profile') }}"><i class="fa-regular fa-circle-user"></i> Profili im</a></li>
                                         <li><a class="dropdown-item rounded-3 text-danger" href="{{ route('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Shkyçu</a></li>
                                     </ul>

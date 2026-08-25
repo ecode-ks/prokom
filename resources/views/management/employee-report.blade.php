@@ -92,7 +92,21 @@
                         <p class="text-muted mb-0">Periudha {{ $fromLabel }} - {{ $toLabel }}</p>
                     </div>
                     <div class="text-end">
-                        <span class="badge rounded-pill text-bg-dark px-3 py-2 mb-2 text-capitalize">{{ $selectedEmployee->role ?? 'Employee' }}</span>
+                        <span class="badge rounded-pill text-bg-dark px-3 py-2 mb-2 text-capitalize">
+                            @if($selectedEmployee->role == 'admin')
+                                Administrator
+                            @elseif($selectedEmployee->role == 'company')
+                                CEO
+                            @elseif($selectedEmployee->role == 'manager')
+                                Menagjer
+                            @elseif($selectedEmployee->role == 'employee')
+                                Punëtor
+                            @elseif($selectedEmployee->role == 'finance')
+                                Financa
+                            @elseif($selectedEmployee->role == 'hr')
+                                HR
+                            @endif
+                        </span>
                         <div class="small text-muted">Panel statistikor profesional</div>
                     </div>
                 </div>
