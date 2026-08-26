@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>WORKOM | Porta</title>
+        <title>WorkOM | Hyrje</title>
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -21,9 +21,12 @@
                             <i class="fa-solid fa-city"></i>
                         </div>
                         <div>
-                            <span class="d-block fw-semibold">WORKOM</span>
-                            <small class="d-block opacity-50">Paneli Menaxhimit</small>
+                            <span class="d-block fw-semibold">WorkOM</span>
+                            <small class="d-block opacity-50">Operations Management</small>
                         </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{{ route('home') }}" class="text-decoration-none text-light opacity-75"><i class="fa-solid fa-arrow-left me-1"></i> Faqja kryesore</a>
                     </div>
                     <div class="mt-4">
                         <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-light px-3 py-2 fw-semibold">

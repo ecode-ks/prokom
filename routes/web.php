@@ -25,10 +25,21 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\SalariesController;
 use App\Http\Controllers\ExtraHoursController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\MarketingController;
 
-// Users
+// Marketing (public)
+Route::middleware(\App\Http\Middleware\SetMarketingLocale::class)->group(function () {
+    Route::get('/', [MarketingController::class, 'home'])->name('home');
+    Route::get('/produkti', [MarketingController::class, 'product'])->name('marketing.product');
+    Route::get('/faq', [MarketingController::class, 'faq'])->name('marketing.faq');
+    Route::get('/kontakt', [MarketingController::class, 'contact'])->name('marketing.contact');
+    Route::get('/locale/{locale}', [MarketingController::class, 'setLocale'])->name('marketing.locale');
+    Route::post('/kontakt', [MarketingController::class, 'submitContact'])->name('marketing.contact.submit');
+});
+
+// Users / auth
 Route::controller(UsersController::class)->group(function () {
-    Route::get('/', 'login')->name('login');
+    Route::get('/login', 'login')->name('login');
     Route::post('/check-login', 'checkLogin')->name('check.login');
     Route::post('/register-admin', 'registerAdmin')->name('register.admin');
     Route::get('/logout', 'logout')->name('logout');
