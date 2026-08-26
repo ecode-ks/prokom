@@ -13,6 +13,14 @@
         $checkInStatus = empty($checkIn)
             ? 'Jo aktiv'
             : (empty($isActive) ? 'Përfunduar' : ($onPause ? 'Në pauzë' : 'Në punë'));
+
+        $subscriptionExpireDate = session('expire_date')
+            ? \Carbon\Carbon::parse(session('expire_date'))->startOfDay()
+            : null;
+        $showSubscriptionExpiryAlert = !empty($isCompany)
+            && $subscriptionExpireDate
+            && $subscriptionExpireDate->gte(now()->startOfDay())
+            && $subscriptionExpireDate->lte(now()->addDays(30)->startOfDay());
     @endphp
 
     {{-- Hero --}}
@@ -25,9 +33,15 @@
     </div>
 
     {{-- Package Alerts --}}
-    @if($isCompany)
-        <div class="alert alert-primary shadow-sm rounded-4 mb-4" role="alert">
-            <span>Pakoja juaj e abonimit skadon me datën <strong>{{ session('expire_date') ? \Carbon\Carbon::parse(session('expire_date'))->format('d/m/Y') : '--/--/----' }}.</strong> Mund të riabonoheni <a href="{{ route('profile') }}" class="text-decoration-none txt-darkblue fw-bold">këtu</a>.</span>
+    @if($showSubscriptionExpiryAlert)
+        <div
+            id="subscriptionExpiryAlert"
+            class="alert alert-primary alert-dismissible shadow-sm rounded-4 mb-4"
+            role="alert"
+            data-dismiss-key="prokom-sub-expiry-{{ session('company_id') }}-{{ $subscriptionExpireDate->format('Y-m-d') }}"
+        >
+            <span>Pakoja juaj e abonimit skadon me datën <strong>{{ $subscriptionExpireDate->format('d/m/Y') }}.</strong> Mund të riabonoheni <a href="{{ route('profile') }}" class="text-decoration-none txt-darkblue fw-bold">këtu</a>.</span>
+            <button type="button" class="btn-close" id="subscriptionExpiryDismiss" aria-label="Mbyll"></button>
         </div>
     @endif
 
@@ -236,6 +250,37 @@
         </div>
     @endif
 @endsection
+
+@if(!empty($showSubscriptionExpiryAlert))
+    @push('scripts')
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var alertEl = document.getElementById('subscriptionExpiryAlert');
+        if (!alertEl) return;
+
+        var key = alertEl.getAttribute('data-dismiss-key');
+        if (key) {
+            try {
+                if (localStorage.getItem(key) === '1') {
+                    alertEl.remove();
+                    return;
+                }
+            } catch (e) {}
+        }
+
+        var dismissBtn = document.getElementById('subscriptionExpiryDismiss');
+        if (!dismissBtn) return;
+
+        dismissBtn.addEventListener('click', function () {
+            if (key) {
+                try { localStorage.setItem(key, '1'); } catch (e) {}
+            }
+            alertEl.remove();
+        });
+    });
+    </script>
+    @endpush
+@endif
 
 @if(!empty($showCheckIn) && !empty($canCheckIn))
     @push('scripts')
