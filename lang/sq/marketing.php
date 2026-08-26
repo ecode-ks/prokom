@@ -166,9 +166,14 @@ return [
     'whatsapp_cta' => 'Shkruani në WhatsApp',
     'whatsapp_hint' => 'Përgjigjemi shpejt gjatë orarit të punës.',
 
-    'footer_copy' => 'Platformë për operacione, klientë dhe staf — e ndërtuar për punën reale të kompanisë.',
-    'footer_explore' => 'Lidhjet',
+    'footer_copy' => 'ERP, CRM dhe HR për kompani ndërtimi — projekte, klientë, staf dhe financa në një vend.',
+    'footer_links' => 'Faqet',
+    'footer_contact' => 'Kontakt',
+    'footer_social' => 'Na ndiqni',
+    'social_instagram' => 'https://www.instagram.com/workom.company/',
+    'social_linkedin' => 'https://www.linkedin.com/company/workom-co/',
+    'social_tiktok' => 'https://www.tiktok.com/@workom.co?is_from_webapp=1&sender_device=pc',
     'footer_login' => 'Hyrje në sistem',
     'footer_register' => 'Regjistroni kompaninë',
-    'footer_contact' => 'Kontakt',
+    'footer_rights' => 'Të gjitha të drejtat e rezervuara.',
 ];

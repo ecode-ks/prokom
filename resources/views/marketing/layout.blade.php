@@ -98,28 +98,66 @@
 
     <footer class="wo-footer">
         <div class="wo-wrap">
-            <div class="wo-footer-row">
+            <div class="wo-footer-main">
                 <div class="wo-footer-brand">
                     <a href="{{ route('home') }}" class="wo-logo wo-logo-footer">
                         <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WorkOM" width="160" height="160">
                     </a>
-                    <p>{{ __('marketing.footer_copy') }}</p>
+                    <p class="wo-footer-tagline">{{ __('marketing.tagline') }}</p>
+                    <p class="wo-footer-copy">{{ __('marketing.footer_copy') }}</p>
+                    @php
+                        $socialLinks = array_filter([
+                            'instagram' => __('marketing.social_instagram'),
+                            'linkedin' => __('marketing.social_linkedin'),
+                            'tiktok' => __('marketing.social_tiktok'),
+                        ]);
+                    @endphp
+                    @if ($socialLinks)
+                        <div class="wo-footer-social">
+                            <span class="wo-footer-social-label">{{ __('marketing.footer_social') }}</span>
+                            <div class="wo-footer-social-links">
+                                @if (!empty(__('marketing.social_instagram')))
+                                    <a href="{{ __('marketing.social_instagram') }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM17.75 6.25a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25z"/></svg>
+                                    </a>
+                                @endif
+                                @if (!empty(__('marketing.social_linkedin')))
+                                    <a href="{{ __('marketing.social_linkedin') }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM.5 8.25h4.5V23.5H.5V8.25zM8.25 8.25h4.31v2.09h.06c.6-1.16 2.07-2.38 4.26-2.38 4.62 0 5.47 3.04 5.47 7v8.54h-4.56v-7.57c0-1.8-.03-4.12-2.51-4.12-2.51 0-2.89 1.96-2.89 3.99v7.7H8.25V8.25z"/></svg>
+                                    </a>
+                                @endif
+                                @if (!empty(__('marketing.social_tiktok')))
+                                    <a href="{{ __('marketing.social_tiktok') }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3c.6 3.1 2.6 5.2 5 5.5v4.1a8.3 8.3 0 0 1-5-.9v7.4a6.8 6.8 0 1 1-6.8-6.8c.4 0 .7 0 1.1.1v4.3c-.3-.1-.6-.2-1-.2a2.5 2.5 0 1 0 2.5 2.5V3h3.2z"/></svg>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
                 </div>
+
                 <div class="wo-footer-col">
-                    <h4>{{ __('marketing.footer_explore') }}</h4>
-                    <a href="{{ route('marketing.product') }}">{{ __('marketing.nav_product') }}</a>
-                    <a href="{{ route('marketing.faq') }}">{{ __('marketing.nav_faq') }}</a>
-                    <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
+                    <h4>{{ __('marketing.footer_links') }}</h4>
+                    <nav aria-label="Footer">
+                        <a href="{{ route('home') }}">{{ __('marketing.nav_home') }}</a>
+                        <a href="{{ route('marketing.product') }}">{{ __('marketing.nav_product') }}</a>
+                        <a href="{{ route('marketing.faq') }}">{{ __('marketing.nav_faq') }}</a>
+                        <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
+                    </nav>
                 </div>
+
                 <div class="wo-footer-col">
                     <h4>{{ __('marketing.footer_contact') }}</h4>
                     <a href="https://wa.me/{{ __('marketing.phone_wa') }}" target="_blank" rel="noopener noreferrer">{{ __('marketing.whatsapp') }} · {{ __('marketing.phone_display') }}</a>
-                    <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
+                    <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
                     <a href="{{ route('login') }}">{{ __('marketing.footer_login') }}</a>
                     <a href="{{ route('register') }}">{{ __('marketing.footer_register') }}</a>
                 </div>
             </div>
-            <div class="wo-copy">&copy; {{ date('Y') }} WorkOM. All rights reserved.</div>
+
+            <div class="wo-footer-bottom">
+                <p class="wo-copy">&copy; {{ date('Y') }} WorkOM. {{ __('marketing.footer_rights') }}</p>
+            </div>
         </div>
     </footer>
 
@@ -225,7 +263,7 @@
                 var cards = Array.prototype.slice.call(track.querySelectorAll('.wo-price'));
                 if (!cards.length) return;
 
-                var mq = window.matchMedia('(max-width: 919px)');
+                var mq = window.matchMedia('(max-width: 639px)');
                 var index = Math.max(0, cards.findIndex(function (c) { return c.classList.contains('is-featured'); }));
                 if (index < 0) index = 0;
                 var ticking = false;

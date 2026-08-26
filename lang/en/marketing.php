@@ -166,9 +166,14 @@ return [
     'whatsapp_cta' => 'Message on WhatsApp',
     'whatsapp_hint' => 'We reply quickly during business hours.',
 
-    'footer_copy' => 'A platform for operations, clients and people — built to work in the real world.',
-    'footer_explore' => 'Explore',
+    'footer_copy' => 'ERP, CRM and HR for construction companies — projects, clients, people and finance in one place.',
+    'footer_links' => 'Pages',
+    'footer_contact' => 'Contact',
+    'footer_social' => 'Follow us',
+    'social_instagram' => 'https://www.instagram.com/workom.company/',
+    'social_linkedin' => 'https://www.linkedin.com/company/workom-co/',
+    'social_tiktok' => 'https://www.tiktok.com/@workom.co?is_from_webapp=1&sender_device=pc',
     'footer_login' => 'Sign in',
     'footer_register' => 'Register company',
-    'footer_contact' => 'Contact',
+    'footer_rights' => 'All rights reserved.',
 ];

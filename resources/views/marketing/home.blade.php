@@ -24,7 +24,7 @@
 
 <div class="wo-marquee-wrap">
     <div class="wo-marquee-label">{{ __('marketing.trusted_label') }}</div>
-    <div class="wo-marquee" aria-hidden="true">
+    <div class="wo-marquee" aria-label="{{ __('marketing.marquee') }}">
         <span>{{ __('marketing.marquee') }}</span>
         <span>{{ __('marketing.marquee') }}</span>
     </div>
@@ -91,20 +91,36 @@
 
     <section class="wo-section wo-clients wo-animate">
         <span class="wo-label wo-animate-item">{{ __('marketing.clients_label') }}</span>
-        <div class="wo-logos wo-animate-item" aria-label="{{ __('marketing.clients_label') }}">
-            @foreach ([
-                ['file' => 'clients/client-1.png', 'alt' => __('marketing.clients_logo_1')],
-                ['file' => 'clients/client-2.png', 'alt' => __('marketing.clients_logo_2')],
-                ['file' => 'clients/client-3.png', 'alt' => __('marketing.clients_logo_3')],
-                ['file' => 'clients/client-4.png', 'alt' => __('marketing.clients_logo_4')],
-            ] as $client)
+        @php
+            $clients = [
+                ['file' => 'clients/alphatech.webp', 'alt' => 'AlphaTech'],
+                ['file' => 'clients/bibaj.webp', 'alt' => 'Bibaj'],
+                ['file' => 'clients/gashiglasstech.webp', 'alt' => 'Gashi Glass Tech'],
+                ['file' => 'clients/laconcept.webp', 'alt' => 'LA Concept'],
+                ['file' => 'clients/mobelpro.webp', 'alt' => 'Mobel Pro'],
+                ['file' => 'clients/mstudio.webp', 'alt' => 'M Studio'],
+                ['file' => 'clients/veluna.webp', 'alt' => 'Veluna'],
+            ];
+        @endphp
+        <div class="wo-logos wo-logos-desktop wo-animate-item" aria-label="{{ __('marketing.clients_label') }}">
+            @foreach ($clients as $client)
                 @php $logoPath = public_path('images/marketing/' . $client['file']); @endphp
                 @if (is_file($logoPath))
                     <img src="{{ asset('images/marketing/' . $client['file']) }}" alt="{{ $client['alt'] }}" loading="lazy">
-                @else
-                    <span class="wo-logo-slot" title="{{ __('marketing.clients_hint') }}{{ $client['file'] }}" aria-hidden="true"></span>
                 @endif
             @endforeach
+        </div>
+        <div class="wo-clients-slider wo-animate-item" aria-hidden="true">
+            <div class="wo-clients-track">
+                @foreach ([1, 2] as $loopSet)
+                    @foreach ($clients as $client)
+                        @php $logoPath = public_path('images/marketing/' . $client['file']); @endphp
+                        @if (is_file($logoPath))
+                            <img src="{{ asset('images/marketing/' . $client['file']) }}" alt="" loading="lazy">
+                        @endif
+                    @endforeach
+                @endforeach
+            </div>
         </div>
     </section>
 
