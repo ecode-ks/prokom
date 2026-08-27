@@ -224,6 +224,8 @@ return [
     'contact_success' => 'Faleminderit. Do t’ju kontaktojmë së shpejti.',
     'contact_error' => 'Ju lutemi plotësoni fushat saktë.',
     'contact_or' => 'ose',
+    'contact_channels' => 'Kanalet direkte',
+    'contact_follow' => 'Zgjidhni kanalin që ju përshtatet më së miri. Jemi gati të bisedojmë.',
     'phone_display' => '+383 45 548 747',
     'phone_wa' => '38345548747',
     'whatsapp' => 'WhatsApp',

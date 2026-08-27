@@ -1,60 +1,46 @@
 @extends('marketing.layout')
 
 @section('content')
-<div class="wo-wrap">
+<div class="wo-wrap container">
     <section class="wo-section" style="padding-top:3rem">
-        <div class="wo-contact-grid">
-            <div>
+        <div class="row g-4 align-items-start">
+            <div class="col-12 col-lg-5">
                 <span class="wo-label">{{ __('marketing.contact_label') }}</span>
                 <h2>{{ __('marketing.contact_title') }}</h2>
                 <p class="wo-lead">{{ __('marketing.contact_lead') }}</p>
-                <div class="wo-contact-direct">
-                    <a class="wo-btn wo-btn-primary" href="https://wa.me/{{ __('marketing.phone_wa') }}" target="_blank" rel="noopener noreferrer">{{ __('marketing.whatsapp_cta') }}</a>
-                </div>
             </div>
 
-            <form class="wo-form" method="post" action="{{ route('marketing.contact.submit') }}">
-                @csrf
-                @if(session('contact_success'))
-                    <div class="wo-alert wo-alert-ok">{{ session('contact_success') }}</div>
-                @endif
-                @if(session('contact_error'))
-                    <div class="wo-alert wo-alert-err">{{ session('contact_error') }}</div>
-                @endif
-                <div class="row">
-                    <label>
-                        {{ __('marketing.contact_name') }}
-                        <input type="text" name="name" value="{{ old('name') }}" required autocomplete="name">
-                    </label>
-                    <label>
-                        {{ __('marketing.contact_company') }}
-                        <input type="text" name="company" value="{{ old('company') }}" required autocomplete="organization">
-                    </label>
+            <div class="col-12 col-lg-7">
+                <div class="wo-contact-links">
+                    <div class="wo-contact-links__intro">
+                    <span class="wo-contact-links__eyebrow">{{ __('marketing.contact_channels') }}</span>
+                    <p>{{ __('marketing.contact_follow') }}</p>
+                    </div>
+                    <div class="wo-contact-list">
+                    <a class="wo-contact-link wo-contact-link--email" href="mailto:{{ config('mail.from.address') }}">
+                        <span class="wo-contact-icon" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
+                        <span><small>{{ __('marketing.contact_email') }}</small><strong>{{ config('mail.from.address') }}</strong></span>
+                        <span class="wo-contact-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="wo-contact-link wo-contact-link--phone" href="tel:{{ __('marketing.phone_wa') }}">
+                        <span class="wo-contact-icon" aria-hidden="true"><i class="fa-solid fa-phone"></i></span>
+                        <span><small>{{ __('marketing.contact_phone') }}</small><strong>{{ __('marketing.phone_display') }}</strong></span>
+                        <span class="wo-contact-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    <a class="wo-contact-link wo-contact-link--whatsapp" href="https://wa.me/{{ __('marketing.phone_wa') }}" target="_blank" rel="noopener noreferrer">
+                        <span class="wo-contact-icon" aria-hidden="true"><i class="fa-brands fa-whatsapp"></i></span>
+                        <span><small>{{ __('marketing.whatsapp') }}</small><strong>{{ __('marketing.whatsapp_cta') }}</strong></span>
+                        <span class="wo-contact-arrow" aria-hidden="true">↗</span>
+                    </a>
+                    </div>
+                    <div class="wo-social-links">
+                    <a href="https://www.linkedin.com/company/workom/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="https://www.facebook.com/workom" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/workom/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@workom" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
                 </div>
-                <div class="row">
-                    <label>
-                        {{ __('marketing.contact_email') }}
-                        <input type="email" name="email" value="{{ old('email') }}" required autocomplete="email">
-                    </label>
-                    <label>
-                        {{ __('marketing.contact_phone') }}
-                        <input type="text" name="phone" value="{{ old('phone') }}" autocomplete="tel">
-                    </label>
-                </div>
-                <label>
-                    {{ __('marketing.contact_intent') }}
-                    <select name="intent" required>
-                        <option value="demo" @selected(old('intent', 'demo') === 'demo')>{{ __('marketing.contact_intent_demo') }}</option>
-                        <option value="pricing" @selected(old('intent') === 'pricing')>{{ __('marketing.contact_intent_pricing') }}</option>
-                        <option value="question" @selected(old('intent') === 'question')>{{ __('marketing.contact_intent_question') }}</option>
-                    </select>
-                </label>
-                <label>
-                    {{ __('marketing.contact_message') }}
-                    <textarea name="message" required>{{ old('message') }}</textarea>
-                </label>
-                <button type="submit" class="wo-btn wo-btn-primary">{{ __('marketing.contact_submit') }}</button>
-            </form>
+            </div>
         </div>
     </section>
 </div>

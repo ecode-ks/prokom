@@ -1,7 +1,7 @@
 @extends('marketing.layout')
 
 @section('content')
-<div class="wo-wrap">
+<div class="wo-wrap container">
     <section class="wo-hero wo-reveal">
         <div class="wo-hero-copy">
             <p class="wo-brand-mark">WORKOM</p>
@@ -43,24 +43,24 @@
     </section>
 </div>
 
-<div class="wo-wrap">
+<div class="wo-wrap container">
     <section class="wo-section wo-animate" id="per-ke-eshte">
         <span class="wo-label wo-animate-item">{{ __('marketing.who_label') }}</span>
         <h2 class="wo-animate-item">{{ __('marketing.who_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.who_text') }}</p>
 
-        <div class="wo-module-cards wo-animate-item" style="margin-top:2rem">
-            <a href="{{ route('marketing.erp') }}" class="wo-module-card">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 wo-module-cards wo-animate-item" style="margin-top:2rem">
+            <a href="{{ route('marketing.erp') }}" class="col-12 col-md-6 col-lg-4 wo-module-card">
                 <h3>{{ __('marketing.nav_erp') }}</h3>
                 <p>{{ __('marketing.erp_text') }}</p>
                 <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
             </a>
-            <a href="{{ route('marketing.crm') }}" class="wo-module-card">
+            <a href="{{ route('marketing.crm') }}" class="col-12 col-md-6 col-lg-4 wo-module-card">
                 <h3>{{ __('marketing.nav_crm') }}</h3>
                 <p>{{ __('marketing.crm_text') }}</p>
                 <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
             </a>
-            <a href="{{ route('marketing.hr') }}" class="wo-module-card">
+            <a href="{{ route('marketing.hr') }}" class="col-12 col-md-6 col-lg-4 wo-module-card">
                 <h3>{{ __('marketing.nav_hr') }}</h3>
                 <p>{{ __('marketing.hr_text') }}</p>
                 <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
@@ -71,16 +71,16 @@
     <section class="wo-section wo-animate" id="si-funksionon">
         <span class="wo-label wo-animate-item">{{ __('marketing.how_label') }}</span>
         <h2 class="wo-animate-item">{{ __('marketing.how_title') }}</h2>
-        <ol class="wo-steps">
-            <li class="wo-animate-item">
+        <ol class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 wo-steps">
+            <li class="col wo-animate-item">
                 <h3>{{ __('marketing.how_1_t') }}</h3>
                 <p>{{ __('marketing.how_1') }}</p>
             </li>
-            <li class="wo-animate-item">
+            <li class="col wo-animate-item">
                 <h3>{{ __('marketing.how_2_t') }}</h3>
                 <p>{{ __('marketing.how_2') }}</p>
             </li>
-            <li class="wo-animate-item">
+            <li class="col wo-animate-item">
                 <h3>{{ __('marketing.how_3_t') }}</h3>
                 <p>{{ __('marketing.how_3') }}</p>
             </li>

@@ -11,7 +11,7 @@
         ['t' => __('marketing.' . $prefix . '_f5_t'), 'd' => __('marketing.' . $prefix . '_f5_d')],
     ];
 @endphp
-<div class="wo-wrap">
+<div class="wo-wrap container">
     <section class="wo-module-hero wo-animate">
         <a href="{{ route('marketing.product') }}" class="wo-back-link wo-animate-item">
             ← {{ __('marketing.nav_product') }}
@@ -27,9 +27,9 @@
         <h2 class="wo-animate-item">{{ __('marketing.module_includes_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.' . $prefix . '_includes_lead') }}</p>
 
-        <div class="wo-feature-grid">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 wo-feature-grid">
             @foreach ($features as $i => $feature)
-                <article class="wo-feature-card wo-animate-item">
+            <article class="col wo-feature-card wo-animate-item">
                     <span class="wo-feature-card__num">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</span>
                     <h3>{{ $feature['t'] }}</h3>
                     <p>{{ $feature['d'] }}</p>
@@ -43,12 +43,13 @@
             <span class="wo-label wo-animate-item">{{ __('marketing.module_shots_label') }}</span>
             <h2 class="wo-animate-item">{{ __('marketing.module_shots_title') }}</h2>
             <p class="wo-lead wo-animate-item">{{ __('marketing.module_shots_lead') }}</p>
-            <div class="wo-shot-grid wo-animate-item">
+            <div class="row g-4 wo-shot-grid wo-animate-item">
                 @foreach ($shots as $shot)
                     @include('marketing.partials.shot', [
                         'file' => $shot['file'],
                         'label' => $shot['label'],
                         'caption' => $shot['caption'] ?? null,
+                        'class' => $loop->first ? 'col-12' : 'col-12 col-lg-6',
                     ])
                 @endforeach
             </div>
@@ -58,9 +59,9 @@
     <section class="wo-module-more wo-animate">
         <span class="wo-label wo-animate-item">{{ __('marketing.module_also') }}</span>
         <h2 class="wo-animate-item" style="max-width:20ch">{{ __('marketing.module_also_title') }}</h2>
-        <div class="wo-module-cards wo-animate-item" style="margin-top:1.5rem">
+        <div class="row row-cols-1 row-cols-md-2 g-4 wo-module-cards wo-animate-item" style="margin-top:1.5rem">
             @if ($module !== 'erp')
-                <a href="{{ route('marketing.erp') }}" class="wo-module-card">
+            <a href="{{ route('marketing.erp') }}" class="col wo-module-card">
                     <span class="wo-module-card__tag">01</span>
                     <h3>{{ __('marketing.nav_erp') }}</h3>
                     <p>{{ __('marketing.erp_text') }}</p>
@@ -68,7 +69,7 @@
                 </a>
             @endif
             @if ($module !== 'crm')
-                <a href="{{ route('marketing.crm') }}" class="wo-module-card">
+                <a href="{{ route('marketing.crm') }}" class="col wo-module-card">
                     <span class="wo-module-card__tag">02</span>
                     <h3>{{ __('marketing.nav_crm') }}</h3>
                     <p>{{ __('marketing.crm_text') }}</p>
@@ -76,7 +77,7 @@
                 </a>
             @endif
             @if ($module !== 'hr')
-                <a href="{{ route('marketing.hr') }}" class="wo-module-card">
+                <a href="{{ route('marketing.hr') }}" class="col wo-module-card">
                     <span class="wo-module-card__tag">03</span>
                     <h3>{{ __('marketing.nav_hr') }}</h3>
                     <p>{{ __('marketing.hr_text') }}</p>

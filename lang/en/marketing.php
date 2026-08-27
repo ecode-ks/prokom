@@ -222,6 +222,8 @@ return [
     'contact_success' => 'Thank you. We will contact you soon.',
     'contact_error' => 'Please fill in the fields correctly.',
     'contact_or' => 'or',
+    'contact_channels' => 'Direct channels',
+    'contact_follow' => 'Choose the channel that works best for you. We are ready to talk.',
     'phone_display' => '+383 45 548 747',
     'phone_wa' => '38345548747',
     'whatsapp' => 'WhatsApp',
