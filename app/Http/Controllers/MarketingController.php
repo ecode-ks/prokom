@@ -18,6 +18,49 @@ class MarketingController extends Controller
         return view('marketing.product', ['page' => 'product']);
     }
 
+    public function erp()
+    {
+        return view('marketing.module', [
+            'page' => 'erp',
+            'module' => 'erp',
+            'shots' => [
+                ['file' => 'dashboard1.png', 'label' => __('marketing.shot_dashboard'), 'caption' => __('marketing.shot_dashboard_d')],
+                ['file' => 'projektet1.png', 'label' => __('marketing.shot_projects'), 'caption' => __('marketing.shot_projects_d')],
+                ['file' => 'raportiProjektit.png', 'label' => __('marketing.shot_project_report'), 'caption' => __('marketing.shot_project_report_d')],
+                ['file' => 'detajetDetyres.png', 'label' => __('marketing.shot_task'), 'caption' => __('marketing.shot_task_d')],
+                ['file' => 'checkin.png', 'label' => __('marketing.shot_checkin'), 'caption' => __('marketing.shot_checkin_d')],
+                ['file' => 'listacheckin.png', 'label' => __('marketing.shot_checkin_list'), 'caption' => __('marketing.shot_checkin_list_d')],
+                ['file' => 'hartaPrezences.png', 'label' => __('marketing.shot_map'), 'caption' => __('marketing.shot_map_d')],
+            ],
+        ]);
+    }
+
+    public function crm()
+    {
+        return view('marketing.module', [
+            'page' => 'crm',
+            'module' => 'crm',
+            'shots' => [
+                ['file' => 'crm.png', 'label' => __('marketing.shot_crm'), 'caption' => __('marketing.shot_crm_d')],
+                ['file' => 'detajetTransaksionit.png', 'label' => __('marketing.shot_transaction'), 'caption' => __('marketing.shot_transaction_d')],
+                ['file' => 'oferta1.png', 'label' => __('marketing.shot_offers'), 'caption' => __('marketing.shot_offers_d')],
+            ],
+        ]);
+    }
+
+    public function hr()
+    {
+        return view('marketing.module', [
+            'page' => 'hr',
+            'module' => 'hr',
+            'shots' => [
+                ['file' => 'punetoret.png', 'label' => __('marketing.shot_staff'), 'caption' => __('marketing.shot_staff_d')],
+                ['file' => 'pushimet.png', 'label' => __('marketing.shot_vacations'), 'caption' => __('marketing.shot_vacations_d')],
+                ['file' => 'kaluklimiPagave.png', 'label' => __('marketing.shot_salary'), 'caption' => __('marketing.shot_salary_d')],
+            ],
+        ]);
+    }
+
     public function faq()
     {
         return view('marketing.faq', ['page' => 'faq']);
@@ -75,7 +118,7 @@ class MarketingController extends Controller
             $to = config('mail.from.address');
             if ($to) {
                 Mail::raw(
-                    "WorkOM demo request\n\n"
+                    "WORKOM demo request\n\n"
                     . "Name: {$data['name']}\n"
                     . "Company: {$data['company']}\n"
                     . "Email: {$data['email']}\n"
@@ -85,7 +128,7 @@ class MarketingController extends Controller
                     function ($message) use ($to, $data) {
                         $message->to($to)
                             ->replyTo($data['email'], $data['name'])
-                            ->subject('WorkOM — ' . $data['intent'] . ' — ' . $data['company']);
+                            ->subject('WORKOM — ' . $data['intent'] . ' — ' . $data['company']);
                     }
                 );
             }

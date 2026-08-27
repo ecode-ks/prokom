@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>WORKOM | @yield('title')</title>
+        @include('partials.favicon')
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -24,14 +25,11 @@
                 <aside class="col-sm-12 col-md-12 col-lg-2 d-none d-md-none d-lg-block bg-darkblue text-light vh-100 overflow-auto m-0 d-print-none">
                     <div class="d-flex flex-column vh-100">
                         <div class="sticky-top bg-darkblue pt-3 pb-2" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                            <div class="d-flex align-items-center mb-2">
-                                <div class="me-2 rounded-3 bg-lightblue p-2 border-lightblue">
-                                    <i class="fa-solid fa-city"></i>
-                                </div>
-                                <div>
-                                    <small class="d-block fw-semibold">WORKOM</small>
-                                    <small class="d-block opacity-50">Paneli Menaxhimit</small>
-                                </div>
+                            <div class="mb-2 px-1">
+                                <a href="{{ route('dashboard') }}" class="app-logo">
+                                    <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM">
+                                </a>
+                                <small class="d-block opacity-50 mt-2">Paneli Menaxhimit</small>
                             </div>
                         </div>
 
@@ -382,7 +380,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-none d-md-inline col-md-4 d-lg-none text-center fw-semibold" style="letter-spacing: 0.5px;">WORKOM</div>
+                            <div class="d-none d-md-inline col-md-4 d-lg-none text-center">
+                                <a href="{{ route('dashboard') }}" class="app-logo app-logo--header">
+                                    <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM">
+                                </a>
+                            </div>
                             <div class="col-6 col-md-4 col-lg-6 text-end">
                                 @php
                                     $profileName = session('user') ?: session('company');

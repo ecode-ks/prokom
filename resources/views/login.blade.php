@@ -4,7 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>WorkOM | Hyrje</title>
+        <title>WORKOM | Hyrje</title>
+        @include('partials.favicon')
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -17,13 +18,12 @@
                 {{-- Entrance Banner --}}
                 <div class="col-12 col-md-12 col-lg-6 d-none d-md-none d-lg-flex flex-column justify-content-center bg-darkblue text-light vh-100 p-5">
                     <div class="d-flex align-items-center">
-                        <div class="me-2 rounded-3 bg-lightblue p-custom border-lightblue">
-                            <i class="fa-solid fa-city"></i>
-                        </div>
-                        <div>
-                            <span class="d-block fw-semibold">WorkOM</span>
-                            <small class="d-block opacity-50">Operations Management</small>
-                        </div>
+                        <a href="{{ route('home') }}" class="app-logo app-logo--banner">
+                            <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM">
+                        </a>
+                    </div>
+                    <div class="mt-2">
+                        <small class="d-block opacity-50">Operations Management</small>
                     </div>
                     <div class="mt-3">
                         <a href="{{ route('home') }}" class="text-decoration-none text-light opacity-75"><i class="fa-solid fa-arrow-left me-1"></i> Faqja kryesore</a>

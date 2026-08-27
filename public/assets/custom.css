@@ -53,6 +53,36 @@
     font-size: 10px;
 }
 
+.app-logo {
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+    text-decoration: none;
+}
+
+.app-logo img {
+    display: block;
+    height: 80px;
+    width: auto;
+    max-width: 340px;
+    object-fit: cover;
+    scale: 1.2;
+}
+
+.app-logo--banner img {
+    height: 80px;
+    max-width: 220px;
+}
+
+.app-logo--header {
+    justify-content: center;
+}
+
+.app-logo--header img {
+    height: 48px;
+    max-width: 160px;
+}
+
 #sidebar-link,
 #sidebar-active {
     font-size: 15px;
@@ -800,4 +830,33 @@ header {
 .notifications-panel__all-link:hover {
     background: #0c254f;
     color: #fff !important;
+}
+
+.report-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.report-images__item {
+    display: block;
+    width: 140px;
+    height: 140px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid rgba(7, 24, 56, 0.12);
+    box-shadow: 0 1px 4px rgba(7, 24, 56, 0.08);
+    flex-shrink: 0;
+}
+
+.report-images__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.15s ease;
+}
+
+.report-images__item:hover img {
+    transform: scale(1.04);
 }

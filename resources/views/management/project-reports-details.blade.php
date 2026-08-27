@@ -66,13 +66,11 @@
                     <span>Nuk ka imazhe të bashkëngjitura.</span>
                 </div>
             @else
-                <div class="row g-3">
+                <div class="report-images">
                     @foreach($images as $image)
-                        <div class="col-12 col-md-6 col-lg-4">
-                            <a href="{{ asset('storage/' . $image) }}" target="_blank" class="text-decoration-none">
-                                <img src="{{ asset('storage/' . $image) }}" alt="Imazh i raportit" class="img-fluid rounded-4 border shadow-sm">
-                            </a>
-                        </div>
+                        <a href="{{ asset('storage/' . $image) }}" target="_blank" class="report-images__item">
+                            <img src="{{ asset('storage/' . $image) }}" alt="Imazh i raportit">
+                        </a>
                     @endforeach
                 </div>
             @endif

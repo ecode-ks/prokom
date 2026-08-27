@@ -146,7 +146,7 @@
                                     · {{ $news->project_name ?? ('Projekt #' . $news->project_id) }}
                                 @endif
                             </small>
-                            <div class="text-dark">{!! nl2br(e(\Illuminate\Support\Str::limit($news->info, 220))) !!}</div>
+                            <div class="text-dark">{!! nl2br(e($news->info)) !!}</div>
                         </div>
                     @endforeach
                 @endif

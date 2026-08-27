@@ -1,7 +1,12 @@
 @php
     $page = $page ?? 'home';
+    $productPages = ['product', 'erp', 'crm', 'hr'];
+    $isProductNav = in_array($page, $productPages, true);
     $title = match ($page) {
         'product' => __('marketing.meta_product'),
+        'erp' => __('marketing.meta_erp'),
+        'crm' => __('marketing.meta_crm'),
+        'hr' => __('marketing.meta_hr'),
         'faq' => __('marketing.meta_faq'),
         'contact' => __('marketing.meta_contact'),
         default => __('marketing.meta_title'),
@@ -13,6 +18,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title }}</title>
+    @include('partials.favicon')
     <meta name="description" content="{{ __('marketing.meta_description') }}">
     <link rel="canonical" href="{{ url()->current() }}">
     <meta property="og:title" content="{{ $title }}">
@@ -21,41 +27,56 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}">
-    <script>
-        (function () {
-            try {
-                var t = localStorage.getItem('workom-theme');
-                if (t !== 'light' && t !== 'dark') t = 'dark';
-                document.documentElement.setAttribute('data-wo-theme', t);
-            } catch (e) {}
-        })();
-    </script>
     @stack('head')
 </head>
-<body class="wo" data-theme="dark">
-    <script>
-        (function () {
-            try {
-                var t = localStorage.getItem('workom-theme') || 'dark';
-                document.body.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-            } catch (e) {
-                document.body.setAttribute('data-theme', 'dark');
-            }
-        })();
-    </script>
+<body class="wo">
     <a class="wo-skip" href="#main">Skip</a>
 
     <header class="wo-top">
         <div class="wo-wrap wo-top-row">
             <a href="{{ route('home') }}" class="wo-logo">
-                <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WorkOM" width="160" height="160">
+                <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM" width="160" height="160" decoding="async" fetchpriority="high">
             </a>
 
             <nav class="wo-tabs" aria-label="Primary">
                 <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
+                <div class="wo-nav-drop {{ $isProductNav ? 'is-active' : '' }}">
+                    <a href="{{ route('marketing.product') }}" class="wo-nav-drop-trigger {{ $isProductNav ? 'is-active' : '' }}" aria-haspopup="true" aria-expanded="false">
+                        {{ __('marketing.nav_product') }}
+                        <svg class="wo-nav-caret" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                            <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </a>
+                    <div class="wo-nav-drop-menu" role="menu">
+                        <a href="{{ route('marketing.erp') }}" class="wo-nav-drop-item {{ $page === 'erp' ? 'is-active' : '' }}" role="menuitem">
+                            <span class="wo-nav-drop-item__top">
+                                <span class="wo-nav-drop-item__tag">01</span>
+                                <span class="wo-nav-drop-item__title">{{ __('marketing.nav_erp') }}</span>
+                            </span>
+                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_erp_d') }}</span>
+                        </a>
+                        <a href="{{ route('marketing.crm') }}" class="wo-nav-drop-item {{ $page === 'crm' ? 'is-active' : '' }}" role="menuitem">
+                            <span class="wo-nav-drop-item__top">
+                                <span class="wo-nav-drop-item__tag">02</span>
+                                <span class="wo-nav-drop-item__title">{{ __('marketing.nav_crm') }}</span>
+                            </span>
+                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_crm_d') }}</span>
+                        </a>
+                        <a href="{{ route('marketing.hr') }}" class="wo-nav-drop-item {{ $page === 'hr' ? 'is-active' : '' }}" role="menuitem">
+                            <span class="wo-nav-drop-item__top">
+                                <span class="wo-nav-drop-item__tag">03</span>
+                                <span class="wo-nav-drop-item__title">{{ __('marketing.nav_hr') }}</span>
+                            </span>
+                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_hr_d') }}</span>
+                        </a>
+                        <a href="{{ route('marketing.product') }}" class="wo-nav-drop-foot {{ $page === 'product' ? 'is-active' : '' }}" role="menuitem">
+                            {{ __('marketing.nav_all_modules') }}
+                            <span aria-hidden="true">→</span>
+                        </a>
+                    </div>
+                </div>
                 <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
                 <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
             </nav>
@@ -65,11 +86,11 @@
                     <a href="{{ route('marketing.locale', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'is-active' : '' }}">SQ</a>
                     <a href="{{ route('marketing.locale', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'is-active' : '' }}">EN</a>
                 </div>
-                <button type="button" class="wo-theme" id="woTheme" aria-label="{{ __('marketing.theme_toggle') }}" title="{{ __('marketing.theme_toggle') }}">
-                    <span class="wo-theme-icon-dark" aria-hidden="true">☀</span>
-                    <span class="wo-theme-icon-light" aria-hidden="true">☾</span>
-                </button>
-                <a class="wo-btn wo-btn-ghost wo-hide-sm" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                <a class="wo-btn wo-btn-ghost wo-hide-sm wo-btn-login" href="{{ route('login') }}" aria-label="{{ __('marketing.nav_login') }}" title="{{ __('marketing.nav_login') }}">
+                    <svg class="wo-btn-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.25c-3.6 0-6.75 1.8-6.75 4.05V20h13.5v-1.7c0-2.25-3.15-4.05-6.75-4.05z"/>
+                    </svg>
+                </a>
                 <a class="wo-btn wo-btn-primary wo-hide-sm" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
                 <button type="button" class="wo-menu" id="woMenu" aria-expanded="false" aria-controls="woDrawer" aria-label="{{ __('marketing.nav_menu') }}">
                     <span class="wo-menu-bars" aria-hidden="true">
@@ -82,10 +103,19 @@
             <div class="wo-wrap wo-drawer-inner">
                 <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
                 <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
+                <div class="wo-drawer-sub">
+                    <a href="{{ route('marketing.erp') }}" class="{{ $page === 'erp' ? 'is-active' : '' }}">{{ __('marketing.nav_erp') }}</a>
+                    <a href="{{ route('marketing.crm') }}" class="{{ $page === 'crm' ? 'is-active' : '' }}">{{ __('marketing.nav_crm') }}</a>
+                    <a href="{{ route('marketing.hr') }}" class="{{ $page === 'hr' ? 'is-active' : '' }}">{{ __('marketing.nav_hr') }}</a>
+                </div>
                 <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
                 <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
                 <div class="wo-drawer-cta">
-                    <a class="wo-btn wo-btn-ghost" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                    <a class="wo-btn wo-btn-ghost wo-btn-login" href="{{ route('login') }}" aria-label="{{ __('marketing.nav_login') }}" title="{{ __('marketing.nav_login') }}">
+                        <svg class="wo-btn-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.25c-3.6 0-6.75 1.8-6.75 4.05V20h13.5v-1.7c0-2.25-3.15-4.05-6.75-4.05z"/>
+                        </svg>
+                    </a>
                     <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
                 </div>
             </div>
@@ -101,65 +131,55 @@
             <div class="wo-footer-main">
                 <div class="wo-footer-brand">
                     <a href="{{ route('home') }}" class="wo-logo wo-logo-footer">
-                        <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WorkOM" width="160" height="160">
+                        <img
+                            class="wo-lazy"
+                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23071838'/%3E%3C/svg%3E"
+                            data-wo-src="{{ asset('images/marketing/workom_logo.png') }}"
+                            alt="WORKOM"
+                            width="160"
+                            height="160"
+                            loading="lazy"
+                            decoding="async"
+                        >
                     </a>
-                    <p class="wo-footer-tagline">{{ __('marketing.tagline') }}</p>
                     <p class="wo-footer-copy">{{ __('marketing.footer_copy') }}</p>
-                    @php
-                        $socialLinks = array_filter([
-                            'instagram' => __('marketing.social_instagram'),
-                            'linkedin' => __('marketing.social_linkedin'),
-                            'tiktok' => __('marketing.social_tiktok'),
-                        ]);
-                    @endphp
-                    @if ($socialLinks)
-                        <div class="wo-footer-social">
-                            <span class="wo-footer-social-label">{{ __('marketing.footer_social') }}</span>
-                            <div class="wo-footer-social-links">
-                                @if (!empty(__('marketing.social_instagram')))
-                                    <a href="{{ __('marketing.social_instagram') }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM17.75 6.25a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25z"/></svg>
-                                    </a>
-                                @endif
-                                @if (!empty(__('marketing.social_linkedin')))
-                                    <a href="{{ __('marketing.social_linkedin') }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM.5 8.25h4.5V23.5H.5V8.25zM8.25 8.25h4.31v2.09h.06c.6-1.16 2.07-2.38 4.26-2.38 4.62 0 5.47 3.04 5.47 7v8.54h-4.56v-7.57c0-1.8-.03-4.12-2.51-4.12-2.51 0-2.89 1.96-2.89 3.99v7.7H8.25V8.25z"/></svg>
-                                    </a>
-                                @endif
-                                @if (!empty(__('marketing.social_tiktok')))
-                                    <a href="{{ __('marketing.social_tiktok') }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
-                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3c.6 3.1 2.6 5.2 5 5.5v4.1a8.3 8.3 0 0 1-5-.9v7.4a6.8 6.8 0 1 1-6.8-6.8c.4 0 .7 0 1.1.1v4.3c-.3-.1-.6-.2-1-.2a2.5 2.5 0 1 0 2.5 2.5V3h3.2z"/></svg>
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
                 </div>
 
                 <div class="wo-footer-col">
-                    <h4>{{ __('marketing.footer_links') }}</h4>
-                    <nav aria-label="Footer">
-                        <a href="{{ route('home') }}">{{ __('marketing.nav_home') }}</a>
-                        <a href="{{ route('marketing.product') }}">{{ __('marketing.nav_product') }}</a>
-                        <a href="{{ route('marketing.faq') }}">{{ __('marketing.nav_faq') }}</a>
-                        <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
+                    <h4>{{ __('marketing.footer_modules') }}</h4>
+                    <nav aria-label="{{ __('marketing.footer_modules') }}">
+                        <a href="{{ route('marketing.erp') }}">{{ __('marketing.nav_erp') }}</a>
+                        <a href="{{ route('marketing.crm') }}">{{ __('marketing.nav_crm') }}</a>
+                        <a href="{{ route('marketing.hr') }}">{{ __('marketing.nav_hr') }}</a>
+                        <a href="{{ route('home') }}#si-funksionon">{{ __('marketing.footer_how') }}</a>
                     </nav>
                 </div>
 
                 <div class="wo-footer-col">
-                    <h4>{{ __('marketing.footer_contact') }}</h4>
-                    <a href="https://wa.me/{{ __('marketing.phone_wa') }}" target="_blank" rel="noopener noreferrer">{{ __('marketing.whatsapp') }} · {{ __('marketing.phone_display') }}</a>
-                    <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
-                    <a href="{{ route('login') }}">{{ __('marketing.footer_login') }}</a>
-                    <a href="{{ route('register') }}">{{ __('marketing.footer_register') }}</a>
+                    <h4>{{ __('marketing.footer_product') }}</h4>
+                    <nav aria-label="{{ __('marketing.footer_product') }}">
+                        <a href="{{ route('home') }}#cmimet">{{ __('marketing.footer_pricing') }}</a>
+                        <a href="{{ route('home') }}#per-ke-eshte">{{ __('marketing.footer_for_who') }}</a>
+                        <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
+                        <a href="{{ route('home') }}#klientet">{{ __('marketing.footer_clients') }}</a>
+                    </nav>
                 </div>
             </div>
 
             <div class="wo-footer-bottom">
-                <p class="wo-copy">&copy; {{ date('Y') }} WorkOM. {{ __('marketing.footer_rights') }}</p>
+                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }}</p>
+                <p class="wo-footer-bottom-tag">{{ __('marketing.footer_bottom_tag') }}</p>
             </div>
         </div>
     </footer>
+
+    <div class="wo-lightbox" id="woLightbox" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="{{ __('marketing.shot_placeholder') }}">
+        <div class="wo-lightbox-inner">
+            <button type="button" class="wo-lightbox-close" id="woLightboxClose" aria-label="{{ __('marketing.lightbox_close') }}">&times;</button>
+            <img src="" alt="" id="woLightboxImg">
+            <p class="wo-lightbox-label" id="woLightboxLabel"></p>
+        </div>
+    </div>
 
     <script>
         (function () {
@@ -187,18 +207,82 @@
                 });
             }
 
-            var themeBtn = document.getElementById('woTheme');
-            var body = document.body;
-            function applyTheme(theme) {
-                body.setAttribute('data-theme', theme);
-                try { localStorage.setItem('workom-theme', theme); } catch (e) {}
+            var lightbox = document.getElementById('woLightbox');
+            var lightboxImg = document.getElementById('woLightboxImg');
+            var lightboxLabel = document.getElementById('woLightboxLabel');
+            var lightboxClose = document.getElementById('woLightboxClose');
+
+            function hydrateLazyImg(img) {
+                var src = img.getAttribute('data-wo-src');
+                if (!src) return;
+                img.onload = function () {
+                    img.classList.add('is-loaded');
+                    img.onload = null;
+                };
+                img.src = src;
+                img.removeAttribute('data-wo-src');
+                if (img.complete) img.classList.add('is-loaded');
             }
-            if (themeBtn) {
-                themeBtn.addEventListener('click', function () {
-                    var next = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                    applyTheme(next);
+
+            var lazyImgs = document.querySelectorAll('img[data-wo-src]');
+            if ('IntersectionObserver' in window && lazyImgs.length) {
+                var lazyIo = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        hydrateLazyImg(entry.target);
+                        lazyIo.unobserve(entry.target);
+                    });
+                }, { rootMargin: '180px 0px', threshold: 0.01 });
+                lazyImgs.forEach(function (img) { lazyIo.observe(img); });
+            } else {
+                lazyImgs.forEach(hydrateLazyImg);
+            }
+
+            function openLightbox(src, label) {
+                if (!lightbox || !lightboxImg) return;
+                lightboxImg.src = src;
+                lightboxImg.alt = label || '';
+                lightboxImg.classList.remove('is-zoomed');
+                if (lightboxLabel) lightboxLabel.textContent = label || '';
+                lightbox.hidden = false;
+                lightbox.classList.add('is-open');
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('wo-lightbox-open');
+            }
+
+            function closeLightbox() {
+                if (!lightbox || !lightboxImg) return;
+                lightbox.classList.remove('is-open');
+                lightbox.hidden = true;
+                lightbox.setAttribute('aria-hidden', 'true');
+                lightboxImg.src = '';
+                lightboxImg.classList.remove('is-zoomed');
+                document.body.classList.remove('wo-lightbox-open');
+            }
+
+            document.querySelectorAll('[data-wo-lightbox]').forEach(function (el) {
+                el.addEventListener('click', function () {
+                    openLightbox(el.getAttribute('data-wo-lightbox'), el.getAttribute('data-wo-lightbox-label') || '');
+                });
+            });
+
+            if (lightboxClose) lightboxClose.addEventListener('click', closeLightbox);
+            if (lightbox) {
+                lightbox.addEventListener('click', function (e) {
+                    if (e.target === lightbox) closeLightbox();
                 });
             }
+            if (lightboxImg) {
+                lightboxImg.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    lightboxImg.classList.toggle('is-zoomed');
+                });
+            }
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && lightbox && lightbox.classList.contains('is-open')) {
+                    closeLightbox();
+                }
+            });
 
             var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             var animated = document.querySelectorAll('.wo-animate');

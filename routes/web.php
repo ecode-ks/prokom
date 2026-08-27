@@ -31,6 +31,9 @@ use App\Http\Controllers\MarketingController;
 Route::middleware(\App\Http\Middleware\SetMarketingLocale::class)->group(function () {
     Route::get('/', [MarketingController::class, 'home'])->name('home');
     Route::get('/produkti', [MarketingController::class, 'product'])->name('marketing.product');
+    Route::get('/produkti/erp', [MarketingController::class, 'erp'])->name('marketing.erp');
+    Route::get('/produkti/crm', [MarketingController::class, 'crm'])->name('marketing.crm');
+    Route::get('/produkti/hr', [MarketingController::class, 'hr'])->name('marketing.hr');
     Route::get('/faq', [MarketingController::class, 'faq'])->name('marketing.faq');
     Route::get('/kontakt', [MarketingController::class, 'contact'])->name('marketing.contact');
     Route::get('/locale/{locale}', [MarketingController::class, 'setLocale'])->name('marketing.locale');
