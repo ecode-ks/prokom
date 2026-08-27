@@ -51,7 +51,7 @@
         </div>
     </section>
 
-    <section class="wo-section wo-animate" style="padding-top:4rem">
+    <section class="wo-section wo-section--flow wo-animate" style="padding-top:4rem">
         <span class="wo-label wo-animate-item">{{ __('marketing.product_flow_label') }}</span>
         <h2 class="wo-animate-item">{{ __('marketing.product_flow_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.product_flow_lead') }}</p>
@@ -80,7 +80,7 @@
         </ol>
     </section>
 
-    <section class="wo-section wo-band wo-animate" id="demo">
+    <section class="wo-section wo-band wo-band--product wo-animate" id="demo">
         <span class="wo-label wo-animate-item">{{ __('marketing.cta_label') }}</span>
         <h2 class="wo-animate-item">{{ __('marketing.cta_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.cta_lead') }}</p>

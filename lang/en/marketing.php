@@ -12,6 +12,7 @@ return [
 
     'nav_home' => 'Home',
     'nav_product' => 'Product',
+    'nav_modules' => 'Modules',
     'nav_erp' => 'ERP',
     'nav_crm' => 'CRM',
     'nav_hr' => 'Staff & HR',

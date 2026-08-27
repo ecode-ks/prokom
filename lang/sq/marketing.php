@@ -12,6 +12,7 @@ return [
 
     'nav_home' => 'Ballina',
     'nav_product' => 'Produkti',
+    'nav_modules' => 'Modulet',
     'nav_erp' => 'ERP',
     'nav_crm' => 'CRM',
     'nav_hr' => 'Stafi & HR',

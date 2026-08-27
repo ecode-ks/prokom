@@ -1,7 +1,7 @@
 @php
     $page = $page ?? 'home';
-    $productPages = ['product', 'erp', 'crm', 'hr'];
-    $isProductNav = in_array($page, $productPages, true);
+    $modulePages = ['erp', 'crm', 'hr'];
+    $isModulesNav = in_array($page, $modulePages, true);
     $title = match ($page) {
         'product' => __('marketing.meta_product'),
         'erp' => __('marketing.meta_erp'),
@@ -37,19 +37,20 @@
 
     <header class="wo-top">
         <div class="wo-wrap wo-top-row">
-            <a href="{{ route('home') }}">
-                <img src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" style="height: 45px; max-height: 100%;">
+            <a href="{{ route('home') }}" class="wo-logo">
+                <img src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" width="170" height="48">
             </a>
 
             <nav class="wo-tabs" aria-label="Primary">
                 <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                <div class="wo-nav-drop {{ $isProductNav ? 'is-active' : '' }}">
-                    <a href="{{ route('marketing.product') }}" class="wo-nav-drop-trigger {{ $isProductNav ? 'is-active' : '' }}" aria-haspopup="true" aria-expanded="false">
-                        {{ __('marketing.nav_product') }}
+                <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
+                <div class="wo-nav-drop {{ $isModulesNav ? 'is-active' : '' }}">
+                    <button type="button" class="wo-nav-drop-trigger {{ $isModulesNav ? 'is-active' : '' }}" aria-haspopup="true" aria-expanded="false">
+                        {{ __('marketing.nav_modules') }}
                         <svg class="wo-nav-caret" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
                             <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                    </a>
+                    </button>
                     <div class="wo-nav-drop-menu" role="menu">
                         <a href="{{ route('marketing.erp') }}" class="wo-nav-drop-item {{ $page === 'erp' ? 'is-active' : '' }}" role="menuitem">
                             <span class="wo-nav-drop-item__top">
@@ -72,10 +73,6 @@
                             </span>
                             <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_hr_d') }}</span>
                         </a>
-                        <a href="{{ route('marketing.product') }}" class="wo-nav-drop-foot {{ $page === 'product' ? 'is-active' : '' }}" role="menuitem">
-                            {{ __('marketing.nav_all_modules') }}
-                            <span aria-hidden="true">→</span>
-                        </a>
                     </div>
                 </div>
                 <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
@@ -92,7 +89,6 @@
                         <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.25c-3.6 0-6.75 1.8-6.75 4.05V20h13.5v-1.7c0-2.25-3.15-4.05-6.75-4.05z"/>
                     </svg>
                 </a>
-                <a class="wo-btn wo-btn-primary wo-hide-sm" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
                 <button type="button" class="wo-menu" id="woMenu" aria-expanded="false" aria-controls="woDrawer" aria-label="{{ __('marketing.nav_menu') }}">
                     <span class="wo-menu-bars" aria-hidden="true">
                         <span></span><span></span><span></span>
@@ -102,22 +98,32 @@
         </div>
         <nav class="wo-drawer" id="woDrawer" aria-label="Mobile">
             <div class="wo-wrap wo-drawer-inner">
-                <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
-                <div class="wo-drawer-sub">
-                    <a href="{{ route('marketing.erp') }}" class="{{ $page === 'erp' ? 'is-active' : '' }}">{{ __('marketing.nav_erp') }}</a>
-                    <a href="{{ route('marketing.crm') }}" class="{{ $page === 'crm' ? 'is-active' : '' }}">{{ __('marketing.nav_crm') }}</a>
-                    <a href="{{ route('marketing.hr') }}" class="{{ $page === 'hr' ? 'is-active' : '' }}">{{ __('marketing.nav_hr') }}</a>
+                <div class="wo-drawer-nav">
+                    <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
+                    <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
+                    <div class="wo-drawer-modules">
+                        <p class="wo-drawer-label">{{ __('marketing.nav_modules') }}</p>
+                        <div class="wo-drawer-sub">
+                            <a href="{{ route('marketing.erp') }}" class="{{ $page === 'erp' ? 'is-active' : '' }}">
+                                <span class="wo-drawer-sub__tag">01</span>
+                                <span>{{ __('marketing.nav_erp') }}</span>
+                            </a>
+                            <a href="{{ route('marketing.crm') }}" class="{{ $page === 'crm' ? 'is-active' : '' }}">
+                                <span class="wo-drawer-sub__tag">02</span>
+                                <span>{{ __('marketing.nav_crm') }}</span>
+                            </a>
+                            <a href="{{ route('marketing.hr') }}" class="{{ $page === 'hr' ? 'is-active' : '' }}">
+                                <span class="wo-drawer-sub__tag">03</span>
+                                <span>{{ __('marketing.nav_hr') }}</span>
+                            </a>
+                        </div>
+                    </div>
+                    <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
+                    <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
                 </div>
-                <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
-                <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
                 <div class="wo-drawer-cta">
-                    <a class="wo-btn wo-btn-ghost wo-btn-login" href="{{ route('login') }}" aria-label="{{ __('marketing.nav_login') }}" title="{{ __('marketing.nav_login') }}">
-                        <svg class="wo-btn-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.25c-3.6 0-6.75 1.8-6.75 4.05V20h13.5v-1.7c0-2.25-3.15-4.05-6.75-4.05z"/>
-                        </svg>
-                    </a>
                     <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
+                    <a class="wo-btn wo-btn-ghost" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
                 </div>
             </div>
         </nav>
