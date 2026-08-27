@@ -80,7 +80,6 @@
                             </div>
                             <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Regjistrohu <i class="fa-solid fa-angle-right"></i></button>
                         </form>
-                        <span class="opacity-50 small mt-4 d-block text-center">---------- OSE ----------</span>
                         <div class="mt-4 text-center">
                             <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Keni një llogari?</span> Kyçu tani!</a>
                         </div>

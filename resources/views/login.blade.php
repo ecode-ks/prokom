@@ -69,7 +69,6 @@
                                 </div>
                                 <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Krijo Llogarinë <i class="fa-solid fa-angle-right"></i></button>
                             </form>
-                            <span class="opacity-50 small mt-4 d-block text-center">---------- OSE ----------</span>
                             <div class="mt-4 text-center">
                                 <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Nuk keni ende një llogari?</span> Regjistrohuni tani!</a>
                             </div>
@@ -88,12 +87,11 @@
                         <div class="col-12 col-md-8">
                             <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini përsëri</span>
                             <h1 class="fw-bold mt-3">Kyçu në llogarinë tuaj</h1>
-                            <p class="text-muted small mb-0">Admin, kompani ose punonjës — me username dhe fjalëkalim.</p>
                             <form action="{{ route('check.login') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="username" class="form-label text-uppercase small fw-semibold">Username</label>
-                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" placeholder="Shkruani username-in tuaj">
+                                    <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
+                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" placeholder="Shkruani përdoruesin tuaj">
                                 </div>
                                 <div class="mb-4">
                                     <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi</label>
@@ -101,7 +99,6 @@
                                 </div>
                                 <button type="submit" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Kyçu <i class="fa-solid fa-angle-right"></i></button>
                             </form>
-                            <span class="opacity-50 small mt-4 d-block text-center">---------- OSE ----------</span>
                             <div class="mt-4 text-center">
                                 <a href="{{ route('register') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Nuk keni ende një llogari?</span> Regjistrohuni tani!</a>
                             </div>
