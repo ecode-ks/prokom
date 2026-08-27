@@ -48,6 +48,7 @@ class CompaniesService
         }
         $data['password'] = Hash::make($data['password']);
         $data['payment_expire'] = now()->addDays(30);
+        $data['status'] = 'Blocked';
         return $this->companiesRepository->registerCompany($data);
     }
     //---------------

@@ -43,7 +43,7 @@ class CompaniesController extends Controller
                 if(!$created) {
                     return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
                 }else {
-                    return redirect()->route('login')->with('success', 'Kompania u regjistrua me sukses. Ju lutemi kyçuni.');
+                    return redirect()->route('login')->with('success', 'Kompania u regjistrua me sukses. Pritni që administratori ta aktivizojë llogarinë.');
                 }
             } catch (\Exception $e) {
                 return back()->with('error', 'Regjistrimi dështoi: ' . $e->getMessage())->withInput();

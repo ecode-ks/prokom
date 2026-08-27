@@ -56,7 +56,7 @@ class UsersService
 
         if ($company && Hash::check($credentials['password'], $company->password)) {
             if ($company->status === 'Blocked') {
-                throw new \Exception('Kompania është bllokuar. Ju lutemi kontaktoni stafin.');
+                throw new \Exception('Kompania nuk është aktive. Pritni që administratori ta aktivizojë llogarinë.');
             }
 
             $isExpired = !empty($company->payment_expire) && $company->payment_expire < now();

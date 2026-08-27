@@ -15,6 +15,9 @@ class CompaniesModel extends Model
         'phone',
         'location',
         'username',
-        'password'
+        'password',
+        'status',
+        'payment_expire',
+        'package',
     ];
 }
