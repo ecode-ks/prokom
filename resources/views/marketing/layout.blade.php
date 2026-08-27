@@ -101,8 +101,13 @@
                 <div class="wo-drawer-nav">
                     <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
                     <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
-                    <div class="wo-drawer-modules">
-                        <p class="wo-drawer-label">{{ __('marketing.nav_modules') }}</p>
+                    <details class="wo-drawer-modules{{ $isModulesNav ? ' is-open' : '' }}" @if($isModulesNav) open @endif>
+                        <summary class="wo-drawer-modules__trigger">
+                            <span>{{ __('marketing.nav_modules') }}</span>
+                            <svg class="wo-drawer-modules__caret" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                                <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </summary>
                         <div class="wo-drawer-sub">
                             <a href="{{ route('marketing.erp') }}" class="{{ $page === 'erp' ? 'is-active' : '' }}">
                                 <span class="wo-drawer-sub__tag">01</span>
@@ -117,7 +122,7 @@
                                 <span>{{ __('marketing.nav_hr') }}</span>
                             </a>
                         </div>
-                    </div>
+                    </details>
                     <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
                     <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
                 </div>

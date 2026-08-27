@@ -2730,34 +2730,71 @@ body.wo-lightbox-open {
     }
 
     .wo-drawer-modules {
-        margin: 0.35rem 0;
-        padding: 0.75rem;
-        border-radius: 16px;
-        background: #f3f7fc;
-        border: 1px solid rgba(9, 42, 85, 0.08);
+        margin: 0.15rem 0;
+        padding: 0;
+        border-radius: 14px;
+        background: transparent;
+        border: 0;
     }
 
-    .wo-drawer-label {
-        margin: 0 0 0.55rem 0.15rem;
-        font-size: 0.68rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #7a8ba3;
+    .wo-drawer-modules__trigger {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
+        list-style: none;
+        cursor: pointer;
+        padding: 0.95rem 1rem;
+        border-radius: 14px;
+        color: var(--navy);
+        font-weight: 600;
+        font-size: 1.05rem;
+        user-select: none;
+    }
+
+    .wo-drawer-modules__trigger::-webkit-details-marker {
+        display: none;
+    }
+
+    .wo-drawer-modules__trigger::marker {
+        content: "";
+    }
+
+    .wo-drawer-modules__trigger:hover,
+    .wo-drawer-modules[open] .wo-drawer-modules__trigger,
+    .wo-drawer-modules.is-open .wo-drawer-modules__trigger {
+        background: #eaf2fb;
+    }
+
+    .wo-drawer-modules__caret {
+        width: 0.75rem;
+        height: 0.75rem;
+        flex-shrink: 0;
+        opacity: 0.7;
+        transition: transform 0.2s ease;
+    }
+
+    .wo-drawer-modules[open] .wo-drawer-modules__caret,
+    .wo-drawer-modules.is-open .wo-drawer-modules__caret {
+        transform: rotate(180deg);
     }
 
     .wo-drawer-sub {
         display: grid;
         gap: 0.35rem;
-        padding: 0;
+        padding: 0.35rem 0.35rem 0.55rem;
         margin: 0;
+    }
+
+    .wo-drawer-modules:not([open]) .wo-drawer-sub {
+        display: none;
     }
 
     .wo-drawer-sub a {
         padding: 0.75rem 0.8rem !important;
         font-size: 0.95rem !important;
         opacity: 1;
-        background: #fff;
+        background: #f3f7fc;
         border: 1px solid rgba(9, 42, 85, 0.06);
         border-radius: 12px !important;
     }
