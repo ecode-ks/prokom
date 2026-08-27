@@ -25,11 +25,14 @@
                 <aside class="col-sm-12 col-md-12 col-lg-2 d-none d-md-none d-lg-block bg-darkblue text-light vh-100 overflow-auto m-0 d-print-none">
                     <div class="d-flex flex-column vh-100">
                         <div class="sticky-top bg-darkblue pt-3 pb-2" style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                            <div class="mb-2 px-1">
-                                <a href="{{ route('dashboard') }}" class="app-logo">
-                                    <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM">
-                                </a>
-                                <small class="d-block opacity-50 mt-2">Paneli Menaxhimit</small>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="me-2 rounded-3 bg-lightblue p-2 border-lightblue">
+                                    <i class="fa-solid fa-city"></i>
+                                </div>
+                                <div>
+                                    <small class="d-block fw-semibold">WORKOM</small>
+                                    <small class="d-block opacity-50">Paneli Menaxhimit</small>
+                                </div>
                             </div>
                         </div>
 
