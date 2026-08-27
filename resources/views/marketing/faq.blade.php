@@ -18,7 +18,7 @@
 @endpush
 
 @section('content')
-<div class="wo-wrap container" style="max-width:760px">
+<div class="wo-wrap" style="max-width:760px">
     <section class="wo-section" style="padding-top:3rem">
         <span class="wo-label">{{ __('marketing.faq_label') }}</span>
         <h2>{{ __('marketing.faq_title') }}</h2>

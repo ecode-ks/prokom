@@ -1,7 +1,7 @@
 @extends('marketing.layout')
 
 @section('content')
-<div class="wo-wrap container">
+<div class="wo-wrap">
     <section class="wo-module-hero wo-animate">
         <span class="wo-label wo-animate-item">{{ __('marketing.product_label') }}</span>
         <h1 class="wo-module-hero__title wo-animate-item">{{ __('marketing.product_title') }}</h1>
@@ -14,8 +14,8 @@
         <h2 class="wo-animate-item">{{ __('marketing.product_modules_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.product_modules_lead') }}</p>
 
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 wo-module-cards wo-module-cards--hub">
-            <a href="{{ route('marketing.erp') }}" class="col wo-module-card wo-animate-item">
+        <div class="wo-module-cards wo-module-cards--hub">
+            <a href="{{ route('marketing.erp') }}" class="wo-module-card wo-animate-item">
                 <span class="wo-module-card__tag">01</span>
                 <h3>{{ __('marketing.nav_erp') }}</h3>
                 <p>{{ __('marketing.erp_text') }}</p>
@@ -26,7 +26,7 @@
                 </ul>
                 <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
             </a>
-            <a href="{{ route('marketing.crm') }}" class="col wo-module-card wo-animate-item">
+            <a href="{{ route('marketing.crm') }}" class="wo-module-card wo-animate-item">
                 <span class="wo-module-card__tag">02</span>
                 <h3>{{ __('marketing.nav_crm') }}</h3>
                 <p>{{ __('marketing.crm_text') }}</p>
@@ -37,7 +37,7 @@
                 </ul>
                 <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
             </a>
-            <a href="{{ route('marketing.hr') }}" class="col wo-module-card wo-animate-item">
+            <a href="{{ route('marketing.hr') }}" class="wo-module-card wo-animate-item">
                 <span class="wo-module-card__tag">03</span>
                 <h3>{{ __('marketing.nav_hr') }}</h3>
                 <p>{{ __('marketing.hr_text') }}</p>
@@ -55,22 +55,22 @@
         <span class="wo-label wo-animate-item">{{ __('marketing.product_flow_label') }}</span>
         <h2 class="wo-animate-item">{{ __('marketing.product_flow_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.product_flow_lead') }}</p>
-        <ol class="row g-3 wo-flow">
-            <li class="col-12 wo-animate-item">
+        <ol class="wo-flow">
+            <li class="wo-animate-item">
                 <span class="wo-flow__num">1</span>
                 <div>
                     <h3>{{ __('marketing.product_flow_1_t') }}</h3>
                     <p>{{ __('marketing.product_flow_1_d') }}</p>
                 </div>
             </li>
-            <li class="col-12 wo-animate-item">
+            <li class="wo-animate-item">
                 <span class="wo-flow__num">2</span>
                 <div>
                     <h3>{{ __('marketing.product_flow_2_t') }}</h3>
                     <p>{{ __('marketing.product_flow_2_d') }}</p>
                 </div>
             </li>
-            <li class="col-12 wo-animate-item">
+            <li class="wo-animate-item">
                 <span class="wo-flow__num">3</span>
                 <div>
                     <h3>{{ __('marketing.product_flow_3_t') }}</h3>

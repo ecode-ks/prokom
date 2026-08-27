@@ -36,7 +36,7 @@
     <a class="wo-skip" href="#main">Skip</a>
 
     <header class="wo-top">
-        <div class="wo-wrap container wo-top-row">
+        <div class="wo-wrap wo-top-row">
             <a href="{{ route('home') }}">
                 <img src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" style="height: 45px; max-height: 100%;">
             </a>
@@ -101,7 +101,7 @@
             </div>
         </div>
         <nav class="wo-drawer" id="woDrawer" aria-label="Mobile">
-            <div class="wo-wrap container wo-drawer-inner">
+            <div class="wo-wrap wo-drawer-inner">
                 <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
                 <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
                 <div class="wo-drawer-sub">
@@ -128,7 +128,7 @@
     </main>
 
     <footer class="wo-footer">
-        <div class="wo-wrap container">
+        <div class="wo-wrap">
             <div class="wo-footer-main">
                 <div class="wo-footer-brand">
                     <a href="{{ route('home') }}" class="wo-logo wo-logo-footer">
@@ -137,13 +137,14 @@
                             src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23071838'/%3E%3C/svg%3E"
                             data-wo-src="{{ asset('images/marketing/workom_logo.png') }}"
                             alt="WORKOM"
-                            width="160"
-                            height="160"
+                            width="220"
+                            height="56"
                             loading="lazy"
                             decoding="async"
                         >
                     </a>
                     <p class="wo-footer-copy">{{ __('marketing.footer_copy') }}</p>
+                    @include('marketing.partials.social-links', ['ariaLabel' => __('marketing.footer_social')])
                 </div>
 
                 <div class="wo-footer-col">
@@ -156,7 +157,7 @@
                     </nav>
                 </div>
 
-                <div class="wo-footer-col">
+                <div class="wo-footer-col wo-footer-col--end">
                     <h4>{{ __('marketing.footer_product') }}</h4>
                     <nav aria-label="{{ __('marketing.footer_product') }}">
                         <a href="{{ route('home') }}#cmimet">{{ __('marketing.footer_pricing') }}</a>
