@@ -89,7 +89,7 @@
 
     <section class="wo-section wo-animate" id="cmimet">
         <span class="wo-label wo-animate-item">{{ __('marketing.pricing_label') }}</span>
-        <h2 class="wo-animate-item">{{ __('marketing.pricing_title') }}</h2>
+        <h2 class="wo-animate-item">{{ __('marketing.pricing_title_1') }}<br>{{ __('marketing.pricing_title_2') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.pricing_lead') }}</p>
         <div class="wo-prices-wrap">
             <div class="wo-prices" id="woPrices" tabindex="0" aria-label="{{ __('marketing.pricing_title') }}">

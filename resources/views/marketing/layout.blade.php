@@ -104,7 +104,7 @@
                     <details class="wo-drawer-modules{{ $isModulesNav ? ' is-open' : '' }}" @if($isModulesNav) open @endif>
                         <summary class="wo-drawer-modules__trigger">
                             <span>{{ __('marketing.nav_modules') }}</span>
-                            <svg class="wo-drawer-modules__caret" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+                            <svg class="wo-drawer-modules__caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
                                 <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </summary>
@@ -127,7 +127,6 @@
                     <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
                 </div>
                 <div class="wo-drawer-cta">
-                    <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
                     <a class="wo-btn wo-btn-ghost" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
                 </div>
             </div>

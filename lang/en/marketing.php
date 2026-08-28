@@ -158,6 +158,8 @@ return [
 
     'pricing_label' => 'Packages',
     'pricing_title' => 'Start with a trial. Grow with need.',
+    'pricing_title_1' => 'Start with a trial.',
+    'pricing_title_2' => 'Grow with need.',
     'pricing_lead' => 'Choose the package that fits your team.',
     'price_trial' => 'Free Trial',
     'price_trial_d' => '30 days to try WORKOM.',

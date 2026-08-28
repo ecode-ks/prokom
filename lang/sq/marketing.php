@@ -160,6 +160,8 @@ return [
 
     'pricing_label' => 'Paketat',
     'pricing_title' => 'Filloni me provë. Rriteni sipas nevojës.',
+    'pricing_title_1' => 'Filloni me provë.',
+    'pricing_title_2' => 'Rriteni sipas nevojës.',
     'pricing_lead' => 'Zgjidhni paketën që i përshtatet ekipit tuaj.',
     'price_trial' => 'Provë falas',
     'price_trial_d' => '30 ditë për të provuar WORKOM.',
