@@ -19,6 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $title }}</title>
     @include('partials.favicon')
+    @include('marketing.partials.pwa')
     <meta name="description" content="{{ __('marketing.meta_description') }}">
     <link rel="canonical" href="{{ url()->current() }}">
     <meta property="og:title" content="{{ $title }}">
@@ -459,6 +460,13 @@
                 });
             })();
         })();
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register(@json(asset('marketing-sw.js')), { scope: '/' }).catch(function () {});
+            });
+        }
     </script>
 </body>
 </html>
