@@ -19,46 +19,53 @@ class CompanyNewsRepository
 			->insert($data);
 	}
 	//---------------
-	public function getCompanyNews(int $limit)
+	public function getCompanyNews(int $limit, int $companyId)
 	{
 		return DB::table($this->table . ' as cn')
 			->leftJoin('projects as p', 'cn.project_id', '=', 'p.id')
 			->select('cn.id', 'cn.date', 'cn.info', 'cn.project_id', 'p.project_name')
+			->where('cn.company_id', $companyId)
 			->orderByDesc('cn.id')
 			->cursorPaginate($limit);
 	}
 	//---------------
-	public function getSearchedCompanyNews(int $limit, string $search)
+	public function getSearchedCompanyNews(int $limit, string $search, int $companyId)
 	{
 		return DB::table($this->table . ' as cn')
 			->leftJoin('projects as p', 'cn.project_id', '=', 'p.id')
 			->select('cn.id', 'cn.date', 'cn.info', 'cn.project_id', 'p.project_name')
-                ->where('cn.info', 'like', "%{$search}%")
-                ->orWhere('cn.date', 'like', "%{$search}%")
-                ->orWhere('p.project_name', 'like', "%{$search}%")
+			->where('cn.company_id', $companyId)
+			->where(function ($query) use ($search) {
+				$query->where('cn.info', 'like', "%{$search}%")
+					->orWhere('cn.date', 'like', "%{$search}%")
+					->orWhere('p.project_name', 'like', "%{$search}%");
+			})
 			->orderByDesc('cn.id')
 			->cursorPaginate($limit);
 	}
 	//---------------
-	public function getAllProjects()
+	public function getAllProjects(int $companyId)
 	{
 		return DB::table('projects')
+			->where('company_id', $companyId)
 			->select('id', 'project_name')
 			->orderBy('project_name')
 			->get();
 	}
 	//---------------
-	public function findCompanyNews(int $id)
+	public function findCompanyNews(int $id, int $companyId)
 	{
 		return DB::table($this->table)
 			->where('id', $id)
+			->where('company_id', $companyId)
 			->first();
 	}
 	//---------------
-	public function checkCompanyNewsExist(int $id): bool
+	public function checkCompanyNewsExist(int $id, int $companyId): bool
 	{
 		return DB::table($this->table)
 			->where('id', $id)
+			->where('company_id', $companyId)
 			->exists();
 	}
 	//---------------
