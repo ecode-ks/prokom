@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'meta_title' => 'WORKOM — ERP & CRM për kompani ndërtimi',
+    'meta_title' => 'WORKOM — ERP & CRM për kompani me projekte',
     'meta_description' => 'WORKOM bashkon projektet, klientët, stafin dhe financat në një platformë. Kërkoni një demonstrim 20-minutësh.',
     'meta_product' => 'Produkti | WORKOM',
     'meta_erp' => 'ERP | WORKOM',
@@ -64,12 +64,12 @@ return [
     'hero_lead' => 'WORKOM është platformë për kompani që menaxhojnë projekte dhe ekipe: operacione, oferta, orë pune dhe HR, me role që zbatohen në praktikë.',
     'hero_cta_demo' => 'Kërkoni demonstrim',
     'hero_cta_product' => 'Shikoni produktin',
-    'hero_img_site' => 'Kantieri',
+    'hero_img_site' => 'Në terren',
     'hero_img_office' => 'Zyra',
     'hero_img_team' => 'Ekipi në terren',
 
     'who_label' => 'Për kë është',
-    'who_title' => 'Për ekipe që punojnë në kantier dhe në zyrë.',
+    'who_title' => 'Për ekipe që punojnë në terren dhe në zyrë.',
     'who_text' => 'Më pak Excel dhe mesazhe. Më shumë qartësi: kush është në terren, cila ofertë doli, sa orë u evidencuan.',
 
     'module_open' => 'Shiko më shumë',
@@ -100,10 +100,10 @@ return [
     'product_flow_3_d' => 'Orët e punës, pushimet dhe pagat llogariten mbi të dhëna reale nga terreni.',
 
     'erp_title' => 'ERP — operacionet',
-    'erp_text' => 'Projekte, detyra, raporte me foto, materiale, prezenca dhe orë pune — kontroll i kantierit dhe zyrës në një vend.',
+    'erp_text' => 'Projekte, detyra, raporte me foto, materiale, prezenca dhe orë pune — terreni dhe zyra në një vend.',
     'erp_page_lead' => 'Menaxhoni punën nga planifikimi te realizimi, me statuse të qarta dhe evidencë nga terreni.',
     'erp_explain' => 'ERP në WORKOM është për ekipe që duan të dinë çfarë po ndodh në projekte: kush punon, çfarë është bërë sot, sa materiale ka dhe sa orë janë evidencuar — pa pyetur nëpër telefon.',
-    'erp_includes_lead' => 'Çdo funksion është ndërtuar për përdorim të përditshëm në kompani ndërtimi dhe projektesh.',
+    'erp_includes_lead' => 'Çdo funksion është ndërtuar për përdorim të përditshëm në kompani që menaxhojnë projekte dhe ekipe.',
     'erp_f1_t' => 'Projekte dhe afate',
     'erp_f1_d' => 'Krijoni projekte me status, menaxher, klient dhe afate. Shihni çfarë është aktiv, në pritje ose e përfunduar.',
     'erp_f2_t' => 'Detyra dhe raporte',
@@ -150,7 +150,7 @@ return [
     'how_label' => 'Si funksionon',
     'how_title' => 'Nga biseda e parë te përdorimi i përditshëm.',
     'how_1_t' => 'Njohja',
-    'how_1' => 'Shikojmë proceset tuaja: kantieri, ofertat dhe stafi.',
+    'how_1' => 'Shikojmë proceset tuaja: projektet, ofertat dhe stafi.',
     'how_2_t' => 'Konfigurimi',
     'how_2' => 'Kompania, rolet dhe punonjësit.',
     'how_3_t' => 'Nisja',
@@ -202,11 +202,11 @@ return [
     'faq_3_q' => 'Çfarë ndodh kur skadon paketa?',
     'faq_3_a' => 'Kur abonimi skadon, stafi dhe llogaria e kompanisë nuk mund të hyjnë më në sistem derisa të rinovoni paketën. Të dhënat nuk fshihen automatikisht — mbeten të lidhura me kompaninë. Sapo rinovoni, vazhdoni nga ku keni mbetur, pa rifilluar konfigurimin nga zero. Për datën e skadimit dhe rinovimin, kontaktoni ekipin tonë.',
     'faq_4_q' => 'A funksionon në telefon?',
-    'faq_4_a' => 'Po. WORKOM hapet në shfletuesin e telefonit ose tabletës, pa aplikacion të detyrueshëm. Punonjësit mund të bëjnë check-in, të shohin detyra dhe të dërgojnë raporte edhe nga kantieri. Në desktop keni pamje më të gjerë për menaxhim, oferta dhe raporte — i njëjti llogari, në çdo pajisje.',
+    'faq_4_a' => 'Po. WORKOM hapet në shfletuesin e telefonit ose tabletës, pa aplikacion të detyrueshëm. Punonjësit mund të bëjnë check-in, të shohin detyra dhe të dërgojnë raporte edhe nga terreni. Në desktop keni pamje më të gjerë për menaxhim, oferta dhe raporte — i njëjti llogari, në çdo pajisje.',
     'faq_5_q' => 'Kush i sheh raportet e punonjësve?',
     'faq_5_a' => 'Administratori i kompanisë dhe HR shohin pasqyrën e plotë: prezencë, pushime, paga dhe raporte. Menaxherët shohin atë që lidhet me ekipin ose projektet e tyre. Punonjësi sheh vetëm të dhënat e veta. Kështu mbetet kontrolli te menaxhimi, pa ekspozuar informacion privat te kolegët.',
     'faq_6_q' => 'Si fillojmë?',
-    'faq_6_a' => 'Filloni me një demonstrim 20-minutësh: shikojmë proceset tuaja (kantieri, ofertat, stafi) dhe ju tregojmë si i mbulon WORKOM. Pastaj hapet llogaria e kompanisë, konfiguroni rolet dhe ftoni ekipin. Mund të filloni me provë falas për të testuar rrjedhën reale të punës para abonimit.',
+    'faq_6_a' => 'Filloni me një demonstrim 20-minutësh: shikojmë proceset tuaja (projektet, ofertat, stafi) dhe ju tregojmë si i mbulon WORKOM. Pastaj hapet llogaria e kompanisë, konfiguroni rolet dhe ftoni ekipin. Mund të filloni me provë falas për të testuar rrjedhën reale të punës para abonimit.',
 
     'cta_label' => 'Demonstrimi',
     'cta_title' => 'Gati për një demonstrim?',
@@ -241,7 +241,7 @@ return [
     'social_tiktok' => 'https://www.tiktok.com/@workom.co',
     'footer_social' => 'Rrjetet sociale',
 
-    'footer_copy' => 'Platformë ERP dhe CRM për kompani ndërtimi dhe biznese me projekte në Kosovë dhe Ballkan.',
+    'footer_copy' => 'Platformë ERP dhe CRM për biznese me projekte dhe ekipe në Kosovë dhe Ballkan.',
     'footer_modules' => 'Modulet',
     'footer_product' => 'Produkti',
     'footer_how' => 'Si funksionon',
