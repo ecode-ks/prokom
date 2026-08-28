@@ -87,6 +87,7 @@
                 </button>
             </div>
         </div>
+        <div class="wo-nav-backdrop" id="woNavBackdrop" hidden aria-hidden="true"></div>
         <nav class="wo-drawer" id="woDrawer" aria-label="Mobile">
             <div class="wo-wrap wo-drawer-inner">
                 <div class="wo-drawer-nav">
@@ -179,12 +180,34 @@
         (function () {
             var btn = document.getElementById('woMenu');
             var drawer = document.getElementById('woDrawer');
+            var backdrop = document.getElementById('woNavBackdrop');
+            var drawerCloseTimer = null;
             function setMenu(open) {
                 if (!btn || !drawer) return;
-                drawer.classList.toggle('is-open', open);
-                btn.classList.toggle('is-open', open);
-                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-                document.body.classList.toggle('wo-nav-open', open);
+                window.clearTimeout(drawerCloseTimer);
+                if (open) {
+                    drawer.classList.remove('is-closing');
+                    drawer.classList.add('is-open');
+                    btn.classList.add('is-open');
+                    btn.setAttribute('aria-expanded', 'true');
+                    document.body.classList.add('wo-nav-open');
+                    if (backdrop) {
+                        backdrop.hidden = false;
+                        backdrop.setAttribute('aria-hidden', 'false');
+                    }
+                } else {
+                    if (!drawer.classList.contains('is-open') && !drawer.classList.contains('is-closing')) return;
+                    drawer.classList.add('is-closing');
+                    drawer.classList.remove('is-open');
+                    btn.classList.remove('is-open');
+                    btn.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('wo-nav-open');
+                    if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
+                    drawerCloseTimer = window.setTimeout(function () {
+                        drawer.classList.remove('is-closing');
+                        if (backdrop) backdrop.hidden = true;
+                    }, 380);
+                }
             }
             if (btn && drawer) {
                 btn.addEventListener('click', function () {
@@ -193,11 +216,109 @@
                 drawer.querySelectorAll('a').forEach(function (link) {
                     link.addEventListener('click', function () { setMenu(false); });
                 });
+                if (backdrop) {
+                    backdrop.addEventListener('click', function () { setMenu(false); });
+                }
                 document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') setMenu(false);
                 });
                 window.addEventListener('resize', function () {
                     if (window.matchMedia('(min-width: 920px)').matches) setMenu(false);
+                });
+            }
+
+            function initNavDrop() {
+                if (document.documentElement.dataset.woNavDropReady === '1') return;
+                document.documentElement.dataset.woNavDropReady = '1';
+
+                document.querySelectorAll('.wo-nav-drop').forEach(function (drop) {
+                    var trigger = drop.querySelector('.wo-nav-drop-trigger');
+                    if (!trigger) return;
+
+                    function setOpen(open) {
+                        drop.classList.toggle('is-open', open);
+                        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    }
+
+                    var hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+                    if (hoverCapable) {
+                        drop.addEventListener('mouseenter', function () { setOpen(true); });
+                        drop.addEventListener('mouseleave', function () { setOpen(false); });
+                    }
+
+                    trigger.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var willOpen = !drop.classList.contains('is-open');
+                        document.querySelectorAll('.wo-nav-drop.is-open').forEach(function (other) {
+                            if (other === drop) return;
+                            other.classList.remove('is-open');
+                            var otherTrigger = other.querySelector('.wo-nav-drop-trigger');
+                            if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
+                        });
+                        setOpen(willOpen);
+                    });
+
+                    drop.addEventListener('focusin', function () { setOpen(true); });
+                    drop.addEventListener('focusout', function (e) {
+                        if (!drop.contains(e.relatedTarget)) setOpen(false);
+                    });
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (e.target.closest('.wo-nav-drop')) return;
+                    document.querySelectorAll('.wo-nav-drop.is-open').forEach(function (drop) {
+                        drop.classList.remove('is-open');
+                        var trigger = drop.querySelector('.wo-nav-drop-trigger');
+                        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
+
+            function initDrawerModules() {
+                document.querySelectorAll('.wo-drawer-modules').forEach(function (details) {
+                    var summary = details.querySelector('.wo-drawer-modules__trigger');
+                    var panel = details.querySelector('.wo-drawer-sub');
+                    if (!summary || !panel || details.dataset.woModulesReady === '1') return;
+                    details.dataset.woModulesReady = '1';
+                    details.classList.add('wo-drawer-modules-ready');
+                    if (details.open) details.classList.add('is-open');
+
+                    summary.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var opening = !details.classList.contains('is-open');
+
+                        if (reduceMotion) {
+                            details.open = opening;
+                            details.classList.toggle('is-open', opening);
+                            return;
+                        }
+
+                        if (opening) {
+                            details.open = true;
+                            details.classList.remove('is-closing');
+                            requestAnimationFrame(function () {
+                                details.classList.add('is-open');
+                            });
+                            return;
+                        }
+
+                        details.classList.add('is-closing');
+                        details.classList.remove('is-open');
+                        var done = false;
+                        var finish = function () {
+                            if (done) return;
+                            done = true;
+                            details.open = false;
+                            details.classList.remove('is-closing');
+                        };
+                        panel.addEventListener('transitionend', function onEnd(ev) {
+                            if (ev.target !== panel) return;
+                            panel.removeEventListener('transitionend', onEnd);
+                            finish();
+                        });
+                        window.setTimeout(finish, 420);
+                    });
                 });
             }
 
@@ -279,6 +400,8 @@
             });
 
             var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            initNavDrop();
+            initDrawerModules();
             var animated = document.querySelectorAll('.wo-animate');
             if (!reduceMotion && 'IntersectionObserver' in window && animated.length) {
                 var io = new IntersectionObserver(function (entries) {
