@@ -21,42 +21,42 @@ class CompanyNewsService
 		return $this->repository->create($data);
 	}
 	//---------------
-	public function getCompanyNews(int $limit, string $search = '')
+	public function getCompanyNews(int $limit, int $companyId, string $search = '')
 	{
 		$limit = (int) $limit ?: 10;
 		if (!empty($search)) {
-			return $this->repository->getSearchedCompanyNews($limit, $search);
+			return $this->repository->getSearchedCompanyNews($limit, $search, $companyId);
 		}
-		return $this->repository->getCompanyNews($limit);
+		return $this->repository->getCompanyNews($limit, $companyId);
 	}
 	//---------------
-	public function getAllProjects()
+	public function getAllProjects(int $companyId)
 	{
-		return $this->repository->getAllProjects();
+		return $this->repository->getAllProjects($companyId);
 	}
 	//---------------
-	public function findOrFail(int $id): bool
+	public function findOrFail(int $id, int $companyId): bool
 	{
-		return $this->repository->checkCompanyNewsExist($id);
+		return $this->repository->checkCompanyNewsExist($id, $companyId);
 	}
 	//---------------
-	public function getCompanyNewsById(int $id)
+	public function getCompanyNewsById(int $id, int $companyId)
 	{
-		return $this->repository->findCompanyNews($id);
+		return $this->repository->findCompanyNews($id, $companyId);
 	}
 	//---------------
-	public function updateCompanyNews(int $id, array $data): bool
+	public function updateCompanyNews(int $id, int $companyId, array $data): bool
 	{
-		$news = $this->repository->findCompanyNews($id);
+		$news = $this->repository->findCompanyNews($id, $companyId);
 		if (!$news) {
 			return false;
 		}
 		return $this->repository->update($id, $data);
 	}
 	//---------------
-	public function deleteCompanyNews(int $id): bool
+	public function deleteCompanyNews(int $id, int $companyId): bool
 	{
-		$news = $this->repository->findCompanyNews($id);
+		$news = $this->repository->findCompanyNews($id, $companyId);
 		if (!$news) {
 			return false;
 		}

@@ -16,6 +16,8 @@ class CompanyNewsController extends Controller
     //---------------
     public function create(Request $request)
     {
+        $companyId = (int) session('company_id');
+
         $validator = Validator::make($request->all(), [
             'info' => 'required|string|min:3',
             'project_id' => 'nullable|integer|min:1|exists:projects,id',
@@ -28,6 +30,7 @@ class CompanyNewsController extends Controller
             if (empty($data['project_id'])) {
                 $data['project_id'] = null;
             }
+            $data['company_id'] = $companyId;
 
             try {
                 $this->service->createCompanyNews($data);
@@ -42,9 +45,9 @@ class CompanyNewsController extends Controller
     {
         $page = 'Company News';
         $search = $request->query('search', '');
-        $projects = $this->service->getAllProjects();
-        $companyNews = $this->service->getCompanyNews(10, $search);
         $companyId = (int) session('company_id');
+        $projects = $this->service->getAllProjects($companyId);
+        $companyNews = $this->service->getCompanyNews(10, $companyId, $search);
 
         return view('management.company-news')
             ->with('page', $page)
@@ -55,11 +58,13 @@ class CompanyNewsController extends Controller
     public function edit(int $id)
     {
         $page = 'Company News';
-        if (!$this->service->findOrFail($id)) {
+        $companyId = (int) session('company_id');
+
+        if (!$this->service->findOrFail($id, $companyId)) {
             return redirect()->route('company.news')->with('error', 'Lajmi nuk u gjet');
         } else {
-            $projects = $this->service->getAllProjects();
-            $editCompanyNews = $this->service->getCompanyNewsById($id);
+            $projects = $this->service->getAllProjects($companyId);
+            $editCompanyNews = $this->service->getCompanyNewsById($id, $companyId);
 
             return view('management.company-news')
                 ->with('page', $page)
@@ -70,6 +75,8 @@ class CompanyNewsController extends Controller
     //---------------
     public function update(Request $request)
     {
+        $companyId = (int) session('company_id');
+
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:company_news,id',
             'info' => 'required|string|min:3',
@@ -86,7 +93,9 @@ class CompanyNewsController extends Controller
             }
 
             try {
-                $this->service->updateCompanyNews($id, $data);
+                if (!$this->service->updateCompanyNews($id, $companyId, $data)) {
+                    return back()->with('error', 'Lajmi nuk u gjet');
+                }
                 return back()->with('success', 'Lajmi u përditësua me sukses.');
             } catch (\Exception $e) {
                 return redirect()->route('company.news')->with('error', 'Diçka shkoi gabim, ju lutemi provoni përsëri.');
@@ -96,11 +105,13 @@ class CompanyNewsController extends Controller
     //---------------
     public function delete(int $id)
     {
-        if (!$this->service->findOrFail($id)) {
+        $companyId = (int) session('company_id');
+
+        if (!$this->service->findOrFail($id, $companyId)) {
             return redirect()->route('company.news')->with('error', 'Lajmi nuk u gjet');
         } else {
             try {
-                $this->service->deleteCompanyNews($id);
+                $this->service->deleteCompanyNews($id, $companyId);
                 return redirect()->route('company.news')->with('success', 'Lajmi u fshi me sukses');
             } catch (\Exception $e) {
                 return redirect()->route('company.news')->with('error', 'Diçka shkoi gabim, ju lutemi provoni përsëri.');
