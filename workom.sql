@@ -1,4 +1,4 @@
--- --------------------------------------------------------
+﻿-- --------------------------------------------------------
 -- Host:                         127.0.0.1
 -- Server version:               11.7.2-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for prokom
-CREATE DATABASE IF NOT EXISTS `prokom` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
-USE `prokom`;
+-- Dumping database structure for workom
+CREATE DATABASE IF NOT EXISTS `workom` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_uca1400_ai_ci */;
+USE `workom`;
 
--- Dumping structure for table prokom.check_ins
+-- Dumping structure for table workom.check_ins
 CREATE TABLE IF NOT EXISTS `check_ins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) DEFAULT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `check_ins` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.clients
+-- Dumping structure for table workom.clients
 CREATE TABLE IF NOT EXISTS `clients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `client` varchar(255) DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.companies
+-- Dumping structure for table workom.companies
 CREATE TABLE IF NOT EXISTS `companies` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `created_at` date NOT NULL DEFAULT current_timestamp(),
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `companies` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.company_news
+-- Dumping structure for table workom.company_news
 CREATE TABLE IF NOT EXISTS `company_news` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `company_news` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.contracts
+-- Dumping structure for table workom.contracts
 CREATE TABLE IF NOT EXISTS `contracts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) DEFAULT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `contracts` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.employees
+-- Dumping structure for table workom.employees
 CREATE TABLE IF NOT EXISTS `employees` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee` varchar(255) DEFAULT NULL,
@@ -130,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `employees` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.extra_hours
+-- Dumping structure for table workom.extra_hours
 CREATE TABLE IF NOT EXISTS `extra_hours` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `extra_hours` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.financial_transactions
+-- Dumping structure for table workom.financial_transactions
 CREATE TABLE IF NOT EXISTS `financial_transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -162,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `financial_transactions` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.materials
+-- Dumping structure for table workom.materials
 CREATE TABLE IF NOT EXISTS `materials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `material` varchar(255) DEFAULT NULL,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `materials` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.materials_stock
+-- Dumping structure for table workom.materials_stock
 CREATE TABLE IF NOT EXISTS `materials_stock` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `material_id` int(11) DEFAULT NULL,
@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `materials_stock` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.offers
+-- Dumping structure for table workom.offers
 CREATE TABLE IF NOT EXISTS `offers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `offer_number` varchar(50) DEFAULT NULL,
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `offers` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.packages
+-- Dumping structure for table workom.packages
 CREATE TABLE IF NOT EXISTS `packages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
@@ -222,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `packages` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.payments
+-- Dumping structure for table workom.payments
 CREATE TABLE IF NOT EXISTS `payments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date NOT NULL DEFAULT current_timestamp(),
@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.projects
+-- Dumping structure for table workom.projects
 CREATE TABLE IF NOT EXISTS `projects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `project_name` varchar(255) DEFAULT NULL,
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.project_reports
+-- Dumping structure for table workom.project_reports
 CREATE TABLE IF NOT EXISTS `project_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT current_timestamp(),
@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `project_reports` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.salaries
+-- Dumping structure for table workom.salaries
 CREATE TABLE IF NOT EXISTS `salaries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT NULL,
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS `salaries` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.suppliers
+-- Dumping structure for table workom.suppliers
 CREATE TABLE IF NOT EXISTS `suppliers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `supplier` varchar(255) DEFAULT NULL,
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.tasks
+-- Dumping structure for table workom.tasks
 CREATE TABLE IF NOT EXISTS `tasks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -330,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `tasks` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.task_reports
+-- Dumping structure for table workom.task_reports
 CREATE TABLE IF NOT EXISTS `task_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` datetime DEFAULT NULL,
@@ -347,7 +347,7 @@ CREATE TABLE IF NOT EXISTS `task_reports` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.users
+-- Dumping structure for table workom.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user` varchar(255) DEFAULT NULL,
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.vacations
+-- Dumping structure for table workom.vacations
 CREATE TABLE IF NOT EXISTS `vacations` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -377,7 +377,7 @@ CREATE TABLE IF NOT EXISTS `vacations` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.working_hours
+-- Dumping structure for table workom.working_hours
 CREATE TABLE IF NOT EXISTS `working_hours` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` date DEFAULT current_timestamp(),
@@ -393,7 +393,7 @@ CREATE TABLE IF NOT EXISTS `working_hours` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table prokom.notifications
+-- Dumping structure for table workom.notifications
 CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `company_id` int(11) DEFAULT NULL,
@@ -418,3 +418,4 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+

@@ -100,7 +100,7 @@ class UsersController extends Controller
         }else{
             try {
                 $this->usersService->checkLogin($request->only(['username', 'password']));
-                return redirect()->route('dashboard')->with('success', 'Mirë se vini në PROKOM! Jeni kyçur me sukses.');
+                return redirect()->route('dashboard')->with('success', 'Mirë se vini në WORKOM! Jeni kyçur me sukses.');
             } catch (\Exception $e) {
                 return back()->with('error', 'Kyçja dështoi: ' . $e->getMessage())->withInput();
             }

@@ -38,7 +38,7 @@
             id="subscriptionExpiryAlert"
             class="alert alert-primary alert-dismissible shadow-sm rounded-4 mb-4"
             role="alert"
-            data-dismiss-key="prokom-sub-expiry-{{ session('company_id') }}-{{ $subscriptionExpireDate->format('Y-m-d') }}"
+            data-dismiss-key="workom-sub-expiry-{{ session('company_id') }}-{{ $subscriptionExpireDate->format('Y-m-d') }}"
         >
             <span>Pakoja juaj e abonimit skadon me datën <strong>{{ $subscriptionExpireDate->format('d/m/Y') }}.</strong> Mund të riabonoheni <a href="{{ route('profile') }}" class="text-decoration-none txt-darkblue fw-bold">këtu</a>.</span>
             <button type="button" class="btn-close" id="subscriptionExpiryDismiss" aria-label="Mbyll"></button>

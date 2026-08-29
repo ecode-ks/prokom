@@ -1,8 +1,8 @@
-# Prokom — MVP
+﻿# WORKOM — MVP
 
-## Çfarë është Prokom
+## Çfarë është WORKOM
 
-**Prokom** është një platformë web multi-tenant për menaxhimin e kompanive që punojnë me projekte, ekipe dhe operacione në terren (p.sh. ndërtim, shërbime, kontraktorë).
+**WORKOM** është një platformë web multi-tenant për menaxhimin e kompanive që punojnë me projekte, ekipe dhe operacione në terren (p.sh. ndërtim, shërbime, kontraktorë).
 
 Sistemi i jep kompanisë një vend të vetëm ku mund të:
 
@@ -96,7 +96,7 @@ Admini mund të shohë listën e kompanive, detajet e tyre, të ndryshojë statu
 
 ## Si funksionon në praktikë
 
-Një kompani tipike e përdor Prokom kështu:
+Një kompani tipike e përdor WORKOM kështu:
 
 1. Regjistrohet ose aktivizohet nga admini dhe hyn në sistem.
 2. Shton punonjësit, klientët dhe materialet bazë.
@@ -112,7 +112,7 @@ Një kompani tipike e përdor Prokom kështu:
 
 - Aplikacion **Laravel** me pamje **Blade** dhe **Bootstrap**
 - Arkitekturë **Controller → Service → Repository**
-- Databaza **MySQL** (skema në `prokom.sql`)
+- Databaza **MySQL** (skema në `workom.sql`)
 - Multi-tenant me izolim sipas kompanisë
 - Ngarkim skedarësh (imazhe raportesh, dokumente kontratash) përmes storage
 

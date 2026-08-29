@@ -1,6 +1,6 @@
-# Prokom
+# WORKOM
 
-**Prokom** është një platformë multi-tenant për menaxhimin e kompanive të ndërtimit / projekteve: punonjës, projekte, detyra, materiale, oferta, kontrata, pushime dhe raporte.
+**WORKOM** është një platformë multi-tenant për menaxhimin e kompanive të ndërtimit / projekteve: punonjës, projekte, detyra, materiale, oferta, kontrata, pushime dhe raporte.
 
 UI është në **shqip**. Stack: **Laravel** + **Blade** + **MySQL** + **Bootstrap**.
 
@@ -54,8 +54,8 @@ Views: resources/views/management/*.blade.php
 ## Instalimi
 
 ```bash
-# 1. Klono / hap projektin
-cd prokom
+# 1. Klono / hap projektin (folderi lokal)
+cd workom   # ose emri i folderit të projektit
 
 # 2. Varësitë
 composer install
@@ -66,14 +66,14 @@ cp .env.example .env
 php artisan key:generate
 
 # 4. Konfiguro databazën në .env
-# DB_DATABASE=prokom
+# DB_DATABASE=workom
 # DB_USERNAME=root
 # DB_PASSWORD=
 
 # 5. Importo skemën
-# Nga HeidiSQL / phpMyAdmin: importo prokom.sql
+# Nga HeidiSQL / phpMyAdmin: importo workom.sql
 # Ose:
-mysql -u root -p prokom < prokom.sql
+mysql -u root -p workom < workom.sql
 
 # 6. Storage link (për imazhe/dokumente)
 php artisan storage:link
@@ -88,7 +88,7 @@ Hap: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ## Databaza
 
-Skema kryesore: `prokom.sql`
+Skema kryesore: `workom.sql`
 
 Nëse ke tabela ekzistuese, shiko skriptet në `database/` (p.sh. ALTER për tasks):
 
@@ -122,7 +122,7 @@ resources/views/
   management/     # faqet e moduleve
   template/       # layout + sidebar
 routes/web.php
-prokom.sql
+workom.sql
 ```
 
 ---
@@ -135,6 +135,7 @@ Shiko **[MVP.md](MVP.md)** për:
 - çfarë përfshihet në MVP
 - çfarë mbetet jashtë
 - kritere suksesi
+
 
 
 
