@@ -75,6 +75,7 @@
                 <div class="wo-lang" role="group" aria-label="Language">
                     <a href="{{ route('marketing.locale', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'is-active' : '' }}">SQ</a>
                     <a href="{{ route('marketing.locale', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'is-active' : '' }}">EN</a>
+                    <a href="{{ route('marketing.locale', 'de') }}" class="{{ app()->getLocale() === 'de' ? 'is-active' : '' }}">DE</a>
                 </div>
                 <a class="wo-btn wo-btn-ghost wo-hide-sm wo-btn-login" href="{{ route('login') }}" aria-label="{{ __('marketing.nav_login') }}" title="{{ __('marketing.nav_login') }}">
                     <svg class="wo-btn-icon text-primary" viewBox="0 0 24 24" aria-hidden="true" focusable="false">

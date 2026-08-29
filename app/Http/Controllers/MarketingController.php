@@ -73,7 +73,7 @@ class MarketingController extends Controller
 
     public function setLocale(Request $request, string $locale)
     {
-        if (!in_array($locale, ['sq', 'en'], true)) {
+        if (!in_array($locale, ['sq', 'en', 'de'], true)) {
             $locale = 'sq';
         }
 

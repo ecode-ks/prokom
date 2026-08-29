@@ -11,7 +11,7 @@ class SetMarketingLocale
     public function handle(Request $request, Closure $next): Response
     {
         $locale = session('marketing_locale', 'sq');
-        if (!in_array($locale, ['sq', 'en'], true)) {
+        if (!in_array($locale, ['sq', 'en', 'de'], true)) {
             $locale = 'sq';
         }
         app()->setLocale($locale);
