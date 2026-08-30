@@ -46,7 +46,7 @@
                             <input type="text" name="username" id="username" value="{{ old('username', $editEmployee->username) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani përdoruesin e punëtorit këtu...">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="password" class="form-label">Fjalëkalimi</label>
+                            <label for="password" class="form-label">Fjalëkalimi (8+ Karaktere)</label>
                             <input type="password" name="password" id="password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin e punëtorit këtu...">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
@@ -122,7 +122,7 @@
                             <input type="text" name="username" id="username" value="{{ old('username') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani përdoruesin e punëtorit këtu...">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="password" class="form-label">Fjalëkalimi</label>
+                            <label for="password" class="form-label">Fjalëkalimi (8+ Karaktere)</label>
                             <input type="password" name="password" id="password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin e punëtorit këtu...">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">

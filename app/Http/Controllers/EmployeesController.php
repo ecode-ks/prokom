@@ -21,7 +21,7 @@ class EmployeesController extends Controller
             'phone' => 'required|string|min:1|max:255',
             'email' => 'required|email|min:1|max:255',
             'username' => 'required|string|min:1|max:255',
-            'password' => 'required|string|min:1|max:255',
+            'password' => 'required|string|min:8|max:255',
             'role' => 'required|string|min:1|max:255|in:manager,finance,hr,employee'
         ]);
         if ($validator->fails()) {
@@ -73,7 +73,7 @@ class EmployeesController extends Controller
             'employee' => 'required|string|min:1|max:255',
             'phone' => 'required|string|min:1|max:255',
             'email' => 'required|email|min:1|max:255',
-            'password' => 'nullable|string|min:1|max:255',
+            'password' => 'nullable|string|min:8|max:255',
             'role' => 'required|string|min:1|max:255|in:manager,finance,hr,employee'
         ]);
 
