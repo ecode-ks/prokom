@@ -50,7 +50,7 @@
                                 <input type="password" name="old_password" id="old_password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin aktual" required>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label for="new_password" class="form-label">Fjalëkalimi i Ri</label>
+                                <label for="new_password" class="form-label">Fjalëkalimi i Ri (8+ Karaktere)</label>
                                 <input type="password" name="new_password" id="new_password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin e ri" required>
                             </div>
                             <div class="col-12 col-md-4">
