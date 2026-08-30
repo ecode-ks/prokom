@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `contracts` (
   `employee_id` int(11) DEFAULT NULL,
   `position` varchar(255) DEFAULT NULL,
   `salary` decimal(20,2) DEFAULT NULL,
+  `pay_type` varchar(20) DEFAULT 'monthly',
   `extra_hours_price` decimal(20,2) DEFAULT NULL,
   `weekend_hours_price` decimal(20,2) DEFAULT NULL,
   `from_date` date DEFAULT NULL,

@@ -25,7 +25,7 @@ class ContractsRepository
         $query = DB::table($this->table . ' as c')
             ->join('employees as e', 'c.employee_id', '=', 'e.id')
             ->where('c.company_id', $companyId)
-            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'c.salary', 'c.extra_hours_price', 'c.weekend_hours_price', 'e.employee', 'e.phone', 'e.email');
+            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.status', 'c.salary', 'c.pay_type', 'c.extra_hours_price', 'c.weekend_hours_price', 'e.employee', 'e.phone', 'e.email');
 
         if ($employeeId !== null) {
             $query->where('c.employee_id', $employeeId);
@@ -131,7 +131,7 @@ class ContractsRepository
             ->whereDate('from_date', '<=', $toDate)
             ->whereDate('to_date', '>=', $fromDate)
             ->orderByDesc('id')
-            ->cursorPaginate($limit, ['id', 'position', 'from_date', 'to_date', 'status', 'salary', 'extra_hours_price', 'weekend_hours_price'], $cursorName)
+            ->cursorPaginate($limit, ['id', 'position', 'from_date', 'to_date', 'status', 'salary', 'pay_type', 'extra_hours_price', 'weekend_hours_price'], $cursorName)
             ->withQueryString();
     }
     //---------------
@@ -141,7 +141,7 @@ class ContractsRepository
             ->join('employees as e', 'c.employee_id', '=', 'e.id')
             ->where('c.id', $id)
             ->where('c.company_id', $companyId)
-            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.docs', 'c.status', 'c.salary', 'c.extra_hours_price', 'c.weekend_hours_price', 'e.employee', 'e.phone', 'e.email')
+            ->select('c.id', 'c.employee_id', 'c.position', 'c.from_date', 'c.to_date', 'c.docs', 'c.status', 'c.salary', 'c.pay_type', 'c.extra_hours_price', 'c.weekend_hours_price', 'e.employee', 'e.phone', 'e.email')
             ->first();
     }
     //---------------
