@@ -69,10 +69,10 @@
                             </div>
                             <div class="mb-3">
                                 <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="Shkruani përdoruesin">
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="Shkruani përdoruesin (username)">
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi</label>
+                                <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi (8+ Karaktere)</label>
                                 <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="Shkruani fjalëkalimin tuaj">
                             </div>
                             <div class="mb-3">
