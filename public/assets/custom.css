@@ -860,3 +860,18 @@ header {
 .report-images__item:hover img {
     transform: scale(1.04);
 }
+
+.report-images__item {
+    cursor: zoom-in;
+}
+
+.report-lightbox-content {
+    background: #0b1220;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.report-lightbox-img {
+    max-height: min(80vh, 860px);
+    width: auto;
+    object-fit: cover;
+}

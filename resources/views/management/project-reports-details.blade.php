@@ -68,7 +68,7 @@
             @else
                 <div class="report-images">
                     @foreach($images as $image)
-                        <a href="{{ asset('storage/' . $image) }}" target="_blank" class="report-images__item">
+                        <a href="{{ asset('storage/' . $image) }}" class="report-images__item" data-report-lightbox aria-label="Hap imazhin">
                             <img src="{{ asset('storage/' . $image) }}" alt="Imazh i raportit">
                         </a>
                     @endforeach

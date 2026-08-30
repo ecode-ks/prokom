@@ -11,7 +11,7 @@
         <p class="text-muted">Përditëso të dhënat e transaksionit të zgjedhur.</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Financat · {{ now()->translatedFormat('F Y') }}</small>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">Financat</small>
         <h3 class="fw-semibold pt-2">Të Ardhurat & Shpenzimet</h3>
         <p class="text-muted">Ndjek dhe menaxho të ardhurat dhe shpenzimet e kompanisë.</p>
         <hr class="mb-4">

@@ -475,12 +475,45 @@
             </div>
         @endif
 
+        {{-- Report image lightbox (Bootstrap modal header close) --}}
+        <div class="modal fade" id="reportImageModal" tabindex="-1" aria-hidden="true" aria-labelledby="reportImageModalLabel">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content report-lightbox-content border-0">
+                    <div class="modal-header border-0 py-2 px-3">
+                        <h2 class="modal-title fs-6 text-black mb-0" id="reportImageModalLabel">Imazh i raportit</h2>
+                        <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Mbyll"></button>
+                    </div>
+                    <div class="modal-body text-center pt-0 pb-3 px-3">
+                        <img src="" alt="Imazh i raportit" id="reportLightboxImg" class="report-lightbox-img img-fluid rounded-3">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Loader JS --}}
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 const loader = document.getElementById("page-loader");
                 setTimeout(() => loader.classList.add("hide"), 100);
                 setTimeout(() => loader.remove(), 500);
+
+                const reportModalEl = document.getElementById('reportImageModal');
+                const reportImg = document.getElementById('reportLightboxImg');
+                if (reportModalEl && reportImg && window.bootstrap) {
+                    const reportModal = bootstrap.Modal.getOrCreateInstance(reportModalEl);
+                    document.querySelectorAll('[data-report-lightbox]').forEach((link) => {
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const src = link.getAttribute('href');
+                            if (!src) return;
+                            reportImg.src = src;
+                            reportModal.show();
+                        });
+                    });
+                    reportModalEl.addEventListener('hidden.bs.modal', () => {
+                        reportImg.src = '';
+                    });
+                }
             });
         </script>
 
