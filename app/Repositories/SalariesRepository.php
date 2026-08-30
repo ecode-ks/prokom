@@ -135,6 +135,7 @@ class SalariesRepository
         return [
             'employee_count' => $rows->count(),
             'hours_total' => (float) $rows->sum('working_hours'),
+            'days_total' => (int) $rows->sum('worked_days'),
             'extra_total' => (float) $rows->sum('extra_total'),
             'payroll_total' => (float) $rows->sum('total_pay'),
         ];
@@ -159,7 +160,8 @@ class SalariesRepository
                 DB::table('working_hours')
                     ->select(
                         'employee_id',
-                        DB::raw('COALESCE(SUM(TIME_TO_SEC(hours)), 0) / 3600 as working_hours')
+                        DB::raw('COALESCE(SUM(TIME_TO_SEC(hours)), 0) / 3600 as working_hours'),
+                        DB::raw('COUNT(DISTINCT date) as worked_days')
                     )
                     ->where('company_id', $companyId)
                     ->whereBetween('date', [$fromDate, $toDate])
@@ -177,11 +179,13 @@ class SalariesRepository
                 'e.employee',
                 'c.position',
                 'c.salary',
+                'c.pay_type',
                 'c.extra_hours_price',
                 'c.weekend_hours_price',
                 'c.from_date as contract_from',
                 'c.to_date as contract_to',
-                DB::raw('COALESCE(wh.working_hours, 0) as working_hours')
+                DB::raw('COALESCE(wh.working_hours, 0) as working_hours'),
+                DB::raw('COALESCE(wh.worked_days, 0) as worked_days')
             );
     }
     //---------------
@@ -237,23 +241,39 @@ class SalariesRepository
                 ];
             }
 
-            $salary = (float) $row->salary;
+            $rate = (float) $row->salary;
+            $payType = (string) ($row->pay_type ?? 'monthly');
+            if (!in_array($payType, ['monthly', 'hourly', 'daily'], true)) {
+                $payType = 'monthly';
+            }
+
+            $workingHours = (float) $row->working_hours;
+            $workedDays = (int) ($row->worked_days ?? 0);
+
+            $basePay = match ($payType) {
+                'hourly' => $workingHours * $rate,
+                'daily' => $workedDays * $rate,
+                default => $rate,
+            };
 
             return (object) [
                 'employee_id' => (int) $row->employee_id,
                 'employee' => $row->employee,
                 'position' => $row->position,
-                'salary' => $salary,
+                'salary' => $rate,
+                'pay_type' => $payType,
+                'base_pay' => round($basePay, 2),
                 'extra_hours_price' => (float) $row->extra_hours_price,
                 'weekend_hours_price' => (float) $row->weekend_hours_price,
                 'contract_from' => $row->contract_from,
                 'contract_to' => $row->contract_to,
-                'working_hours' => (float) $row->working_hours,
+                'working_hours' => $workingHours,
+                'worked_days' => $workedDays,
                 'overtime_hours' => $overtimeHours,
                 'weekend_hours' => $weekendHours,
                 'extra_hours' => $extraList,
                 'extra_total' => $extraTotal,
-                'total_pay' => $salary + $extraTotal,
+                'total_pay' => round($basePay + $extraTotal, 2),
             ];
         });
     }

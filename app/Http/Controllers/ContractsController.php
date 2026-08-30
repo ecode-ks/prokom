@@ -22,6 +22,7 @@ class ContractsController extends Controller
         $validator = Validator::make($request->all(), [
             'employee_id' => 'required|integer|min:1|exists:employees,id',
             'position' => 'required|string|min:1|max:255',
+            'pay_type' => 'required|in:monthly,hourly,daily',
             'salary' => 'required|numeric|min:0.01',
             'extra_hours_price' => 'required|numeric|min:0.00',
             'weekend_hours_price' => 'required|numeric|min:0.00',
@@ -33,7 +34,7 @@ class ContractsController extends Controller
         if ($validator->fails()) {
             return redirect()->route('contracts')->with('error','Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
         } else {
-            $data = $request->only(['employee_id', 'position', 'salary', 'extra_hours_price', 'weekend_hours_price', 'from_date', 'to_date', 'docs']);
+            $data = $request->only(['employee_id', 'position', 'pay_type', 'salary', 'extra_hours_price', 'weekend_hours_price', 'from_date', 'to_date', 'docs']);
             $data['company_id'] = session('company_id');
             try {
                 $this->service->createContract($data);
@@ -129,6 +130,7 @@ class ContractsController extends Controller
             'id' => 'required|integer|min:1|exists:contracts,id',
             'employee_id' => 'required|integer|min:1|exists:employees,id',
             'position' => 'required|string|min:1|max:255',
+            'pay_type' => 'required|in:monthly,hourly,daily',
             'salary' => 'required|numeric|min:0.01',
             'extra_hours_price' => 'required|numeric|min:0.01',
             'weekend_hours_price' => 'required|numeric|min:0.01',
@@ -143,7 +145,7 @@ class ContractsController extends Controller
         } else {
             $id = $request->id;
             $companyId = session('company_id');
-            $data = $request->only(['employee_id', 'position', 'salary', 'extra_hours_price', 'weekend_hours_price', 'from_date', 'to_date']);
+            $data = $request->only(['employee_id', 'position', 'pay_type', 'salary', 'extra_hours_price', 'weekend_hours_price', 'from_date', 'to_date']);
             if ($request->hasFile('docs')) {
                 $data['docs'] = $request->file('docs');
             }
