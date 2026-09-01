@@ -86,7 +86,7 @@
         </div>
     </section>
 
-    <section class="wo-section wo-band wo-animate" id="demo">
+    <section class="wo-section wo-band wo-animate" id="demo" style="padding-top:4rem">
         <span class="wo-label wo-animate-item">{{ __('marketing.cta_label') }}</span>
         <h2 class="wo-animate-item">{{ __('marketing.cta_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.cta_lead') }}</p>
