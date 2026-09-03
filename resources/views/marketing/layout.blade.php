@@ -15,20 +15,33 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {{-- SEO --}}
     <title>{{ $title }}</title>
+    <meta name="description" content="WORKOM is an all-in-one business management platform combining ERP, CRM and HR tools for managing projects, customers, employees, finances, attendance and payroll.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="WORKOM">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    {{-- Open Graph --}}
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $title }}">
+    <meta property="og:description" content="WORKOM is an all-in-one business management platform combining ERP, CRM and HR tools for managing projects, customers, employees, finances, attendance and payroll.">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="WORKOM">
+    <meta property="og:image" content="{{ asset('images/marketing/workom_logo.png') }}">
+    <meta property="og:image:alt" content="WORKOM Business Management Platform">
+    <meta property="og:locale" content="en_US">
+
+    {{-- Twitter / X --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $title }}">
+    <meta name="twitter:description" content="WORKOM is an all-in-one business management platform combining ERP, CRM and HR tools for managing projects, customers, employees, finances, attendance and payroll.">
+    <meta name="twitter:image" content="{{ asset('images/marketing/workom_logo.png') }}">
+
     @include('partials.favicon')
     @include('marketing.partials.pwa')
-    <meta name="description" content="{{ __('marketing.meta_description') }}">
-    <link rel="canonical" href="{{ url()->current() }}">
-    <meta property="og:title" content="{{ $title }}">
-    <meta property="og:description" content="{{ __('marketing.meta_description') }}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}">
     @stack('head')
