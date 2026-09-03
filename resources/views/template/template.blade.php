@@ -4,7 +4,30 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+        {{-- SEO --}}
         <title>WORKOM | @yield('title')</title>
+        <meta name="description" content="WORKOM is an all-in-one business management platform combining ERP, CRM and HR tools for managing projects, customers, employees, finances, attendance and payroll.">
+        <meta name="robots" content="index, follow">
+        <meta name="author" content="WORKOM">
+        <link rel="canonical" href="{{ url()->current() }}">
+
+        {{-- Open Graph --}}
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="WORKOM | @yield('title')">
+        <meta property="og:description" content="WORKOM is an all-in-one business management platform combining ERP, CRM and HR tools for managing projects, customers, employees, finances, attendance and payroll.">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:site_name" content="WORKOM">
+        <meta property="og:image" content="{{ asset('images/marketing/workom_logo.png') }}">
+        <meta property="og:image:alt" content="WORKOM Business Management Platform">
+        <meta property="og:locale" content="en_US">
+
+        {{-- Twitter / X --}}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="WORKOM | @yield('title')">
+        <meta name="twitter:description" content="WORKOM is an all-in-one business management platform combining ERP, CRM and HR tools for managing projects, customers, employees, finances, attendance and payroll.">
+        <meta name="twitter:image" content="{{ asset('images/marketing/workom_logo.png') }}">
+
         @include('partials.favicon')
 
         {{-- Assets --}}
@@ -12,7 +35,7 @@
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
         @stack('styles')
 
-        {{-- Google Verify --}}
+        {{-- Google Search Console Verification --}}
         <meta name="google-site-verification" content="LB05ZAngxM64CrbPm3J1QVi2y9SSzyXyp05vbXvg0uM" />
     </head>
     <body>
