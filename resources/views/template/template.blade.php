@@ -11,6 +11,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
         @stack('styles')
+
+        {{-- Google Verify --}}
+        <meta name="google-site-verification" content="LB05ZAngxM64CrbPm3J1QVi2y9SSzyXyp05vbXvg0uM" />
     </head>
     <body>
         {{-- Load spinner --}}
