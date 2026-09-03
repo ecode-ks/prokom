@@ -3,6 +3,12 @@
 return [
     'meta_title' => 'WORKOM — ERP & CRM for project-based companies',
     'meta_description' => 'WORKOM unifies projects, clients, people and finance. Request a 20-minute demo.',
+    'meta_product_description' => 'Discover WORKOM, the connected ERP and CRM platform for project-based companies. Manage operations, sales and people in one place.',
+    'meta_erp_description' => 'Plan projects, assign tasks and track attendance, work hours and field reports with WORKOM ERP for service and construction teams.',
+    'meta_crm_description' => 'Win more business with WORKOM CRM. Organize clients, offers, invoices and financial transactions in one clear workflow.',
+    'meta_hr_description' => 'Simplify staff management with WORKOM HR: employee records, leave, attendance, overtime and payroll-ready work hours.',
+    'meta_faq_description' => 'Find answers about WORKOM ERP, CRM and HR software, including modules, onboarding, demos and daily business management.',
+    'meta_contact_description' => 'Talk to the WORKOM team about a practical ERP, CRM and HR platform for your company. Request a personalized 20-minute demo.',
     'meta_product' => 'Product | WORKOM',
     'meta_erp' => 'ERP | WORKOM',
     'meta_crm' => 'CRM | WORKOM',

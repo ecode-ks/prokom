@@ -3,6 +3,12 @@
 return [
     'meta_title' => 'WORKOM — ERP & CRM für projektbasierte Unternehmen',
     'meta_description' => 'WORKOM vereint Projekte, Kunden, Personal und Finanzen. Fordern Sie eine 20-minütige Demo an.',
+    'meta_product_description' => 'Entdecken Sie WORKOM, die vernetzte ERP- und CRM-Plattform für projektbasierte Unternehmen. Abläufe, Vertrieb und Personal an einem Ort.',
+    'meta_erp_description' => 'Planen Sie Projekte, verteilen Sie Aufgaben und erfassen Sie Anwesenheit, Arbeitszeiten und Außendienstberichte mit WORKOM ERP.',
+    'meta_crm_description' => 'Gewinnen Sie mehr Kunden mit WORKOM CRM. Verwalten Sie Kunden, Angebote, Rechnungen und Finanztransaktionen in einem klaren Ablauf.',
+    'meta_hr_description' => 'Vereinfachen Sie Ihre Personalverwaltung mit WORKOM HR: Mitarbeiter, Urlaub, Anwesenheit, Überstunden und lohnrelevante Arbeitszeiten.',
+    'meta_faq_description' => 'Antworten zu WORKOM ERP, CRM und HR: Module, Demo, Einführung und tägliche Unternehmensverwaltung verständlich erklärt.',
+    'meta_contact_description' => 'Sprechen Sie mit dem WORKOM-Team über eine praktische ERP-, CRM- und HR-Plattform für Ihr Unternehmen. Fordern Sie eine 20-minütige Demo an.',
     'meta_product' => 'Produkt | WORKOM',
     'meta_erp' => 'ERP | WORKOM',
     'meta_crm' => 'CRM | WORKOM',
