@@ -19,5 +19,6 @@ class CompaniesModel extends Model
         'status',
         'payment_expire',
         'package',
+        'language',
     ];
 }

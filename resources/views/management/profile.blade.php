@@ -1,13 +1,13 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Profili im')
+@section('title', __('app.profile_title'))
 
 {{-- Page Content --}}
 @section('content')
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Llogaria</small>
-    <h3 class="fw-semibold pt-2">Profili Im</h3>
-    <p class="text-muted">Shikoni të dhënat e llogarisë dhe ndryshoni vetëm fjalëkalimin tuaj.</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('app.profile_account') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('app.profile_heading') }}</h3>
+    <p class="text-muted">{{ __('app.profile_lead') }}</p>
     <hr class="mb-4">
 
     {{-- Profile Content --}}
@@ -28,37 +28,56 @@
                 <div class="card-header rounded-top-4 bg-white border-0 pt-4 px-4">
                     <div class="d-flex align-items-center gap-2">
                         <i class="fa-solid fa-key txt-lightblue"></i>
-                        <span class="fw-semibold">Ndrysho Fjalëkalimin</span>
+                        <span class="fw-semibold">{{ __('app.profile_change_password') }}</span>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4 pt-2">
                     <div class="row g-3 mb-4">
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Emri dhe Mbiemri</label>
-                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('user') ?? session('company') }}" placeholder="Emri dhe Mbiemri" disabled>
+                            <label class="form-label">{{ __('app.profile_full_name') }}</label>
+                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('user') ?? session('company') }}" placeholder="{{ __('app.profile_full_name') }}" disabled>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Përdoruesi</label>
-                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('username') }}" placeholder="Përdoruesi" disabled>
+                            <label class="form-label">{{ __('app.username') }}</label>
+                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('username') }}" placeholder="{{ __('app.username') }}" disabled>
                         </div>
                     </div>
+                    @if(session('role') === 'company')
+                        @php $companyLanguage = session('language', 'sq'); @endphp
+                        <form action="{{ route('update.company.language') }}" method="post" class="mb-4">
+                            @csrf
+                            <div class="row g-3 align-items-end">
+                                <div class="col-12 col-md-6">
+                                    <label for="language" class="form-label">{{ __('app.language') }}</label>
+                                    <select class="form-select shadow-sm rounded-3" id="language" name="language">
+                                        <option value="sq" @selected($companyLanguage === 'sq')>{{ __('app.language_sq') }}</option>
+                                        <option value="en" @selected($companyLanguage === 'en')>{{ __('app.language_en') }}</option>
+                                        <option value="de" @selected($companyLanguage === 'de')>{{ __('app.language_de') }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-language"></i> {{ __('app.save_language') }}</button>
+                                </div>
+                            </div>
+                        </form>
+                    @endif
                     <form action="{{ route('update.profile.password') }}" method="post">
                         @csrf
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
-                                <label for="old_password" class="form-label">Fjalëkalimi Aktual</label>
-                                <input type="password" name="old_password" id="old_password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin aktual" required>
+                                <label for="old_password" class="form-label">{{ __('app.current_password') }}</label>
+                                <input type="password" name="old_password" id="old_password" class="form-control shadow-sm rounded-3" placeholder="{{ __('app.placeholder_current_password') }}" required>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label for="new_password" class="form-label">Fjalëkalimi i Ri (8+ Karaktere)</label>
-                                <input type="password" name="new_password" id="new_password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin e ri" required>
+                                <label for="new_password" class="form-label">{{ __('app.new_password') }}</label>
+                                <input type="password" name="new_password" id="new_password" class="form-control shadow-sm rounded-3" placeholder="{{ __('app.placeholder_new_password') }}" required>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label for="new_password_confirmation" class="form-label">Konfirmo Fjalëkalimin e Ri</label>
-                                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control shadow-sm rounded-3" placeholder="Përsërit fjalëkalimin e ri" required>
+                                <label for="new_password_confirmation" class="form-label">{{ __('app.confirm_new_password') }}</label>
+                                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control shadow-sm rounded-3" placeholder="{{ __('app.placeholder_confirm_new_password') }}" required>
                             </div>
                             <div class="col-12 pt-2">
-                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-key"></i> Përditëso Fjalëkalimin</button>
+                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-key"></i> {{ __('app.update_password') }}</button>
                             </div>
                         </div>
                     </form>

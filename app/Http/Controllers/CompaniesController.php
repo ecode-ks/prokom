@@ -29,24 +29,25 @@ class CompaniesController extends Controller
             'location'=>'required|string|min:3|max:255',
             'username'=>'required|string|min:3|max:255',
             'password'=>'required|string|min:8|max:255',
-            'password_confirmation'=>'required|string|min:8|max:255'
+            'password_confirmation'=>'required|string|min:8|max:255',
+            'language'=>'required|in:sq,en,de',
         ]);
         if($validator->fails()){
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error',__('app.fields_invalid'))->withInput();
         }else{
             if($request->input('password') !== $request->input('password_confirmation')){
-                return back()->with('error','Fjalëkalimi dhe Konfirmimi i fjalëkalimit nuk përputhen.')->withInput();
+                return back()->with('error',__('app.passwords_mismatch'))->withInput();
             }
-            $data = $request->only(['company', 'email', 'phone', 'location', 'username', 'password']);
+            $data = $request->only(['company', 'email', 'phone', 'location', 'username', 'password', 'language']);
             try {
                 $created = $this->companiesService->registerCompany($data);
                 if(!$created) {
-                    return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+                    return back()->with('error', __('app.register_failed'))->withInput();
                 }else {
-                    return redirect()->route('login')->with('success', 'Kompania u regjistrua me sukses. Mund të hyni tani.');
+                    return redirect()->route('login')->with('success', __('app.register_success'));
                 }
             } catch (\Exception $e) {
-                return back()->with('error', 'Regjistrimi dështoi: ' . $e->getMessage())->withInput();
+                return back()->with('error', __('app.register_failed_reason', ['message' => $e->getMessage()]))->withInput();
             }
         }
     }

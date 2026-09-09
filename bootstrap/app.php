@@ -11,6 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            \App\Http\Middleware\SetMarketingLocale::class,
+        ]);
         $middleware->alias([
             'authorization' => \App\Http\Middleware\CheckAuthorization::class,
             'payment.expired' => \App\Http\Middleware\CheckPaymentExpired::class,

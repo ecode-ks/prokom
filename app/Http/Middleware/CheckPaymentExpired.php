@@ -31,6 +31,7 @@ class CheckPaymentExpired
         $allowedRouteNames = [
             'profile',
             'update.profile.password',
+            'update.company.language',
             'change.package',
             'logout',
         ];
