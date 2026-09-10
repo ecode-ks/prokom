@@ -39,7 +39,7 @@ class OffersController extends Controller
         if ($selectedClientId > 0) {
             $selectedClient = $this->clientsService->getClientById($selectedClientId, $companyId);
             if (!$selectedClient) {
-                return redirect()->route('create.offer')->with('error', 'Klienti i zgjedhur nuk u gjet.')->withInput();
+                return redirect()->route('create.offer')->with('error', __('pages.offer_client_not_found'))->withInput();
             }
 
             session([
@@ -58,7 +58,7 @@ class OffersController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return redirect()->route('create.offer')->with('error', 'Zgjidhni një klient ose plotësoni të dhënat e klientit saktë.')->withInput();
+                return redirect()->route('create.offer')->with('error', __('pages.offer_client_or_fields'))->withInput();
             }
 
             session([
@@ -71,13 +71,13 @@ class OffersController extends Controller
             ]);
         }
         session()->forget('offer_details');
-        return redirect()->route('create.offer')->with('success', 'Të dhënat e klientit u ruajtën. Vazhdoni me detajet e ofertës.');
+        return redirect()->route('create.offer')->with('success', __('pages.offer_client_saved'));
     }
     //---------------
     public function saveDetailsSession(Request $request)
     {
         if (!session()->has('offer_client')) {
-            return redirect()->route('create.offer')->with('error', 'Ju lutemi ruani së pari informacionin e klientit.');
+            return redirect()->route('create.offer')->with('error', __('pages.offer_save_client_first'));
         }
 
         $validator = Validator::make($request->all(), [
@@ -86,7 +86,7 @@ class OffersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('create.offer')->with('error', 'Plotësoni detajet e ofertës saktë.')->withInput();
+            return redirect()->route('create.offer')->with('error', __('pages.offer_details_invalid'))->withInput();
         }
 
         $offerDetails = session('offer_details', []);
@@ -97,7 +97,7 @@ class OffersController extends Controller
 
         session(['offer_details' => $offerDetails]);
 
-        return redirect()->route('create.offer')->with('success', 'Detajet e ofertës u ruajtën. Tani mund ta ruani ofertën e plotë.');
+        return redirect()->route('create.offer')->with('success', __('pages.offer_details_saved'));
     }
     //---------------
     public function create()
@@ -106,7 +106,7 @@ class OffersController extends Controller
         $offerDetails = session('offer_details', []);
 
         if (!$offerClient || count($offerDetails) === 0) {
-            return redirect()->route('create.offer')->with('error', 'Ju lutemi plotësoni të dy hapat para se të ruani ofertën.');
+            return redirect()->route('create.offer')->with('error', __('pages.offer_complete_steps'));
         }
 
         try {
@@ -132,14 +132,14 @@ class OffersController extends Controller
 
             $created = $this->service->createOffer($rows);
             if (!$created) {
-                return redirect()->route('create.offer')->with('error', 'Oferta nuk mund të ruhet, ju lutemi provoni përsëri.');
+                return redirect()->route('create.offer')->with('error', __('pages.offer_save_failed'));
             }
 
             session()->forget(['offer_client', 'offer_details']);
 
-            return redirect()->route('create.offer')->with('success', 'Oferta u krijua dhe u ruajt me sukses.');
+            return redirect()->route('create.offer')->with('success', __('pages.offer_created'));
         } catch (\Exception $e) {
-            return redirect()->route('create.offer')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+            return redirect()->route('create.offer')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -147,7 +147,7 @@ class OffersController extends Controller
     {
         session()->forget(['offer_client', 'offer_details']);
 
-        return redirect()->route('create.offer')->with('success', 'Sesioni i ofertës u pastrua me sukses.');
+        return redirect()->route('create.offer')->with('success', __('pages.offer_session_cleared'));
     }
     //---------------
     public function read(Request $request)
@@ -168,7 +168,7 @@ class OffersController extends Controller
         $editOfferRows = $this->service->getOfferRowsByNumber($offerNumber);
 
         if ($editOfferRows->count() === 0) {
-            return redirect()->route('offers')->with('error', 'Oferta nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_not_found'));
         }
 
         $editOffer = $editOfferRows->first();
@@ -190,21 +190,21 @@ class OffersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'All fields must be filled in according to the rules.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $offerNumber = (string) $request->offer_number;
         if (!$this->service->offerNumberExists($offerNumber)) {
-            return redirect()->route('offers')->with('error', 'Oferta nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_not_found'));
         }
 
         $data = $request->only(['client', 'phone', 'location']);
 
         try {
             $this->service->updateOfferByNumber($offerNumber, $data);
-            return redirect()->route('edit.offer', $offerNumber)->with('success', 'Informacioni i klientit u përditësua me sukses.');
+            return redirect()->route('edit.offer', $offerNumber)->with('success', __('pages.offer_client_updated'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+            return back()->with('error', __('app.try_again'))->withInput();
         }
     }
     //---------------
@@ -217,13 +217,13 @@ class OffersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $offerNumber = (string) $request->offer_number;
         $rows = $this->service->getOfferRowsByNumber($offerNumber);
         if ($rows->count() === 0) {
-            return redirect()->route('offers')->with('error', 'Oferta nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_not_found'));
         }
 
         $header = $rows->first();
@@ -240,9 +240,9 @@ class OffersController extends Controller
 
         try {
             $this->service->createOffer($data);
-            return redirect()->route('edit.offer', $offerNumber)->with('success', 'Përmbajtja e ofertës u shtua me sukses.');
+            return redirect()->route('edit.offer', $offerNumber)->with('success', __('pages.offer_content_added'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+            return back()->with('error', __('app.try_again'))->withInput();
         }
     }
     //---------------
@@ -250,34 +250,34 @@ class OffersController extends Controller
     {
         $row = $this->service->getOfferRowById($id);
         if (!$row) {
-            return redirect()->route('offers')->with('error', 'Rreshti i ofertës nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_row_not_found'));
         }
 
         $offerNumber = $row->offer_number;
         $rows = $this->service->getOfferRowsByNumber($offerNumber);
         if ($rows->count() <= 1) {
-            return redirect()->route('edit.offer', $offerNumber)->with('error', 'Të paktën një rresht përmbajtjeje është i nevojshëm.');
+            return redirect()->route('edit.offer', $offerNumber)->with('error', __('pages.offer_min_row'));
         }
 
         try {
             $this->service->deleteOfferRowById($id);
-            return redirect()->route('edit.offer', $offerNumber)->with('success', 'Përmbajtja e ofertës u fshi me sukses.');
+            return redirect()->route('edit.offer', $offerNumber)->with('success', __('pages.offer_content_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('edit.offer', $offerNumber)->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+            return redirect()->route('edit.offer', $offerNumber)->with('error', __('app.try_again'));
         }
     }
     //---------------
     public function delete(string $offerNumber)
     {
         if (!$this->service->offerNumberExists($offerNumber)) {
-            return redirect()->route('offers')->with('error', 'Oferta nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_not_found'));
         }
 
         try {
             $this->service->deleteOfferByNumber($offerNumber);
-            return redirect()->route('offers')->with('success', 'Oferta u fshi me sukses.');
+            return redirect()->route('offers')->with('success', __('pages.offer_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('offers')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+            return redirect()->route('offers')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -287,7 +287,7 @@ class OffersController extends Controller
         $offerRows = $this->service->getOfferRowsByNumber($offerNumber);
 
         if ($offerRows->count() === 0) {
-            return redirect()->route('offers')->with('error', 'Oferta nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_not_found'));
         }
 
         $offer = $offerRows->first();
@@ -301,18 +301,18 @@ class OffersController extends Controller
     public function updateStatus(string $offerNumber, string $status)
     {
         if (!$this->service->offerNumberExists($offerNumber)) {
-            return redirect()->route('offers')->with('error', 'Oferta nuk u gjet.');
+            return redirect()->route('offers')->with('error', __('pages.offer_not_found'));
         }
 
         if (!in_array($status, ['pending', 'completed'], true)) {
-            return redirect()->route('offers')->with('error', 'Status i zgjedhur është i pavlefshëm.');
+            return redirect()->route('offers')->with('error', __('app.invalid_status'));
         }
 
         try {
             $this->service->updateOfferByNumber($offerNumber, ['status' => $status]);
-            return redirect()->route('offers')->with('success', 'Statusi i ofertës u përditësua me sukses.');
+            return redirect()->route('offers')->with('success', __('pages.offer_status_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('offers')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+            return redirect()->route('offers')->with('error', __('app.try_again'));
         }
     }
     //---------------

@@ -22,15 +22,15 @@ class ClientsController extends Controller
             'location' => 'required|string|min:1|max:255',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('clients')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('clients')->with('error',__('app.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['client', 'phone', 'location']);
             $data['company_id'] = session('company_id');
             try {
                 $this->service->createClient($data);
-                return redirect()->route('clients')->with('success', 'Klienti u krijua me sukses.');
+                return redirect()->route('clients')->with('success', __('pages.client_created'));
             } catch (\Exception $e) {
-                return redirect()->route('clients')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
+                return redirect()->route('clients')->with('error', __('app.try_again'))->withInput();
             }
         }
     }
@@ -51,7 +51,7 @@ class ClientsController extends Controller
         $page = 'Clients';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('clients')->with('error','Klienti nuk u gjet');
+            return redirect()->route('clients')->with('error', __('pages.client_not_found'));
         } else {
             $editClient = $this->service->getClientById($id, $companyId);
             return view('management.clients')
@@ -70,16 +70,16 @@ class ClientsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error',__('app.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['client', 'phone', 'location']);
             $companyId = session('company_id');
             try {
                 $this->service->updateClient($id, $data, $companyId);
-                return redirect()->route('clients')->with('success', 'Klienti u përditësua me sukses.');
+                return redirect()->route('clients')->with('success', __('pages.client_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('clients')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('clients')->with('error', __('app.try_again'));
             }
         }
     }
@@ -88,13 +88,13 @@ class ClientsController extends Controller
     {
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('clients')->with('error','Klienti nuk u gjet');
+            return redirect()->route('clients')->with('error', __('pages.client_not_found'));
         } else {
             try {
                 $this->service->deleteClient($id, $companyId);
-                return redirect()->route('clients')->with('success','Klienti u fshi me sukses');
+                return redirect()->route('clients')->with('success', __('pages.client_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('clients')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('clients')->with('error', __('app.try_again'));
             }
         }
     }

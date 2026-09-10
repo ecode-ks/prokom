@@ -1,7 +1,7 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Harta e Prezencës')
+@section('title', __('pages.checkin_map_title'))
 
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -125,18 +125,18 @@
 @section('content')
     <small class="d-block text-uppercase">
         <a href="{{ route('dashboard') }}" class="text-decoration-none txt-lightblue fw-semibold">
-            <i class="fa-solid fa-circle-chevron-left"></i> Kthehu
+            <i class="fa-solid fa-circle-chevron-left"></i> {{ __('app.back') }}
         </a>
     </small>
-    <h3 class="fw-semibold pt-2">Harta e prezencës</h3>
-    <p class="text-muted">Lokacionet e punonjësve aktivë sot.</p>
+    <h3 class="fw-semibold pt-2">{{ __('pages.checkin_map_heading') }}</h3>
+    <p class="text-muted">{{ __('pages.checkin_map_lead') }}</p>
     <hr class="mb-4">
 
     @if(count($locations) === 0)
         <div class="card shadow-sm">
             <div class="card-body text-center text-muted py-5 px-3">
                 <i class="fa-solid fa-location-dot mb-2 opacity-50 fa-lg"></i>
-                <p class="mb-0">Nuk ka check-in aktiv me lokacion për sot.</p>
+                <p class="mb-0">{{ __('pages.checkin_map_empty') }}</p>
             </div>
         </div>
     @else
@@ -144,8 +144,8 @@
             <div class="col-lg-8">
                 <div class="card shadow-sm h-100">
                     <div class="card-header rounded-top-4 bg-white d-flex justify-content-between align-items-center">
-                        <span><i class="fa-solid fa-map-location-dot txt-lightblue py-2"></i> Harta</span>
-                        <small class="text-muted">{{ count($locations) }} lokacion{{ count($locations) === 1 ? '' : 'e' }}</small>
+                        <span><i class="fa-solid fa-map-location-dot txt-lightblue py-2"></i> {{ __('pages.checkin_map') }}</span>
+                        <small class="text-muted">{{ count($locations) }} {{ count($locations) === 1 ? __('pages.checkin_location') : __('pages.checkin_locations') }}</small>
                     </div>
                     <div class="card-body p-0">
                         <div id="checkin-team-map"></div>
@@ -156,18 +156,18 @@
             <div class="col-lg-4">
                 <div class="card shadow-sm">
                     <div class="card-header rounded-top-4 bg-white d-flex justify-content-between align-items-center">
-                        <span><i class="fa-solid fa-users txt-lightblue py-2"></i> Punonjësit aktivë</span>
+                        <span><i class="fa-solid fa-users txt-lightblue py-2"></i> {{ __('pages.checkin_active_employees') }}</span>
                         <small class="text-muted">{{ count($locations) }}</small>
                     </div>
                     <div class="card-body p-0 d-flex flex-column checkin-map-panel-body">
                         <div class="checkin-location-list" id="checkinLocationList">
                             @foreach($locations as $index => $loc)
                                 @php
-                                    $isPause = ($loc['status'] ?? '') === 'Në pauzë';
+                                    $isPause = ($loc['status_key'] ?? '') === 'pause';
                                     $statusClass = $isPause
                                         ? 'is-pause'
-                                        : (in_array(strtolower((string) ($loc['status'] ?? '')), ['under review', 'pending'], true) ? 'is-review' : 'is-work');
-                                    $statusLabel = $isPause ? 'Në pauzë' : ($statusClass === 'is-work' ? 'Në punë' : ($loc['status'] ?? 'Në pritje'));
+                                        : (($loc['status_key'] ?? '') === 'review' ? 'is-review' : 'is-work');
+                                    $statusLabel = $isPause ? __('app.on_pause') : ($statusClass === 'is-work' ? __('app.at_work') : ($loc['status'] ?? __('app.pending')));
                                     $mapsQuery = ($loc['lat'] ?? '') . ',' . ($loc['lng'] ?? '');
                                 @endphp
                                 <button
@@ -200,7 +200,7 @@
                                     </div>
                                     <div class="small text-muted">
                                         <i class="fa-solid fa-clock me-1 opacity-75"></i>
-                                        Hyrja: {{ $loc['check_in_time'] }}
+                                        {{ __('pages.checkin_entry') }}: {{ $loc['check_in_time'] }}
                                     </div>
                                 </button>
                             @endforeach
@@ -218,6 +218,11 @@
 <script>
 (function () {
     const locations = @json($locations);
+    const i18n = {
+        project: @json(__('pages.checkin_popup_project')),
+        status: @json(__('pages.checkin_popup_status')),
+        checkin: @json(__('pages.checkin_entry'))
+    };
     const map = L.map('checkin-team-map').setView([locations[0].lat, locations[0].lng], 13);
     const markers = [];
 
@@ -231,9 +236,9 @@
     locations.forEach(function (p) {
         const popup = ''
             + '<strong>' + p.name + '</strong><br>'
-            + 'Projekti: ' + (p.project || '-') + '<br>'
-            + 'Statusi: ' + (p.status || '-') + '<br>'
-            + 'Hyrja: ' + (p.check_in_time || '-');
+            + i18n.project + ': ' + (p.project || '-') + '<br>'
+            + i18n.status + ': ' + (p.status || '-') + '<br>'
+            + i18n.checkin + ': ' + (p.check_in_time || '-');
 
         const marker = L.marker([p.lat, p.lng]).addTo(map).bindPopup(popup);
         markers.push(marker);

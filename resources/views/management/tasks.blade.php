@@ -1,19 +1,19 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', isset($editTask) ? 'Përditëso Detyrën' : 'Detyrat')
+@section('title', isset($editTask) ? __('pages.update_task') : __('app.nav_tasks'))
 
 {{-- Page Content --}}
 @section('content')
     @if(isset($editTask))
-        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('tasks') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu mbrapa</a></small>
-        <h3 class="fw-semibold pt-2">Përditëso Detyrën</h3>
-        <p class="text-muted">Përditëso caktimin, projektin dhe afatin e detyrës së zgjedhur.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('tasks') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('app.back_full') }}</a></small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.update_task') }}</h3>
+        <p class="text-muted">{{ __('pages.update_task_lead') }}</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Detyrat</small>
-        <h3 class="fw-semibold pt-2">Të gjitha <span class="txt-lightblue fw-semibold">Detyrat</span></h3>
-        <p class="text-muted">Ndjek progresin, menaxho afatet dhe mbaji detyrat në orar.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('app.nav_tasks') }}</small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.all') }} <span class="txt-lightblue fw-semibold">{{ __('pages.tasks_word') }}</span></h3>
+        <p class="text-muted">{{ __('pages.tasks_lead') }}</p>
         <hr class="mb-4">
     @endif
 
@@ -22,7 +22,7 @@
         {{-- Update Task --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-chart-gantt txt-lightblue py-2"></i> Përditëso Detyrën</span>
+                <span><i class="fa-solid fa-chart-gantt txt-lightblue py-2"></i> {{ __('pages.update_task') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('update.task') }}" method="post">
@@ -30,7 +30,7 @@
                     <input type="hidden" name="id" value="{{ $editTask->id }}">
                     <div class="row g-3">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label class="form-label">Punonjësit</label>
+                            <label class="form-label">{{ __('pages.employees') }}</label>
                             @php
                                 $selectedEmployees = array_map(
                                     'strval',
@@ -44,7 +44,7 @@
                                 }
                                 $selectedEmployeesText = count($selectedEmployeeLabels) > 0
                                     ? implode(', ', $selectedEmployeeLabels)
-                                    : '-- Zgjidh Punonjësit --';
+                                    : __('pages.choose_employees');
                             @endphp
                             <div class="dropdown">
                                 <button
@@ -80,31 +80,31 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <small class="text-muted">Zgjidh një ose më shumë punonjës.</small>
+                            <small class="text-muted">{{ __('pages.choose_employees_hint') }}</small>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="project_id" class="form-label">Projekti</label>
+                            <label for="project_id" class="form-label">{{ __('pages.project') }}</label>
                             <select name="project_id" id="project_id" class="form-control shadow-sm rounded-3">
-                                <option value="" disabled {{ old('project_id', $editTask->project_id) ? '' : 'selected' }}>-- Zgjidh Projektin --</option>
+                                <option value="" disabled {{ old('project_id', $editTask->project_id) ? '' : 'selected' }}>{{ __('pages.choose_project') }}</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ old('project_id', $editTask->project_id) == $project->id ? 'selected' : '' }}>{{ $project->project_name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="deadline" class="form-label">Afati i Detyrës</label>
+                            <label for="deadline" class="form-label">{{ __('pages.task_deadline') }}</label>
                             <input type="date" name="deadline" id="deadline" value="{{ old('deadline', $editTask->deadline) }}" class="form-control shadow-sm rounded-3">
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="title" class="form-label">Titulli i Detyrës</label>
-                            <input type="text" name="title" id="title" value="{{ old('title', $editTask->title) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani titullin e detyrës...">
+                            <label for="title" class="form-label">{{ __('pages.task_title') }}</label>
+                            <input type="text" name="title" id="title" value="{{ old('title', $editTask->title) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_task_title') }}">
                         </div>
                         <div class="col-12">
-                            <label for="task" class="form-label">Përshkrimi i Detyrës</label>
-                            <textarea name="task" id="task" class="form-control shadow-sm rounded-3" placeholder="Shkruani përshkrimin e detyrës..." rows="5">{{ old('task', $editTask->task) }}</textarea>
+                            <label for="task" class="form-label">{{ __('pages.task_description') }}</label>
+                            <textarea name="task" id="task" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_task_description') }}" rows="5">{{ old('task', $editTask->task) }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Detyrën</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> {{ __('pages.update_task') }}</button>
                         </div>
                     </div>
                 </form>
@@ -117,7 +117,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-list-check text-primary"></i> Total</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-list-check text-primary"></i> {{ __('pages.total') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $taskStats->total_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-bolt text-info"></i> Të reja</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-bolt text-info"></i> {{ __('pages.new_plural') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $taskStats->new_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-spinner text-warning"></i> Në punë</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-spinner text-warning"></i> {{ __('pages.working_plural') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $taskStats->working_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> Përfunduar</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-circle-check text-success"></i> {{ __('app.completed') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $taskStats->completed_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -152,14 +152,14 @@
         @if(session('role') === 'company' || session('role') === 'manager')
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-chart-gantt txt-lightblue py-2"></i> Krijo Detyrë të Re</span>
+                <span><i class="fa-solid fa-chart-gantt txt-lightblue py-2"></i> {{ __('pages.create_task') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.task') }}" method="post">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label class="form-label">Punonjësit</label>
+                            <label class="form-label">{{ __('pages.employees') }}</label>
                             @php
                                 $oldAssignedTo = array_map('strval', old('assigned_to', []));
                                 $oldAssignedLabels = [];
@@ -170,7 +170,7 @@
                                 }
                                 $oldAssignedText = count($oldAssignedLabels) > 0
                                     ? implode(', ', $oldAssignedLabels)
-                                    : '-- Zgjidh Punonjësit --';
+                                    : __('pages.choose_employees');
                             @endphp
                             <div class="dropdown">
                                 <button
@@ -206,31 +206,31 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <small class="text-muted">Zgjidh një ose më shumë punonjës.</small>
+                            <small class="text-muted">{{ __('pages.choose_employees_hint') }}</small>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="project_id" class="form-label">Projekti</label>
+                            <label for="project_id" class="form-label">{{ __('pages.project') }}</label>
                             <select name="project_id" id="project_id" class="form-control shadow-sm rounded-3">
-                                <option value="" disabled {{ old('project_id') ? '' : 'selected' }}>-- Zgjidh Projektin --</option>
+                                <option value="" disabled {{ old('project_id') ? '' : 'selected' }}>{{ __('pages.choose_project') }}</option>
                                 @foreach($projects as $project)
                                     <option value="{{ $project->id }}" {{ old('project_id') == $project->id ? 'selected' : '' }}>{{ $project->project_name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="deadline" class="form-label">Afati i Detyrës</label>
+                            <label for="deadline" class="form-label">{{ __('pages.task_deadline') }}</label>
                             <input type="date" name="deadline" id="deadline" value="{{ old('deadline') }}" class="form-control shadow-sm rounded-3">
                         </div>
                         <div class="col-12 col-md-6 col-lg-6">
-                            <label for="title" class="form-label">Titulli i Detyrës</label>
-                            <input type="text" name="title" id="title" value="{{ old('title') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani titullin e detyrës...">
+                            <label for="title" class="form-label">{{ __('pages.task_title') }}</label>
+                            <input type="text" name="title" id="title" value="{{ old('title') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_task_title') }}">
                         </div>
                         <div class="col-12">
-                            <label for="task" class="form-label">Përshkrimi i Detyrës</label>
-                            <textarea name="task" id="task" class="form-control shadow-sm rounded-3" placeholder="Shkruani përshkrimin e detyrës..." rows="5">{{ old('task') }}</textarea>
+                            <label for="task" class="form-label">{{ __('pages.task_description') }}</label>
+                            <textarea name="task" id="task" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_task_description') }}" rows="5">{{ old('task') }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Detyrën</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> {{ __('pages.create_task_btn') }}</button>
                         </div>
                     </div>
                 </form>
@@ -241,11 +241,11 @@
         {{-- Tasks List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Detyrave</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.task_list') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('tasks') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('app.search') }}" aria-label="{{ __('app.search') }}" aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
                 <div class="table-responsive">
@@ -253,18 +253,18 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Data</th>
-                                <th scope="col" class="text-nowrap">Titulli</th>
-                                <th scope="col" class="text-nowrap">Projekti</th>
-                                <th scope="col" class="text-nowrap">Afati</th>
-                                <th scope="col" class="text-nowrap">Statusi</th>
-                                <th scope="col" class="text-nowrap text-end">Veprimet</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.date') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.title_col') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.project') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.deadline_col') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.status') }}</th>
+                                <th scope="col" class="text-nowrap text-end">{{ __('app.operations') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($tasks) === 0)
                                 <tr>
-                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('app.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach ($tasks as $task)
@@ -279,15 +279,15 @@
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($task->deadline)->format('d/m/Y') }}</td>
                                         <td class="text-nowrap">
                                             @if($status === 'completed')
-                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Përfunduar</span>
+                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('app.completed') }}</span>
                                             @elseif($status === 'working' || $status === 'in_progress' || $status === 'in progress')
-                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Në punë</span>
+                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">{{ __('pages.status_working') }}</span>
                                             @elseif($status === 'review' || $status === 'reviewing')
-                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
+                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ __('pages.status_review') }}</span>
                                             @elseif($status === 'blocked' || $status === 'on_hold')
-                                                <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Bllokuar</span>
+                                                <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ __('pages.status_blocked') }}</span>
                                             @else
-                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">E re</span>
+                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">{{ __('pages.status_new') }}</span>
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">
@@ -319,10 +319,10 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body text-center">
-                                <p>A jeni i sigurt që dëshironi të fshini këtë detyrë?</p>
+                                <p>{{ __('pages.confirm_delete_task') }}</p>
                                 <div class="mt-3">
-                                    <a href="{{ route('delete.task', $task->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                    <a href="{{ route('delete.task', $task->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('app.confirm') }}</a>
+                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('app.cancel') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             label.textContent = selected.length > 0
                 ? selected.join(', ')
-                : '-- Zgjidh Punonjësit --';
+                : @json(__('pages.choose_employees'));
         };
 
         checkboxes.forEach(function (checkbox) {

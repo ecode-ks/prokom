@@ -65,6 +65,6 @@ class WorkingHoursService
         $hours = intdiv($totalSeconds, 3600);
         $minutes = intdiv($totalSeconds % 3600, 60);
 
-        return $hours . ' orë ' . $minutes . ' min';
+        return __('pages.hours_min_format', ['hours' => $hours, 'minutes' => $minutes]);
     }
 }

@@ -1,17 +1,17 @@
 @extends('template.template')
 
-@section('title', isset($editReport) ? 'Përditëso Raportin e Detyrës' : 'Raportet e Detyrave')
+@section('title', isset($editReport) ? __('pages.update_task_report') : __('app.nav_task_reports'))
 
 @section('content')
     @if(isset($editReport))
-        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('task.reports') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu mbrapa</a></small>
-        <h3 class="fw-semibold pt-2">Përditëso Raportin e Detyrës</h3>
-        <p class="text-muted">Përditëso të dhënat e raportit të zgjedhur.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('task.reports') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('app.back_full') }}</a></small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.update_task_report') }}</h3>
+        <p class="text-muted">{{ __('pages.update_report_lead') }}</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Detyrat</small>
-        <h3 class="fw-semibold pt-2">Raportet e <span class="txt-lightblue fw-semibold">Detyrave</span></h3>
-        <p class="text-muted">Krijo dhe ndiq raportet e ekzekutimit të detyrave.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('app.nav_tasks') }}</small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.reports_of') }} <span class="txt-lightblue fw-semibold">{{ __('pages.tasks_genitive') }}</span></h3>
+        <p class="text-muted">{{ __('pages.task_reports_lead') }}</p>
         <hr class="mb-4">
     @endif
 
@@ -19,7 +19,7 @@
 
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> Përditëso Raportin e Detyrës</span>
+                <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> {{ __('pages.update_task_report') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('update.task.report') }}" method="post" enctype="multipart/form-data">
@@ -27,9 +27,9 @@
                     <input type="hidden" name="id" value="{{ $editReport->id }}">
                     <div class="row g-3">
                         <div class="col-12 col-md-4">
-                            <label for="task_id" class="form-label">Detyra</label>
+                            <label for="task_id" class="form-label">{{ __('pages.task_noun') }}</label>
                             <select name="task_id" id="task_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('task_id', $editReport->task_id) ? '' : 'selected' }}>-- Zgjidh Detyrën --</option>
+                                <option value="" disabled {{ old('task_id', $editReport->task_id) ? '' : 'selected' }}>{{ __('pages.choose_task') }}</option>
                                 @foreach($tasks as $task)
                                     <option value="{{ $task->id }}" {{ old('task_id', $editReport->task_id) == $task->id ? 'selected' : '' }}>
                                         #{{ $task->id }} - {{ \Illuminate\Support\Str::limit($task->title, 45) }} ({{ $task->project_name }})
@@ -38,15 +38,15 @@
                             </select>
                         </div>
                         <div class="col-12 col-md-8">
-                            <label for="images" class="form-label">Imazhet / Faktet <small class="text-muted">(opsionale – lëreni bosh për të ruajtur ekzistueset)</small></label>
+                            <label for="images" class="form-label">{{ __('pages.images_facts') }} <small class="text-muted">{{ __('pages.images_keep_existing') }}</small></label>
                             <input type="file" name="images[]" id="images" class="form-control shadow-sm rounded-3" multiple accept="image/*">
                         </div>
                         <div class="col-12">
-                            <label for="report" class="form-label">Raporti</label>
-                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="Shkruani detajet e raportit..." required>{{ old('report', $editReport->report) }}</textarea>
+                            <label for="report" class="form-label">{{ __('pages.report') }}</label>
+                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="{{ __('pages.placeholder_report') }}" required>{{ old('report', $editReport->report) }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Raportin</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> {{ __('pages.update_report') }}</button>
                         </div>
                     </div>
                 </form>
@@ -60,7 +60,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-list-check text-primary"></i> Aktive</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-list-check text-primary"></i> {{ __('app.active') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $reportStats->active_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-magnifying-glass text-warning"></i> Në shqyrtim</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-magnifying-glass text-warning"></i> {{ __('pages.status_review') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $reportStats->under_review_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-check text-success"></i> Të zgjidhura</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-check text-success"></i> {{ __('pages.resolved_plural') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $reportStats->resolved_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
             <div class="col-12 col-md-6 col-lg-3">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-lock text-secondary"></i> Mbyllura</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-lock text-secondary"></i> {{ __('pages.closed_plural') }}</small>
                         <h4 class="fw-semibold mb-0">{{ $reportStats->closed_count ?? 0 }}</h4>
                     </div>
                 </div>
@@ -93,16 +93,16 @@
 
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> Krijo Raport Detyre</span>
+                <span><i class="fa-solid fa-file-lines txt-lightblue py-2"></i> {{ __('pages.create_task_report') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.task.report') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4">
-                            <label for="task_id" class="form-label">Detyra</label>
+                            <label for="task_id" class="form-label">{{ __('pages.task_noun') }}</label>
                             <select name="task_id" id="task_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('task_id') ? '' : 'selected' }}>-- Zgjidh Detyrën --</option>
+                                <option value="" disabled {{ old('task_id') ? '' : 'selected' }}>{{ __('pages.choose_task') }}</option>
                                 @foreach($tasks as $task)
                                     <option value="{{ $task->id }}" {{ old('task_id') == $task->id ? 'selected' : '' }}>
                                         #{{ $task->id }} - {{ \Illuminate\Support\Str::limit($task->title, 45) }} ({{ $task->project_name }})
@@ -111,15 +111,15 @@
                             </select>
                         </div>
                         <div class="col-12 col-md-8">
-                            <label for="images" class="form-label">Imazhet / Faktet (opsionale)</label>
+                            <label for="images" class="form-label">{{ __('pages.images_facts_optional') }}</label>
                             <input type="file" name="images[]" id="images" class="form-control shadow-sm rounded-3" multiple accept="image/*">
                         </div>
                         <div class="col-12">
-                            <label for="report" class="form-label">Raporti</label>
-                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="Shkruani detajet e raportit..." required>{{ old('report') }}</textarea>
+                            <label for="report" class="form-label">{{ __('pages.report') }}</label>
+                            <textarea name="report" id="report" class="form-control shadow-sm rounded-3" rows="5" placeholder="{{ __('pages.placeholder_report') }}" required>{{ old('report') }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Raportin</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> {{ __('pages.create_report_btn') }}</button>
                         </div>
                     </div>
                 </form>
@@ -128,11 +128,11 @@
 
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Raporteve të Detyrave</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.task_reports_list') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('task.reports') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('app.search') }}" aria-label="{{ __('app.search') }}" aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
                 <div class="table-responsive">
@@ -140,18 +140,18 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Data</th>
-                                <th scope="col" class="text-nowrap">Titulli i Detyrës</th>
-                                <th scope="col" class="text-nowrap">Projekti</th>
-                                <th scope="col" class="text-nowrap">Raportuar Nga</th>
-                                <th scope="col" class="text-nowrap">Statusi</th>
-                                <th scope="col" class="text-nowrap text-end">Veprimet</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.date') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.task_title') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.project') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.reported_by') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.status') }}</th>
+                                <th scope="col" class="text-nowrap text-end">{{ __('app.operations') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($reports) === 0)
                                 <tr>
-                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('app.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach($reports as $report)
@@ -163,13 +163,13 @@
                                         <td class="text-nowrap">{{ $report->reporter_name ?? '-' }}</td>
                                         <td class="text-nowrap">
                                             @if($report->status === 'active' || $report->status === 'new')
-                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">Aktive</span>
+                                                <span class="badge rounded-pill text-primary text-bg-primary bg-opacity-25 border border-primary">{{ __('pages.status_active') }}</span>
                                             @elseif($report->status === 'under_review')
-                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
+                                                <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ __('pages.status_review') }}</span>
                                             @elseif($report->status === 'resolved')
-                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">I zgjidhur</span>
+                                                <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.status_resolved') }}</span>
                                             @else
-                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">Mbyllur</span>
+                                                <span class="badge rounded-pill text-secondary text-bg-secondary bg-opacity-25 border border-secondary">{{ __('pages.status_closed') }}</span>
                                             @endif
                                         </td>
                                         <td class="text-nowrap text-end">
@@ -198,10 +198,10 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body text-center">
-                                <p>A jeni i sigurt që dëshironi të fshini këtë raport?</p>
+                                <p>{{ __('pages.confirm_delete_report') }}</p>
                                 <div class="mt-3">
-                                    <a href="{{ route('delete.task.report', $report->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                    <a href="{{ route('delete.task.report', $report->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('app.confirm') }}</a>
+                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('app.cancel') }}</button>
                                 </div>
                             </div>
                         </div>

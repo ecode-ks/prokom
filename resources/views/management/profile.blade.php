@@ -96,26 +96,26 @@
                             <i class="fa-brands fa-trello txt-lightblue"></i>
                         </span>
                         <div>
-                            <h5 class="mb-0 fw-semibold">Ndrysho Paketën e Abonimit</h5>
-                            <small class="text-muted">Zgjidhni paketën që i përshtatet më mirë kompanisë suaj</small>
+                            <h5 class="mb-0 fw-semibold">{{ __('pages.change_subscription') }}</h5>
+                            <small class="text-muted">{{ __('pages.choose_package_lead') }}</small>
                         </div>
                     </div>
-                    <span class="badge rounded-pill text-bg-light border px-3 py-2">Menaxhimi i Abonimit</span>
+                    <span class="badge rounded-pill text-bg-light border px-3 py-2">{{ __('pages.subscription_management') }}</span>
                 </div>
             </div>
             <div class="card-body px-4 pb-4 pt-3">
                 <div class="row g-3 mb-4">
                     <div class="col-12 col-md-6">
                         <div class="rounded-4 border bg-white p-3 h-100 shadow-sm">
-                            <small class="text-muted d-block mb-1">Paketa aktuale</small>
-                            <div class="fw-semibold txt-lightblue fs-5 text-truncate" title="{{ session('package') ?? 'Nuk ka pako aktive' }}">
-                                {{ session('package') ?? 'Nuk ka pako aktive' }}
+                            <small class="text-muted d-block mb-1">{{ __('pages.current_package') }}</small>
+                            <div class="fw-semibold txt-lightblue fs-5 text-truncate" title="{{ session('package') ?? __('pages.no_active_package') }}">
+                                {{ session('package') ?? __('pages.no_active_package') }}
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="rounded-4 border bg-white p-3 h-100 shadow-sm">
-                            <small class="text-muted d-block mb-1">Valide deri më</small>
+                            <small class="text-muted d-block mb-1">{{ __('pages.valid_until_date') }}</small>
                             <div class="fw-semibold txt-lightblue fs-5">
                                 {{ session('expire_date') ? \Carbon\Carbon::parse(session('expire_date'))->format('d/m/Y') : '--/--/----' }}
                             </div>
@@ -131,15 +131,15 @@
                                     <div class="card-body d-flex flex-column p-4" style="background: linear-gradient(180deg, rgba(13,110,253,0.08), rgba(13,110,253,0.01));">
                                         <div class="d-flex align-items-center justify-content-between mb-3">
                                             <h6 class="fw-semibold mb-0 text-truncate pe-2" title="{{ $package->title }}">{{ $package->title }}</h6>
-                                            <span class="badge rounded-pill text-bg-light border">{{ $package->months }} Muaj</span>
+                                            <span class="badge rounded-pill text-bg-light border">{{ __('pages.months', ['count' => $package->months]) }}</span>
                                         </div>
                                         <div class="mb-3">
                                             <span class="h3 fw-bold mb-0 txt-lightblue">{{ $package->price }} €</span>
-                                            <small class="text-muted d-block">çmimi total i paketës</small>
+                                            <small class="text-muted d-block">{{ __('pages.package_total_price') }}</small>
                                         </div>
                                         <p class="text-muted mb-4" style="min-height: 72px;">{!! nl2br(e($package->description)) !!}</p>
                                         <a href="{{ route('change.package', $package->id)}}" class="btn btn-outline-primary rounded-3 mt-auto w-100">
-                                            <i class="fa-solid fa-bolt me-1"></i> Zgjidh Këtë Paketë
+                                            <i class="fa-solid fa-bolt me-1"></i> {{ __('pages.choose_this_package') }}
                                         </a>
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                     </div>
                 @else
                     <div class="alert alert-light border rounded-4 mb-0">
-                        Momentalisht nuk ka pako të disponueshme.
+                        {{ __('pages.no_packages') }}
                     </div>
                 @endif
             </div>

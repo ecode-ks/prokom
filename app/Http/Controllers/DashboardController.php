@@ -75,7 +75,7 @@ class DashboardController extends Controller
         $data = [
             'page' => 'Dashboard',
             'role' => $role,
-            'displayName' => session('user') ?: session('company') ?: 'Përdorues',
+            'displayName' => session('user') ?: session('company') ?: __('pages.dash_user'),
             'todayLabel' => now()->format('d/m/Y'),
             'isCompany' => $role === 'company',
             'isManager' => $role === 'manager',

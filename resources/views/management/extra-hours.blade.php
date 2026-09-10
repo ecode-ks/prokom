@@ -1,21 +1,30 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', isset($editExtraHour) ? 'Përditëso Orët Shtesë' : 'Orët Shtesë')
+@section('title', isset($editExtraHour) ? __('pages.update_extra_hours') : __('app.nav_extra_hours'))
 
 {{-- Page Content --}}
 @section('content')
-    @php $isEmployee = ($role ?? '') === 'employee'; @endphp
+    @php
+        $isEmployee = ($role ?? '') === 'employee';
+        $extraHourTypeLabel = function ($type) {
+            return match ($type) {
+                'Orët jashtë orarit' => __('pages.extra_hours_type_overtime'),
+                'Orët në vikend' => __('pages.extra_hours_type_weekend'),
+                default => $type,
+            };
+        };
+    @endphp
 
     @if(isset($editExtraHour))
-        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('extra.hours') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
-        <h3 class="fw-semibold pt-2">Përditëso Orët Shtesë</h3>
-        <p class="text-muted">Përditëso të dhënat e orëve shtesë të zgjedhura.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('extra.hours') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('app.back') }}</a></small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.update_extra_hours') }}</h3>
+        <p class="text-muted">{{ __('pages.update_extra_hours_lead') }}</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Orët Shtesë</small>
-        <h3 class="fw-semibold pt-2">{{ $isEmployee ? 'Orët e Mia Shtesë' : 'Menaxho Orët Shtesë' }}</h3>
-        <p class="text-muted">{{ $isEmployee ? 'Shiko orët jashtë orarit dhe orët në vikend.' : 'Monitoro dhe menaxho orët jashtë orarit dhe orët në vikend.' }}</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('app.nav_extra_hours') }}</small>
+        <h3 class="fw-semibold pt-2">{{ $isEmployee ? __('pages.my_extra_hours') : __('pages.manage_extra_hours') }}</h3>
+        <p class="text-muted">{{ $isEmployee ? __('pages.extra_hours_lead_employee') : __('pages.extra_hours_lead_staff') }}</p>
         <hr class="mb-4">
     @endif
 
@@ -24,7 +33,7 @@
         {{-- Update Extra Hours --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-business-time txt-lightblue py-2"></i> Përditëso Orët Shtesë</span>
+                <span><i class="fa-solid fa-business-time txt-lightblue py-2"></i> {{ __('pages.update_extra_hours') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('update.extra.hour') }}" method="post">
@@ -32,9 +41,9 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="employee_id" class="form-label">Punonjësi</label>
+                            <label for="employee_id" class="form-label">{{ __('app.employee') }}</label>
                             <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('employee_id', $editExtraHour->employee_id) ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
+                                <option value="" disabled {{ old('employee_id', $editExtraHour->employee_id) ? '' : 'selected' }}>{{ __('pages.choose_employee') }}</option>
                                 @foreach ($employees as $employee)
                                     <option value="{{ $employee->id }}" {{ old('employee_id', $editExtraHour->employee_id) == $employee->id ? 'selected' : '' }}>
                                         {{ $employee->employee }}
@@ -43,24 +52,24 @@
                             </select>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="hours" class="form-label">Orët</label>
-                            <input type="number" step="0.01" min="0.01" name="hours" id="hours" value="{{ old('hours', $editExtraHour->hours) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj orët..." required>
+                            <label for="hours" class="form-label">{{ __('app.hours') }}</label>
+                            <input type="number" step="0.01" min="0.01" name="hours" id="hours" value="{{ old('hours', $editExtraHour->hours) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_hours') }}" required>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="type" class="form-label">Tipi</label>
+                            <label for="type" class="form-label">{{ __('pages.extra_hours_type') }}</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('type', $editExtraHour->type) ? '' : 'selected' }}>-- Zgjidh Tipin --</option>
+                                <option value="" disabled {{ old('type', $editExtraHour->type) ? '' : 'selected' }}>{{ __('pages.choose_extra_type') }}</option>
                                 @foreach ($types as $type)
-                                    <option value="{{ $type }}" {{ old('type', $editExtraHour->type) === $type ? 'selected' : '' }}>{{ $type }}</option>
+                                    <option value="{{ $type }}" {{ old('type', $editExtraHour->type) === $type ? 'selected' : '' }}>{{ $extraHourTypeLabel($type) }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="date" class="form-label">Data</label>
+                            <label for="date" class="form-label">{{ __('app.date') }}</label>
                             <input type="date" name="date" id="date" value="{{ old('date', $editExtraHour->date) }}" class="form-control shadow-sm rounded-3" required>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Orët Shtesë</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> {{ __('pages.update_extra_hours') }}</button>
                         </div>
                     </div>
                 </form>
@@ -72,16 +81,16 @@
             {{-- Create Extra Hours --}}
             <div class="card mb-4">
                 <div class="card-header rounded-top-4 bg-white">
-                    <span><i class="fa-solid fa-business-time txt-lightblue py-2"></i> Regjistro Orë Shtesë</span>
+                    <span><i class="fa-solid fa-business-time txt-lightblue py-2"></i> {{ __('pages.register_extra_hour') }}</span>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('create.extra.hour') }}" method="post">
                         @csrf
                         <div class="row g-3">
                             <div class="col-12 col-md-4 col-lg-4">
-                                <label for="employee_id" class="form-label">Punonjësi</label>
+                                <label for="employee_id" class="form-label">{{ __('app.employee') }}</label>
                                 <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3" required>
-                                    <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punonjësin --</option>
+                                    <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>{{ __('pages.choose_employee') }}</option>
                                     @foreach ($employees as $employee)
                                         <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
                                             {{ $employee->employee }}
@@ -90,24 +99,24 @@
                                 </select>
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
-                                <label for="hours" class="form-label">Orët</label>
-                                <input type="number" step="0.01" min="0.01" name="hours" id="hours" value="{{ old('hours') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj orët..." required>
+                                <label for="hours" class="form-label">{{ __('app.hours') }}</label>
+                                <input type="number" step="0.01" min="0.01" name="hours" id="hours" value="{{ old('hours') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_hours') }}" required>
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
-                                <label for="type" class="form-label">Tipi</label>
+                                <label for="type" class="form-label">{{ __('pages.extra_hours_type') }}</label>
                                 <select name="type" id="type" class="form-control shadow-sm rounded-3" required>
-                                    <option value="" disabled {{ old('type') ? '' : 'selected' }}>-- Zgjidh Tipin --</option>
+                                    <option value="" disabled {{ old('type') ? '' : 'selected' }}>{{ __('pages.choose_extra_type') }}</option>
                                     @foreach ($types as $type)
-                                        <option value="{{ $type }}" {{ old('type') === $type ? 'selected' : '' }}>{{ $type }}</option>
+                                        <option value="{{ $type }}" {{ old('type') === $type ? 'selected' : '' }}>{{ $extraHourTypeLabel($type) }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
-                                <label for="date" class="form-label">Data</label>
+                                <label for="date" class="form-label">{{ __('app.date') }}</label>
                                 <input type="date" name="date" id="date" value="{{ old('date', date('Y-m-d')) }}" class="form-control shadow-sm rounded-3" required>
                             </div>
                             <div class="col-12">
-                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Orët Shtesë</button>
+                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> {{ __('pages.register_extra_hours_btn') }}</button>
                             </div>
                         </div>
                     </form>
@@ -118,11 +127,11 @@
         {{-- Extra Hours List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Orëve Shtesë</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.extra_hours_list') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('extra.hours') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('app.search') }}" aria-label="{{ __('app.search') }}" aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
                 <div class="table-responsive">
@@ -130,19 +139,19 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Punonjësi</th>
-                                <th scope="col" class="text-nowrap">Orët</th>
-                                <th scope="col" class="text-nowrap">Tipi</th>
-                                <th scope="col" class="text-nowrap">Data</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.employee') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.hours') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.extra_hours_type') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.date') }}</th>
                                 @if(!$isEmployee)
-                                    <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                    <th scope="col" class="text-nowrap text-end">{{ __('app.operations') }}</th>
                                 @endif
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($extraHours) === 0)
                                 <tr>
-                                    <td colspan="{{ $isEmployee ? 5 : 6 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="{{ $isEmployee ? 5 : 6 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('app.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach ($extraHours as $extraHour)
@@ -150,7 +159,7 @@
                                         <th scope="row" class="text-nowrap">{{ $extraHour->id }}</th>
                                         <td class="text-nowrap">{{ $extraHour->employee }}</td>
                                         <td class="text-nowrap">{{ $extraHour->hours }}</td>
-                                        <td class="text-nowrap">{{ $extraHour->type }}</td>
+                                        <td class="text-nowrap">{{ $extraHourTypeLabel($extraHour->type) }}</td>
                                         <td class="text-nowrap">{{ $extraHour->date ? \Carbon\Carbon::parse($extraHour->date)->format('d/m/Y') : '-' }}</td>
                                         @if(!$isEmployee)
                                             <td class="text-nowrap text-end">
@@ -180,10 +189,10 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body text-center">
-                                <p>A jeni i sigurt që dëshironi t’i fshini këto orë shtesë?</p>
+                                <p>{{ __('pages.confirm_delete_extra_hours') }}</p>
                                 <div class="mt-3">
-                                    <a href="{{ route('delete.extra.hour', $extraHour->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                    <a href="{{ route('delete.extra.hour', $extraHour->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('app.confirm') }}</a>
+                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('app.cancel') }}</button>
                                 </div>
                             </div>
                         </div>

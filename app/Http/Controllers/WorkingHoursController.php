@@ -27,15 +27,15 @@ class WorkingHoursController extends Controller
             'check_out' => 'required|date|after:check_in'
         ]);
         if ($validator->fails()) {
-            return redirect()->route('working.hours')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('working.hours')->with('error', __('app.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['date', 'employee_id', 'check_in', 'check_out']);
             try {
                 $data['hours'] = Carbon::parse($data['check_in'])->diff(Carbon::parse($data['check_out']))->format('%H:%I');
                 $this->service->createWorkingHour($data);
-                return redirect()->route('working.hours')->with('success', 'Ora e punës u regjistrua me sukses.');
+                return redirect()->route('working.hours')->with('success', __('pages.working_hour_created'));
             } catch (\Exception $e) {
-                return redirect()->route('working.hours')->with('error', 'Regjistrimi dështoi : ' . $e->getMessage())->withInput();
+                return redirect()->route('working.hours')->with('error', __('app.register_failed_reason', ['message' => $e->getMessage()]))->withInput();
             }
         }
     }
@@ -73,13 +73,13 @@ class WorkingHoursController extends Controller
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('working.hours')->with('error', 'Ora e punës nuk u gjet');
+            return redirect()->route('working.hours')->with('error', __('pages.working_hour_not_found'));
         } else {
             try {
                 $this->service->deleteWorkingHour($id);
-                return redirect()->route('working.hours')->with('success', 'Ora e punës u fshi me sukses');
+                return redirect()->route('working.hours')->with('success', __('pages.working_hour_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('working.hours')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                return redirect()->route('working.hours')->with('error', __('app.try_again'));
             }
         }
     }

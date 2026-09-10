@@ -261,17 +261,17 @@
                                     <div class="col-9">
                                         <small class="d-block col-12 text-truncate" title="{{ $profileName }}">{{ $profileName }}</small>
                                         @if(session('role') == 'admin')
-                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Administrator">{{ __('app.admin') }}</small>
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ __('app.role_admin') }}">{{ __('app.role_admin') }}</small>
                                         @elseif(session('role') == 'company')
-                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="CEO">{{ __('app.ceo') }}</small>
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ __('app.role_company') }}">{{ __('app.role_company') }}</small>
                                         @elseif(session('role') == 'manager')
-                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Menagjer">{{ __('app.manager') }}</small>
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ __('app.role_manager') }}">{{ __('app.role_manager') }}</small>
                                         @elseif(session('role') == 'employee')
-                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Punëtor">{{ __('app.employee') }}</small>
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ __('app.role_employee') }}">{{ __('app.role_employee') }}</small>
                                         @elseif(session('role') == 'finance')
-                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="Financa">{{ __('app.finance') }}</small>
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ __('app.role_finance') }}">{{ __('app.role_finance') }}</small>
                                         @elseif(session('role') == 'hr')
-                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="HR">{{ __('app.hr') }}</small>
+                                            <small class="d-block opacity-50 fs-small col-12 text-truncate text-capitalize" title="{{ __('app.role_hr') }}">{{ __('app.role_hr') }}</small>
                                         @endif
                                     </div>
                                     <div class="col-3">
@@ -294,93 +294,93 @@
                                     {{-- Dropdown Menu for SM Devices (synced with desktop sidebar) --}}
                                     <div class="dropdown d-lg-none">
                                         <button class="btn bg-custom rounded-3 border" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa-solid fa-list-ul"></i> <span class="d-none d-md-inline">Menu</span>
+                                            <i class="fa-solid fa-list-ul"></i> <span class="d-none d-md-inline">{{ __('app.nav_menu') }}</span>
                                         </button>
                                         <ul class="dropdown-menu rounded-3 shadow-sm p-2" style="min-width: 260px; max-height: 70vh; overflow-y: auto;">
-                                            <li><span class="dropdown-item-text fw-semibold">{{ __('app.summary') }}</span></li>
-                                            <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> Dashboard</a></li>
+                                            <li><span class="dropdown-item-text fw-semibold">{{ __('app.nav_overview') }}</span></li>
+                                            <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> {{ __('app.nav_dashboard') }}</a></li>
                                             @if(session('role') && session('role') !== 'admin')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}"><i class="fa-regular fa-bell me-2 opacity-75"></i> {{ __('app.notifications') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Notifications' ? 'bg-darkblue text-light' : '' }}" href="{{ route('notifications') }}"><i class="fa-regular fa-bell me-2 opacity-75"></i> {{ __('app.nav_notifications') }}</a></li>
                                             @endif
 
                                             @if(session('role') === 'admin')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> {{ __('app.packages') }}</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Companies' ? 'bg-darkblue text-light' : '' }}" href="{{ route('companies') }}"><i class="fa-solid fa-building me-2 opacity-75"></i> {{ __('app.companies') }}</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Payments' ? 'bg-darkblue text-light' : '' }}" href="{{ route('payments') }}"><i class="fa-solid fa-money-bill me-2 opacity-75"></i> {{ __('app.payments') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Packages' ? 'bg-darkblue text-light' : '' }}" href="{{ route('packages') }}"><i class="fa-brands fa-trello me-2 opacity-75"></i> {{ __('app.nav_packages') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Companies' ? 'bg-darkblue text-light' : '' }}" href="{{ route('companies') }}"><i class="fa-solid fa-building me-2 opacity-75"></i> {{ __('app.nav_companies') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Payments' ? 'bg-darkblue text-light' : '' }}" href="{{ route('payments') }}"><i class="fa-solid fa-money-bill me-2 opacity-75"></i> {{ __('app.nav_payments') }}</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Company News' ? 'bg-darkblue text-light' : '' }}" href="{{ route('company.news') }}"><i class="fa-solid fa-newspaper me-2 opacity-75"></i> {{ __('app.company_news') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Company News' ? 'bg-darkblue text-light' : '' }}" href="{{ route('company.news') }}"><i class="fa-solid fa-newspaper me-2 opacity-75"></i> {{ __('app.nav_company_news') }}</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
                                                 <li><hr class="dropdown-divider"></li>
-                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.operations') }}</span></li>
+                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.nav_operations') }}</span></li>
                                                 @if(session('role') === 'company' || session('role') === 'manager')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Projects' ? 'bg-darkblue text-light' : '' }}" href="{{ route('projects') }}"><i class="fa-solid fa-diagram-project me-2 opacity-75"></i> {{ __('app.projects') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Projects' ? 'bg-darkblue text-light' : '' }}" href="{{ route('projects') }}"><i class="fa-solid fa-diagram-project me-2 opacity-75"></i> {{ __('app.nav_projects') }}</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Tasks' ? 'bg-darkblue text-light' : '' }}" href="{{ route('tasks') }}"><i class="fa-solid fa-list-check me-2 opacity-75"></i> {{ __('app.tasks') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Tasks' ? 'bg-darkblue text-light' : '' }}" href="{{ route('tasks') }}"><i class="fa-solid fa-list-check me-2 opacity-75"></i> {{ __('app.nav_tasks') }}</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Project Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('project.reports') }}"><i class="fa-solid fa-chart-line me-2 opacity-75"></i> {{ __('app.project_reports') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Project Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('project.reports') }}"><i class="fa-solid fa-chart-line me-2 opacity-75"></i> {{ __('app.nav_project_reports') }}</a></li>
                                                 @endif
                                                 @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'employee')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Task Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('task.reports') }}"><i class="fa-solid fa-file-lines me-2 opacity-75"></i> Raportet e Detyrave</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Task Reports' ? 'bg-darkblue text-light' : '' }}" href="{{ route('task.reports') }}"><i class="fa-solid fa-file-lines me-2 opacity-75"></i> {{ __('app.nav_task_reports') }}</a></li>
                                                 @endif
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager')
                                                 <li><hr class="dropdown-divider"></li>
-                                                <li><span class="dropdown-item-text fw-semibold">Materialet</span></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials') }}"><i class="fa-solid fa-layer-group me-2 opacity-75"></i> {{ __('app.materials') }}</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials Stock' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock') }}"><i class="fa-solid fa-boxes-stacked me-2 opacity-75"></i> {{ __('app.materials_stock') }}</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Stock Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock.report') }}"><i class="fa-solid fa-chart-pie me-2 opacity-75"></i> {{ __('app.stock_report') }}</a></li>
+                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.nav_materials') }}</span></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials') }}"><i class="fa-solid fa-layer-group me-2 opacity-75"></i> {{ __('app.nav_materials') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Materials Stock' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock') }}"><i class="fa-solid fa-boxes-stacked me-2 opacity-75"></i> {{ __('app.nav_materials_stock') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Stock Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('materials.stock.report') }}"><i class="fa-solid fa-chart-pie me-2 opacity-75"></i> {{ __('app.nav_stock_report') }}</a></li>
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'finance')
                                                 <li><hr class="dropdown-divider"></li>
-                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.finance') }}</span></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Clients' ? 'bg-darkblue text-light' : '' }}" href="{{ route('clients') }}"><i class="fa-solid fa-users-viewfinder me-2 opacity-75"></i> {{ __('app.clients') }}</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Suppliers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('suppliers') }}"><i class="fa-solid fa-truck me-2 opacity-75"></i> {{ __('app.suppliers') }}</a></li>
+                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.nav_finance') }}</span></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Clients' ? 'bg-darkblue text-light' : '' }}" href="{{ route('clients') }}"><i class="fa-solid fa-users-viewfinder me-2 opacity-75"></i> {{ __('app.nav_clients') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Suppliers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('suppliers') }}"><i class="fa-solid fa-truck me-2 opacity-75"></i> {{ __('app.nav_suppliers') }}</a></li>
                                                 @if(session('role') === 'company' || session('role') === 'finance')
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Revenue & Expenses' ? 'bg-darkblue text-light' : '' }}" href="{{ route('financial.transactions') }}"><i class="fa-solid fa-wallet me-2 opacity-75"></i> {{ __('app.revenue_expenses') }}</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Financial Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('financial.report') }}"><i class="fa-solid fa-chart-pie me-2 opacity-75"></i> {{ __('app.financial_report') }}</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Offers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('offers') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> {{ __('app.offers') }}</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Create Offer' ? 'bg-darkblue text-light' : '' }}" href="{{ route('create.offer') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> {{ __('app.create_offer') }}</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Calculate Salary' ? 'bg-darkblue text-light' : '' }}" href="{{ route('calculate.salary') }}"><i class="fa-solid fa-calculator me-2 opacity-75"></i> {{ __('app.calculate_salary') }}</a></li>
-                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> {{ __('app.salaries') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Revenue & Expenses' ? 'bg-darkblue text-light' : '' }}" href="{{ route('financial.transactions') }}"><i class="fa-solid fa-wallet me-2 opacity-75"></i> {{ __('app.nav_revenue') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Financial Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('financial.report') }}"><i class="fa-solid fa-chart-pie me-2 opacity-75"></i> {{ __('app.nav_financial_report') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Offers' ? 'bg-darkblue text-light' : '' }}" href="{{ route('offers') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> {{ __('app.nav_offers') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Create Offer' ? 'bg-darkblue text-light' : '' }}" href="{{ route('create.offer') }}"><i class="fa-solid fa-file-invoice-dollar me-2 opacity-75"></i> {{ __('app.nav_create_offer') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Calculate Salary' ? 'bg-darkblue text-light' : '' }}" href="{{ route('calculate.salary') }}"><i class="fa-solid fa-calculator me-2 opacity-75"></i> {{ __('app.nav_calculate_salary') }}</a></li>
+                                                    <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> {{ __('app.nav_salaries') }}</a></li>
                                                 @endif
                                             @endif
 
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
                                                 <li><hr class="dropdown-divider"></li>
-                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.staff') }}</span></li>
+                                                <li><span class="dropdown-item-text fw-semibold">{{ __('app.nav_staff') }}</span></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'hr')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employees' ? 'bg-darkblue text-light' : '' }}" href="{{ route('employees') }}"><i class="fa-solid fa-users me-2 opacity-75"></i> {{ __('app.employees') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employees' ? 'bg-darkblue text-light' : '' }}" href="{{ route('employees') }}"><i class="fa-solid fa-users me-2 opacity-75"></i> {{ __('app.nav_employees') }}</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href="{{ route('checkins') }}"><i class="fa-solid fa-user-check me-2 opacity-75"></i> {{ __('app.checkins') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Check In' ? 'bg-darkblue text-light' : '' }}" href="{{ route('checkins') }}"><i class="fa-solid fa-user-check me-2 opacity-75"></i> {{ __('app.nav_checkin') }}</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr' || session('role') === 'employee')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('working.hours') }}"><i class="fa-solid fa-clock me-2 opacity-75"></i> {{ __('app.working_hours') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Working Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('working.hours') }}"><i class="fa-solid fa-clock me-2 opacity-75"></i> {{ __('app.nav_working_hours') }}</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'manager' || session('role') === 'hr')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Extra Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('extra.hours') }}"><i class="fa-solid fa-business-time me-2 opacity-75"></i> {{ __('app.extra_hours') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Extra Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('extra.hours') }}"><i class="fa-solid fa-business-time me-2 opacity-75"></i> {{ __('app.nav_extra_hours') }}</a></li>
                                             @endif
                                             @if(session('role') === 'employee')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> {{ __('app.salaries') }}</a></li>
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Extra Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('extra.hours') }}"><i class="fa-solid fa-business-time me-2 opacity-75"></i> {{ __('app.extra_hours') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Salaries' ? 'bg-darkblue text-light' : '' }}" href="{{ route('salaries') }}"><i class="fa-solid fa-money-bill-wave me-2 opacity-75"></i> {{ __('app.nav_salaries') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Extra Hours' ? 'bg-darkblue text-light' : '' }}" href="{{ route('extra.hours') }}"><i class="fa-solid fa-business-time me-2 opacity-75"></i> {{ __('app.nav_extra_hours') }}</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href="{{ route('contracts') }}"><i class="fa-solid fa-file-contract me-2 opacity-75"></i> {{ __('app.contracts') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Contracts' ? 'bg-darkblue text-light' : '' }}" href="{{ route('contracts') }}"><i class="fa-solid fa-file-contract me-2 opacity-75"></i> {{ __('app.nav_contracts') }}</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee' || session('role') === 'manager')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href="{{ route('vacations') }}"><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> {{ __('app.vacations') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Vacations' ? 'bg-darkblue text-light' : '' }}" href="{{ route('vacations') }}"><i class="fa-solid fa-calendar-days me-2 opacity-75"></i> {{ __('app.nav_vacations') }}</a></li>
                                             @endif
                                             @if(session('role') === 'company' || session('role') === 'hr' || session('role') === 'employee' || session('role') === 'manager')
-                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employee Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('employee.report') }}"><i class="fa-solid fa-file-alt me-2 opacity-75"></i> {{ __('app.employee_report') }}</a></li>
+                                                <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Employee Report' ? 'bg-darkblue text-light' : '' }}" href="{{ route('employee.report') }}"><i class="fa-solid fa-file-alt me-2 opacity-75"></i> {{ __('app.nav_employee_report') }}</a></li>
                                             @endif
                                         </ul>
                                     </div>
@@ -398,7 +398,7 @@
 
                                 @if(session('role') && session('role') !== 'admin')
                                     <div class="dropdown d-inline-block me-2">
-                                        <a href="{{ route('notifications') }}" class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" title="{{ __('app.notifications') }}">
+                                        <a href="{{ route('notifications') }}" class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" title="{{ __('app.nav_notifications') }}">
                                             <i class="fa-regular fa-bell"></i>
                                             @if(($topbarUnreadNotifications ?? 0) > 0)
                                                 <small class="text-danger fw-semibold">({{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }})</small>
@@ -416,21 +416,21 @@
                                         <span class="d-block px-3 fw-semibold">{{ $profileName }}</span>
                                         <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize">
                                             @if(session('role') == 'admin')
-                                                Administrator
+                                                {{ __('app.role_admin') }}
                                             @elseif(session('role') == 'company')
-                                                CEO
+                                                {{ __('app.role_company') }}
                                             @elseif(session('role') == 'manager')
-                                                Menagjer
+                                                {{ __('app.role_manager') }}
                                             @elseif(session('role') == 'employee')
-                                                Punëtor
+                                                {{ __('app.role_employee') }}
                                             @elseif(session('role') == 'finance')
-                                                Financa
+                                                {{ __('app.role_finance') }}
                                             @elseif(session('role') == 'hr')
-                                                HR
+                                                {{ __('app.role_hr') }}
                                             @endif
                                         </small>
-                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href="{{ route('profile') }}"><i class="fa-regular fa-circle-user"></i> {{ __('app.my_profile') }}</a></li>
-                                        <li><a class="dropdown-item rounded-3 text-danger" href="{{ route('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> {{ __('app.logout') }}</a></li>
+                                        <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'My Profile' ? 'bg-darkblue text-light' : '' }}" href="{{ route('profile') }}"><i class="fa-regular fa-circle-user"></i> {{ __('app.nav_profile') }}</a></li>
+                                        <li><a class="dropdown-item rounded-3 text-danger" href="{{ route('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> {{ __('app.nav_logout') }}</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -450,7 +450,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success border-success">
-                        <strong class="me-auto text-light">{{ __('app.notification') }}</strong>
+                        <strong class="me-auto text-light">{{ __('app.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-success">
@@ -465,7 +465,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="errorToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-danger border-danger">
-                        <strong class="me-auto text-light">{{ __('app.notification') }}</strong>
+                        <strong class="me-auto text-light">{{ __('app.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-danger">

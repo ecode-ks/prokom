@@ -1,6 +1,6 @@
 @extends('template.template')
 
-@section('title', 'Kalkulimi i Pagave')
+@section('title', __('pages.calculate_salary_title'))
 
 @section('content')
     @php
@@ -27,9 +27,9 @@
 
     <div class="salary-calc-hero mb-4">
         <div>
-            <small class="d-block txt-lightblue fw-semibold text-uppercase">Financat</small>
-            <h3 class="fw-semibold pt-2 mb-1">Kalkulimi i Pagave</h3>
-            <p class="text-muted mb-0">Filtro periudhën, shiko përmbledhjen dhe ruaj pagat.</p>
+            <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('app.nav_finance') }}</small>
+            <h3 class="fw-semibold pt-2 mb-1">{{ __('pages.calculate_salary_title') }}</h3>
+            <p class="text-muted mb-0">{{ __('pages.calculate_salary_lead') }}</p>
         </div>
         @if($hasResults && $calculations->isNotEmpty())
             <form action="{{ route('save.calculated.salaries') }}" method="post" class="m-0">
@@ -38,7 +38,7 @@
                 <input type="hidden" name="to_date" value="{{ $selectedTo }}">
                 <input type="hidden" name="employee_id" value="{{ request('employee_id', $employeeId ?? '') }}">
                 <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm">
-                    <i class="fa-solid fa-floppy-disk me-1"></i> Ruaj të gjitha pagat
+                    <i class="fa-solid fa-floppy-disk me-1"></i> {{ __('pages.save_all_salaries') }}
                 </button>
             </form>
         @endif
@@ -47,23 +47,23 @@
     <div class="salary-calc-filters mb-4">
         <div class="salary-calc-filters-head">
             <div>
-                <span class="checkin-kicker">Periudha</span>
+                <span class="checkin-kicker">{{ __('pages.period') }}</span>
                 <h5 class="fw-semibold mb-0">{{ $fromLabel }} – {{ $toLabel }}</h5>
             </div>
         </div>
         <form action="{{ route('calculate') }}" method="get" class="row g-3 align-items-end">
             <div class="col-12 col-md-6 col-xl-3">
-                <label for="from_date" class="form-label">Nga data</label>
+                <label for="from_date" class="form-label">{{ __('app.from_date') }}</label>
                 <input type="date" name="from_date" id="from_date" value="{{ request('from_date', $selectedFrom) }}" class="form-control shadow-sm rounded-3">
             </div>
             <div class="col-12 col-md-6 col-xl-3">
-                <label for="to_date" class="form-label">Deri me</label>
+                <label for="to_date" class="form-label">{{ __('pages.until') }}</label>
                 <input type="date" name="to_date" id="to_date" value="{{ request('to_date', $selectedTo) }}" class="form-control shadow-sm rounded-3">
             </div>
             <div class="col-12 col-md-6 col-xl-3">
-                <label for="employee_id" class="form-label">Punëtori</label>
+                <label for="employee_id" class="form-label">{{ __('app.employee') }}</label>
                 <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3">
-                    <option value="">Të gjithë punëtorët</option>
+                    <option value="">{{ __('pages.all_employees') }}</option>
                     @foreach($employees as $employee)
                         <option value="{{ $employee->id }}" {{ (string) request('employee_id', $employeeId ?? '') === (string) $employee->id ? 'selected' : '' }}>
                             {{ $employee->employee }}
@@ -73,7 +73,7 @@
             </div>
             <div class="col-12 col-md-6 col-xl-3">
                 <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm w-100">
-                    <i class="fa-solid fa-calculator me-1"></i> Kalkulo
+                    <i class="fa-solid fa-calculator me-1"></i> {{ __('pages.calculate') }}
                 </button>
             </div>
         </form>
@@ -84,30 +84,30 @@
             <div class="row g-3 mb-4">
                 <div class="col-6 col-lg-3">
                     <div class="dashboard-kpi dashboard-kpi--navy">
-                        <small>Punonjës</small>
+                        <small>{{ __('app.employee') }}</small>
                         <strong>{{ $employeeCount }}</strong>
-                        <span>në këtë periudhë</span>
+                        <span>{{ __('pages.in_this_period') }}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="dashboard-kpi dashboard-kpi--blue">
-                        <small>Orë pune</small>
+                        <small>{{ __('pages.work_hours') }}</small>
                         <strong>{{ $fmtHours($hoursTotal) }}</strong>
-                        <span>orë totale</span>
+                        <span>{{ __('pages.total_hours') }}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="dashboard-kpi dashboard-kpi--warn">
-                        <small>Orë shtesë</small>
+                        <small>{{ __('pages.extra_hours_kpi') }}</small>
                         <strong>€{{ number_format($extraTotal, 2) }}</strong>
-                        <span>jashtë + vikend</span>
+                        <span>{{ __('pages.extra_plus_weekend') }}</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="dashboard-kpi dashboard-kpi--teal">
-                        <small>Totali i pagave</small>
+                        <small>{{ __('pages.payroll_total') }}</small>
                         <strong>€{{ number_format($payrollTotal, 2) }}</strong>
-                        <span>për ruajtje</span>
+                        <span>{{ __('pages.for_saving') }}</span>
                     </div>
                 </div>
             </div>
@@ -115,10 +115,10 @@
             <div class="salary-calc-list">
                 <div class="salary-calc-list-head">
                     <div>
-                        <span class="checkin-kicker">Lista</span>
-                        <h5 class="fw-semibold mb-0">Detajet sipas punonjësit</h5>
+                        <span class="checkin-kicker">{{ __('pages.list') }}</span>
+                        <h5 class="fw-semibold mb-0">{{ __('pages.details_by_employee') }}</h5>
                     </div>
-                    <span class="salary-calc-count">{{ $employeeCount }} rezultate</span>
+                    <span class="salary-calc-count">{{ __('pages.results_count', ['count' => $employeeCount]) }}</span>
                 </div>
 
                 @foreach($calculations as $row)
@@ -141,11 +141,13 @@
                             <div class="min-w-0">
                                 <strong class="salary-calc-name">{{ $row->employee }}</strong>
                                 <div class="salary-calc-meta">
-                                    <span>{{ $row->position ?: 'Pa pozitë' }}</span>
+                                    <span>{{ $row->position ?: __('pages.no_position') }}</span>
                                     <span class="salary-calc-dot"></span>
                                     <span>
-                                        Kontrata {{ \Carbon\Carbon::parse($row->contract_from)->format('d/m/Y') }}
-                                        – {{ \Carbon\Carbon::parse($row->contract_to)->format('d/m/Y') }}
+                                        {{ __('pages.contract_label', [
+                                            'from' => \Carbon\Carbon::parse($row->contract_from)->format('d/m/Y'),
+                                            'to' => \Carbon\Carbon::parse($row->contract_to)->format('d/m/Y'),
+                                        ]) }}
                                     </span>
                                 </div>
                             </div>
@@ -153,33 +155,33 @@
 
                         <div class="salary-calc-metrics">
                             <div class="salary-calc-metric">
-                                <small>Paga bazë</small>
+                                <small>{{ __('pages.base_salary') }}</small>
                                 <strong>€{{ number_format((float) $row->salary, 2) }}</strong>
                             </div>
                             <div class="salary-calc-metric">
-                                <small>Orë pune</small>
+                                <small>{{ __('pages.work_hours') }}</small>
                                 <strong>{{ $fmtHours($row->working_hours) }}</strong>
                             </div>
                             <div class="salary-calc-metric salary-calc-metric--extra">
-                                <small>Jashtë orarit</small>
+                                <small>{{ __('pages.overtime') }}</small>
                                 <strong class="salary-calc-extra-total">€{{ number_format($overtimeAmount, 2) }}</strong>
                                 <div class="salary-calc-extra-eq">
-                                    <span>{{ number_format($overtimeHours) }} orë</span>
+                                    <span>{{ __('pages.hours_unit', ['count' => number_format($overtimeHours)]) }}</span>
                                     <span class="salary-calc-extra-x">×</span>
                                     <span>€{{ number_format($overtimeRate, 2) }}</span>
                                 </div>
                             </div>
                             <div class="salary-calc-metric salary-calc-metric--extra">
-                                <small>Vikend</small>
+                                <small>{{ __('pages.weekend') }}</small>
                                 <strong class="salary-calc-extra-total">€{{ number_format($weekendAmount, 2) }}</strong>
                                 <div class="salary-calc-extra-eq">
-                                    <span>{{ number_format($weekendHours) }} orë</span>
+                                    <span>{{ __('pages.hours_unit', ['count' => number_format($weekendHours)]) }}</span>
                                     <span class="salary-calc-extra-x">×</span>
                                     <span>€{{ number_format($weekendRate, 2) }}</span>
                                 </div>
                             </div>
                             <div class="salary-calc-metric salary-calc-metric--total">
-                                <small>Totali</small>
+                                <small>{{ __('pages.total_label') }}</small>
                                 <strong>€{{ number_format((float) $row->total_pay, 2) }}</strong>
                             </div>
                         </div>
@@ -197,8 +199,8 @@
                 <div class="salary-calc-empty-icon">
                     <i class="fa-regular fa-folder-open"></i>
                 </div>
-                <h5 class="fw-semibold mb-2">Nuk u gjetën rezultate</h5>
-                <p class="text-muted mb-0">Nuk ka punonjës me kontratë valide për periudhën {{ $fromLabel }} – {{ $toLabel }}.</p>
+                <h5 class="fw-semibold mb-2">{{ __('pages.no_results') }}</h5>
+                <p class="text-muted mb-0">{{ __('pages.no_results_lead', ['from' => $fromLabel, 'to' => $toLabel]) }}</p>
             </div>
         @endif
     @endif

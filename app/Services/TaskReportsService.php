@@ -81,8 +81,8 @@ class TaskReportsService
             'company',
             $companyId,
             'task_report',
-            'Raport i ri detyre',
-            'Është shtuar një raport për detyrën: ' . $taskTitle,
+            __('pages.notif_task_report'),
+            __('pages.notif_task_report_body', ['title' => $taskTitle]),
             route('task.report.details', $reportId)
         );
 

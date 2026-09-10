@@ -41,15 +41,15 @@ class ProjectReportsService
         $companyId = (int) ($data['company_id'] ?? 0);
         $projectId = (int) ($data['project_id'] ?? 0);
         $project = $projectId > 0 ? $this->projects->getProjectById($projectId, $companyId) : null;
-        $projectName = $project->project_name ?? 'Projekt';
+        $projectName = $project->project_name ?? __('pages.project_word');
 
         $this->notifications->notify(
             $companyId,
             'company',
             $companyId,
             'project_report',
-            'Raport i ri projekti',
-            'Është shtuar një raport për projektin: ' . $projectName,
+            __('pages.notif_project_report'),
+            __('pages.notif_project_report_body', ['name' => $projectName]),
             route('project.report.details', $reportId)
         );
 
@@ -59,8 +59,8 @@ class ProjectReportsService
                 'employee',
                 (int) $project->project_manager,
                 'project_report',
-                'Raport i ri projekti',
-                'Është shtuar një raport për projektin: ' . $projectName,
+                __('pages.notif_project_report'),
+                __('pages.notif_project_report_body', ['name' => $projectName]),
                 route('project.report.details', $reportId)
             );
         }

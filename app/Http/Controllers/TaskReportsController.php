@@ -29,7 +29,7 @@ class TaskReportsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('task.reports')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return redirect()->route('task.reports')->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $data = [
@@ -43,10 +43,10 @@ class TaskReportsController extends Controller
         ];
 
         if (!$this->service->createReport($data, $role, $employeeId, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Nuk mund të raportoni për këtë detyrë.')->withInput();
+            return redirect()->route('task.reports')->with('error', __('pages.cannot_report_task'))->withInput();
         }
 
-        return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u krijua me sukses.');
+        return redirect()->route('task.reports')->with('success', __('pages.task_report_created'));
     }
     //---------------
     public function read(Request $request)
@@ -60,7 +60,7 @@ class TaskReportsController extends Controller
         $tasks = $this->service->getAvailableTasks($companyId, $role, $employeeId);
 
         if (count($tasks) === 0) {
-            return redirect()->route('tasks')->with('error', 'Ju lutemi regjistroni së pari detyrat.');
+            return redirect()->route('tasks')->with('error', __('pages.register_tasks_first'));
         }
 
         $reports = $this->service->getReports(10, $companyId, $role, $employeeId, $search);
@@ -81,7 +81,7 @@ class TaskReportsController extends Controller
         $role = session('role');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('task.reports')->with('error', __('pages.report_not_found'));
         }
 
         $reportDetails = $this->service->getReportDetails($id, $companyId);
@@ -100,7 +100,7 @@ class TaskReportsController extends Controller
         $employeeId = session('employee_id') ? session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('task.reports')->with('error', __('pages.report_not_found'));
         }
 
         $tasks = $this->service->getAvailableTasks($companyId, $role, $employeeId);
@@ -128,13 +128,13 @@ class TaskReportsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $id = $request->id;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('task.reports')->with('error', __('pages.report_not_found'));
         }
 
         $data = [
@@ -148,12 +148,12 @@ class TaskReportsController extends Controller
 
         try {
             if (!$this->service->updateReport($id, $data, $role, $employeeId, $companyId)) {
-                return back()->with('error', 'Raporti nuk u gjet ose nuk u përditësua.')->withInput();
+                return back()->with('error', __('pages.report_not_updated'))->withInput();
             }
 
-            return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u përditësua me sukses.');
+            return redirect()->route('task.reports')->with('success', __('pages.task_report_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('task.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('task.reports')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -162,14 +162,14 @@ class TaskReportsController extends Controller
         $companyId = session('company_id');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('task.reports')->with('error', __('pages.report_not_found'));
         }
 
         try {
             $this->service->deleteReport($id, $companyId);
-            return redirect()->route('task.reports')->with('success', 'Raporti i detyrës u fshi me sukses.');
+            return redirect()->route('task.reports')->with('success', __('pages.task_report_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('task.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('task.reports')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -178,17 +178,17 @@ class TaskReportsController extends Controller
         $companyId = session('company_id');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('task.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('task.reports')->with('error', __('pages.report_not_found'));
         }
 
         try {
             if (!$this->service->updateReportStatus($id, $status, $companyId)) {
-                return redirect()->route('task.report.details', $id)->with('error', 'Kërkesa për përditësim statusi nuk është e vlefshme.');
+                return redirect()->route('task.report.details', $id)->with('error', __('app.invalid_status'));
             }
 
-            return redirect()->route('task.report.details', $id)->with('success', 'Statusi i raportit u përditësua me sukses.');
+            return redirect()->route('task.report.details', $id)->with('success', __('pages.report_status_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('task.report.details', $id)->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('task.report.details', $id)->with('error', __('app.try_again'));
         }
     }
 }

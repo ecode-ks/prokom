@@ -23,16 +23,16 @@ class MaterialsStockController extends Controller
             'type' => 'required|string|in:in,out'
         ]);
         if ($validator->fails()) {
-            return redirect()->route('materials.stock')->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('materials.stock')->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $data = $request->only(['material_id', 'qty', 'type']);
         $data['company_id'] = session('company_id');
         try {
             $this->service->createMaterialStock($data);
-            return redirect()->route('materials.stock')->with('success', 'Transaksioni u krijua me sukses.');
+            return redirect()->route('materials.stock')->with('success', __('pages.stock_created'));
         } catch (\Exception $e) {
-            return redirect()->route('materials.stock')->with('error', $e->getMessage())->withInput();
+            return redirect()->route('materials.stock')->with('error', __('app.try_again'))->withInput();
         }
     }
     //---------------
@@ -43,7 +43,7 @@ class MaterialsStockController extends Controller
         $companyId = (int) session('company_id');
         $materials = $this->service->getMaterialsFromStockReport($companyId);
         if (count($materials) === 0) {
-            return redirect()->route('materials')->with('error', 'Duhet të regjistroni materialet së pari.');
+            return redirect()->route('materials')->with('error', __('pages.materials_register_first'));
         }
         $materialsStock = $this->service->getMaterialsStock(10, $companyId, $search);
         return view('management.materials-stock')
@@ -68,12 +68,12 @@ class MaterialsStockController extends Controller
         $page = 'Materials Stock';
         $companyId = (int) session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('materials.stock')->with('error', 'Transaksioni nuk u gjet');
+            return redirect()->route('materials.stock')->with('error', __('pages.stock_not_found'));
         }
 
         $materials = $this->service->getMaterialsFromStockReport($companyId);
         if (count($materials) === 0) {
-            return redirect()->route('materials')->with('error', 'Duhet të regjistroni materialet së pari.');
+            return redirect()->route('materials')->with('error', __('pages.materials_register_first'));
         }
         $editMaterialStock = $this->service->getMaterialStockById($id, $companyId);
         return view('management.materials-stock')
@@ -92,7 +92,7 @@ class MaterialsStockController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $id = (int) $request->id;
@@ -100,9 +100,9 @@ class MaterialsStockController extends Controller
         $companyId = (int) session('company_id');
         try {
             $this->service->updateMaterialStock($id, $data, $companyId);
-            return redirect()->route('materials.stock')->with('success', 'Transaksioni u përditësua me sukses.');
+            return redirect()->route('materials.stock')->with('success', __('pages.stock_updated'));
         } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage())->withInput();
+            return back()->with('error', __('app.try_again'))->withInput();
         }
     }
     //---------------
@@ -110,14 +110,14 @@ class MaterialsStockController extends Controller
     {
         $companyId = (int) session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('materials.stock')->with('error', 'Transaksioni nuk u gjet');
+            return redirect()->route('materials.stock')->with('error', __('pages.stock_not_found'));
         }
 
         try {
             $this->service->deleteMaterialStock($id, $companyId);
-            return redirect()->route('materials.stock')->with('success', 'Transaksioni u fshi me sukses');
+            return redirect()->route('materials.stock')->with('success', __('pages.stock_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('materials.stock')->with('error', $e->getMessage());
+            return redirect()->route('materials.stock')->with('error', __('app.try_again'));
         }
     }
 }

@@ -26,17 +26,17 @@ class ProjectReportsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('project.reports')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return redirect()->route('project.reports')->with('error', __('app.fields_invalid'))->withInput();
         }
 
         if (!$this->service->projectExists((int) $request->project_id, $companyId)) {
-            return redirect()->route('project.reports')->with('error', 'Projekti nuk u gjet.')->withInput();
+            return redirect()->route('project.reports')->with('error', __('pages.project_not_found'))->withInput();
         }
 
         $role = session('role');
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
         if ($role === 'manager' && !$this->service->getAllProjects($companyId, $employeeId)->contains('id', (int) $request->project_id)) {
-            return redirect()->route('project.reports')->with('error', 'Mund të raportoni vetëm për projektet tuaja.')->withInput();
+            return redirect()->route('project.reports')->with('error', __('pages.report_own_projects_only'))->withInput();
         }
 
         $data = [
@@ -50,9 +50,9 @@ class ProjectReportsController extends Controller
 
         try {
             $this->service->createReport($data);
-            return redirect()->route('project.reports')->with('success', 'Raporti i projektit u krijua me sukses.');
+            return redirect()->route('project.reports')->with('success', __('pages.project_report_created'));
         } catch (\Exception $e) {
-            return redirect()->route('project.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.')->withInput();
+            return redirect()->route('project.reports')->with('error', __('app.try_again'))->withInput();
         }
     }
     //---------------
@@ -67,7 +67,7 @@ class ProjectReportsController extends Controller
         $projects = $this->service->getAllProjects($companyId, $scopedManagerId);
 
         if (count($projects) === 0) {
-            return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
+            return redirect()->route('projects')->with('error', __('pages.register_projects_first'));
         }
 
         $reports = $this->service->getReports(10, $companyId, $search, $role, $employeeId);
@@ -89,11 +89,11 @@ class ProjectReportsController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('project.reports')->with('error', __('pages.report_not_found'));
         }
 
         if ($role === 'manager' && !$this->service->managerOwnsReport($id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('project.reports')->with('error', __('pages.report_not_found'));
         }
 
         $reportDetails = $this->service->getReportDetails($id, $companyId);
@@ -110,12 +110,12 @@ class ProjectReportsController extends Controller
         $companyId = session('company_id');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('project.reports')->with('error', __('pages.report_not_found'));
         }
 
         $projects = $this->service->getAllProjects($companyId);
         if (count($projects) === 0) {
-            return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
+            return redirect()->route('projects')->with('error', __('pages.register_projects_first'));
         }
 
         $editReport = $this->service->getReportById($id, $companyId);
@@ -138,17 +138,17 @@ class ProjectReportsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $id = (int) $request->id;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('project.reports')->with('error', __('pages.report_not_found'));
         }
 
         if (!$this->service->projectExists((int) $request->project_id, $companyId)) {
-            return back()->with('error', 'Projekti nuk u gjet.')->withInput();
+            return back()->with('error', __('pages.project_not_found'))->withInput();
         }
 
         $data = [
@@ -162,12 +162,12 @@ class ProjectReportsController extends Controller
 
         try {
             if (!$this->service->updateReport($id, $data, $companyId)) {
-                return back()->with('error', 'Raporti nuk u gjet ose nuk u përditësua.')->withInput();
+                return back()->with('error', __('pages.report_not_updated'))->withInput();
             }
 
-            return redirect()->route('project.reports')->with('success', 'Raporti i projektit u përditësua me sukses.');
+            return redirect()->route('project.reports')->with('success', __('pages.project_report_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('project.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('project.reports')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -176,14 +176,14 @@ class ProjectReportsController extends Controller
         $companyId = session('company_id');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('project.reports')->with('error', __('pages.report_not_found'));
         }
 
         try {
             $this->service->deleteReport($id, $companyId);
-            return redirect()->route('project.reports')->with('success', 'Raporti i projektit u fshi me sukses.');
+            return redirect()->route('project.reports')->with('success', __('pages.project_report_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('project.reports')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('project.reports')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -192,17 +192,17 @@ class ProjectReportsController extends Controller
         $companyId = session('company_id');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('project.reports')->with('error', 'Raporti nuk u gjet.');
+            return redirect()->route('project.reports')->with('error', __('pages.report_not_found'));
         }
 
         try {
             if (!$this->service->updateReportStatus($id, $status, $companyId)) {
-                return redirect()->route('project.report.details', $id)->with('error', 'Kërkesa për përditësim statusi nuk është e vlefshme.');
+                return redirect()->route('project.report.details', $id)->with('error', __('app.invalid_status'));
             }
 
-            return redirect()->route('project.report.details', $id)->with('success', 'Statusi i raportit u përditësua me sukses.');
+            return redirect()->route('project.report.details', $id)->with('success', __('pages.report_status_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('project.report.details', $id)->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('project.report.details', $id)->with('error', __('app.try_again'));
         }
     }
 }

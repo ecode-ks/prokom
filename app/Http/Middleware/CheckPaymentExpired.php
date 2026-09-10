@@ -25,7 +25,7 @@ class CheckPaymentExpired
 
             return redirect()
                 ->route('login')
-                ->with('error', 'Paketa e kompanisë ka skaduar. Qasja është e bllokuar. Kontaktoni kompaninë për të rinovuar paketën.');
+                ->with('error', __('app.package_expired_staff'));
         }
 
         $allowedRouteNames = [
@@ -42,6 +42,6 @@ class CheckPaymentExpired
 
         return redirect()
             ->route('profile')
-            ->with('error', 'Paketa juaj ka skaduar. Aktivizoni një paketë për të vazhduar.');
+            ->with('error', __('app.package_expired_company'));
     }
 }
