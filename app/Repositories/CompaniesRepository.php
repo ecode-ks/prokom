@@ -59,6 +59,13 @@ class CompaniesRepository
             ->update(['password' => $password]) > 0;
     }
     //---------------
+    public function updateLanguage(int $id, string $language): bool
+    {
+        return DB::table($this->table)
+            ->where('id', $id)
+            ->update(['language' => $language]) > 0;
+    }
+    //---------------
     public function checkIfCompanyIsBlocked(int $companyId): bool
     {
         return DB::table($this->table)

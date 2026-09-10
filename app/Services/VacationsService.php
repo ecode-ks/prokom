@@ -43,8 +43,8 @@ class VacationsService
         $to = $data['to_date'] ?? '';
         $period = trim($from . ' - ' . $to, ' -');
         $message = $period !== ''
-            ? 'Është regjistruar një kërkesë pushimi (' . $period . ').'
-            : 'Është regjistruar një kërkesë pushimi.';
+            ? __('pages.notif_vacation_body_period', ['period' => $period])
+            : __('pages.notif_vacation_body');
 
         if ($employeeId > 0) {
             $this->notifications->notify(
@@ -52,8 +52,8 @@ class VacationsService
                 'employee',
                 $employeeId,
                 'vacation_created',
-                'Kërkesë pushimi',
-                $message . ' Në pritje.',
+                __('pages.notif_vacation_title'),
+                $message . ' ' . __('pages.notif_pending'),
                 route('vacations')
             );
         }
@@ -63,7 +63,7 @@ class VacationsService
             'company',
             $companyId,
             'vacation_request',
-            'Kërkesë e re pushimi',
+            __('pages.notif_vacation_new'),
             $message,
             route('vacations')
         );
@@ -79,8 +79,8 @@ class VacationsService
                 'employee',
                 (int) $hr->id,
                 'vacation_request',
-                'Kërkesë e re pushimi',
-                $message . ' Në pritje.',
+                __('pages.notif_vacation_new'),
+                $message . ' ' . __('pages.notif_pending'),
                 route('vacations')
             );
         }
@@ -211,8 +211,8 @@ class VacationsService
                 'employee',
                 $employeeId,
                 'vacation_status',
-                'Pushimi u aprovua',
-                'Kërkesa juaj e pushimit (' . $period . ') u aprovua.',
+                __('pages.notif_vacation_approved'),
+                __('pages.notif_vacation_approved_body', ['period' => $period]),
                 route('vacations')
             );
         } elseif ($status === 'Refused') {
@@ -221,8 +221,8 @@ class VacationsService
                 'employee',
                 $employeeId,
                 'vacation_status',
-                'Pushimi u refuzua',
-                'Kërkesa juaj e pushimit (' . $period . ') u refuzua.',
+                __('pages.notif_vacation_refused'),
+                __('pages.notif_vacation_refused_body', ['period' => $period]),
                 route('vacations')
             );
         }

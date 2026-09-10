@@ -30,7 +30,7 @@ class UsersController extends Controller
     public function registerAdmin(Request $request)
     {
         if($this->usersService->checkAdminExists()){
-            return back()->with('error','Një përdorues administrator ekziston tashmë.');
+            return back()->with('error',__('app.admin_exists'));
         }
 
         $validator=Validator::make($request->all(),[
@@ -39,14 +39,14 @@ class UsersController extends Controller
             'password'=>'required|string|min:8|max:255'
         ]);
         if($validator->fails()){
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.');
+            return back()->with('error',__('app.fields_invalid'));
         }else{
             $data = $request->only(['user', 'username', 'password']);
             try {
                 $this->usersService->registerAdmin($data);
-                return redirect()->route('login')->with('success', 'Përdoruesi administrator u krijua me sukses. Ju lutemi identifikohuni.');
+                return redirect()->route('login')->with('success', __('app.admin_created'));
             } catch (\Exception $e) {
-                    return back()->with('error', 'Dështoi krijimi i përdoruesit administrator. Ju lutemi provoni përsëri.');
+                    return back()->with('error', __('app.admin_create_failed'));
             }
         }
     }
@@ -69,23 +69,49 @@ class UsersController extends Controller
         ]);
 
         if($validator->fails()){
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.');
+            return back()->with('error',__('app.fields_invalid'));
         }else{
             if ($request->new_password !== $request->new_password_confirmation) {
-                return back()->with('error', 'Fjalëkalimi i ri dhe konfirmimi i fjalëkalimit nuk përputhen.')->withInput();
+                return back()->with('error', __('app.new_passwords_mismatch'))->withInput();
             }
             $username = session()->get('username');
 
             try {
                 $created = $this->usersService->updateProfilePassword($request->old_password, $request->new_password, $username);
                 if ($created) {
-                    return back()->with('success', 'Fjalëkalimi u përditësua me sukses.');
+                    return back()->with('success', __('app.password_updated'));
                 } else {
-                    return back()->with('error', 'Fjalëkalimi i vjetër është i pasaktë.')->withInput();
+                    return back()->with('error', __('app.old_password_wrong'))->withInput();
                 }
             } catch (\Exception $e) {
-                return back()->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+                return back()->with('error', __('app.register_failed'))->withInput();
             }
+        }
+    }
+    //---------------
+    public function updateCompanyLanguage(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'language' => 'required|in:sq,en,de',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->with('error', __('app.fields_invalid'));
+        }
+
+        $companyId = (int) session('company_id');
+        if (!$companyId) {
+            return back()->with('error', __('app.language_update_failed'));
+        }
+
+        try {
+            $updated = $this->usersService->updateCompanyLanguage($companyId, $request->input('language'));
+            if ($updated) {
+                return back()->with('success', __('app.language_updated'));
+            }
+            return back()->with('error', __('app.language_update_failed'));
+        } catch (\Exception $e) {
+            return back()->with('error', __('app.language_update_failed'));
         }
     }
     //---------------
@@ -96,13 +122,13 @@ class UsersController extends Controller
             'password'=>'required|string|min:8|max:255'
         ]);
         if($validator->fails()){
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.');
+            return back()->with('error',__('app.fields_invalid'));
         }else{
             try {
                 $this->usersService->checkLogin($request->only(['username', 'password']));
-                return redirect()->route('dashboard')->with('success', 'Mirë se vini në WORKOM! Jeni kyçur me sukses.');
+                return redirect()->route('dashboard')->with('success', __('app.login_success'));
             } catch (\Exception $e) {
-                return back()->with('error', 'Kyçja dështoi: ' . $e->getMessage())->withInput();
+                return back()->with('error', __('app.login_failed', ['message' => $e->getMessage()]))->withInput();
             }
         }
     }
@@ -111,6 +137,6 @@ class UsersController extends Controller
     {
         session()->flush();
         return redirect()->route('login')
-            ->with('success', 'Ju jeni shkyçur me sukses nga sistemi.');
+            ->with('success', __('app.logout_success'));
     }
 }

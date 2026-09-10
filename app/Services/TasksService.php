@@ -36,7 +36,7 @@ class TasksService
 
         $assigneeIds = array_values(array_filter(array_map('intval', explode(',', (string) ($data['assigned_to'] ?? '')))));
         $companyId = (int) ($data['company_id'] ?? 0);
-        $title = (string) ($data['title'] ?? 'Detyrë e re');
+        $title = (string) ($data['title'] ?? __('pages.new_task_default'));
 
         foreach ($assigneeIds as $employeeId) {
             $this->notifications->notify(
@@ -44,8 +44,8 @@ class TasksService
                 'employee',
                 $employeeId,
                 'task_assigned',
-                'Detyrë e re',
-                'Ju është caktuar detyra: ' . $title,
+                __('pages.notif_new_task'),
+                __('pages.notif_new_task_body', ['title' => $title]),
                 route('task.details', $taskId)
             );
         }
@@ -89,8 +89,8 @@ class TasksService
             $employee->leave_from = $leave->from_date;
             $employee->leave_until = $leave->to_date;
             $employee->leave_label = $leave->from_date <= $today
-                ? 'Në pushim deri më ' . $to
-                : 'Në pushim ' . $from . ' – ' . $to;
+                ? __('pages.on_leave_until', ['date' => $to])
+                : __('pages.on_leave_range', ['from' => $from, 'to' => $to]);
         }
 
         return $employees;

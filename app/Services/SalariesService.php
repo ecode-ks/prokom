@@ -85,7 +85,7 @@ class SalariesService
         $calculations = $this->repository->calculateAll($fromDate, $toDate, $employeeId, $this->companyId);
 
         if ($calculations->isEmpty()) {
-            throw new RuntimeException('Nuk u gjetën paga për ruajtje.');
+            throw new RuntimeException(__('pages.no_salaries_to_save'));
         }
 
         $salaryDate = $toDate;

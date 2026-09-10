@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>WORKOM | Hyrje</title>
+        <title>WORKOM | {{ __('app.title_login') }}</title>
         @include('partials.favicon')
 
         {{-- Assets --}}
@@ -12,6 +12,9 @@
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
     </head>
     <body>
+        <div class="lang-switcher-fixed">
+            @include('partials.lang-switcher')
+        </div>
         <div class="container-fluid">
             <div class="row vh-100">
 
@@ -23,18 +26,18 @@
                         </div>
                         <div>
                             <span class="d-block fw-semibold">WORKOM</span>
-                            <small class="d-block opacity-50">Paneli Menaxhimit</small>
+                            <small class="d-block opacity-50">{{ __('app.panel_subtitle') }}</small>
                         </div>
                     </div>
                     <div class="mt-4">
                         <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-light px-3 py-2 fw-semibold">
                             <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                            Besuar nga <strong>10+</strong> Kompani
+                            {{ __('app.trusted_by') }} <strong>10+</strong> {{ __('app.companies_count') }}
                         </span>
                     </div>
                     <div class="mt-5">
-                        <h1 class="display-4 fw-bold col-8">Stafi, Projektet dhe Financat <span class="opacity-50">- në një vend.</span></h1>
-                        <p class="lead opacity-75 col-7 mt-5">Punonjësit, oraret e punës, pushimet, kontratat, pagat, detyrat dhe raportet. Një sistem i qetë dhe i menduar mirë.</p>
+                        <h1 class="display-4 fw-bold col-8">{{ __('app.hero_title') }} <span class="opacity-50">{{ __('app.hero_title_rest') }}</span></h1>
+                        <p class="lead opacity-75 col-7 mt-5">{{ __('app.hero_lead') }}</p>
                     </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between opacity-50">
@@ -49,31 +52,31 @@
                     {{-- Register Admin --}}
                     <div class="col-12 col-md-12 col-lg-6 d-flex align-items-center flex-column justify-content-center bg-custom vh-100 p-5">
                         <div class="col-12 col-md-8">
-                            <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini në WORKOM</span>
-                            <h1 class="fw-bold mt-3">Krijo llogarinë e administratorit</h1>
+                            <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome') }}</span>
+                            <h1 class="fw-bold mt-3">{{ __('app.create_admin') }}</h1>
                             <form action="{{ route('register.admin') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="user" class="form-label text-uppercase small fw-semibold">Emri & Mbiemri</label>
-                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="user" name="user" placeholder="Shkruani emrin dhe mbiemrin tuaj">
+                                    <label for="user" class="form-label text-uppercase small fw-semibold">{{ __('app.full_name') }}</label>
+                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="user" name="user" placeholder="{{ __('app.placeholder_full_name') }}">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
-                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" placeholder="Shkruani përdoruesin tuaj">
+                                    <label for="username" class="form-label text-uppercase small fw-semibold">{{ __('app.username') }}</label>
+                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" placeholder="{{ __('app.placeholder_username') }}">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi</label>
-                                    <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" placeholder="Shkruani fjalëkalimin tuaj">
+                                    <label for="password" class="form-label text-uppercase small fw-semibold">{{ __('app.password') }}</label>
+                                    <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" placeholder="{{ __('app.placeholder_password') }}">
                                 </div>
-                                <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Krijo Llogarinë <i class="fa-solid fa-angle-right"></i></button>
+                                <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">{{ __('app.create_account') }} <i class="fa-solid fa-angle-right"></i></button>
                             </form>
                             <div class="mt-4 text-center">
-                                <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Nuk keni ende një llogari?</span> Regjistrohuni tani!</a>
+                                <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">{{ __('app.no_account') }}</span> {{ __('app.register_now') }}</a>
                             </div>
                             <div class="mt-4 text-center d-block d-md-none d-lg-none">
                                 <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-success border border-success px-3 py-2 fw-semibold">
                                     <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                                    Besuar nga <strong>10+</strong> Kompani
+                                    {{ __('app.trusted_by') }} <strong>10+</strong> {{ __('app.companies_count') }}
                                 </span>
                             </div>
                         </div>
@@ -83,27 +86,27 @@
                     {{-- Login Form --}}
                     <div class="col-12 col-md-12 col-lg-6 d-flex align-items-center flex-column justify-content-center bg-custom vh-100 p-5">
                         <div class="col-12 col-md-8">
-                            <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini përsëri</span>
-                            <h1 class="fw-bold mt-3">Kyçu në llogarinë tuaj</h1>
+                            <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome_back') }}</span>
+                            <h1 class="fw-bold mt-3">{{ __('app.login_heading') }}</h1>
                             <form action="{{ route('check.login') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
-                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" placeholder="Shkruani përdoruesin tuaj">
+                                    <label for="username" class="form-label text-uppercase small fw-semibold">{{ __('app.username') }}</label>
+                                    <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" placeholder="{{ __('app.placeholder_username') }}">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi</label>
-                                    <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" placeholder="Shkruani fjalëkalimin tuaj">
+                                    <label for="password" class="form-label text-uppercase small fw-semibold">{{ __('app.password') }}</label>
+                                    <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" placeholder="{{ __('app.placeholder_password') }}">
                                 </div>
-                                <button type="submit" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Kyçu <i class="fa-solid fa-angle-right"></i></button>
+                                <button type="submit" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">{{ __('app.login') }} <i class="fa-solid fa-angle-right"></i></button>
                             </form>
                             <div class="mt-4 text-center">
-                                <a href="{{ route('register') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Nuk keni ende një llogari?</span> Regjistrohuni tani!</a>
+                                <a href="{{ route('register') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">{{ __('app.no_account') }}</span> {{ __('app.register_now') }}</a>
                             </div>
                             <div class="mt-4 text-center d-block d-md-none d-lg-none">
                                 <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-success border border-success px-3 py-2 fw-semibold">
                                     <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                                    Besuar nga <strong>10+</strong> Kompani
+                                    {{ __('app.trusted_by') }} <strong>10+</strong> {{ __('app.companies_count') }}
                                 </span>
                             </div>
                         </div>
@@ -117,7 +120,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success border-success">
-                        <strong class="me-auto text-light">Njoftim!</strong>
+                        <strong class="me-auto text-light">{{ __('app.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-success">
@@ -132,7 +135,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="errorToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-danger border-danger">
-                        <strong class="me-auto text-light">Njoftim!</strong>
+                        <strong class="me-auto text-light">{{ __('app.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-danger">

@@ -33,9 +33,9 @@ class VacationsController extends Controller
 
         if ($validator->fails()) {
             if ($validator->errors()->has('from_date') && strtotime($request->from_date) < strtotime('today')) {
-                return redirect()->route('vacations')->with('error', 'Nuk mund të rezervoni pushim në të kaluarën.')->withInput();
+                return redirect()->route('vacations')->with('error', __('pages.vacation_past'))->withInput();
             }
-            return redirect()->route('vacations')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return redirect()->route('vacations')->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $data = $request->only(['employee_id', 'from_date', 'to_date', 'type', 'comment']);
@@ -47,9 +47,9 @@ class VacationsController extends Controller
 
         try {
             $this->service->createVacation($data);
-            return redirect()->route('vacations')->with('success', 'Pushimi u krijua me sukses.');
+            return redirect()->route('vacations')->with('success', __('pages.vacation_created'));
         } catch (\Exception $e) {
-            return redirect()->route('vacations')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.')->withInput();
+            return redirect()->route('vacations')->with('error', __('app.try_again'))->withInput();
         }
     }
     //---------------
@@ -72,12 +72,12 @@ class VacationsController extends Controller
         if ($isEmployee) {
             $employeeId = (int) session('employee_id');
             if ($employeeId <= 0) {
-                return redirect()->route('dashboard')->with('error', 'Punonjësi nuk u gjet.');
+                return redirect()->route('dashboard')->with('error', __('pages.employee_not_found'));
             }
         } else {
             $employees = $this->employees->getAllEmployees();
             if (count($employees) === 0) {
-                return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari punonjësit.');
+                return redirect()->route('employees')->with('error', __('app.register_employees_first'));
             }
         }
 
@@ -108,18 +108,18 @@ class VacationsController extends Controller
         $isEmployee = $role === 'employee';
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('vacations')->with('error', 'Pushimi nuk u gjet.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_not_found'));
         }
 
         $editVacation = $this->service->getVacationById($id, $companyId);
 
         if ($isEmployee && (int) $editVacation->employee_id !== (int) session('employee_id')) {
-            return redirect()->route('vacations')->with('error', 'Nuk keni të drejtë të ndryshoni këtë pushim.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_no_edit'));
         }
 
         $employees = $isEmployee ? collect() : $this->employees->getAllEmployees();
         if (!$isEmployee && count($employees) === 0) {
-            return redirect()->route('vacations')->with('error', 'Ju lutemi regjistroni së pari punonjësit.');
+            return redirect()->route('vacations')->with('error', __('app.register_employees_first'));
         }
 
         return view('management.vacations')
@@ -150,9 +150,9 @@ class VacationsController extends Controller
 
         if ($validator->fails()) {
             if ($validator->errors()->has('from_date') && strtotime($request->from_date) < strtotime('today')) {
-                return back()->with('error', 'Nuk mund të rezervoni pushim në të kaluarën.')->withInput();
+                return back()->with('error', __('pages.vacation_past'))->withInput();
             }
-            return back()->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         }
 
         $id = (int) $request->id;
@@ -160,11 +160,11 @@ class VacationsController extends Controller
         $existing = $this->service->getVacationById($id, $companyId);
 
         if (!$existing) {
-            return redirect()->route('vacations')->with('error', 'Pushimi nuk u gjet.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_not_found'));
         }
 
         if ($isEmployee && (int) $existing->employee_id !== (int) session('employee_id')) {
-            return redirect()->route('vacations')->with('error', 'Nuk keni të drejtë të ndryshoni këtë pushim.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_no_edit'));
         }
 
         $data = $request->only(['employee_id', 'from_date', 'to_date', 'type', 'comment']);
@@ -174,9 +174,9 @@ class VacationsController extends Controller
 
         try {
             $this->service->updateVacation($id, $data, $companyId);
-            return redirect()->route('vacations')->with('success', 'Pushimi u përditësua me sukses.');
+            return redirect()->route('vacations')->with('success', __('pages.vacation_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('vacations')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('vacations')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -186,19 +186,19 @@ class VacationsController extends Controller
         $role = session('role');
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('vacations')->with('error', 'Pushimi nuk u gjet.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_not_found'));
         }
 
         $vacation = $this->service->getVacationById($id, $companyId);
         if ($role === 'employee' && (int) $vacation->employee_id !== (int) session('employee_id')) {
-            return redirect()->route('vacations')->with('error', 'Nuk keni të drejtë të fshini këtë pushim.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_no_delete'));
         }
 
         try {
             $this->service->deleteVacation($id, $companyId);
-            return redirect()->route('vacations')->with('success', 'Pushimi u fshi me sukses.');
+            return redirect()->route('vacations')->with('success', __('pages.vacation_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('vacations')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('vacations')->with('error', __('app.try_again'));
         }
     }
     //---------------
@@ -209,26 +209,26 @@ class VacationsController extends Controller
         $status = urldecode($status);
 
         if (!in_array($role, ['company', 'hr'], true)) {
-            return redirect()->route('vacations')->with('error', 'Nuk keni të drejtë të ndryshoni statusin.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_no_status'));
         }
 
         $allowed = ['Approved', 'Refused'];
         if (!in_array($status, $allowed, true)) {
-            return redirect()->route('vacations')->with('error', 'Statusi nuk është i vlefshëm.');
+            return redirect()->route('vacations')->with('error', __('app.invalid_status'));
         }
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('vacations')->with('error', 'Pushimi nuk u gjet.');
+            return redirect()->route('vacations')->with('error', __('pages.vacation_not_found'));
         }
 
         try {
             if (!$this->service->updateVacationStatus($id, $status, $role, $companyId)) {
-                return back()->with('error', 'Kërkesa përditësimi statusi nuk është e vlefshme.');
+                return back()->with('error', __('app.invalid_status'));
             }
 
-            return back()->with('success', 'Statusi i pushimit u përditësua me sukses.');
+            return back()->with('success', __('pages.vacation_status_updated'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return back()->with('error', __('app.try_again'));
         }
     }
 }

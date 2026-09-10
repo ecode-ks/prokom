@@ -74,7 +74,7 @@ class MaterialsStockService
 
         $oldMaterialStockWithout = $this->repository->getMaterialQtyFromReport($oldMaterialId, $companyId, $id);
         if ($oldMaterialStockWithout < 0) {
-            throw new Exception('Ky ndryshim do të linte stok negativ për materialin e mëparshëm.');
+            throw new Exception(__('pages.stock_negative'));
         }
 
         $this->assertSufficientStock($newMaterialId, $companyId, $newType, $newQty, $id);

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>WORKOM | Regjistrimi</title>
+        <title>WORKOM | {{ __('app.title_register') }}</title>
         @include('partials.favicon')
 
         {{-- Assets --}}
@@ -12,6 +12,9 @@
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
     </head>
     <body>
+        <div class="lang-switcher-fixed">
+            @include('partials.lang-switcher')
+        </div>
         <div class="container-fluid">
             <div class="row vh-100">
 
@@ -23,18 +26,18 @@
                         </div>
                         <div>
                             <span class="d-block fw-semibold">WORKOM</span>
-                            <small class="d-block opacity-50">Paneli Menaxhimit</small>
+                            <small class="d-block opacity-50">{{ __('app.panel_subtitle') }}</small>
                         </div>
                     </div>
                     <div class="mt-4">
                         <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-light px-3 py-2 fw-semibold">
                             <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                            Besuar nga <strong>10+</strong> Kompani
+                            {{ __('app.trusted_by') }} <strong>10+</strong> {{ __('app.companies_count') }}
                         </span>
                     </div>
                     <div class="mt-5">
-                        <h1 class="display-4 fw-bold col-8">Stafi, Projektet dhe Financat <span class="opacity-50">- në një vend.</span></h1>
-                        <p class="lead opacity-75 col-7 mt-5">Punonjësit, oraret e punës, pushimet, kontratat, pagat, detyrat dhe raportet. Një sistem i qetë dhe i menduar mirë.</p>
+                        <h1 class="display-4 fw-bold col-8">{{ __('app.hero_title') }} <span class="opacity-50">{{ __('app.hero_title_rest') }}</span></h1>
+                        <p class="lead opacity-75 col-7 mt-5">{{ __('app.hero_lead') }}</p>
                     </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between opacity-50">
@@ -47,47 +50,51 @@
                 {{-- Registration Form --}}
                 <div class="col-12 col-md-12 col-lg-6 bg-custom vh-100 overflow-y-auto">
                     <div class="col-12 col-md-8 mx-auto py-5">
-                        <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini në WORKOM</span>
-                        <h1 class="fw-bold col-12 mt-3">Krijoni një llogari për kompaninë tuaj</h1>
+                        <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome') }}</span>
+                        <h1 class="fw-bold col-12 mt-3">{{ __('app.register_heading') }}</h1>
                         <form action="{{ route('register.company') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                             @csrf
                             <div class="mb-3">
-                                <label for="company" class="form-label text-uppercase small fw-semibold">Emri i Kompanisë</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="company" name="company" value="{{ old('company') }}" placeholder="Shkruani emrin e kompanisë suaj">
+                                <label for="company" class="form-label text-uppercase small fw-semibold">{{ __('app.company_name') }}</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="company" name="company" value="{{ old('company') }}" placeholder="{{ __('app.placeholder_company') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label text-uppercase small fw-semibold">Emaili</label>
-                                <input type="email" class="form-control shadow-sm py-custom rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="Shkruani email-in tuaj">
+                                <label for="email" class="form-label text-uppercase small fw-semibold">{{ __('app.email') }}</label>
+                                <input type="email" class="form-control shadow-sm py-custom rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('app.placeholder_email') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="phone" class="form-label text-uppercase small fw-semibold">Telefoni</label>
-                                <input type="tel" class="form-control shadow-sm py-custom rounded-3" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Shkruani numrin tuaj të telefonit">
+                                <label for="phone" class="form-label text-uppercase small fw-semibold">{{ __('app.phone') }}</label>
+                                <input type="tel" class="form-control shadow-sm py-custom rounded-3" id="phone" name="phone" value="{{ old('phone') }}" placeholder="{{ __('app.placeholder_phone') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="location" class="form-label text-uppercase small fw-semibold">Vendndodhja</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="Shkruani vendndodhjen tuaj">
+                                <label for="location" class="form-label text-uppercase small fw-semibold">{{ __('app.location') }}</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="{{ __('app.placeholder_location') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="Shkruani përdoruesin (username)">
+                                <label class="form-label text-uppercase small fw-semibold">{{ __('app.language') }}</label>
+                                @include('partials.lang-choice', ['selected' => old('language', app()->getLocale()), 'mode' => 'radio'])
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi (8+ Karaktere)</label>
-                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="Shkruani fjalëkalimin tuaj">
+                                <label for="username" class="form-label text-uppercase small fw-semibold">{{ __('app.username') }}</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="{{ __('app.placeholder_username_user') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="password_confirmation" class="form-label text-uppercase small fw-semibold">Konfirmo fjalëkalimin</label>
-                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="Konfirmoni fjalëkalimin tuaj">
+                                <label for="password" class="form-label text-uppercase small fw-semibold">{{ __('app.password_8') }}</label>
+                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="{{ __('app.placeholder_password') }}">
                             </div>
-                            <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Regjistrohu <i class="fa-solid fa-angle-right"></i></button>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label text-uppercase small fw-semibold">{{ __('app.confirm_password') }}</label>
+                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="{{ __('app.placeholder_confirm_password') }}">
+                            </div>
+                            <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">{{ __('app.register') }} <i class="fa-solid fa-angle-right"></i></button>
                         </form>
                         <div class="mt-4 text-center">
-                            <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Keni një llogari?</span> Kyçu tani!</a>
+                            <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">{{ __('app.have_account') }}</span> {{ __('app.login_now') }}</a>
                         </div>
                         <div class="mt-4 text-center d-block d-md-none d-lg-none">
                             <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-success border border-success px-3 py-2 fw-semibold">
                                 <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                                Trusted by <strong>10+</strong> Companies
+                                {{ __('app.trusted_by') }} <strong>10+</strong> {{ __('app.companies_count') }}
                             </span>
                         </div>
                     </div>
@@ -100,7 +107,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success border-success">
-                        <strong class="me-auto text-light">Njoftim!</strong>
+                        <strong class="me-auto text-light">{{ __('app.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-success">
@@ -115,7 +122,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="errorToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-danger border-danger">
-                        <strong class="me-auto text-light">Njoftim!</strong>
+                        <strong class="me-auto text-light">{{ __('app.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-danger">

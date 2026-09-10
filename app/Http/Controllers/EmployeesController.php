@@ -25,14 +25,14 @@ class EmployeesController extends Controller
             'role' => 'required|string|min:1|max:255|in:manager,finance,hr,employee'
         ]);
         if ($validator->fails()) {
-            return redirect()->route('employees')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('employees')->with('error', __('app.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['employee', 'phone', 'email', 'username', 'password', 'role']);
             try {
                 $this->service->createEmployee($data);
-                return redirect()->route('employees')->with('success', 'Punëtori u regjistrua me sukses.');
+                return redirect()->route('employees')->with('success', __('pages.employee_created'));
             } catch (\Exception $e) {
-                return redirect()->route('employees')->with('error', 'Regjistrimi dështoi : ' . $e->getMessage())->withInput();
+                return redirect()->route('employees')->with('error', __('app.register_failed_reason', ['message' => $e->getMessage()]))->withInput();
             }
         }
     }
@@ -57,7 +57,7 @@ class EmployeesController extends Controller
     {
         $page = 'Employees';
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('employees')->with('error','Punëtori nuk u gjet');
+            return redirect()->route('employees')->with('error', __('pages.employee_not_found'));
         } else {
             $editEmployee = $this->service->getEmployeeById($id);
             return view('management.employees')
@@ -78,7 +78,7 @@ class EmployeesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             if($request->password === null) {
@@ -88,9 +88,9 @@ class EmployeesController extends Controller
             }
             try {
                 $this->service->updateEmployee($id, $data);
-                return back()->with('success', 'Punëtori u përditësua me sukses.');
+                return back()->with('success', __('pages.employee_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('employees')->with('error', 'Regjistrimi dështoi : ' . $e->getMessage())->withInput();
+                return redirect()->route('employees')->with('error', __('app.register_failed_reason', ['message' => $e->getMessage()]))->withInput();
             }
         }
     }
@@ -98,13 +98,13 @@ class EmployeesController extends Controller
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('employees')->with('error','Punëtori nuk u gjet');
+            return redirect()->route('employees')->with('error', __('pages.employee_not_found'));
         } else {
             try {
                 $this->service->deleteEmployee($id);
-                return redirect()->route('employees')->with('success','Punëtori u fshi me sukses');
+                return redirect()->route('employees')->with('success', __('pages.employee_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('employees')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                return redirect()->route('employees')->with('error', __('app.try_again'));
             }
         }
     }
@@ -112,13 +112,13 @@ class EmployeesController extends Controller
     public function activate(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('employees')->with('error','Punëtori nuk u gjet');
+            return redirect()->route('employees')->with('error', __('pages.employee_not_found'));
         } else {
             try {
                 $this->service->activateEmployee($id);
-                return redirect()->route('employees')->with('success','Punëtori u aktivizua me sukses');
+                return redirect()->route('employees')->with('success', __('pages.employee_activated'));
             } catch (\Exception $e) {
-                return redirect()->route('employees')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                return redirect()->route('employees')->with('error', __('app.try_again'));
             }
         }
     }
@@ -126,13 +126,13 @@ class EmployeesController extends Controller
     public function block(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('employees')->with('error','Punëtori nuk u gjet');
+            return redirect()->route('employees')->with('error', __('pages.employee_not_found'));
         } else {
             try {
                 $this->service->blockEmployee($id);
-                return redirect()->route('employees')->with('success','Punëtori u bllokua me sukses');
+                return redirect()->route('employees')->with('success', __('pages.employee_blocked'));
             } catch (\Exception $e) {
-                return redirect()->route('employees')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                return redirect()->route('employees')->with('error', __('app.try_again'));
             }
         }
     }

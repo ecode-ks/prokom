@@ -1,11 +1,11 @@
 @extends('template.template')
 
-@section('title', 'Raporti Financiar')
+@section('title', __('app.nav_financial_report'))
 
 @section('content')
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Financat</small>
-    <h3 class="fw-semibold pt-2">Raporti Financiar</h3>
-    <p class="text-muted">Filtro transaksionet sipas periudhës dhe shiko përmbledhjen e performancës financiare.</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('app.nav_finance') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('app.nav_financial_report') }}</h3>
+    <p class="text-muted">{{ __('pages.fin_report_lead') }}</p>
     <hr class="mb-4">
 
     @php
@@ -24,16 +24,16 @@
         <div class="card-body p-4">
             <div class="row align-items-center g-3">
                 <div class="col-12 col-lg-8">
-                    <small class="text-uppercase opacity-75 d-block mb-1">Periudha e Raportit</small>
-                    <h5 class="fw-semibold mb-0">{{ $fromLabel }} deri {{ $toLabel }}</h5>
+                    <small class="text-uppercase opacity-75 d-block mb-1">{{ __('pages.fin_period') }}</small>
+                    <h5 class="fw-semibold mb-0">{{ $fromLabel }} {{ __('pages.fin_until') }} {{ $toLabel }}</h5>
                 </div>
                 <div class="col-12 col-lg-4 text-lg-end">
                     <form action="{{ route('financial.report') }}" method="get" class="row g-2 justify-content-end">
                         <div class="col-12 col-md-6 col-lg-5">
-                            <input type="date" name="from_date" value="{{ request('from_date', $fromDate) }}" class="form-control shadow-sm rounded-3" placeholder="Nga data">
+                            <input type="date" name="from_date" value="{{ request('from_date', $fromDate) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('app.from_date') }}">
                         </div>
                         <div class="col-12 col-md-6 col-lg-5">
-                            <input type="date" name="to_date" value="{{ request('to_date', $toDate) }}" class="form-control shadow-sm rounded-3" placeholder="Deri data">
+                            <input type="date" name="to_date" value="{{ request('to_date', $toDate) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('app.to_date') }}">
                         </div>
                         <div class="col-12 col-lg-2 d-grid">
                             <button type="submit" class="btn btn-darkblue rounded-3 shadow-sm"><i class="fa-solid fa-filter"></i></button>
@@ -48,7 +48,7 @@
         <div class="col-12 col-md-6 col-xl-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-up text-success"></i> Të Ardhurat</small>
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-up text-success"></i> {{ __('pages.fin_revenues') }}</small>
                     <h4 class="fw-semibold mb-0 text-success">€{{ number_format($revenues, 2) }}</h4>
                 </div>
             </div>
@@ -56,7 +56,7 @@
         <div class="col-12 col-md-6 col-xl-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-down text-danger"></i> Shpenzimet</small>
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-down text-danger"></i> {{ __('pages.fin_expenses') }}</small>
                     <h4 class="fw-semibold mb-0 text-danger">-€{{ number_format($expenses, 2) }}</h4>
                 </div>
             </div>
@@ -64,7 +64,7 @@
         <div class="col-12 col-md-6 col-xl-3">
             <div class="card h-100">
                 <div class="card-body bg-darkblue text-white rounded-4">
-                    <small class="text-uppercase opacity-75 d-block">Bilanci Neto</small>
+                    <small class="text-uppercase opacity-75 d-block">{{ __('pages.fin_net_balance') }}</small>
                     <h4 class="fw-semibold mb-0">€{{ number_format($balance, 2) }}</h4>
                 </div>
             </div>
@@ -72,9 +72,9 @@
         <div class="col-12 col-md-6 col-xl-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-receipt"></i> Transaksionet</small>
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-receipt"></i> {{ __('pages.fin_transactions') }}</small>
                     <h4 class="fw-semibold mb-0">{{ number_format($transactionCount) }}</h4>
-                    <small class="text-muted">Mes. €{{ number_format($averageTransaction, 2) }}</small>
+                    <small class="text-muted">{{ __('pages.fin_avg') }} €{{ number_format($averageTransaction, 2) }}</small>
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
             <div class="row g-3 align-items-center">
                 <div class="col-12 col-lg-4">
                     <div class="p-3 rounded-4 bg-light">
-                        <small class="text-uppercase opacity-75 d-block">Të Ardhurat vs Shpenzimet</small>
+                        <small class="text-uppercase opacity-75 d-block">{{ __('pages.fin_vs') }}</small>
                         @php
                             $totalFlow = max($revenues + $expenses, 1);
                             $revenuePercent = ($revenues / $totalFlow) * 100;
@@ -93,14 +93,14 @@
                         @endphp
                         <div class="mt-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <small>Të ardhura</small>
+                                <small>{{ __('pages.fin_revenue') }}</small>
                                 <small>{{ number_format($revenuePercent, 1) }}%</small>
                             </div>
                             <div class="progress mb-3" style="height: 10px;">
                                 <div class="progress-bar bg-success" style="width: {{ $revenuePercent }}%"></div>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
-                                <small>Shpenzim</small>
+                                <small>{{ __('pages.fin_expense') }}</small>
                                 <small>{{ number_format($expensePercent, 1) }}%</small>
                             </div>
                             <div class="progress" style="height: 10px;">
@@ -115,16 +115,16 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="text-nowrap">#</th>
-                                    <th scope="col" class="text-nowrap">Data</th>
-                                    <th scope="col" class="text-nowrap">Lloji</th>
-                                    <th scope="col" class="text-nowrap">Shuma</th>
-                                    <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                    <th scope="col" class="text-nowrap">{{ __('app.date') }}</th>
+                                    <th scope="col" class="text-nowrap">{{ __('pages.fin_type_col') }}</th>
+                                    <th scope="col" class="text-nowrap">{{ __('app.amount') }}</th>
+                                    <th scope="col" class="text-nowrap text-end">{{ __('app.operations') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if(!$transactions || count($transactions) === 0)
                                     <tr>
-                                        <td colspan="5" class="text-center py-4"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                        <td colspan="5" class="text-center py-4"><i class="fa-regular fa-face-frown"></i> {{ __('app.no_data') }}</td>
                                     </tr>
                                 @else
                                     @foreach ($transactions as $transaction)
@@ -133,9 +133,9 @@
                                             <td class="text-nowrap">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</td>
                                             <td class="text-nowrap">
                                                 @if($transaction->type === 'revenue')
-                                                    <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Të ardhura</span>
+                                                    <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.fin_revenue') }}</span>
                                                 @else
-                                                    <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Shpenzim</span>
+                                                    <span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ __('pages.fin_expense') }}</span>
                                                 @endif
                                             </td>
                                             <td class="text-nowrap fw-semibold {{ $transaction->type === 'revenue' ? 'text-success' : 'text-danger' }}">
@@ -167,23 +167,23 @@
                 <div class="modal-dialog modal-dialog-scrollable">
                     <div class="modal-content rounded-4">
                         <div class="modal-header justify-content-between align-items-center px-4">
-                            <h1 class="modal-title fs-5 fw-semibold" id="commentModal{{ $transaction->id }}Label">Detajet e Transaksionit <strong>#TRID-{{ $transaction->id }}</strong></h1>
-                            <button type="button" class="btn btn-darkblue btn-sm" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                            <h1 class="modal-title fs-5 fw-semibold" id="commentModal{{ $transaction->id }}Label">{{ __('pages.fin_details') }} <strong>#TRID-{{ $transaction->id }}</strong></h1>
+                            <button type="button" class="btn btn-darkblue btn-sm" data-bs-dismiss="modal" aria-label="{{ __('app.close') }}"><i class="fa-solid fa-xmark"></i></button>
                         </div>
                         <div class="modal-body bg-custom px-4 py-5">
                             @if($transaction->type == 'revenue')
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Lloji : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Të ardhura</span></span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.fin_type_col') }} : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.fin_revenue') }}</span></span>
                             @else
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Lloji : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Shpenzim</span></span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.fin_type_col') }} : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ __('pages.fin_expense') }}</span></span>
                             @endif
-                            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Data : </span>{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</span>
+                            <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('app.date') }} : </span>{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</span>
 
                             @if($transaction->type == 'revenue')
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> Shuma : </span>+€{{ number_format($transaction->amount,2) }}</span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> {{ __('app.amount') }} : </span>+€{{ number_format($transaction->amount,2) }}</span>
                             @else
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> Shuma : </span>-€{{ number_format($transaction->amount,2) }}</span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> {{ __('app.amount') }} : </span>-€{{ number_format($transaction->amount,2) }}</span>
                             @endif
-                            <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> Komenti i Transaksionit</span>
+                            <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> {{ __('pages.fin_comment_label') }}</span>
                             <div class="card card-body rounded-4">
                                 <span>{!! nl2br(e($transaction->comment)) !!}</span>
                             </div>

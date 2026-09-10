@@ -1,19 +1,19 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', isset($editClient) ? 'Përditëso Klientin' : 'Klientët')
+@section('title', isset($editClient) ? __('pages.clients_update_title') : __('pages.clients_title'))
 
 {{-- Page Content --}}
 @section('content')
     @if(isset($editClient))
-        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('clients') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
-        <h3 class="fw-semibold pt-2">Përditëso Klientin</h3>
-        <p class="text-muted">Përditëso të dhënat e klientit të zgjedhur.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('clients') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('app.back') }}</a></small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.clients_update_title') }}</h3>
+        <p class="text-muted">{{ __('pages.clients_update_lead') }}</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Klientët</small>
-        <h3 class="fw-semibold pt-2">Klientët</h3>
-        <p class="text-muted">Shiko, krijo dhe menaxho të dhënat e klientëve në një vend.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.clients_title') }}</small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.clients_title') }}</h3>
+        <p class="text-muted">{{ __('pages.clients_lead') }}</p>
         <hr class="mb-4">
     @endif
 
@@ -22,7 +22,7 @@
         {{-- Update Client --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-user-tie txt-lightblue py-2"></i> Përditëso Klientin</span>
+                <span><i class="fa-solid fa-user-tie txt-lightblue py-2"></i> {{ __('pages.clients_update') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('update.client') }}" method="post">
@@ -30,19 +30,19 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="client" class="form-label">Klienti</label>
-                            <input type="text" name="client" id="client" value="{{ old('client', $editClient->client) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj emrin e klientit...">
+                            <label for="client" class="form-label">{{ __('pages.clients_label') }}</label>
+                            <input type="text" name="client" id="client" value="{{ old('client', $editClient->client) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.clients_placeholder') }}">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="phone" class="form-label">Telefoni</label>
-                            <input type="text" name="phone" id="phone" value="{{ old('phone', $editClient->phone) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj telefonin e klientit...">
+                            <label for="phone" class="form-label">{{ __('app.phone') }}</label>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone', $editClient->phone) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.clients_phone_placeholder') }}">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="location" class="form-label">Lokacioni</label>
-                            <input type="text" name="location" id="location" value="{{ old('location', $editClient->location) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj lokacionin e klientit...">
+                            <label for="location" class="form-label">{{ __('app.location') }}</label>
+                            <input type="text" name="location" id="location" value="{{ old('location', $editClient->location) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.clients_location_placeholder') }}">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Klientin</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> {{ __('pages.clients_update_btn') }}</button>
                         </div>
                     </div>
                 </form>
@@ -53,26 +53,26 @@
         {{-- Create Client --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-user-tie txt-lightblue py-2"></i> Krijo Klient të Ri</span>
+                <span><i class="fa-solid fa-user-tie txt-lightblue py-2"></i> {{ __('pages.clients_create') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.client') }}" method="post">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="client" class="form-label">Klienti</label>
-                            <input type="text" name="client" id="client" value="{{ old('client') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj emrin e klientit...">
+                            <label for="client" class="form-label">{{ __('pages.clients_label') }}</label>
+                            <input type="text" name="client" id="client" value="{{ old('client') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.clients_placeholder') }}">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="phone" class="form-label">Telefoni</label>
-                            <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj telefonin e klientit...">
+                            <label for="phone" class="form-label">{{ __('app.phone') }}</label>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.clients_phone_placeholder') }}">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="location" class="form-label">Lokacioni</label>
-                            <input type="text" name="location" id="location" value="{{ old('location') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj lokacionin e klientit...">
+                            <label for="location" class="form-label">{{ __('app.location') }}</label>
+                            <input type="text" name="location" id="location" value="{{ old('location') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.clients_location_placeholder') }}">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Klientin</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> {{ __('pages.clients_create_btn') }}</button>
                         </div>
                     </div>
                 </form>
@@ -82,11 +82,11 @@
         {{-- Clients List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Klientëve</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.clients_list') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('clients') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('app.search') }}" aria-label="{{ __('app.search') }}" aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
                 <div class="table-responsive">
@@ -94,16 +94,16 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Klienti</th>
-                                <th scope="col" class="text-nowrap">Telefoni</th>
-                                <th scope="col" class="text-nowrap">Lokacioni</th>
-                                <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.clients_label') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.phone') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('app.location') }}</th>
+                                <th scope="col" class="text-nowrap text-end">{{ __('app.operations') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($clients) === 0)
                                 <tr>
-                                    <td colspan="5" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="5" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('app.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach ($clients as $client)
@@ -138,10 +138,10 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body text-center">
-                                <p>A jeni i sigurt që dëshironi ta fshini këtë klient?</p>
+                                <p>{{ __('pages.clients_confirm_delete') }}</p>
                                 <div class="mt-3">
-                                    <a href="{{ route('delete.client', $client->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                    <a href="{{ route('delete.client', $client->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('app.confirm') }}</a>
+                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('app.cancel') }}</button>
                                 </div>
                             </div>
                         </div>

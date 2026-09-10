@@ -23,15 +23,15 @@ class FinancialTransactionsController extends Controller
             'comment' => 'required|string|min:1',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('financial.transactions')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('financial.transactions')->with('error', __('app.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['type', 'amount', 'comment']);
             $data['company_id'] = session('company_id');
             try {
                 $this->service->createTransaction($data);
-                return redirect()->route('financial.transactions')->with('success', 'Transaksioni u krijua me sukses.');
+                return redirect()->route('financial.transactions')->with('success', __('pages.fin_created'));
             } catch (\Exception $e) {
-                return redirect()->route('financial.transactions')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
+                return redirect()->route('financial.transactions')->with('error', __('app.try_again'))->withInput();
             }
         }
     }
@@ -89,7 +89,7 @@ class FinancialTransactionsController extends Controller
         $page = 'Revenue & Expenses';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('financial.transactions')->with('error','Transaksioni nuk u gjet');
+            return redirect()->route('financial.transactions')->with('error', __('pages.fin_not_found'));
         } else {
             $editTransaction = $this->service->getTransactionById($id, $companyId);
             return view('management.financial-transactions')
@@ -108,16 +108,16 @@ class FinancialTransactionsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error', __('app.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['type', 'amount', 'comment']);
             $companyId = session('company_id');
             try {
                 $this->service->updateTransaction($id, $data, $companyId);
-                return redirect()->route('financial.transactions')->with('success', 'Transaksioni u përditësua me sukses.');
+                return redirect()->route('financial.transactions')->with('success', __('pages.fin_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('financial.transactions')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('financial.transactions')->with('error', __('app.try_again'));
             }
         }
     }
@@ -126,13 +126,13 @@ class FinancialTransactionsController extends Controller
     {
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('financial.transactions')->with('error','Transaksioni nuk u gjet');
+            return redirect()->route('financial.transactions')->with('error', __('pages.fin_not_found'));
         } else {
             try {
                 $this->service->deleteTransaction($id, $companyId);
-                return redirect()->route('financial.transactions')->with('success','Transaksioni u fshi me sukses');
+                return redirect()->route('financial.transactions')->with('success', __('pages.fin_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('financial.transactions')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('financial.transactions')->with('error', __('app.try_again'));
             }
         }
     }
