@@ -167,9 +167,16 @@ class CheckInService
                 continue;
             }
 
-            $statusKey = $onPause
-                ? 'pause'
-                : (strtolower((string) ($row->status ?? '')) === 'accepted' ? 'work' : 'review');
+            $hasCheckedOut = !empty($row->check_out_time);
+            $isAccepted = strtolower((string) ($row->status ?? '')) === 'accepted';
+
+            if ($onPause && !$hasCheckedOut) {
+                $statusKey = 'pause';
+            } elseif ($hasCheckedOut && !$isAccepted) {
+                $statusKey = 'review';
+            } else {
+                $statusKey = 'work';
+            }
 
             $statusLabel = $statusKey === 'pause'
                 ? __('app.on_pause')

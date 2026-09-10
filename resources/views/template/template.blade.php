@@ -283,7 +283,7 @@
                     </div>
                 </aside>
 
-                <div class="col-sm-12 col-md-12 col-lg-10 bg-custom vh-100 overflow-auto p-0">
+                <div class="col-sm-12 col-md-12 col-lg-10 bg-custom vh-100 overflow-y-auto overflow-x-hidden p-0">
 
                     {{-- Topbar --}}
                     <header class="pb-3 bg-white sticky-top py-3 px-4 d-print-none">
@@ -296,7 +296,7 @@
                                         <button class="btn bg-custom rounded-3 border" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa-solid fa-list-ul"></i> <span class="d-none d-md-inline">{{ __('app.nav_menu') }}</span>
                                         </button>
-                                        <ul class="dropdown-menu rounded-3 shadow-sm p-2" style="min-width: 260px; max-height: 70vh; overflow-y: auto;">
+                                        <ul class="dropdown-menu navbar-dropdown-menu rounded-3 shadow-sm p-2">
                                             <li><span class="dropdown-item-text fw-semibold">{{ __('app.nav_overview') }}</span></li>
                                             <li><a class="dropdown-item rounded-3 mb-1 {{ isset($page) && $page === 'Dashboard' ? 'bg-darkblue text-light' : '' }}" href="{{ route('dashboard') }}"><i class="fa-solid fa-chart-column me-2 opacity-75"></i> {{ __('app.nav_dashboard') }}</a></li>
                                             @if(session('role') && session('role') !== 'admin')
@@ -397,24 +397,64 @@
                                 @endphp
 
                                 @if(session('role') && session('role') !== 'admin')
-                                    <div class="dropdown d-inline-block me-2">
-                                        <a href="{{ route('notifications') }}" class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" title="{{ __('app.nav_notifications') }}">
+                                    <div class="dropdown d-inline-block me-2 notifications-dropdown">
+                                        <button class="btn bg-custom rounded-3 border position-relative notifications-bell-btn" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false" aria-label="{{ __('app.nav_notifications') }}" title="{{ __('app.nav_notifications') }}">
                                             <i class="fa-regular fa-bell"></i>
                                             @if(($topbarUnreadNotifications ?? 0) > 0)
-                                                <small class="text-danger fw-semibold">({{ $topbarUnreadNotifications > 9 ? '9+' : $topbarUnreadNotifications }})</small>
+                                                <span class="notifications-bell-badge">{{ $topbarUnreadNotifications > 99 ? '99+' : $topbarUnreadNotifications }}</span>
                                             @endif
-                                        </a>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end notifications-panel shadow border-0">
+                                            <div class="notifications-panel__header">
+                                                <div>
+                                                    <span class="notifications-panel__title">{{ __('app.nav_notifications') }}</span>
+                                                    <span class="notifications-panel__count">{{ $topbarUnreadNotifications }} {{ __('pages.notif_unread') }}</span>
+                                                </div>
+                                                @if(($topbarUnreadNotifications ?? 0) > 0)
+                                                    <form action="{{ route('notifications.mark.all') }}" method="post">
+                                                        @csrf
+                                                        <button type="submit" class="notifications-panel__mark-all">{{ __('pages.notif_mark_all') }}</button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                            <div class="notifications-panel__list">
+                                                @forelse($topbarNotifications ?? [] as $notification)
+                                                    <form action="{{ route('notifications.open', $notification->id) }}" method="post">
+                                                        @csrf
+                                                        <button type="submit" class="notifications-item {{ !(int) $notification->is_read ? 'is-unread' : '' }}">
+                                                            <span class="notifications-item__icon"><i class="fa-regular fa-bell"></i></span>
+                                                            <span class="notifications-item__body">
+                                                                <span class="notifications-item__title">{{ $notification->title }}</span>
+                                                                <span class="notifications-item__message">{{ $notification->message }}</span>
+                                                                <span class="notifications-item__time">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->format('d/m/Y H:i') : '' }}</span>
+                                                            </span>
+                                                            @if(!(int) $notification->is_read)
+                                                                <span class="notifications-item__dot"></span>
+                                                            @endif
+                                                        </button>
+                                                    </form>
+                                                @empty
+                                                    <div class="notifications-panel__empty">
+                                                        <i class="fa-regular fa-bell-slash"></i>
+                                                        <span>{{ __('pages.notif_empty') }}</span>
+                                                    </div>
+                                                @endforelse
+                                            </div>
+                                            <div class="notifications-panel__footer">
+                                                <a href="{{ route('notifications') }}" class="notifications-panel__all-link">{{ __('pages.notif_view_all') }}</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 @endif
 
                                 {{-- Profile Dropdown --}}
-                                <div class="dropdown-end d-inline-block">
-                                    <button class="btn bg-custom rounded-3 border dropdown-toggle text-truncate" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $profileName }}" style="max-width: 200px;">
+                                <div class="dropdown d-inline-block">
+                                    <button class="btn bg-custom rounded-3 border dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="{{ $profileName }}">
                                         <i class="fa-regular fa-user"></i> <span class="d-none d-md-inline">{{ $profileName }}</span>
                                     </button>
-                                    <ul class="dropdown-menu rounded-3 shadow-sm p-2">
-                                        <span class="d-block px-3 fw-semibold">{{ $profileName }}</span>
-                                        <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize">
+                                    <ul class="dropdown-menu dropdown-menu-end navbar-dropdown-menu rounded-3 shadow-sm p-2">
+                                        <span class="d-block px-3 fw-semibold text-wrap">{{ $profileName }}</span>
+                                        <small class="d-block border-bottom pb-2 ps-3 mb-2 fs-small opacity-75 text-capitalize text-wrap">
                                             @if(session('role') == 'admin')
                                                 {{ __('app.role_admin') }}
                                             @elseif(session('role') == 'company')
