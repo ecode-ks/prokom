@@ -2,7 +2,7 @@
     $selected = $selected ?? 'sq';
     $mode = $mode ?? 'radio';
 @endphp
-<div class="dropdown lang-dropdown">
+<div class="dropdown dropup lang-dropdown w-100">
     @if ($mode === 'submit')
         <button class="btn bg-custom rounded-3 border dropdown-toggle d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <span class="lang-flag-wrap">@include('partials.lang-flag', ['code' => $selected])</span>

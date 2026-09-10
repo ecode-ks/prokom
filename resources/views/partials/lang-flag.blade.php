@@ -1,6 +1,6 @@
 @if(($code ?? '') === 'sq')
     <span class="lang-flag" aria-hidden="true">
-        <img src="{{ asset('assets/flags/al.png') }}" alt="">
+        <img src="{{ asset('assets/flags/al.png') }}" alt="" width="21" height="15" style="width:100%;height:100%;max-width:1.35rem;max-height:0.92rem;object-fit:cover;display:block">
     </span>
 @elseif(($code ?? '') === 'en')
     <span class="lang-flag" aria-hidden="true">

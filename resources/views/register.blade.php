@@ -9,17 +9,17 @@
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/custom.css') }}?v={{ @filemtime(public_path('assets/custom.css')) }}">
     </head>
     <body>
         <div class="lang-switcher-fixed">
             @include('partials.lang-switcher')
         </div>
         <div class="container-fluid">
-            <div class="row vh-100">
+            <div class="row min-vh-100">
 
                 {{-- Entrance Banner --}}
-                <div class="col-12 col-md-12 col-lg-6 d-none d-md-none d-lg-flex flex-column justify-content-center bg-darkblue text-light vh-100 p-5">
+                <div class="col-12 col-md-12 col-lg-6 d-none d-md-none d-lg-flex flex-column justify-content-center bg-darkblue text-light min-vh-100 p-5">
                     <div class="d-flex align-items-center">
                         <div class="me-2 rounded-3 bg-lightblue p-custom border-lightblue">
                             <i class="fa-solid fa-city"></i>
@@ -48,8 +48,8 @@
                 </div>
 
                 {{-- Registration Form --}}
-                <div class="col-12 col-md-12 col-lg-6 bg-custom vh-100 overflow-y-auto">
-                    <div class="col-12 col-md-8 mx-auto py-5">
+                <div class="col-12 col-md-12 col-lg-6 bg-custom min-vh-100 overflow-y-auto">
+                    <div class="col-12 col-md-8 mx-auto py-5 pt-5 lang-page-form">
                         <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome') }}</span>
                         <h1 class="fw-bold col-12 mt-3">{{ __('app.register_heading') }}</h1>
                         <form action="{{ route('register.company') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
