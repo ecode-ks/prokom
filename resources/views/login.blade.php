@@ -12,6 +12,9 @@
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
     </head>
     <body>
+        <div class="lang-switcher-fixed">
+            @include('partials.lang-switcher')
+        </div>
         <div class="container-fluid">
             <div class="row vh-100">
 
@@ -49,11 +52,6 @@
                     {{-- Register Admin --}}
                     <div class="col-12 col-md-12 col-lg-6 d-flex align-items-center flex-column justify-content-center bg-custom vh-100 p-5">
                         <div class="col-12 col-md-8">
-                            <div class="d-flex justify-content-end gap-2 mb-3">
-                                <a href="{{ route('marketing.locale', 'sq') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'sq' ? 'txt-darkblue' : 'text-muted' }}">SQ</a>
-                                <a href="{{ route('marketing.locale', 'en') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'en' ? 'txt-darkblue' : 'text-muted' }}">EN</a>
-                                <a href="{{ route('marketing.locale', 'de') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'de' ? 'txt-darkblue' : 'text-muted' }}">DE</a>
-                            </div>
                             <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome') }}</span>
                             <h1 class="fw-bold mt-3">{{ __('app.create_admin') }}</h1>
                             <form action="{{ route('register.admin') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
@@ -88,11 +86,6 @@
                     {{-- Login Form --}}
                     <div class="col-12 col-md-12 col-lg-6 d-flex align-items-center flex-column justify-content-center bg-custom vh-100 p-5">
                         <div class="col-12 col-md-8">
-                            <div class="d-flex justify-content-end gap-2 mb-3">
-                                <a href="{{ route('marketing.locale', 'sq') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'sq' ? 'txt-darkblue' : 'text-muted' }}">SQ</a>
-                                <a href="{{ route('marketing.locale', 'en') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'en' ? 'txt-darkblue' : 'text-muted' }}">EN</a>
-                                <a href="{{ route('marketing.locale', 'de') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'de' ? 'txt-darkblue' : 'text-muted' }}">DE</a>
-                            </div>
                             <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome_back') }}</span>
                             <h1 class="fw-bold mt-3">{{ __('app.login_heading') }}</h1>
                             <form action="{{ route('check.login') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">

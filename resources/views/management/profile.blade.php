@@ -27,8 +27,8 @@
             <div class="card h-100">
                 <div class="card-header rounded-top-4 bg-white border-0 pt-4 px-4">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-key txt-lightblue"></i>
-                        <span class="fw-semibold">{{ __('app.profile_change_password') }}</span>
+                        <i class="fa-solid fa-gear txt-lightblue"></i>
+                        <span class="fw-semibold">{{ __('app.profile_settings') }}</span>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4 pt-2">
@@ -46,18 +46,9 @@
                         @php $companyLanguage = session('language', 'sq'); @endphp
                         <form action="{{ route('update.company.language') }}" method="post" class="mb-4">
                             @csrf
-                            <div class="row g-3 align-items-end">
-                                <div class="col-12 col-md-6">
-                                    <label for="language" class="form-label">{{ __('app.language') }}</label>
-                                    <select class="form-select shadow-sm rounded-3" id="language" name="language">
-                                        <option value="sq" @selected($companyLanguage === 'sq')>{{ __('app.language_sq') }}</option>
-                                        <option value="en" @selected($companyLanguage === 'en')>{{ __('app.language_en') }}</option>
-                                        <option value="de" @selected($companyLanguage === 'de')>{{ __('app.language_de') }}</option>
-                                    </select>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-language"></i> {{ __('app.save_language') }}</button>
-                                </div>
+                            <label class="form-label">{{ __('app.language') }}</label>
+                            <div>
+                                @include('partials.lang-choice', ['selected' => $companyLanguage, 'mode' => 'submit'])
                             </div>
                         </form>
                     @endif

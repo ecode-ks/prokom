@@ -12,6 +12,9 @@
         <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
     </head>
     <body>
+        <div class="lang-switcher-fixed">
+            @include('partials.lang-switcher')
+        </div>
         <div class="container-fluid">
             <div class="row vh-100">
 
@@ -47,11 +50,6 @@
                 {{-- Registration Form --}}
                 <div class="col-12 col-md-12 col-lg-6 bg-custom vh-100 overflow-y-auto">
                     <div class="col-12 col-md-8 mx-auto py-5">
-                        <div class="d-flex justify-content-end gap-2 mb-3">
-                            <a href="{{ route('marketing.locale', 'sq') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'sq' ? 'txt-darkblue' : 'text-muted' }}">SQ</a>
-                            <a href="{{ route('marketing.locale', 'en') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'en' ? 'txt-darkblue' : 'text-muted' }}">EN</a>
-                            <a href="{{ route('marketing.locale', 'de') }}" class="small fw-semibold text-decoration-none {{ app()->getLocale() === 'de' ? 'txt-darkblue' : 'text-muted' }}">DE</a>
-                        </div>
                         <span class="txt-darkblue fw-semibold text-uppercase">{{ __('app.welcome') }}</span>
                         <h1 class="fw-bold col-12 mt-3">{{ __('app.register_heading') }}</h1>
                         <form action="{{ route('register.company') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
@@ -73,12 +71,8 @@
                                 <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="{{ __('app.placeholder_location') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="language" class="form-label text-uppercase small fw-semibold">{{ __('app.language') }}</label>
-                                <select class="form-select shadow-sm py-custom rounded-3" id="language" name="language">
-                                    <option value="sq" @selected(old('language', app()->getLocale()) === 'sq')>{{ __('app.language_sq') }}</option>
-                                    <option value="en" @selected(old('language', app()->getLocale()) === 'en')>{{ __('app.language_en') }}</option>
-                                    <option value="de" @selected(old('language', app()->getLocale()) === 'de')>{{ __('app.language_de') }}</option>
-                                </select>
+                                <label class="form-label text-uppercase small fw-semibold">{{ __('app.language') }}</label>
+                                @include('partials.lang-choice', ['selected' => old('language', app()->getLocale()), 'mode' => 'radio'])
                             </div>
                             <div class="mb-3">
                                 <label for="username" class="form-label text-uppercase small fw-semibold">{{ __('app.username') }}</label>

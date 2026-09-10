@@ -875,3 +875,116 @@ header {
     width: auto;
     object-fit: cover;
 }
+
+.lang-switcher-fixed {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    z-index: 1050;
+}
+
+.lang-dropdown .dropdown-toggle::after {
+    margin-left: auto;
+}
+
+.lang-dropdown .lang-toggle-flag {
+    margin-right: 0.5rem;
+}
+
+.lang-menu {
+    min-width: 13.5rem;
+    border: 1px solid rgba(7, 24, 56, 0.08);
+    box-shadow: 0 16px 40px rgba(7, 24, 56, 0.14);
+}
+
+.lang-option {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.75rem;
+    color: #071838;
+}
+
+.lang-option:hover,
+.lang-option:focus,
+.lang-option:active,
+.dropdown-item.lang-option:hover,
+.dropdown-item.lang-option:focus,
+.dropdown-item.lang-option:active {
+    background: #071838;
+    color: #fff;
+}
+
+.lang-option:hover .lang-option-check,
+.lang-option:focus .lang-option-check,
+.lang-option:active .lang-option-check {
+    color: #fff;
+}
+
+.lang-option.is-active,
+.dropdown-item.lang-option.is-active {
+    background: rgba(13, 110, 253, 0.1);
+    color: #071838;
+    font-weight: 600;
+}
+
+.lang-option.is-active:hover,
+.dropdown-item.lang-option.is-active:hover {
+    background: #071838;
+    color: #fff;
+}
+
+.lang-option-name {
+    flex: 1;
+    line-height: 1.2;
+}
+
+.lang-option-check {
+    font-size: 0.7rem;
+    opacity: 0;
+    color: #0d6efd;
+}
+
+.lang-option.is-active .lang-option-check {
+    opacity: 1;
+}
+
+.lang-flag-wrap {
+    width: 1.85rem;
+    height: 1.25rem;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(7, 24, 56, 0.1);
+    background: #f4f6fb;
+}
+
+.lang-flag-wrap .lang-flag {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.4rem;
+    box-shadow: none;
+}
+
+.lang-flag {
+    width: 1.35rem;
+    height: 0.92rem;
+    border-radius: 0.35rem;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: -0.15rem;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(7, 24, 56, 0.12);
+}
+
+.lang-flag svg,
+.lang-flag img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}

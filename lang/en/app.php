@@ -37,7 +37,7 @@ return [
     'placeholder_username_user' => 'Enter your username',
     'placeholder_confirm_password' => 'Confirm your password',
 
-    'language_sq' => 'Shqip',
+    'language_sq' => 'Albanian',
     'language_en' => 'English',
     'language_de' => 'Deutsch',
 
@@ -117,6 +117,7 @@ return [
     'profile_heading' => 'My Profile',
     'profile_lead' => 'View your account details, change your password and the system language.',
     'profile_change_password' => 'Change password',
+    'profile_settings' => 'Settings',
     'profile_full_name' => 'Full name',
     'current_password' => 'Current password',
     'new_password' => 'New password (8+ characters)',

@@ -37,7 +37,7 @@ return [
     'placeholder_username_user' => 'Shkruani përdoruesin (username)',
     'placeholder_confirm_password' => 'Konfirmoni fjalëkalimin tuaj',
 
-    'language_sq' => 'Shqip',
+    'language_sq' => 'Albanian',
     'language_en' => 'English',
     'language_de' => 'Deutsch',
 
@@ -117,6 +117,7 @@ return [
     'profile_heading' => 'Profili Im',
     'profile_lead' => 'Shikoni të dhënat e llogarisë, ndryshoni fjalëkalimin dhe gjuhën e sistemit.',
     'profile_change_password' => 'Ndrysho Fjalëkalimin',
+    'profile_settings' => 'Cilësimet',
     'profile_full_name' => 'Emri dhe Mbiemri',
     'current_password' => 'Fjalëkalimi Aktual',
     'new_password' => 'Fjalëkalimi i Ri (8+ Karaktere)',

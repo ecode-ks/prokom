@@ -37,7 +37,7 @@ return [
     'placeholder_username_user' => 'Geben Sie Ihren Benutzernamen ein',
     'placeholder_confirm_password' => 'Bestätigen Sie Ihr Passwort',
 
-    'language_sq' => 'Shqip',
+    'language_sq' => 'Albanian',
     'language_en' => 'English',
     'language_de' => 'Deutsch',
 
@@ -117,6 +117,7 @@ return [
     'profile_heading' => 'Mein Profil',
     'profile_lead' => 'Sehen Sie Ihre Kontodaten, ändern Sie Ihr Passwort und die Systemsprache.',
     'profile_change_password' => 'Passwort ändern',
+    'profile_settings' => 'Einstellungen',
     'profile_full_name' => 'Vor- und Nachname',
     'current_password' => 'Aktuelles Passwort',
     'new_password' => 'Neues Passwort (8+ Zeichen)',
