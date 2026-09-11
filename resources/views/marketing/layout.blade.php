@@ -48,8 +48,14 @@
     <meta name="twitter:description" content="{{ $description }}">
     <meta name="twitter:image" content="{{ asset('images/marketing/workom_logo.png') }}">
 
-    @include('partials.favicon')
-    @include('marketing.partials.pwa')
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="manifest" href="{{ asset('marketing.webmanifest') }}">
+    <meta name="theme-color" content="#071838">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="WORKOM">
+    <link rel="apple-touch-icon" href="{{ asset('icons/marketing/icon-192.png') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}">
@@ -161,7 +167,11 @@
                         >
                     </a>
                     <p class="wo-footer-copy">{{ __('marketing.footer_copy') }}</p>
-                    @include('marketing.partials.social-links', ['ariaLabel' => __('marketing.footer_social')])
+                    <div class="wo-social-links" aria-label="{{ __('marketing.footer_social') }}">
+                        <a href="{{ __('marketing.social_linkedin') }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="{{ __('marketing.social_instagram') }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="{{ __('marketing.social_tiktok') }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    </div>
                 </div>
 
                 <div class="wo-footer-col">

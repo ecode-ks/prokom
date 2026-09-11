@@ -196,6 +196,8 @@ class CheckInRepository
                 'ci.pause_end_time',
                 'ci.pause_start_location',
                 'ci.status',
+                'e.phone as employee_phone',
+                'e.role as employee_role',
                 DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee"),
                 DB::raw("(
                     SELECT GROUP_CONCAT(DISTINCT p.project_name ORDER BY p.project_name SEPARATOR ', ')

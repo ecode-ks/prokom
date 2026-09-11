@@ -150,7 +150,7 @@
 
         {{-- Create Task --}}
         @if(session('role') === 'company' || session('role') === 'manager')
-        <div class="card mb-4">
+        <div class="card mb-4" id="create-task">
             <div class="card-header rounded-top-4 bg-white">
                 <span><i class="fa-solid fa-chart-gantt txt-lightblue py-2"></i> {{ __('pages.create_task') }}</span>
             </div>
@@ -162,6 +162,9 @@
                             <label class="form-label">{{ __('pages.employees') }}</label>
                             @php
                                 $oldAssignedTo = array_map('strval', old('assigned_to', []));
+                                if (count($oldAssignedTo) === 0 && request()->filled('assigned_to')) {
+                                    $oldAssignedTo = [(string) request('assigned_to')];
+                                }
                                 $oldAssignedLabels = [];
                                 foreach ($employees as $employee) {
                                     if (in_array((string) $employee->id, $oldAssignedTo, true)) {

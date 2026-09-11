@@ -94,6 +94,7 @@
         background: transparent;
         padding: 0.8rem 0.9rem;
         transition: background 0.15s ease;
+        cursor: pointer;
     }
 
     .checkin-location-item:hover,
@@ -151,6 +152,40 @@
         background: rgba(7, 24, 56, 0.06);
         border-radius: 999px;
         padding: 0.15rem 0.5rem;
+    }
+
+    .checkin-map-actions {
+        display: flex;
+        gap: 0.4rem;
+        margin-top: 0.55rem;
+        flex-wrap: wrap;
+    }
+
+    .checkin-map-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        border-radius: 999px;
+        padding: 0.28rem 0.65rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1px solid #e8eef5;
+        background: #fff;
+        color: #071838;
+        line-height: 1.2;
+    }
+
+    .checkin-map-action:hover {
+        background: #f8fafc;
+        color: #0060aa;
+        border-color: rgba(0, 96, 170, 0.25);
+    }
+
+    .checkin-map-action.is-disabled {
+        opacity: 0.45;
+        pointer-events: none;
+        cursor: not-allowed;
     }
 
     .checkin-marker-wrap { background: transparent !important; border: 0 !important; }
@@ -265,6 +300,7 @@
         $workCount = collect($locations)->where('status_key', 'work')->count();
         $pauseCount = collect($locations)->where('status_key', 'pause')->count();
         $reviewCount = collect($locations)->where('status_key', 'review')->count();
+        $canAssignTask = in_array(session('role'), ['company', 'manager'], true);
     @endphp
 
     <small class="d-block text-uppercase">
@@ -309,12 +345,17 @@
                             foreach (array_slice($parts, 0, 2) as $part) {
                                 $initials .= mb_strtoupper(mb_substr($part, 0, 1));
                             }
+                            $phoneRaw = trim((string) ($loc['phone'] ?? ''));
+                            $tel = $phoneRaw !== '' ? preg_replace('/[^\d+]/', '', $phoneRaw) : '';
+                            $employeeId = $loc['employee_id'] ?? null;
+                            $isWorker = ($loc['role'] ?? '') === 'employee';
                         @endphp
-                        <button
-                            type="button"
+                        <div
                             class="checkin-location-item"
                             data-map-index="{{ $index }}"
                             data-search="{{ strtolower(($loc['name'] ?? '') . ' ' . ($loc['project'] ?? '')) }}"
+                            role="button"
+                            tabindex="0"
                         >
                             <div class="d-flex align-items-start gap-2">
                                 <span class="checkin-map-avatar {{ $statusClass }}">{{ $initials }}</span>
@@ -335,9 +376,25 @@
                                         {{ $loc['check_in_time'] }}
                                     </div>
                                     <span class="checkin-map-together d-none" data-together-label></span>
+                                    <div class="checkin-map-actions">
+                                        @if($tel)
+                                            <a class="checkin-map-action" href="tel:{{ $tel }}" data-map-action>
+                                                <i class="fa-solid fa-phone"></i> {{ __('pages.checkin_map_call') }}
+                                            </a>
+                                        @else
+                                            <span class="checkin-map-action is-disabled" title="{{ __('pages.checkin_map_no_phone') }}">
+                                                <i class="fa-solid fa-phone"></i> {{ __('pages.checkin_map_call') }}
+                                            </span>
+                                        @endif
+                                        @if($canAssignTask && $employeeId && $isWorker)
+                                            <a class="checkin-map-action" href="{{ route('tasks', ['assigned_to' => $employeeId]) }}#create-task" data-map-action>
+                                                <i class="fa-solid fa-list-check"></i> {{ __('pages.checkin_map_assign_task') }}
+                                            </a>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </button>
+                        </div>
                     @endforeach
                 </div>
                 <div id="checkinMapNoMatch" class="d-none text-center text-muted small py-3 px-3">{{ __('pages.checkin_map_no_match') }}</div>
@@ -400,9 +457,13 @@
     });
 
     var map = L.map('checkin-team-map', { zoomControl: true }).setView([locations[0].lat, locations[0].lng], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap'
+        attribution: 'Tiles &copy; Esri'
+    }).addTo(map);
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        maxZoom: 19,
+        pane: 'overlayPane'
     }).addTo(map);
 
     function statusClass(p) {
@@ -496,7 +557,14 @@
     }
 
     document.querySelectorAll('.checkin-location-item').forEach(function (el) {
-        el.addEventListener('click', function () {
+        el.addEventListener('click', function (event) {
+            if (event.target.closest('[data-map-action]')) return;
+            focusLocation(parseInt(el.getAttribute('data-map-index'), 10));
+        });
+        el.addEventListener('keydown', function (event) {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+            if (event.target.closest('[data-map-action]')) return;
+            event.preventDefault();
             focusLocation(parseInt(el.getAttribute('data-map-index'), 10));
         });
     });

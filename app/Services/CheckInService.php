@@ -184,7 +184,10 @@ class CheckInService
 
             $locations[] = [
                 'id' => (int) $row->id,
+                'employee_id' => $row->employee_id ? (int) $row->employee_id : null,
                 'name' => $row->employee,
+                'phone' => $row->employee_phone ?: null,
+                'role' => strtolower((string) ($row->employee_role ?? '')),
                 'lat' => $coords['lat'],
                 'lng' => $coords['lng'],
                 'status' => $statusLabel,
