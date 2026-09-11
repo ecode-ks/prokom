@@ -3,6 +3,12 @@
 return [
     'meta_title' => 'WORKOM — ERP & CRM për kompani me projekte',
     'meta_description' => 'WORKOM bashkon projektet, klientët, stafin dhe financat në një platformë. Kërkoni një demonstrim 20-minutësh.',
+    'meta_product_description' => 'Zbuloni WORKOM, platformën e integruar ERP dhe CRM për kompani që menaxhojnë projekte. Operacionet, shitjet dhe stafi në një vend.',
+    'meta_erp_description' => 'Planifikoni projektet, caktoni detyrat dhe ndiqni prezencën, orët e punës dhe raportet nga terreni me WORKOM ERP.',
+    'meta_crm_description' => 'Fitoni më shumë klientë me WORKOM CRM. Organizoni klientët, ofertat, faturat dhe transaksionet financiare në një rrjedhë të qartë.',
+    'meta_hr_description' => 'Thjeshtoni menaxhimin e stafit me WORKOM HR: punonjësit, pushimet, prezencën, orët shtesë dhe orët e gatshme për paga.',
+    'meta_faq_description' => 'Gjeni përgjigje për WORKOM ERP, CRM dhe HR: modulet, demonstrimi, implementimi dhe menaxhimi i përditshëm i biznesit.',
+    'meta_contact_description' => 'Flisni me ekipin WORKOM për një platformë praktike ERP, CRM dhe HR për kompaninë tuaj. Kërkoni një demonstrim 20-minutësh.',
     'meta_product' => 'Produkti | WORKOM',
     'meta_erp' => 'ERP | WORKOM',
     'meta_crm' => 'CRM | WORKOM',

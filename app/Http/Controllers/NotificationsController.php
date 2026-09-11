@@ -17,7 +17,7 @@ class NotificationsController extends Controller
     public function read()
     {
         if (!$this->service->resolveRecipient()) {
-            return redirect()->route('dashboard')->with('error', 'Nuk keni qasje në njoftime.');
+            return redirect()->route('dashboard')->with('error', __('pages.notif_no_access'));
         }
 
         $page = 'Notifications';
@@ -34,7 +34,7 @@ class NotificationsController extends Controller
     {
         $link = $this->service->markAsRead($id);
         if (!$link) {
-            return redirect()->route('notifications')->with('error', 'Njoftimi nuk u gjet.');
+            return redirect()->route('notifications')->with('error', __('pages.notif_not_found'));
         }
 
         return redirect()->to($link);
@@ -43,11 +43,11 @@ class NotificationsController extends Controller
     public function markAllRead()
     {
         if (!$this->service->resolveRecipient()) {
-            return redirect()->route('dashboard')->with('error', 'Nuk keni qasje në njoftime.');
+            return redirect()->route('dashboard')->with('error', __('pages.notif_no_access'));
         }
 
         $this->service->markAllAsRead();
 
-        return redirect()->back()->with('success', 'Të gjitha njoftimet u shënuan si të lexuara.');
+        return redirect()->back()->with('success', __('pages.notif_all_read'));
     }
 }

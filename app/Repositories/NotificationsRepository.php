@@ -39,6 +39,7 @@ class NotificationsRepository
             ->where('company_id', $companyId)
             ->where('recipient_type', $recipientType)
             ->where('recipient_id', $recipientId)
+            ->where('is_read', 0)
             ->orderByDesc('id')
             ->limit($limit)
             ->get();
