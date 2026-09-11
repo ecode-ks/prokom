@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\NotificationsService;
-use Illuminate\Http\Request;
 
 class NotificationsController extends Controller
 {
