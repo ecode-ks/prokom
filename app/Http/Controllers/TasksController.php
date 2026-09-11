@@ -27,7 +27,7 @@ class TasksController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('tasks')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return redirect()->route('tasks')->with('error', __('pages.fields_invalid'))->withInput();
         }
 
         $companyId = (int) session('company_id');
@@ -36,7 +36,7 @@ class TasksController extends Controller
         $projectId = (int) $request->project_id;
 
         if ($role === 'manager' && !$this->service->isProjectManagedBy($projectId, $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('tasks')->with('error', 'Mund të shtoni detyra vetëm për projektet tuaja.')->withInput();
+            return redirect()->route('tasks')->with('error', __('pages.tasks_own_projects_only'))->withInput();
         }
 
         $data = [
@@ -52,9 +52,9 @@ class TasksController extends Controller
 
         try {
             $this->service->createTask($data);
-            return redirect()->route('tasks')->with('success', 'Detyra u krijua me sukses.');
+            return redirect()->route('tasks')->with('success', __('pages.task_created'));
         } catch (\Exception $e) {
-            return redirect()->route('tasks')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.')->withInput();
+            return redirect()->route('tasks')->with('error', __('pages.try_again'))->withInput();
         }
     }
     //---------------
@@ -85,10 +85,10 @@ class TasksController extends Controller
         $projects = $this->service->getAllProjects($companyId, $scopedManagerId);
 
         if ($role !== 'manager' && count($employees) === 0) {
-            return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari punonjësit.');
+            return redirect()->route('employees')->with('error', __('pages.register_employees_first'));
         }
         if (count($projects) === 0) {
-            return redirect()->route('projects')->with('error', 'Ju lutemi regjistroni së pari projektet.');
+            return redirect()->route('projects')->with('error', __('pages.register_projects_first'));
         }
 
         $tasks = $this->service->getTasks(10, $search, $companyId, null, $scopedManagerId);
@@ -112,12 +112,12 @@ class TasksController extends Controller
         $scopedManagerId = $role === 'manager' ? (int) ($employeeId ?? 0) : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         $editTask = $this->service->getTaskById($id, $companyId);
         if ($role === 'manager' && !$this->service->isProjectManagedBy((int) $editTask->project_id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         $employees = $this->service->getAllEmployees($companyId);
@@ -139,16 +139,16 @@ class TasksController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         if ($role === 'employee' && !$this->service->employeeIsAssigned($id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         $taskDetails = $this->service->getTaskDetails($id, $companyId);
         if ($role === 'manager' && !$this->service->isProjectManagedBy((int) $taskDetails->project_id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
         $taskStatuses = $this->service->getTaskStatuses();
 
@@ -172,7 +172,7 @@ class TasksController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return back()->with('error', __('pages.fields_invalid'))->withInput();
         }
 
         $id = (int) $request->id;
@@ -182,7 +182,7 @@ class TasksController extends Controller
         $projectId = (int) $request->project_id;
 
         if ($role === 'manager' && !$this->service->isProjectManagedBy($projectId, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return back()->with('error', 'Mund të përditësoni detyra vetëm për projektet tuaja.')->withInput();
+            return back()->with('error', __('pages.tasks_update_own_projects_only'))->withInput();
         }
 
         $data = [
@@ -195,12 +195,12 @@ class TasksController extends Controller
 
         try {
             if (!$this->service->updateTask($id, $data, $companyId)) {
-                return back()->with('error', 'Detyra nuk u gjet ose nuk u përditësua.')->withInput();
+                return back()->with('error', __('pages.task_not_updated'))->withInput();
             }
 
-            return redirect()->route('tasks')->with('success', 'Detyra u përditësua me sukses.');
+            return redirect()->route('tasks')->with('success', __('pages.task_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('tasks')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('tasks')->with('error', __('pages.try_again'));
         }
     }
     //---------------
@@ -211,19 +211,19 @@ class TasksController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         $task = $this->service->getTaskById($id, $companyId);
         if ($role === 'manager' && !$this->service->isProjectManagedBy((int) $task->project_id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         try {
             $this->service->deleteTask($id, $companyId);
-            return redirect()->route('tasks')->with('success', 'Detyra u fshi me sukses.');
+            return redirect()->route('tasks')->with('success', __('pages.task_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('tasks')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('tasks')->with('error', __('pages.try_again'));
         }
     }
     //---------------
@@ -234,11 +234,11 @@ class TasksController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         if ($role === 'employee' && !$this->service->employeeIsAssigned($id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('tasks')->with('error', 'Detyra nuk u gjet.');
+            return redirect()->route('tasks')->with('error', __('pages.task_not_found'));
         }
 
         $allowedStatuses = ['new', 'working', 'review', 'blocked', 'completed'];
@@ -253,17 +253,17 @@ class TasksController extends Controller
         $normalizedStatus = $statusAliases[$normalizedStatus] ?? $normalizedStatus;
 
         if (!in_array($normalizedStatus, $allowedStatuses, true)) {
-            return redirect()->route('task.details', $id)->with('error', 'Kërkesa për përditësim statusi nuk është e vlefshme.');
+            return redirect()->route('task.details', $id)->with('error', __('pages.invalid_status'));
         }
 
         try {
             if (!$this->service->updateTaskStatus($id, $normalizedStatus, $companyId)) {
-                return redirect()->route('task.details', $id)->with('error', 'Kërkesa për përditësim statusi nuk është e vlefshme.');
+                return redirect()->route('task.details', $id)->with('error', __('pages.invalid_status'));
             }
 
-            return redirect()->route('task.details', $id)->with('success', 'Statusi i detyrës u përditësua me sukses.');
+            return redirect()->route('task.details', $id)->with('success', __('pages.task_status_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('task.details', $id)->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('task.details', $id)->with('error', __('pages.try_again'));
         }
     }
 }

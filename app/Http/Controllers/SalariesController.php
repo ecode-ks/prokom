@@ -24,14 +24,14 @@ class SalariesController extends Controller
             'salary' => 'required|numeric|min:0.01',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('salaries')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('salaries')->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['employee_id', 'salary']);
             try {
                 $this->service->createSalary($data);
-                return redirect()->route('salaries')->with('success', 'Paga u regjistrua me sukses.');
+                return redirect()->route('salaries')->with('success', __('pages.salary_created'));
             } catch (\Exception $e) {
-                return redirect()->route('salaries')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
+                return redirect()->route('salaries')->with('error', __('pages.try_again'))->withInput();
             }
         }
     }
@@ -56,7 +56,7 @@ class SalariesController extends Controller
         $employees = $this->employeeService->getAllEmployees();
 
         if ($employees->isEmpty()) {
-            return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni paga.');
+            return redirect()->route('employees')->with('error', __('pages.register_employees_before_salary'));
         }
 
         return view('management.salaries')
@@ -70,13 +70,13 @@ class SalariesController extends Controller
     {
         $page = 'Salaries';
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('salaries')->with('error','Paga nuk u gjet');
+            return redirect()->route('salaries')->with('error', __('pages.salary_not_found'));
         } else {
             $editSalary = $this->service->getSalaryById($id);
             $employees = $this->employeeService->getAllEmployees();
 
             if($employees->isEmpty()) {
-                return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni paga.');
+                return redirect()->route('employees')->with('error', __('pages.register_employees_before_salary'));
             }
 
             return view('management.salaries')
@@ -95,15 +95,15 @@ class SalariesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['employee_id', 'salary']);
             try {
                 $this->service->updateSalary($id, $data);
-                return redirect()->route('salaries')->with('success', 'Paga u përditësua me sukses.');
+                return redirect()->route('salaries')->with('success', __('pages.salary_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('salaries')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('salaries')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -111,13 +111,13 @@ class SalariesController extends Controller
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('salaries')->with('error','Paga nuk u gjet');
+            return redirect()->route('salaries')->with('error', __('pages.salary_not_found'));
         } else {
             try {
                 $this->service->deleteSalary($id);
-                return redirect()->route('salaries')->with('success','Paga u fshi me sukses');
+                return redirect()->route('salaries')->with('success', __('pages.salary_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('salaries')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('salaries')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -127,7 +127,7 @@ class SalariesController extends Controller
         $page = 'Calculate Salary';
         $employees = $this->employeeService->getAllEmployees();
         if($employees->isEmpty()) {
-            return redirect()->route('calculate.salary')->with('error', 'Ju lutem regjistroni punonjës para se të kalkuloni paga.');
+            return redirect()->route('calculate.salary')->with('error', __('pages.register_employees_before_calculate'));
         }
         return view('management.calculate-salary')
             ->with('page', $page)
@@ -143,7 +143,7 @@ class SalariesController extends Controller
             'employee_id' => 'nullable|integer',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('calculate.salary')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('calculate.salary')->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $fromDate = $request->input('from_date');
             $toDate = $request->input('to_date');
@@ -163,7 +163,7 @@ class SalariesController extends Controller
                     ->with('employeeId', $employeeId)
                     ->with('employees', $employees);
             } catch (\Exception $e) {
-                return redirect()->route('calculate.salary')->with('error', 'Ndodhi një problem gjatë kalkulimit të pagës. Ju lutem provoni përsëri.'. $e->getMessage());
+                return redirect()->route('calculate.salary')->with('error', __('pages.calculate_failed', ['message' => $e->getMessage()]));
             }
         }
     }
@@ -177,7 +177,7 @@ class SalariesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('calculate.salary')->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('calculate.salary')->with('error', __('pages.fields_invalid'))->withInput();
         }
 
         $fromDate = $request->input('from_date');
@@ -186,7 +186,7 @@ class SalariesController extends Controller
 
         try {
             $this->service->saveCalculatedSalaries($fromDate, $toDate, $employeeId);
-            return redirect()->route('salaries')->with('success', 'Pagat u ruajtën me sukses dhe u regjistruan si shpenzim.');
+            return redirect()->route('salaries')->with('success', __('pages.salaries_saved'));
         } catch (\Exception $e) {
             return redirect()
                 ->route('calculate', [
@@ -194,7 +194,7 @@ class SalariesController extends Controller
                     'to_date' => $toDate,
                     'employee_id' => $employeeId ?: null,
                 ])
-                ->with('error', 'Ndodhi një problem gjatë ruajtjes së pagave. ' . $e->getMessage());
+                ->with('error', __('pages.salaries_save_failed', ['message' => $e->getMessage()]));
         }
     }
 }

@@ -29,7 +29,7 @@ class ProjectsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('projects')->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return redirect()->route('projects')->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $data = $request->only([
                 'project_name',
@@ -47,9 +47,9 @@ class ProjectsController extends Controller
 
             try {
                 $this->service->createProject($data);
-                return redirect()->route('projects')->with('success', 'Projekti u krijua me sukses.');
+                return redirect()->route('projects')->with('success', __('pages.project_created'));
             } catch (\Exception $e) {
-                return redirect()->route('projects')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.'. $e->getMessage())->withInput();
+                return redirect()->route('projects')->with('error', __('pages.try_again_reason', ['message' => $e->getMessage()]))->withInput();
             }
         }
     }
@@ -67,10 +67,10 @@ class ProjectsController extends Controller
 
         if ($role !== 'manager') {
             if (count($managers) === 0) {
-                return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari menaxherët.');
+                return redirect()->route('employees')->with('error', __('pages.register_managers_first'));
             }
             if (count($clients) === 0) {
-                return redirect()->route('clients')->with('error', 'Ju lutemi regjistroni së pari klientët.');
+                return redirect()->route('clients')->with('error', __('pages.register_clients_first'));
             }
         }
 
@@ -107,16 +107,16 @@ class ProjectsController extends Controller
         $page = 'Projects';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+            return redirect()->route('projects')->with('error', __('pages.project_not_found'));
         } else {
             $managers = $this->service->getAllManagers($companyId);
             $clients = $this->service->getAllClients($companyId);
 
             if (count($managers) === 0) {
-                return redirect()->route('employees')->with('error', 'Ju lutemi regjistroni së pari menaxherët.');
+                return redirect()->route('employees')->with('error', __('pages.register_managers_first'));
             }
             if (count($clients) === 0) {
-                return redirect()->route('clients')->with('error', 'Ju lutemi regjistroni së pari klientët.');
+                return redirect()->route('clients')->with('error', __('pages.register_clients_first'));
             }
 
             $editProject = $this->service->getProjectById($id, $companyId);
@@ -136,11 +136,11 @@ class ProjectsController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+            return redirect()->route('projects')->with('error', __('pages.project_not_found'));
         }
 
         if ($role === 'manager' && !$this->service->isManagedBy($id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+            return redirect()->route('projects')->with('error', __('pages.project_not_found'));
         }
 
         $projectDetails = $this->service->getProjectDetails($id, $companyId);
@@ -166,7 +166,7 @@ class ProjectsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fusha duhet plotësuar sipas rregullave.')->withInput();
+            return back()->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $companyId = session('company_id');
@@ -183,11 +183,11 @@ class ProjectsController extends Controller
             ]);
             try {
                 if (!$this->service->updateProject($id, $data, $companyId)) {
-                    return back()->with('error', 'Projekti nuk u gjet ose nuk u përditësua.')->withInput();
+                    return back()->with('error', __('pages.project_not_updated'))->withInput();
                 }
-                return redirect()->route('projects')->with('success', 'Projekti u përditësua me sukses.');
+                return redirect()->route('projects')->with('success', __('pages.project_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('projects')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+                return redirect()->route('projects')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -196,13 +196,13 @@ class ProjectsController extends Controller
     {
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+            return redirect()->route('projects')->with('error', __('pages.project_not_found'));
         } else {
             try {
                 $this->service->deleteProject($id, $companyId);
-                return redirect()->route('projects')->with('success', 'Projekti u fshi me sukses.');
+                return redirect()->route('projects')->with('success', __('pages.project_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('projects')->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+                return redirect()->route('projects')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -214,21 +214,21 @@ class ProjectsController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+            return redirect()->route('projects')->with('error', __('pages.project_not_found'));
         }
 
         if ($role === 'manager' && !$this->service->isManagedBy($id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return redirect()->route('projects')->with('error', 'Projekti nuk u gjet.');
+            return redirect()->route('projects')->with('error', __('pages.project_not_found'));
         }
 
         try {
             if (!$this->service->updateProjectStatus($id, $status, $companyId)) {
-                return redirect()->route('project.details', $id)->with('error', 'Kërkesa për përditësim statusi nuk është e vlefshme.');
+                return redirect()->route('project.details', $id)->with('error', __('pages.invalid_status'));
             }
 
-            return redirect()->route('project.details', $id)->with('success', 'Statusi i projektit u përditësua me sukses.');
+            return redirect()->route('project.details', $id)->with('success', __('pages.project_status_updated'));
         } catch (\Exception $e) {
-            return redirect()->route('project.details', $id)->with('error', 'Ndodhi një problem, ju lutemi provoni përsëri.');
+            return redirect()->route('project.details', $id)->with('error', __('pages.try_again'));
         }
     }
 
@@ -236,7 +236,7 @@ class ProjectsController extends Controller
     public function setProjectContext(int $id)
     {
         if (session('active') !== true) {
-            return redirect()->route('login')->with('error', 'Duhet të jeni të kyçur për të zgjedhur projektin.');
+            return redirect()->route('login')->with('error', __('pages.must_login_select_project'));
         }
 
         $companyId = session('company_id');
@@ -244,11 +244,11 @@ class ProjectsController extends Controller
         $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         if (!$this->service->findOrFail($id, $companyId)) {
-            return back()->with('error', 'Projekti nuk u gjet.');
+            return back()->with('error', __('pages.project_not_found'));
         }
 
         if ($role === 'manager' && !$this->service->isManagedBy($id, (int) $companyId, (int) ($employeeId ?? 0))) {
-            return back()->with('error', 'Projekti nuk u gjet.');
+            return back()->with('error', __('pages.project_not_found'));
         }
 
         session()->put('project_id', $id);

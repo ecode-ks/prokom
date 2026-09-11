@@ -62,7 +62,7 @@ class ReportsController extends Controller
             'employee_id' => 'required|integer|exists:employees,id',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('employee.report')->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('employee.report')->with('error', __('pages.fields_invalid'))->withInput();
         }
 
         $fromDate = $request->input('from_date');
@@ -71,13 +71,13 @@ class ReportsController extends Controller
 
         if (!$canSelectEmployee) {
             if ($sessionEmployeeId <= 0 || $employeeId !== $sessionEmployeeId) {
-                return redirect()->route('employee.report')->with('error', 'Nuk keni të drejtë të shikoni raportin e një punonjësi tjetër.');
+                return redirect()->route('employee.report')->with('error', __('pages.report_no_access'));
             }
             $employeeId = $sessionEmployeeId;
         }
 
         if (!$this->employeeService->getEmployeeById($employeeId)) {
-            return redirect()->route('employee.report')->with('error', 'Punonjësi nuk u gjet.')->withInput();
+            return redirect()->route('employee.report')->with('error', __('pages.employee_not_found'))->withInput();
         }
 
         $reportLimit = 10;
@@ -119,7 +119,7 @@ class ReportsController extends Controller
                 ->with('employeeId', $employeeId)
                 ->with('role', $role);
         } catch (\Exception $e) {
-            return redirect()->route('employee.report')->with('error', 'Ndodhi një problem gjatë gjenerimit të raportit. Ju lutem provoni përsëri. ' . $e->getMessage())->withInput();
+            return redirect()->route('employee.report')->with('error', __('pages.report_failed', ['message' => $e->getMessage()]))->withInput();
         }
     }
     //---------------

@@ -31,7 +31,7 @@ class UsersService
     public function registerAdmin(array $data): bool
     {
         if ($this->usersRepository->checkUserExists($data['username'])) {
-            throw new \Exception('Përdoruesi me këtë emër përdoruesi ekziston tashmë. Ju lutemi zgjidhni një emër përdoruesi tjetër.');
+            throw new \Exception(__('pages.admin_username_taken'));
         }
 
         $data['password'] = Hash::make($data['password']);
@@ -51,12 +51,13 @@ class UsersService
             session()->put('user', $user->user);
             session()->put('username', $user->username);
             session()->put('role', $user->role);
+            session()->put('language', 'sq');
             return true;
         }
 
         if ($company && Hash::check($credentials['password'], $company->password)) {
             if ($company->status === 'Blocked') {
-                throw new \Exception('Kompania nuk është aktive. Pritni që administratori ta aktivizojë llogarinë.');
+                throw new \Exception(__('pages.company_blocked'));
             }
 
             $isExpired = !empty($company->payment_expire) && $company->payment_expire < now();
@@ -68,6 +69,7 @@ class UsersService
             session()->put('role', 'company');
             session()->put('expire_date', $company->payment_expire);
             session()->put('package', $company->package);
+            session()->put('language', $this->normalizeLanguage($company->language ?? null));
 
             if ($isExpired) {
                 session()->put('payment_expired', true);
@@ -79,15 +81,15 @@ class UsersService
 
         if ($employee && Hash::check($credentials['password'], $employee->password)) {
             if (strcasecmp((string) $employee->status, 'Active') !== 0) {
-                throw new \Exception('Llogaria e punonjësit është e bllokuar. Ju lutemi kontaktoni kompaninë.');
+                throw new \Exception(__('pages.employee_account_blocked'));
             }
 
             if (empty($employee->company_id)) {
-                throw new \Exception('Punonjësi nuk është i lidhur me asnjë kompani.');
+                throw new \Exception(__('pages.employee_no_company'));
             }
 
             if ($this->companiesRepository->checkIfCompanyIsBlocked((int) $employee->company_id)) {
-                throw new \Exception('Kompania është bllokuar. Ju lutemi kontaktoni stafin.');
+                throw new \Exception(__('pages.company_blocked_staff'));
             }
 
             $companyRow = $this->companiesRepository->findCompanyById((int) $employee->company_id);
@@ -103,11 +105,27 @@ class UsersService
             session()->put('company_id', (int) $employee->company_id);
             session()->put('company', $companyRow->company ?? null);
             session()->put('payment_expired', (bool) $isExpired);
+            session()->put('language', $this->normalizeLanguage($companyRow->language ?? null));
 
             return true;
         }
 
-        throw new \Exception('Emri i përdoruesit ose fjalëkalimi është i pasaktë.');
+        throw new \Exception(__('pages.invalid_credentials'));
+    }
+    //---------------
+    public function updateCompanyLanguage(int $companyId, string $language): bool
+    {
+        $language = $this->normalizeLanguage($language);
+        $updated = $this->companiesRepository->updateLanguage($companyId, $language);
+        if ($updated) {
+            session()->put('language', $language);
+        }
+        return $updated;
+    }
+    //---------------
+    private function normalizeLanguage(?string $language): string
+    {
+        return in_array($language, ['sq', 'en', 'de'], true) ? $language : 'sq';
     }
     //---------------
     public function updateProfilePassword(string $oldPassword, string $newPassword, string $username): bool

@@ -1,40 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>WORKOM | Regjistrimi</title>
+        <title>WORKOM | {{ __('pages.title_register') }}</title>
         @include('partials.favicon')
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/custom.css') }}?v={{ @filemtime(public_path('assets/custom.css')) }}">
     </head>
     <body>
+        <div class="lang-switcher-fixed">
+            @include('partials.lang-switcher')
+        </div>
         <div class="container-fluid">
-            <div class="row vh-100">
+            <div class="row min-vh-100">
 
                 {{-- Entrance Banner --}}
-                <div class="col-12 col-md-12 col-lg-6 d-none d-md-none d-lg-flex flex-column justify-content-center bg-darkblue text-light vh-100 p-5">
+                <div class="col-12 col-md-12 col-lg-6 d-none d-md-none d-lg-flex flex-column justify-content-center bg-darkblue text-light min-vh-100 p-5">
                     <div class="d-flex align-items-center">
                         <div class="me-2 rounded-3 bg-lightblue p-custom border-lightblue">
                             <i class="fa-solid fa-city"></i>
                         </div>
                         <div>
                             <span class="d-block fw-semibold">WORKOM</span>
-                            <small class="d-block opacity-50">Paneli Menaxhimit</small>
+                            <small class="d-block opacity-50">{{ __('pages.panel_subtitle') }}</small>
                         </div>
                     </div>
                     <div class="mt-4">
                         <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-light px-3 py-2 fw-semibold">
                             <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                            Besuar nga <strong>10+</strong> Kompani
+                            {{ __('pages.trusted_by') }} <strong>10+</strong> {{ __('pages.companies_count') }}
                         </span>
                     </div>
                     <div class="mt-5">
-                        <h1 class="display-4 fw-bold col-8">Stafi, Projektet dhe Financat <span class="opacity-50">- në një vend.</span></h1>
-                        <p class="lead opacity-75 col-7 mt-5">Punonjësit, oraret e punës, pushimet, kontratat, pagat, detyrat dhe raportet. Një sistem i qetë dhe i menduar mirë.</p>
+                        <h1 class="display-4 fw-bold col-8">{{ __('pages.hero_title') }} <span class="opacity-50">{{ __('pages.hero_title_rest') }}</span></h1>
+                        <p class="lead opacity-75 col-7 mt-5">{{ __('pages.hero_lead') }}</p>
                     </div>
                     <div class="mt-4">
                         <div class="d-flex justify-content-between opacity-50">
@@ -45,49 +48,53 @@
                 </div>
 
                 {{-- Registration Form --}}
-                <div class="col-12 col-md-12 col-lg-6 bg-custom vh-100 overflow-y-auto">
-                    <div class="col-12 col-md-8 mx-auto py-5">
-                        <span class="txt-darkblue fw-semibold text-uppercase">Mirësevini në WORKOM</span>
-                        <h1 class="fw-bold col-12 mt-3">Krijoni një llogari për kompaninë tuaj</h1>
+                <div class="col-12 col-md-12 col-lg-6 bg-custom min-vh-100 overflow-y-auto">
+                    <div class="col-12 col-md-8 mx-auto py-5 pt-5 lang-page-form">
+                        <span class="txt-darkblue fw-semibold text-uppercase">{{ __('pages.welcome') }}</span>
+                        <h1 class="fw-bold col-12 mt-3">{{ __('pages.register_heading') }}</h1>
                         <form action="{{ route('register.company') }}" method="post" class="mt-4" onsubmit="handleSubmit(event)">
                             @csrf
                             <div class="mb-3">
-                                <label for="company" class="form-label text-uppercase small fw-semibold">Emri i Kompanisë</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="company" name="company" value="{{ old('company') }}" placeholder="Shkruani emrin e kompanisë suaj">
+                                <label for="company" class="form-label text-uppercase small fw-semibold">{{ __('pages.company_name') }}</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="company" name="company" value="{{ old('company') }}" placeholder="{{ __('pages.placeholder_company') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="email" class="form-label text-uppercase small fw-semibold">Emaili</label>
-                                <input type="email" class="form-control shadow-sm py-custom rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="Shkruani email-in tuaj">
+                                <label for="email" class="form-label text-uppercase small fw-semibold">{{ __('pages.email') }}</label>
+                                <input type="email" class="form-control shadow-sm py-custom rounded-3" id="email" name="email" value="{{ old('email') }}" placeholder="{{ __('pages.placeholder_email') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="phone" class="form-label text-uppercase small fw-semibold">Telefoni</label>
-                                <input type="tel" class="form-control shadow-sm py-custom rounded-3" id="phone" name="phone" value="{{ old('phone') }}" placeholder="Shkruani numrin tuaj të telefonit">
+                                <label for="phone" class="form-label text-uppercase small fw-semibold">{{ __('pages.phone') }}</label>
+                                <input type="tel" class="form-control shadow-sm py-custom rounded-3" id="phone" name="phone" value="{{ old('phone') }}" placeholder="{{ __('pages.placeholder_phone') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="location" class="form-label text-uppercase small fw-semibold">Vendndodhja</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="Shkruani vendndodhjen tuaj">
+                                <label for="location" class="form-label text-uppercase small fw-semibold">{{ __('pages.location') }}</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="location" name="location" value="{{ old('location') }}" placeholder="{{ __('pages.placeholder_your_location') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="username" class="form-label text-uppercase small fw-semibold">Përdoruesi</label>
-                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="Shkruani përdoruesin (username)">
+                                <label class="form-label text-uppercase small fw-semibold">{{ __('pages.language') }}</label>
+                                @include('partials.lang-choice', ['selected' => old('language', app()->getLocale()), 'mode' => 'radio'])
                             </div>
                             <div class="mb-3">
-                                <label for="password" class="form-label text-uppercase small fw-semibold">Fjalëkalimi (8+ Karaktere)</label>
-                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="Shkruani fjalëkalimin tuaj">
+                                <label for="username" class="form-label text-uppercase small fw-semibold">{{ __('pages.username') }}</label>
+                                <input type="text" class="form-control shadow-sm py-custom rounded-3" id="username" name="username" value="{{ old('username') }}" placeholder="{{ __('pages.placeholder_username_user') }}">
                             </div>
                             <div class="mb-3">
-                                <label for="password_confirmation" class="form-label text-uppercase small fw-semibold">Konfirmo fjalëkalimin</label>
-                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="Konfirmoni fjalëkalimin tuaj">
+                                <label for="password" class="form-label text-uppercase small fw-semibold">{{ __('pages.password_8') }}</label>
+                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password" name="password" value="{{ old('password') }}" placeholder="{{ __('pages.placeholder_password') }}">
                             </div>
-                            <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">Regjistrohu <i class="fa-solid fa-angle-right"></i></button>
+                            <div class="mb-3">
+                                <label for="password_confirmation" class="form-label text-uppercase small fw-semibold">{{ __('pages.confirm_password') }}</label>
+                                <input type="password" class="form-control shadow-sm py-custom rounded-3" id="password_confirmation" name="password_confirmation" value="{{ old('password_confirmation') }}" placeholder="{{ __('pages.placeholder_confirm_password') }}">
+                            </div>
+                            <button type="submit" id="submitBtn" class="btn btn-darkblue w-100 rounded-3 py-custom fw-semibold">{{ __('pages.register') }} <i class="fa-solid fa-angle-right"></i></button>
                         </form>
                         <div class="mt-4 text-center">
-                            <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">Keni një llogari?</span> Kyçu tani!</a>
+                            <a href="{{ route('login') }}" class="text-decoration-none txt-darkblue fw-semibold small"><span class="text-dark text-muted">{{ __('pages.have_account') }}</span> {{ __('pages.login_now') }}</a>
                         </div>
                         <div class="mt-4 text-center d-block d-md-none d-lg-none">
                             <span class="badge rounded-pill bg-success bg-opacity-10 shadow-sm text-success border border-success px-3 py-2 fw-semibold">
                                 <i class="fa-regular fa-circle-dot me-2 text-success"></i>
-                                Trusted by <strong>10+</strong> Companies
+                                {{ __('pages.trusted_by') }} <strong>10+</strong> {{ __('pages.companies_count') }}
                             </span>
                         </div>
                     </div>
@@ -100,7 +107,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="successToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success border-success">
-                        <strong class="me-auto text-light">Njoftim!</strong>
+                        <strong class="me-auto text-light">{{ __('pages.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-success">
@@ -115,7 +122,7 @@
             <div class="toast-container position-fixed bottom-0 end-0 p-3">
                 <div id="errorToast" class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-danger border-danger">
-                        <strong class="me-auto text-light">Njoftim!</strong>
+                        <strong class="me-auto text-light">{{ __('pages.toast_notice') }}</strong>
                         <button type="button" class="btn-close shadow-none" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body text-dark border border-danger">

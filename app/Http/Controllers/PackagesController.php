@@ -23,18 +23,18 @@ class PackagesController extends Controller
             'description' => 'required|string|min:1'
         ]);
         if ($validator->fails()) {
-            return redirect()->route('packages')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('packages')->with('error',__('pages.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['title', 'price', 'months', 'description']);
             try {
                 $created = $this->service->createPackage($data);
                 if(!$created) {
-                    return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+                    return redirect()->route('packages')->with('error', __('pages.try_again'))->withInput();
                 }else {
-                    return redirect()->route('packages')->with('success', 'Paketa u krijua me sukses.');
+                    return redirect()->route('packages')->with('success', __('pages.package_created'));
                 }
             } catch (\Exception $e) {
-                return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.')->withInput();
+                return redirect()->route('packages')->with('error', __('pages.try_again'))->withInput();
             }
         }
     }
@@ -55,7 +55,7 @@ class PackagesController extends Controller
     {
         $page = 'Packages';
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('packages')->with('error','Paketa nuk u gjet');
+            return redirect()->route('packages')->with('error',__('pages.package_not_found'));
         } else {
             $editPackage = $this->service->getPackageById($id);
             return view('management.packages')
@@ -75,19 +75,19 @@ class PackagesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error',__('pages.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['title', 'price', 'months', 'description']);
             try {
                 $updated = $this->service->updatePackage($id, $data);
                 if(!$updated) {
-                    return redirect()->back()->with('error', 'Nuk u ndryshua asgjë në paketë.');
+                    return redirect()->back()->with('error', __('pages.packages_unchanged'));
                 }else {
-                    return redirect()->route('packages')->with('success', 'Paketa u përditësua me sukses.');
+                    return redirect()->route('packages')->with('success', __('pages.package_updated'));
                 }
             } catch (\Exception $e) {
-                return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                return redirect()->route('packages')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -95,17 +95,17 @@ class PackagesController extends Controller
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('packages')->with('error','Paketa nuk u gjet');
+            return redirect()->route('packages')->with('error',__('pages.package_not_found'));
         } else {
             try {
                 $deleted = $this->service->deletePackage($id);
                 if(!$deleted) {
-                    return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                    return redirect()->route('packages')->with('error', __('pages.try_again'));
                 }else {
-                    return redirect()->route('packages')->with('success', 'Paketa u fshi me sukses.');
+                    return redirect()->route('packages')->with('success', __('pages.package_deleted'));
                 }
             } catch (\Exception $e) {
-                return redirect()->route('packages')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                return redirect()->route('packages')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -113,17 +113,17 @@ class PackagesController extends Controller
     public function change(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('profile')->with('error','Paketa nuk u gjet');
+            return redirect()->route('profile')->with('error',__('pages.package_not_found'));
         } else {
             try {
                 $changed = $this->service->changePackage($id);
                 if(!$changed) {
-                    return redirect()->route('profile')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.');
+                    return redirect()->route('profile')->with('error', __('pages.try_again'));
                 }else {
-                    return redirect()->route('profile')->with('success', 'Paketa u ndryshua me sukses.');
+                    return redirect()->route('profile')->with('success', __('pages.package_changed'));
                 }
             } catch (\Exception $e) {
-                return redirect()->route('profile')->with('error', 'Diçka shkoi keq, ju lutemi provoni përsëri.'. e($e->getMessage()));
+                return redirect()->route('profile')->with('error', __('pages.try_again_reason', ['message' => $e->getMessage()]));
             }
         }
     }

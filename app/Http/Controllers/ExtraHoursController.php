@@ -33,14 +33,14 @@ class ExtraHoursController extends Controller
             'type' => ['required', 'string', Rule::in(self::TYPES)],
         ]);
         if ($validator->fails()) {
-            return redirect()->route('extra.hours')->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('extra.hours')->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['date', 'employee_id', 'hours', 'type']);
             try {
                 $this->service->createExtraHour($data);
-                return redirect()->route('extra.hours')->with('success', 'Orët shtesë u regjistruan me sukses.');
+                return redirect()->route('extra.hours')->with('success', __('pages.extra_hours_created'));
             } catch (\Exception $e) {
-                return redirect()->route('extra.hours')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
+                return redirect()->route('extra.hours')->with('error', __('pages.try_again'))->withInput();
             }
         }
     }
@@ -67,9 +67,9 @@ class ExtraHoursController extends Controller
 
         if ($employees->isEmpty()) {
             if (session('role') === 'manager') {
-                return redirect()->route('dashboard')->with('error', 'Nuk ka punonjës të regjistruar.');
+                return redirect()->route('dashboard')->with('error', __('pages.no_employees'));
             }
-            return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni orë shtesë.');
+            return redirect()->route('employees')->with('error', __('pages.register_employees_before_extra'));
         }
 
         return view('management.extra-hours')
@@ -84,16 +84,16 @@ class ExtraHoursController extends Controller
     {
         $page = 'Extra Hours';
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('extra.hours')->with('error', 'Orët shtesë nuk u gjetën');
+            return redirect()->route('extra.hours')->with('error', __('pages.extra_hours_not_found'));
         } else {
             $editExtraHour = $this->service->getExtraHourById($id);
             $employees = $this->employeeService->getAllEmployees();
 
             if ($employees->isEmpty()) {
                 if (session('role') === 'manager') {
-                    return redirect()->route('dashboard')->with('error', 'Nuk ka punonjës të regjistruar.');
+                    return redirect()->route('dashboard')->with('error', __('pages.no_employees'));
                 }
-                return redirect()->route('employees')->with('error', 'Ju lutem regjistroni punonjës para se të regjistroni orë shtesë.');
+                return redirect()->route('employees')->with('error', __('pages.register_employees_before_extra'));
             }
 
             return view('management.extra-hours')
@@ -116,15 +116,15 @@ class ExtraHoursController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error', 'Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error', __('pages.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['date', 'employee_id', 'hours', 'type']);
             try {
                 $this->service->updateExtraHour($id, $data);
-                return redirect()->route('extra.hours')->with('success', 'Orët shtesë u përditësuan me sukses.');
+                return redirect()->route('extra.hours')->with('success', __('pages.extra_hours_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('extra.hours')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('extra.hours')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -132,13 +132,13 @@ class ExtraHoursController extends Controller
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('extra.hours')->with('error', 'Orët shtesë nuk u gjetën');
+            return redirect()->route('extra.hours')->with('error', __('pages.extra_hours_not_found'));
         } else {
             try {
                 $this->service->deleteExtraHour($id);
-                return redirect()->route('extra.hours')->with('success', 'Orët shtesë u fshinë me sukses');
+                return redirect()->route('extra.hours')->with('success', __('pages.extra_hours_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('extra.hours')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('extra.hours')->with('error', __('pages.try_again'));
             }
         }
     }

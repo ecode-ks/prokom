@@ -29,7 +29,7 @@ class CheckInController extends Controller
     public function map()
     {
         if (session('role') !== 'company') {
-            return redirect()->route('dashboard')->with('error', 'Nuk keni të drejtë për këtë faqe.');
+            return redirect()->route('dashboard')->with('error', __('pages.no_access'));
         }
 
         $locations = $this->service->getMapLocations();
@@ -43,7 +43,7 @@ class CheckInController extends Controller
     {
         $page = 'Check In';
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('checkins')->with('error', 'Check-in nuk u gjet.');
+            return redirect()->route('checkins')->with('error', __('pages.checkin_not_found'));
         }
 
         $checkinDetails = $this->service->getCheckInById($id);
@@ -56,28 +56,28 @@ class CheckInController extends Controller
     public function accept(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('checkins')->with('error', 'Check-in nuk u gjet.');
+            return redirect()->route('checkins')->with('error', __('pages.checkin_not_found'));
         }
 
         try {
             $this->service->acceptCheckIn($id);
-            return redirect()->route('checkins')->with('success', 'Check-in u pranua dhe orët e punës u regjistruan.');
+            return redirect()->route('checkins')->with('success', __('pages.checkin_accepted_msg'));
         } catch (\Exception $e) {
-            return redirect()->route('checkins')->with('error', $e->getMessage() ?: 'Pranimi dështoi. Provo përsëri.');
+            return redirect()->route('checkins')->with('error', $e->getMessage() ?: __('pages.checkin_accept_failed'));
         }
     }
     //---------------
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('checkins')->with('error', 'Check-in nuk u gjet.');
+            return redirect()->route('checkins')->with('error', __('pages.checkin_not_found'));
         }
 
         try {
             $this->service->deleteCheckIn($id);
-            return redirect()->route('checkins')->with('success', 'Check-in u fshi me sukses.');
+            return redirect()->route('checkins')->with('success', __('pages.checkin_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('checkins')->with('error', 'Fshirja dështoi. Provo përsëri.');
+            return redirect()->route('checkins')->with('error', __('pages.checkin_delete_failed'));
         }
     }
     //---------------
@@ -88,7 +88,7 @@ class CheckInController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('dashboard')->with('error', 'Të dhënat nuk janë të vlefshme. Provo përsëri.');
+            return redirect()->route('dashboard')->with('error', __('pages.data_invalid'));
         }
 
         try {
@@ -96,9 +96,9 @@ class CheckInController extends Controller
                 'check_in_time' => now()->format('Y-m-d H:i:s'),
                 'check_in_location' => $request->input('check_in_location'),
             ]);
-            return redirect()->route('dashboard')->with('success', 'Fillimi i punës u regjistrua me sukses.');
+            return redirect()->route('dashboard')->with('success', __('pages.checkin_work_started'));
         } catch (\Exception $e) {
-            return redirect()->route('dashboard')->with('error', 'Regjistrimi dështoi: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', __('pages.checkin_register_failed', ['message' => $e->getMessage()]));
         }
     }
     //---------------
@@ -110,7 +110,7 @@ class CheckInController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('dashboard')->with('error', 'Të dhënat nuk janë të vlefshme. Provo përsëri.');
+            return redirect()->route('dashboard')->with('error', __('pages.data_invalid'));
         }
 
         try {
@@ -122,11 +122,11 @@ class CheckInController extends Controller
                 ]
             );
             if (!$ok) {
-                return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');
+                return redirect()->route('dashboard')->with('error', __('pages.checkin_not_found'));
             }
-            return redirect()->route('dashboard')->with('success', 'Fillimi i pauzës u regjistrua me sukses.');
+            return redirect()->route('dashboard')->with('success', __('pages.checkin_pause_started'));
         } catch (\Exception $e) {
-            return redirect()->route('dashboard')->with('error', 'Regjistrimi dështoi: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', __('pages.checkin_register_failed', ['message' => $e->getMessage()]));
         }
     }
     //---------------
@@ -138,7 +138,7 @@ class CheckInController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('dashboard')->with('error', 'Të dhënat nuk janë të vlefshme. Provo përsëri.');
+            return redirect()->route('dashboard')->with('error', __('pages.data_invalid'));
         }
 
         try {
@@ -150,11 +150,11 @@ class CheckInController extends Controller
                 ]
             );
             if (!$ok) {
-                return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');
+                return redirect()->route('dashboard')->with('error', __('pages.checkin_not_found'));
             }
-            return redirect()->route('dashboard')->with('success', 'Përfundimi i pauzës u regjistrua me sukses.');
+            return redirect()->route('dashboard')->with('success', __('pages.checkin_pause_ended'));
         } catch (\Exception $e) {
-            return redirect()->route('dashboard')->with('error', 'Regjistrimi dështoi: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', __('pages.checkin_register_failed', ['message' => $e->getMessage()]));
         }
     }
     //---------------
@@ -166,7 +166,7 @@ class CheckInController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('dashboard')->with('error', 'Të dhënat nuk janë të vlefshme. Provo përsëri.');
+            return redirect()->route('dashboard')->with('error', __('pages.data_invalid'));
         }
 
         try {
@@ -178,11 +178,11 @@ class CheckInController extends Controller
                 ]
             );
             if (!$ok) {
-                return redirect()->route('dashboard')->with('error', 'Check-in nuk u gjet.');
+                return redirect()->route('dashboard')->with('error', __('pages.checkin_not_found'));
             }
-            return redirect()->route('dashboard')->with('success', 'Përfundimi i punës u regjistrua me sukses.');
+            return redirect()->route('dashboard')->with('success', __('pages.checkin_work_ended'));
         } catch (\Exception $e) {
-            return redirect()->route('dashboard')->with('error', 'Regjistrimi dështoi: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', __('pages.checkin_register_failed', ['message' => $e->getMessage()]));
         }
     }
 }

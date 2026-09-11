@@ -1,22 +1,22 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Prezenca')
+@section('title', __('pages.nav_checkin'))
 
 {{-- Page Content --}}
 @section('content')
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Prezenca</small>
-    <h3 class="fw-semibold pt-2">Lista e Check-in</h3>
-    <p class="text-muted">Shiko dhe prano check-in e punonjësve.</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.nav_checkin') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('pages.checkin_heading') }}</h3>
+    <p class="text-muted">{{ __('pages.checkin_lead') }}</p>
     <hr class="mb-4">
 
     <div class="card">
         <div class="card-header rounded-top-4 bg-white">
-            <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Prezencës</span>
+            <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.checkin_list') }}</span>
         </div>
         <div class="card-body">
             <form action="{{ route('checkins') }}" method="get" class="input-group mb-3">
-                <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Search..." aria-describedby="basic-addon2">
+                <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('pages.search') }}" aria-label="{{ __('pages.search') }}" aria-describedby="basic-addon2">
                 <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
             <div class="table-responsive">
@@ -24,18 +24,18 @@
                     <thead>
                         <tr>
                             <th scope="col" class="text-nowrap">#</th>
-                            <th scope="col" class="text-nowrap">Punëtori</th>
-                            <th scope="col" class="text-nowrap">Hyrja</th>
-                            <th scope="col" class="text-nowrap">Pauza</th>
-                            <th scope="col" class="text-nowrap">Dalja</th>
-                            <th scope="col" class="text-nowrap">Statusi</th>
-                            <th scope="col" class="text-nowrap text-end">Veprimet</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.employee') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.checkin_in') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.checkin_pause') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.checkin_out') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.status') }}</th>
+                            <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(count($checkIns) === 0)
                             <tr>
-                                <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjet asnjë e dhënë...</td>
+                                <td colspan="7" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                             </tr>
                         @else
                             @foreach ($checkIns as $checkIn)
@@ -54,9 +54,9 @@
                                     <td class="text-nowrap">{{ $checkIn->check_out_time ? \Carbon\Carbon::parse($checkIn->check_out_time)->format('d/m/Y H:i') : '-' }}</td>
                                     <td class="text-nowrap">
                                         @if($isAccepted)
-                                            <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Pranuar</span>
+                                            <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.checkin_accepted') }}</span>
                                         @else
-                                            <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">Në shqyrtim</span>
+                                            <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ __('pages.checkin_review') }}</span>
                                         @endif
                                     </td>
                                     <td class="text-nowrap text-end">
@@ -86,10 +86,10 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-body text-center">
-                            <p>A jeni i sigurt që dëshironi ta fshini këtë check-in?</p>
+                            <p>{{ __('pages.checkin_delete_confirm') }}</p>
                             <div class="mt-3">
-                                <a href="{{ route('delete.checkin', $checkIn->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                <a href="{{ route('delete.checkin', $checkIn->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('pages.confirm') }}</a>
+                                <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('pages.cancel') }}</button>
                             </div>
                         </div>
                     </div>

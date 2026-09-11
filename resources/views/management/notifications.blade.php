@@ -1,18 +1,18 @@
 @extends('template.template')
 
-@section('title', 'Njoftimet')
+@section('title', __('pages.nav_notifications'))
 
 @section('content')
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Përmbledhje</small>
-    <h3 class="fw-semibold pt-2">Njoftimet</h3>
-    <p class="text-muted">Shiko dhe menaxho njoftimet e llogarisë suaj.</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.nav_overview') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('pages.nav_notifications') }}</h3>
+    <p class="text-muted">{{ __('pages.notif_lead') }}</p>
     <hr class="mb-4">
 
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-bell text-warning"></i> Të palexuara</small>
+                    <small class="text-uppercase opacity-75"><i class="fa-solid fa-bell text-warning"></i> {{ __('pages.notif_unread') }}</small>
                     <h4 class="fw-semibold mb-0">{{ $unreadCount ?? 0 }}</h4>
                 </div>
             </div>
@@ -21,7 +21,7 @@
             <form action="{{ route('notifications.mark.all') }}" method="post" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-darkblue rounded-3 shadow-sm">
-                    <i class="fa-solid fa-check-double"></i> Shëno të gjitha si të lexuara
+                    <i class="fa-solid fa-check-double"></i> {{ __('pages.notif_mark_all') }}
                 </button>
             </form>
         </div>
@@ -29,7 +29,7 @@
 
     <div class="card">
         <div class="card-header rounded-top-4 bg-white">
-            <span><i class="fa-regular fa-bell txt-lightblue py-2"></i> Lista e Njoftimeve</span>
+            <span><i class="fa-regular fa-bell txt-lightblue py-2"></i> {{ __('pages.notif_list') }}</span>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -37,17 +37,17 @@
                     <thead>
                         <tr>
                             <th scope="col" class="text-nowrap">#</th>
-                            <th scope="col" class="text-nowrap">Titulli</th>
-                            <th scope="col" class="text-nowrap">Mesazhi</th>
-                            <th scope="col" class="text-nowrap">Data</th>
-                            <th scope="col" class="text-nowrap">Statusi</th>
-                            <th scope="col" class="text-nowrap text-end">Veprimet</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.notif_title') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.notif_message') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.date') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.status') }}</th>
+                            <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(!$notifications || count($notifications) === 0)
                             <tr>
-                                <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën njoftime...</td>
+                                <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.notif_empty') }}</td>
                             </tr>
                         @else
                             @foreach($notifications as $notification)
@@ -58,16 +58,16 @@
                                     <td class="text-nowrap">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->format('d/m/Y H:i') : '-' }}</td>
                                     <td class="text-nowrap">
                                         @if(!(int) $notification->is_read)
-                                            <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">E palexuar</span>
+                                            <span class="badge rounded-pill text-dark text-bg-warning bg-opacity-25 border border-warning">{{ __('pages.notif_unread_badge') }}</span>
                                         @else
-                                            <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">E lexuar</span>
+                                            <span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.notif_read_badge') }}</span>
                                         @endif
                                     </td>
                                     <td class="text-nowrap text-end">
                                         <form action="{{ route('notifications.open', $notification->id) }}" method="post" class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-outline-primary btn-sm rounded-3 shadow-sm">
-                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Hap
+                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> {{ __('pages.notif_open') }}
                                             </button>
                                         </form>
                                     </td>

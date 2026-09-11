@@ -22,15 +22,15 @@ class SuppliersController extends Controller
             'location' => 'required|string|min:1|max:255',
         ]);
         if ($validator->fails()) {
-            return redirect()->route('suppliers')->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return redirect()->route('suppliers')->with('error',__('pages.fields_invalid'))->withInput();
         } else {
             $data = $request->only(['supplier', 'phone', 'location']);
             $data['company_id'] = session('company_id');
             try {
                 $this->service->createSupplier($data);
-                return redirect()->route('suppliers')->with('success', 'Furnizuesi u krijua me sukses.');
+                return redirect()->route('suppliers')->with('success', __('pages.supplier_created'));
             } catch (\Exception $e) {
-                return redirect()->route('suppliers')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.')->withInput();
+                return redirect()->route('suppliers')->with('error', __('pages.try_again'))->withInput();
             }
         }
     }
@@ -51,7 +51,7 @@ class SuppliersController extends Controller
         $page = 'Suppliers';
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('suppliers')->with('error','Furnizuesi nuk u gjet');
+            return redirect()->route('suppliers')->with('error', __('pages.supplier_not_found'));
         } else {
             $editSupplier = $this->service->getSupplierById($id, $companyId);
             return view('management.suppliers')
@@ -70,16 +70,16 @@ class SuppliersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return back()->with('error','Të gjitha fushat duhet të plotësohen sipas rregullave.')->withInput();
+            return back()->with('error',__('pages.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
             $data = $request->only(['supplier', 'phone', 'location']);
             $companyId = session('company_id');
             try {
                 $this->service->updateSupplier($id, $data, $companyId);
-                return redirect()->route('suppliers')->with('success', 'Furnizuesi u përditësua me sukses.');
+                return redirect()->route('suppliers')->with('success', __('pages.supplier_updated'));
             } catch (\Exception $e) {
-                return redirect()->route('suppliers')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('suppliers')->with('error', __('pages.try_again'));
             }
         }
     }
@@ -88,13 +88,13 @@ class SuppliersController extends Controller
     {
         $companyId = session('company_id');
         if (!$this->service->findOrFail($id, $companyId)) {
-            return redirect()->route('suppliers')->with('error','Furnizuesi nuk u gjet');
+            return redirect()->route('suppliers')->with('error', __('pages.supplier_not_found'));
         } else {
             try {
                 $this->service->deleteSupplier($id, $companyId);
-                return redirect()->route('suppliers')->with('success','Furnizuesi u fshi me sukses');
+                return redirect()->route('suppliers')->with('success', __('pages.supplier_deleted'));
             } catch (\Exception $e) {
-                return redirect()->route('suppliers')->with('error', 'Ndodhi një problem, ju lutem provoni përsëri.');
+                return redirect()->route('suppliers')->with('error', __('pages.try_again'));
             }
         }
     }

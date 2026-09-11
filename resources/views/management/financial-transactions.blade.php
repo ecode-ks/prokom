@@ -1,19 +1,19 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', isset($editTransaction) ? 'Përditëso Transaksionin' : 'Të Ardhurat & Shpenzimet')
+@section('title', isset($editTransaction) ? __('pages.fin_update_title') : __('pages.nav_revenue'))
 
 {{-- Page Content --}}
 @section('content')
     @if(isset($editTransaction))
-        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('financial.transactions') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> Kthehu</a></small>
-        <h3 class="fw-semibold pt-2">Përditëso Transaksionin</h3>
-        <p class="text-muted">Përditëso të dhënat e transaksionit të zgjedhur.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('financial.transactions') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('pages.back') }}</a></small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.fin_update_title') }}</h3>
+        <p class="text-muted">{{ __('pages.fin_update_lead') }}</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">Financat</small>
-        <h3 class="fw-semibold pt-2">Të Ardhurat & Shpenzimet</h3>
-        <p class="text-muted">Ndjek dhe menaxho të ardhurat dhe shpenzimet e kompanisë.</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.nav_finance') }}</small>
+        <h3 class="fw-semibold pt-2">{{ __('pages.nav_revenue') }}</h3>
+        <p class="text-muted">{{ __('pages.fin_lead') }}</p>
         <hr class="mb-4">
     @endif
 
@@ -22,7 +22,7 @@
         {{-- Update Transaction --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-money-bill-transfer txt-lightblue py-2"></i> Përditëso Transaksionin</span>
+                <span><i class="fa-solid fa-money-bill-transfer txt-lightblue py-2"></i> {{ __('pages.fin_update_title') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('update.transaction') }}" method="post">
@@ -30,23 +30,23 @@
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="type" class="form-label">Lloji i Transaksionit</label>
+                            <label for="type" class="form-label">{{ __('pages.fin_type') }}</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
-                                <option value="" disabled {{ old('type', $editTransaction->type) ? '' : 'selected' }}>-- Zgjidh Llojin --</option>
-                                <option value="revenue" {{ old('type', $editTransaction->type) == 'revenue' ? 'selected' : '' }}>Të ardhura</option>
-                                <option value="expense" {{ old('type', $editTransaction->type) == 'expense' ? 'selected' : '' }}>Shpenzim</option>
+                                <option value="" disabled {{ old('type', $editTransaction->type) ? '' : 'selected' }}>{{ __('pages.fin_choose_type') }}</option>
+                                <option value="revenue" {{ old('type', $editTransaction->type) == 'revenue' ? 'selected' : '' }}>{{ __('pages.fin_revenue') }}</option>
+                                <option value="expense" {{ old('type', $editTransaction->type) == 'expense' ? 'selected' : '' }}>{{ __('pages.fin_expense') }}</option>
                             </select>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="amount" class="form-label">Shuma e Transaksionit</label>
-                            <input type="text" name="amount" id="amount" value="{{ old('amount', $editTransaction->amount) }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj shumën e transaksionit...">
+                            <label for="amount" class="form-label">{{ __('pages.fin_amount_label') }}</label>
+                            <input type="text" name="amount" id="amount" value="{{ old('amount', $editTransaction->amount) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.fin_amount_ph') }}">
                         </div>
                         <div class="col-12">
-                            <label for="comment" class="form-label">Komenti i Transaksionit</label>
-                            <textarea name="comment" id="comment" class="form-control shadow-sm rounded-3" placeholder="Shkruaj komentin..." rows="3">{{ old('comment', $editTransaction->comment) }}</textarea>
+                            <label for="comment" class="form-label">{{ __('pages.fin_comment_label') }}</label>
+                            <textarea name="comment" id="comment" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.fin_comment_ph') }}" rows="3">{{ old('comment', $editTransaction->comment) }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> Përditëso Transaksionin</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-check"></i> {{ __('pages.fin_update_btn') }}</button>
                         </div>
                     </div>
                 </form>
@@ -64,7 +64,7 @@
             <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-up text-success"></i> Të Ardhurat</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-up text-success"></i> {{ __('pages.fin_revenues') }}</small>
                         <h4 class="fw-semibold mb-0 text-success">€{{ number_format($totalRevenues,2) }}</h4>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
             <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body">
-                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-down text-danger"></i> Shpenzimet</small>
+                        <small class="text-uppercase opacity-75"><i class="fa-solid fa-arrow-trend-down text-danger"></i> {{ __('pages.fin_expenses') }}</small>
                         <h4 class="fw-semibold mb-0 text-danger">-€{{ number_format($totalExpenses,2) }}</h4>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
             <div class="col-12 col-md-4">
                 <div class="card h-100">
                     <div class="card-body bg-darkblue text-white rounded-4">
-                        <small class="text-uppercase opacity-75">Bilanci</small>
+                        <small class="text-uppercase opacity-75">{{ __('pages.fin_balance') }}</small>
                         <h4 class="fw-semibold mb-0">€{{ number_format($totalRevenues-$totalExpenses,2) }}</h4>
                     </div>
                 </div>
@@ -90,30 +90,30 @@
         {{-- Create Transaction --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-money-bill-transfer txt-lightblue py-2"></i> Krijo Transaksion të Ri</span>
+                <span><i class="fa-solid fa-money-bill-transfer txt-lightblue py-2"></i> {{ __('pages.fin_create_title') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.transaction') }}" method="post">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="type" class="form-label">Lloji i Transaksionit</label>
+                            <label for="type" class="form-label">{{ __('pages.fin_type') }}</label>
                             <select name="type" id="type" class="form-control shadow-sm rounded-3">
-                                <option value="" disabled {{ old('type') ? '' : 'selected' }}>-- Zgjidh Llojin --</option>
-                                <option value="revenue" {{ old('type') == 'revenue' ? 'selected' : '' }}>Të ardhura</option>
-                                <option value="expense" {{ old('type') == 'expense' ? 'selected' : '' }}>Shpenzim</option>
+                                <option value="" disabled {{ old('type') ? '' : 'selected' }}>{{ __('pages.fin_choose_type') }}</option>
+                                <option value="revenue" {{ old('type') == 'revenue' ? 'selected' : '' }}>{{ __('pages.fin_revenue') }}</option>
+                                <option value="expense" {{ old('type') == 'expense' ? 'selected' : '' }}>{{ __('pages.fin_expense') }}</option>
                             </select>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="amount" class="form-label">Shuma e Transaksionit</label>
-                            <input type="text" name="amount" id="amount" value="{{ old('amount') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruaj shumën e transaksionit...">
+                            <label for="amount" class="form-label">{{ __('pages.fin_amount_label') }}</label>
+                            <input type="text" name="amount" id="amount" value="{{ old('amount') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.fin_amount_ph') }}">
                         </div>
                         <div class="col-12">
-                            <label for="comment" class="form-label">Komenti i Transaksionit</label>
-                            <textarea name="comment" id="comment" class="form-control shadow-sm rounded-3" placeholder="Shkruaj komentin..." rows="3">{{ old('comment') }}</textarea>
+                            <label for="comment" class="form-label">{{ __('pages.fin_comment_label') }}</label>
+                            <textarea name="comment" id="comment" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.fin_comment_ph') }}" rows="3">{{ old('comment') }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Krijo Transaksionin</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> {{ __('pages.fin_create_btn') }}</button>
                         </div>
                     </div>
                 </form>
@@ -123,11 +123,11 @@
         {{-- Transactions List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> Lista e Transaksioneve</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.fin_list') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('financial.transactions') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..." aria-label="Kërko..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('pages.search') }}" aria-label="{{ __('pages.search') }}" aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
                 <div class="table-responsive">
@@ -135,16 +135,16 @@
                         <thead>
                             <tr>
                                 <th scope="col" class="text-nowrap">#</th>
-                                <th scope="col" class="text-nowrap">Data</th>
-                                <th scope="col" class="text-nowrap">Lloji</th>
-                                <th scope="col" class="text-nowrap">Shuma</th>
-                                <th scope="col" class="text-nowrap text-end">Operacionet</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.date') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.fin_type_col') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.amount') }}</th>
+                                <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($transactions) === 0)
                                 <tr>
-                                    <td colspan="5" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                    <td colspan="5" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach ($transactions as $transaction)
@@ -152,10 +152,10 @@
                                         <th scope="row" class="text-nowrap">{{ $transaction->id }}</th>
                                         <td class="text-nowrap">{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</td>
                                         @if($transaction->type == 'revenue')
-                                            <td class="text-nowrap"><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Të ardhura</span></td>
+                                            <td class="text-nowrap"><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.fin_revenue') }}</span></td>
                                             <td class="text-nowrap text-success fw-semibold">+€{{ number_format($transaction->amount,2) }}</td>
                                         @else
-                                            <td class="text-nowrap"><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Shpenzim</span></td>
+                                            <td class="text-nowrap"><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ __('pages.fin_expense') }}</span></td>
                                             <td class="text-nowrap text-danger fw-semibold">-€{{ number_format($transaction->amount,2) }}</td>
                                         @endif
                                         <td class="text-nowrap text-end">
@@ -185,10 +185,10 @@
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-body text-center">
-                                <p>A jeni i sigurt që dëshironi ta fshini këtë transaksion?</p>
+                                <p>{{ __('pages.confirm_delete') }}</p>
                                 <div class="mt-3">
-                                    <a href="{{ route('delete.transaction', $transaction->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                    <a href="{{ route('delete.transaction', $transaction->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('pages.confirm') }}</a>
+                                    <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('pages.cancel') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -202,23 +202,23 @@
                     <div class="modal-dialog modal-dialog-scrollable">
                         <div class="modal-content rounded-4">
                             <div class="modal-header justify-content-between align-items-center px-4">
-                                <h1 class="modal-title fs-5 fw-semibold" id="commentModal{{ $transaction->id }}Label">Detajet e Transaksionit <strong>#TRID-{{ $transaction->id }}</strong></h1>
-                                <button type="button" class="btn btn-darkblue btn-sm" data-bs-dismiss="modal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+                                <h1 class="modal-title fs-5 fw-semibold" id="commentModal{{ $transaction->id }}Label">{{ __('pages.fin_details') }} <strong>#TRID-{{ $transaction->id }}</strong></h1>
+                                <button type="button" class="btn btn-darkblue btn-sm" data-bs-dismiss="modal" aria-label="{{ __('pages.close') }}"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                             <div class="modal-body bg-custom px-4 py-5">
                                 @if($transaction->type == 'revenue')
-                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Lloji : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">Të ardhura</span></span>
+                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.fin_type_col') }} : </span><span class="badge rounded-pill text-success text-bg-success bg-opacity-25 border border-success">{{ __('pages.fin_revenue') }}</span></span>
                                 @else
-                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> Lloji : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">Shpenzim</span></span>
+                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.fin_type_col') }} : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ __('pages.fin_expense') }}</span></span>
                                 @endif
-                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Data : </span>{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('pages.date') }} : </span>{{ \Carbon\Carbon::parse($transaction->date)->format('d/m/Y') }}</span>
 
                                 @if($transaction->type == 'revenue')
-                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> Shuma : </span>+€{{ number_format($transaction->amount,2) }}</span>
+                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> {{ __('pages.amount') }} : </span>+€{{ number_format($transaction->amount,2) }}</span>
                                 @else
-                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> Shuma : </span>-€{{ number_format($transaction->amount,2) }}</span>
+                                    <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-bill-wave"></i> {{ __('pages.amount') }} : </span>-€{{ number_format($transaction->amount,2) }}</span>
                                 @endif
-                                <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> Komenti i Transaksionit</span>
+                                <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> {{ __('pages.fin_comment_label') }}</span>
                                 <div class="card card-body rounded-4">
                                     <span>{!! nl2br(e($transaction->comment)) !!}</span>
                                 </div>

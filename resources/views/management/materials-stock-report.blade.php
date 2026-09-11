@@ -1,18 +1,18 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Raporti i Stokut')
+@section('title', __('pages.nav_stock_report'))
 
 {{-- Page Content --}}
 @section('content')
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Materialet</small>
-    <h3 class="fw-semibold pt-2">Raporti i Stokut</h3>
-    <p class="text-muted">Përmbledhja aktuale e nivelit të stokut për çdo material.</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.nav_materials') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('pages.nav_stock_report') }}</h3>
+    <p class="text-muted">{{ __('pages.stock_report_lead') }}</p>
     <hr class="mb-4">
 
     <div class="card">
         <div class="card-header rounded-top-4 bg-white">
-            <span><i class="fa-solid fa-chart-column txt-lightblue py-2"></i> Stoku sipas Materialit</span>
+            <span><i class="fa-solid fa-chart-column txt-lightblue py-2"></i> {{ __('pages.stock_by_material') }}</span>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -20,14 +20,14 @@
                     <thead>
                         <tr>
                             <th scope="col" class="text-nowrap">#</th>
-                            <th scope="col" class="text-nowrap">Materiali</th>
-                            <th scope="col" class="text-nowrap">Sasia</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.stock_material') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.qty') }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(count($stockReport) === 0)
                             <tr>
-                                <td colspan="3" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjetën të dhëna...</td>
+                                <td colspan="3" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                             </tr>
                         @else
                             @foreach($stockReport as $row)

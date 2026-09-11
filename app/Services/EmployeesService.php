@@ -24,7 +24,7 @@ class EmployeesService
     public function createEmployee(array $data): bool
     {
         if($this->usersRepository->checkUserExists($data['username']) || $this->companiesRepository->checkCompanyExists($data['username']) || $this->repository->checkEmployeeUsername($data['username'])) {
-            throw new \Exception('Ky përdorues tashmë ekziston. Ju lutemi zgjidhni një përdorues tjetër.');
+            throw new \Exception(__('pages.username_taken'));
         }
         $data['password'] = Hash::make($data['password']);
         $data['company_id'] = $this->companyId;

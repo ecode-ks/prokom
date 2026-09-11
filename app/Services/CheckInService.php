@@ -60,7 +60,7 @@ class CheckInService
     public function startWork(array $data): bool
     {
         if (!$this->canCheckIn()) {
-            throw new \Exception('Nuk keni të drejtë për check-in.');
+            throw new \Exception(__('pages.checkin_no_permission'));
         }
 
         $data['employee_id'] = $this->ownerEmployeeId();
@@ -129,7 +129,7 @@ class CheckInService
         }
 
         if (empty($checkin->check_out_time)) {
-            throw new \Exception('Nuk mund të pranohet check-in pa check-out.');
+            throw new \Exception(__('pages.checkin_need_checkout'));
         }
 
         $this->syncToWorkingHours($checkin, $checkin->check_out_time);
@@ -167,9 +167,20 @@ class CheckInService
                 continue;
             }
 
-            $statusLabel = $onPause
-                ? 'Në pauzë'
-                : (!empty($row->status) ? $row->status : 'Under Review');
+            $hasCheckedOut = !empty($row->check_out_time);
+            $isAccepted = strtolower((string) ($row->status ?? '')) === 'accepted';
+
+            if ($onPause && !$hasCheckedOut) {
+                $statusKey = 'pause';
+            } elseif ($hasCheckedOut && !$isAccepted) {
+                $statusKey = 'review';
+            } else {
+                $statusKey = 'work';
+            }
+
+            $statusLabel = $statusKey === 'pause'
+                ? __('pages.on_pause')
+                : ($statusKey === 'work' ? __('pages.at_work') : __('pages.checkin_under_review'));
 
             $locations[] = [
                 'id' => (int) $row->id,
@@ -177,6 +188,7 @@ class CheckInService
                 'lat' => $coords['lat'],
                 'lng' => $coords['lng'],
                 'status' => $statusLabel,
+                'status_key' => $statusKey,
                 'project' => $row->project_names ?: '-',
                 'check_in_time' => $row->check_in_time
                     ? Carbon::parse($row->check_in_time)->format('d/m/Y H:i')

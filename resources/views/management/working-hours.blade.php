@@ -1,50 +1,50 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Orët e Punës')
+@section('title', __('pages.nav_working_hours'))
 
 {{-- Page Content --}}
 @section('content')
     @php $isEmployee = ($role ?? '') === 'employee'; @endphp
 
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Prezenca</small>
-    <h3 class="fw-semibold pt-2">Orët e Punës</h3>
-    <p class="text-muted">{{ $isEmployee ? 'Lista e orëve të tua të punës.' : 'Lista e orëve të punës të miratuara.' }}</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.nav_checkin') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('pages.nav_working_hours') }}</h3>
+    <p class="text-muted">{{ $isEmployee ? __('pages.working_hours_lead_employee') : __('pages.working_hours_lead_staff') }}</p>
     <hr class="mb-4">
 
     @if(!$isEmployee)
         {{-- Create Working Hour --}}
         <div class="card mb-4">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-clock txt-lightblue py-2"></i> Regjistrimi i Orëve të Punës</span>
+                <span><i class="fa-solid fa-clock txt-lightblue py-2"></i> {{ __('pages.register_working_hours') }}</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('create.working.hour') }}" method="post">
                     @csrf
                     <div class="row g-3">
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="date" class="form-label">Data</label>
-                            <input type="date" name="date" id="date" value="{{ old('date') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani datën...">
+                            <label for="date" class="form-label">{{ __('pages.date') }}</label>
+                            <input type="date" name="date" id="date" value="{{ old('date') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_date') }}">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="employee_id" class="form-label">Punëtori</label>
+                            <label for="employee_id" class="form-label">{{ __('pages.employee') }}</label>
                             <select name="employee_id" id="employee_id" class="form-control shadow-sm rounded-3" required>
-                                <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>-- Zgjidh Punëtorin --</option>
+                                <option value="" disabled {{ old('employee_id') ? '' : 'selected' }}>{{ __('pages.choose_worker') }}</option>
                                 @foreach ($employees as $employee)
                                     <option value="{{ $employee->id }}" {{ old('employee_id') == $employee->id ? 'selected' : '' }}>{{ $employee->employee }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="check_in" class="form-label">Koha e Hyrjes</label>
-                            <input type="datetime-local" name="check_in" id="check_in" value="{{ old('check_in') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani kohën e hyrjes...">
+                            <label for="check_in" class="form-label">{{ __('pages.check_in') }}</label>
+                            <input type="datetime-local" name="check_in" id="check_in" value="{{ old('check_in') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_check_in') }}">
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
-                            <label for="check_out" class="form-label">Koha e Daljes</label>
-                            <input type="datetime-local" name="check_out" id="check_out" value="{{ old('check_out') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani kohën e daljes nga puna...">
+                            <label for="check_out" class="form-label">{{ __('pages.check_out') }}</label>
+                            <input type="datetime-local" name="check_out" id="check_out" value="{{ old('check_out') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_check_out') }}">
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> Regjistro Orët</button>
+                            <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-plus"></i> {{ __('pages.register_hours') }}</button>
                         </div>
                     </div>
                 </form>
@@ -55,35 +55,35 @@
     {{-- Working Hours List --}}
     <div class="card">
         <div class="card-header rounded-top-4 bg-white">
-            <span><i class="fa-solid fa-clock txt-lightblue py-2"></i> Lista e orëve të punës</span>
+            <span><i class="fa-solid fa-clock txt-lightblue py-2"></i> {{ __('pages.working_hours_list') }}</span>
         </div>
         <div class="card-body">
             @if($isEmployee)
                 <form action="{{ route('working.hours') }}" method="get" class="row g-2 mb-3 align-items-end">
                     <div class="col-12 col-md-4">
-                        <label for="from_date" class="form-label small text-muted mb-1">Nga data</label>
+                        <label for="from_date" class="form-label small text-muted mb-1">{{ __('pages.from_date') }}</label>
                         <input type="date" name="from_date" id="from_date" value="{{ $fromDate }}" class="form-control shadow-sm rounded-3">
                     </div>
                     <div class="col-12 col-md-4">
-                        <label for="to_date" class="form-label small text-muted mb-1">Deri me</label>
+                        <label for="to_date" class="form-label small text-muted mb-1">{{ __('pages.until') }}</label>
                         <input type="date" name="to_date" id="to_date" value="{{ $toDate }}" class="form-control shadow-sm rounded-3">
                     </div>
                     <div class="col-12 col-md-4">
-                        <button type="submit" class="btn btn-darkblue shadow-sm rounded-3"><i class="fa-solid fa-filter"></i> Filtro</button>
+                        <button type="submit" class="btn btn-darkblue shadow-sm rounded-3"><i class="fa-solid fa-filter"></i> {{ __('pages.filter') }}</button>
                         @if($fromDate || $toDate)
-                            <a href="{{ route('working.hours') }}" class="btn btn-outline-secondary shadow-sm rounded-3"><i class="fa-solid fa-xmark"></i> Pastro</a>
+                            <a href="{{ route('working.hours') }}" class="btn btn-outline-secondary shadow-sm rounded-3"><i class="fa-solid fa-xmark"></i> {{ __('pages.clear') }}</a>
                         @endif
                     </div>
                 </form>
                 @if($workingHoursTotalLabel ?? null)
                     <div class="alert alert-info d-flex justify-content-between align-items-center rounded-3">
-                        <span><i class="fa-solid fa-clock"></i> Totali i orëve {{ ($fromDate || $toDate) ? 'për periudhën e zgjedhur' : '' }}</span>
+                        <span><i class="fa-solid fa-clock"></i> {{ __('pages.hours_total') }} {{ ($fromDate || $toDate) ? __('pages.hours_total_period') : '' }}</span>
                         <strong>{{ $workingHoursTotalLabel }}</strong>
                     </div>
                 @endif
             @else
                 <form action="{{ route('working.hours') }}" method="get" class="input-group mb-3">
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="Kërko..."  aria-label="Search..." aria-describedby="basic-addon2">
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="form-control shadow-sm rounded-start-3" placeholder="{{ __('pages.search') }}"  aria-label="Search..." aria-describedby="basic-addon2">
                     <button type="submit" class="btn btn-darkblue shadow-sm rounded-end-3" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             @endif
@@ -92,20 +92,20 @@
                     <thead>
                         <tr>
                             <th scope="col" class="text-nowrap">#</th>
-                            <th scope="col" class="text-nowrap">Data</th>
-                            <th scope="col" class="text-nowrap">Punëtori</th>
-                            <th scope="col" class="text-nowrap">Hyrja</th>
-                            <th scope="col" class="text-nowrap">Dalja</th>
-                            <th scope="col" class="text-nowrap">Orë:Min</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.date') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.employee') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.check_in_short') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.check_out_short') }}</th>
+                            <th scope="col" class="text-nowrap">{{ __('pages.hours_min') }}</th>
                             @if(!$isEmployee)
-                                <th scope="col" class="text-nowrap text-end">Veprimet</th>
+                                <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                             @endif
                         </tr>
                     </thead>
                     <tbody>
                         @if($workingHours && count($workingHours) === 0)
                             <tr>
-                                <td colspan="{{ $isEmployee ? 6 : 9 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> Nuk u gjet asnjë e dhënë...</td>
+                                <td colspan="{{ $isEmployee ? 6 : 9 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                             </tr>
                         @elseif($workingHours)
                             @foreach ($workingHours as $workingHour)
@@ -140,10 +140,10 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-body text-center">
-                                    <p>Konfirmoni nëse dëshironi të fshini këtë regjistër të orëve të punës?</p>
+                                    <p>{{ __('pages.confirm_delete_working_hour') }}</p>
                                     <div class="mt-3">
-                                        <a href="{{ route('delete.working.hour', $workingHour->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> Konfirmo</a>
-                                        <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> Anulo</button>
+                                        <a href="{{ route('delete.working.hour', $workingHour->id) }}" class="btn btn-danger btn-sm fw-semibold"><i class="fa-solid fa-check"></i> {{ __('pages.confirm') }}</a>
+                                        <button class="btn btn-success btn-sm fw-semibold" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i> {{ __('pages.cancel') }}</button>
                                     </div>
                                 </div>
                             </div>

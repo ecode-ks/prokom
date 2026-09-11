@@ -1,13 +1,13 @@
 @extends('template.template')
 
 {{-- Page Title --}}
-@section('title', 'Profili im')
+@section('title', __('pages.profile_title'))
 
 {{-- Page Content --}}
 @section('content')
-    <small class="d-block txt-lightblue fw-semibold text-uppercase">Llogaria</small>
-    <h3 class="fw-semibold pt-2">Profili Im</h3>
-    <p class="text-muted">Shikoni të dhënat e llogarisë dhe ndryshoni vetëm fjalëkalimin tuaj.</p>
+    <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.profile_account') }}</small>
+    <h3 class="fw-semibold pt-2">{{ __('pages.profile_heading') }}</h3>
+    <p class="text-muted">{{ __('pages.profile_lead') }}</p>
     <hr class="mb-4">
 
     {{-- Profile Content --}}
@@ -27,38 +27,48 @@
             <div class="card h-100">
                 <div class="card-header rounded-top-4 bg-white border-0 pt-4 px-4">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-key txt-lightblue"></i>
-                        <span class="fw-semibold">Ndrysho Fjalëkalimin</span>
+                        <i class="fa-solid fa-gear txt-lightblue"></i>
+                        <span class="fw-semibold">{{ __('pages.profile_settings') }}</span>
                     </div>
                 </div>
                 <div class="card-body px-4 pb-4 pt-2">
                     <div class="row g-3 mb-4">
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Emri dhe Mbiemri</label>
-                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('user') ?? session('company') }}" placeholder="Emri dhe Mbiemri" disabled>
+                            <label class="form-label">{{ __('pages.profile_full_name') }}</label>
+                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('user') ?? session('company') }}" placeholder="{{ __('pages.profile_full_name') }}" disabled>
                         </div>
                         <div class="col-12 col-md-6">
-                            <label class="form-label">Përdoruesi</label>
-                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('username') }}" placeholder="Përdoruesi" disabled>
+                            <label class="form-label">{{ __('pages.username') }}</label>
+                            <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('username') }}" placeholder="{{ __('pages.username') }}" disabled>
                         </div>
                     </div>
+                    @if(session('role') === 'company')
+                        @php $companyLanguage = session('language', 'sq'); @endphp
+                        <form action="{{ route('update.company.language') }}" method="post" class="mb-4">
+                            @csrf
+                            <label class="form-label">{{ __('pages.language') }}</label>
+                            <div>
+                                @include('partials.lang-choice', ['selected' => $companyLanguage, 'mode' => 'submit'])
+                            </div>
+                        </form>
+                    @endif
                     <form action="{{ route('update.profile.password') }}" method="post">
                         @csrf
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
-                                <label for="old_password" class="form-label">Fjalëkalimi Aktual</label>
-                                <input type="password" name="old_password" id="old_password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin aktual" required>
+                                <label for="old_password" class="form-label">{{ __('pages.current_password') }}</label>
+                                <input type="password" name="old_password" id="old_password" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_current_password') }}" required>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label for="new_password" class="form-label">Fjalëkalimi i Ri (8+ Karaktere)</label>
-                                <input type="password" name="new_password" id="new_password" class="form-control shadow-sm rounded-3" placeholder="Shkruani fjalëkalimin e ri" required>
+                                <label for="new_password" class="form-label">{{ __('pages.new_password') }}</label>
+                                <input type="password" name="new_password" id="new_password" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_new_password') }}" required>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label for="new_password_confirmation" class="form-label">Konfirmo Fjalëkalimin e Ri</label>
-                                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control shadow-sm rounded-3" placeholder="Përsërit fjalëkalimin e ri" required>
+                                <label for="new_password_confirmation" class="form-label">{{ __('pages.confirm_new_password') }}</label>
+                                <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_confirm_new_password') }}" required>
                             </div>
                             <div class="col-12 pt-2">
-                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-key"></i> Përditëso Fjalëkalimin</button>
+                                <button type="submit" class="btn btn-darkblue rounded-3 px-4 shadow-sm"><i class="fa-solid fa-key"></i> {{ __('pages.update_password') }}</button>
                             </div>
                         </div>
                     </form>
@@ -77,26 +87,26 @@
                             <i class="fa-brands fa-trello txt-lightblue"></i>
                         </span>
                         <div>
-                            <h5 class="mb-0 fw-semibold">Ndrysho Paketën e Abonimit</h5>
-                            <small class="text-muted">Zgjidhni paketën që i përshtatet më mirë kompanisë suaj</small>
+                            <h5 class="mb-0 fw-semibold">{{ __('pages.change_subscription') }}</h5>
+                            <small class="text-muted">{{ __('pages.choose_package_lead') }}</small>
                         </div>
                     </div>
-                    <span class="badge rounded-pill text-bg-light border px-3 py-2">Menaxhimi i Abonimit</span>
+                    <span class="badge rounded-pill text-bg-light border px-3 py-2">{{ __('pages.subscription_management') }}</span>
                 </div>
             </div>
             <div class="card-body px-4 pb-4 pt-3">
                 <div class="row g-3 mb-4">
                     <div class="col-12 col-md-6">
                         <div class="rounded-4 border bg-white p-3 h-100 shadow-sm">
-                            <small class="text-muted d-block mb-1">Paketa aktuale</small>
-                            <div class="fw-semibold txt-lightblue fs-5 text-truncate" title="{{ session('package') ?? 'Nuk ka pako aktive' }}">
-                                {{ session('package') ?? 'Nuk ka pako aktive' }}
+                            <small class="text-muted d-block mb-1">{{ __('pages.current_package') }}</small>
+                            <div class="fw-semibold txt-lightblue fs-5 text-truncate" title="{{ session('package') ?? __('pages.no_active_package') }}">
+                                {{ session('package') ?? __('pages.no_active_package') }}
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="rounded-4 border bg-white p-3 h-100 shadow-sm">
-                            <small class="text-muted d-block mb-1">Valide deri më</small>
+                            <small class="text-muted d-block mb-1">{{ __('pages.valid_until_date') }}</small>
                             <div class="fw-semibold txt-lightblue fs-5">
                                 {{ session('expire_date') ? \Carbon\Carbon::parse(session('expire_date'))->format('d/m/Y') : '--/--/----' }}
                             </div>
@@ -112,15 +122,15 @@
                                     <div class="card-body d-flex flex-column p-4" style="background: linear-gradient(180deg, rgba(13,110,253,0.08), rgba(13,110,253,0.01));">
                                         <div class="d-flex align-items-center justify-content-between mb-3">
                                             <h6 class="fw-semibold mb-0 text-truncate pe-2" title="{{ $package->title }}">{{ $package->title }}</h6>
-                                            <span class="badge rounded-pill text-bg-light border">{{ $package->months }} Muaj</span>
+                                            <span class="badge rounded-pill text-bg-light border">{{ __('pages.months', ['count' => $package->months]) }}</span>
                                         </div>
                                         <div class="mb-3">
                                             <span class="h3 fw-bold mb-0 txt-lightblue">{{ $package->price }} €</span>
-                                            <small class="text-muted d-block">çmimi total i paketës</small>
+                                            <small class="text-muted d-block">{{ __('pages.package_total_price') }}</small>
                                         </div>
                                         <p class="text-muted mb-4" style="min-height: 72px;">{!! nl2br(e($package->description)) !!}</p>
                                         <a href="{{ route('change.package', $package->id)}}" class="btn btn-outline-primary rounded-3 mt-auto w-100">
-                                            <i class="fa-solid fa-bolt me-1"></i> Zgjidh Këtë Paketë
+                                            <i class="fa-solid fa-bolt me-1"></i> {{ __('pages.choose_this_package') }}
                                         </a>
                                     </div>
                                 </div>
@@ -129,7 +139,7 @@
                     </div>
                 @else
                     <div class="alert alert-light border rounded-4 mb-0">
-                        Momentalisht nuk ka pako të disponueshme.
+                        {{ __('pages.no_packages') }}
                     </div>
                 @endif
             </div>

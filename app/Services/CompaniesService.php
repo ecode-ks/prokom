@@ -44,8 +44,10 @@ class CompaniesService
     public function registerCompany(array $data): bool
     {
         if($this->usersRepository->checkUserExists($data['username']) || $this->companiesRepository->checkCompanyExists($data['username']) || $this->employeesRepository->checkEmployeeUsername($data['username'])) {
-            throw new \Exception('Ky përdorues tashmë ekziston. Ju lutemi zgjidhni një përdorues tjetër.');
+            throw new \Exception(__('pages.username_taken'));
         }
+        $language = $data['language'] ?? 'sq';
+        $data['language'] = in_array($language, ['sq', 'en', 'de'], true) ? $language : 'sq';
         $data['password'] = Hash::make($data['password']);
         $data['payment_expire'] = now()->addDays(30);
         $data['status'] = 'Active';
