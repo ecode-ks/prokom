@@ -8,6 +8,10 @@ use App\Http\Controllers\API\TasksApiController;
 use App\Http\Controllers\API\UsersApiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\WorkingHoursApiController;
+use App\Http\Controllers\API\ExtraHoursApiController;
+use App\Http\Controllers\API\ContractsApiController;
+use App\Http\Controllers\API\SalariesApiController;
+use App\Http\Controllers\API\VacationsApiController;
 
 // Users / auth
 Route::controller(UsersApiController::class)->group(function () {
@@ -79,5 +83,30 @@ Route::controller(NotificationsApiController::class)->prefix('api.notifications'
     Route::get('/api/', 'read')->name('api.notifications.read');
     Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
     Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
+});
+
+// Extra Hours
+Route::controller(ExtraHoursApiController::class)->group(function () {
+    Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
+});
+
+// Contracts
+Route::controller(ContractsApiController::class)->group(function () {
+    Route::get('/api/contracts/read/{companyId}/{employeeId}/{role}', 'read')->name('api.contracts.read');
+    Route::get('/api/contracts/{id}/details/{companyId}/{employeeId}/{role}', 'contractDetails')->name('api.contracts.details');
+});
+
+// Salaries
+Route::controller(SalariesApiController::class)->group(function () {
+    Route::get('/api/salaries/read/{companyId}/{employeeId}/{role}', 'read')->name('api.salaries.read');
+});
+
+// Vacations
+Route::controller(VacationsApiController::class)->group(function () {
+    Route::post('/api/vacations/create/{companyId}/{employeeId}/{role}', 'create')->name('api.vacations.create');
+    Route::get('/api/vacations/read/{companyId}/{employeeId}/{role}', 'read')->name('api.vacations.read');
+    Route::get('/api/vacations/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.vacations.edit');
+    Route::post('/api/vacations/update/{companyId}/{employeeId}/{role}', 'update')->name('api.vacations.update');
+    Route::delete('/api/vacations/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.vacations.delete');
 });
 
