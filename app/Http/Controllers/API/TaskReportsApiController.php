@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\TaskReportsService;
+use App\Services\Api\TaskReportsApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 
 class TaskReportsApiController extends Controller
 {
-    protected TaskReportsService $service;
+    protected TaskReportsApiService $service;
 
-    public function __construct(TaskReportsService $service)
+    public function __construct(TaskReportsApiService $service)
     {
         $this->service = $service;
     }

@@ -2,21 +2,32 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\NotificationsService;
+use App\Services\Api\NotificationsApiService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class NotificationsApiController extends Controller
 {
-    protected NotificationsService $service;
+    protected NotificationsApiService $service;
 
-    public function __construct(NotificationsService $service)
+    public function __construct(NotificationsApiService $service)
     {
         $this->service = $service;
     }
-    //---------------
-    public function read()
+
+    private function bindFromRequest(Request $request): ?array
     {
-        if (!$this->service->resolveRecipient()) {
+        return $this->service->bindRecipient(
+            $request->input('username'),
+            $request->filled('employee_id') ? (int) $request->input('employee_id') : null,
+            $request->filled('company_id') ? (int) $request->input('company_id') : null,
+            $request->input('role')
+        );
+    }
+
+    public function read(Request $request)
+    {
+        if (!$this->bindFromRequest($request)) {
             return json_encode(['error' => __('pages.notif_no_access')]);
         }
 
@@ -28,9 +39,13 @@ class NotificationsApiController extends Controller
             'unreadCount' => $unreadCount,
         ]);
     }
-    //---------------
-    public function open(int $id)
+
+    public function open(Request $request, int $id)
     {
+        if (!$this->bindFromRequest($request)) {
+            return json_encode(['error' => __('pages.notif_no_access')]);
+        }
+
         $link = $this->service->markAsRead($id);
         if (!$link) {
             return json_encode(['error' => __('pages.notif_not_found')]);
@@ -38,10 +53,10 @@ class NotificationsApiController extends Controller
 
         return response()->json(['link' => $link]);
     }
-    //---------------
-    public function markAllRead()
+
+    public function markAllRead(Request $request)
     {
-        if (!$this->service->resolveRecipient()) {
+        if (!$this->bindFromRequest($request)) {
             return json_encode(['error' => __('pages.notif_no_access')]);
         }
 

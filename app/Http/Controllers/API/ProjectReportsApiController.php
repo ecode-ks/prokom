@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Services\ProjectReportsService;
+use App\Services\Api\ProjectReportsApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 
 class ProjectReportsApiController extends Controller
 {
-    protected ProjectReportsService $service;
+    protected ProjectReportsApiService $service;
 
-    public function __construct(ProjectReportsService $service)
+    public function __construct(ProjectReportsApiService $service)
     {
         $this->service = $service;
     }
