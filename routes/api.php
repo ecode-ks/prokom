@@ -22,9 +22,9 @@ Route::controller(CompanyNewsApiController::class)->group(function () {
 });
 
 // Tasks
-Route::controller(TasksApiController::class)->prefix('tasks/{companyId}/{employeeId}/{role}')->group(function () {
+Route::controller(TasksApiController::class)->group(function () {
     Route::post('/api/create', 'create')->name('api.tasks.create');
-    Route::get('/api/read', 'read')->name('api.tasks.read');
+    Route::get('/api/tasks/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
     Route::get('/api/{id}/edit', 'edit')->name('api.tasks.edit');
     Route::get('/api/{id}', 'taskDetails')->name('api.tasks.details');
     Route::post('/api/update', 'update')->name('api.tasks.update');
