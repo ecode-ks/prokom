@@ -146,7 +146,7 @@
         {{-- Employees List --}}
         <div class="card">
             <div class="card-header rounded-top-4 bg-white">
-                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.employees_list') }}</span>
+                <span><i class="fa-solid fa-list-ol txt-lightblue py-2"></i> {{ __('pages.employees_list') }} (<small class="fw-semibold">{{ __('pages.package_staff_limit') }} : {{ session('staff_limit') }}</small>)</span>
             </div>
             <div class="card-body">
                 <form action="{{ route('employees') }}" method="get" class="input-group mb-3">

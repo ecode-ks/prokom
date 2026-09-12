@@ -20,12 +20,14 @@ class PackagesController extends Controller
             'title' => 'required|string|min:1|max:255',
             'price' => 'required|numeric|min:0.01',
             'months' => 'required|integer|min:1',
+            'staff_limit' => 'required|integer|min:1',
+            'language' => 'required|in:sq,en,de',
             'description' => 'required|string|min:1'
         ]);
         if ($validator->fails()) {
             return redirect()->route('packages')->with('error',__('pages.fields_invalid'))->withInput();
         } else {
-            $data = $request->only(['title', 'price', 'months', 'description']);
+            $data = $request->only(['title', 'price', 'months', 'staff_limit', 'language', 'description']);
             try {
                 $created = $this->service->createPackage($data);
                 if(!$created) {
@@ -71,6 +73,8 @@ class PackagesController extends Controller
             'title' => 'required|string|min:1|max:255',
             'price' => 'required|numeric|min:0.01|max:99999999.99',
             'months' => 'required|integer|min:1',
+            'staff_limit' => 'required|integer|min:1',
+            'language' => 'required|in:sq,en,de',
             'description' => 'required|string|min:1'
         ]);
 
@@ -78,7 +82,7 @@ class PackagesController extends Controller
             return back()->with('error',__('pages.fields_invalid'))->withInput();
         } else {
             $id = $request->id;
-            $data = $request->only(['title', 'price', 'months', 'description']);
+            $data = $request->only(['title', 'price', 'months', 'staff_limit', 'language', 'description']);
             try {
                 $updated = $this->service->updatePackage($id, $data);
                 if(!$updated) {

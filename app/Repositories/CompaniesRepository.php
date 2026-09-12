@@ -97,20 +97,6 @@ class CompaniesRepository
             ->exists();
     }
     //---------------
-    public function activateCompany(int $companyId): bool
-    {
-        return DB::table($this->table)
-            ->where('id', $companyId)
-            ->update(['status' => 'Active']);
-    }
-    //---------------
-    public function blockCompany(int $companyId): bool
-    {
-        return DB::table($this->table)
-            ->where('id', $companyId)
-            ->update(['status' => 'Blocked']);
-    }
-    //---------------
     public function updateStatus(int $id, string $status): bool
     {
         return DB::table($this->table)

@@ -11,7 +11,7 @@
     <hr class="mb-4">
 
     {{-- Profile Content --}}
-    <div class="row g-4 align-items-stretch">
+    <div class="row g-4 align-items-stretch mb-5">
         <div class="col-12 col-md-12 col-lg-3">
             <div class="card h-100 overflow-hidden">
                 <div class="card-body text-center d-flex flex-column justify-content-center py-5" style="background: linear-gradient(180deg, rgba(13,110,253,0.08), rgba(13,110,253,0.02));">
@@ -111,7 +111,12 @@
 
     {{-- Change Package --}}
     @if(session('role') === 'company')
-        <div class="card mt-5 border-0 shadow-sm overflow-hidden" style="background: linear-gradient(165deg, #f8fbff 0%, #ffffff 40%, #f5f9ff 100%);">
+        @if($packages)
+            <div class="alert alert-primary mb-3 rounded-4 shadow-sm" role="alert">
+                <span class="fw-semibold">{{ __('pages.package_limit_alert') }}</span>
+            </div>
+        @endif
+        <div class="card shadow-sm overflow-hidden" style="background: linear-gradient(165deg, #f8fbff 0%, #ffffff 40%, #f5f9ff 100%);">
             <div class="card-header bg-transparent border-0 pt-4 px-4 pb-2">
                 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
                     <div class="d-flex align-items-center gap-2">
@@ -128,7 +133,7 @@
             </div>
             <div class="card-body px-4 pb-4 pt-3">
                 <div class="row g-3 mb-4">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-12">
                         <div class="rounded-4 border bg-white p-3 h-100 shadow-sm">
                             <small class="text-muted d-block mb-1">{{ __('pages.current_package') }}</small>
                             <div class="fw-semibold txt-lightblue fs-5 text-truncate" title="{{ session('package') ?? __('pages.no_active_package') }}">
@@ -144,12 +149,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-md-6">
+                        <div class="rounded-4 border bg-white p-3 h-100 shadow-sm">
+                            <small class="text-muted d-block mb-1">{{ __('pages.staff_limit') }}</small>
+                            <div class="fw-semibold txt-lightblue fs-5">
+                                {{ session('staff_limit') }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 @if($packages)
                     <div class="row g-4">
                         @foreach ($packages as $package)
                             <div class="col-12 col-md-6 col-xl-4">
-                                <div class="card h-100 border-0 shadow-sm position-relative overflow-hidden" style="transition: transform .25s ease, box-shadow .25s ease;">
+                                <div class="card h-100 shadow-sm position-relative overflow-hidden" style="transition: transform .25s ease, box-shadow .25s ease;">
                                     <div class="position-absolute top-0 start-0 w-100" style="height: 4px; background: linear-gradient(90deg, #0d6efd, #4ea4ff);"></div>
                                     <div class="card-body d-flex flex-column p-4" style="background: linear-gradient(180deg, rgba(13,110,253,0.08), rgba(13,110,253,0.01));">
                                         <div class="d-flex align-items-center justify-content-between mb-3">
@@ -160,6 +173,7 @@
                                             <span class="h3 fw-bold mb-0 txt-lightblue">{{ $package->price }} €</span>
                                             <small class="text-muted d-block">{{ __('pages.package_total_price') }}</small>
                                         </div>
+                                        <p class="text-muted mb-3">{{ __('pages.package_staff_limit') }} : {{ $package->staff_limit }}</p>
                                         <p class="text-muted mb-4" style="min-height: 72px;">{!! nl2br(e($package->description)) !!}</p>
                                         <a href="{{ route('change.package', $package->id)}}" class="btn btn-outline-primary rounded-3 mt-auto w-100">
                                             <i class="fa-solid fa-bolt me-1"></i> {{ __('pages.choose_this_package') }}

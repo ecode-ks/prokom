@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\EmployeesRepository;
 use App\Repositories\PackagesRepository;
 use App\Repositories\CompaniesRepository;
 
@@ -9,10 +10,12 @@ class PackagesService
 {
     protected PackagesRepository $repository;
     protected CompaniesRepository $companiesRepository;
-    public function __construct(PackagesRepository $repository, CompaniesRepository $companiesRepository)
+    protected EmployeesRepository $employeesRepository;
+    public function __construct(PackagesRepository $repository, CompaniesRepository $companiesRepository, EmployeesRepository $employeesRepository)
     {
         $this->repository = $repository;
         $this->companiesRepository = $companiesRepository;
+        $this->employeesRepository = $employeesRepository;
     }
     //---------------
     public function createPackage(array $data): bool
@@ -29,9 +32,9 @@ class PackagesService
         return $this->repository->getPackages($limit);
     }
     //---------------
-    public function getAllPackages()
+    public function getAllPackages(string $language)
     {
-        return $this->repository->getAllPackages();
+        return $this->repository->getAllPackages($language);
     }
     //---------------
     public function findOrFail(int $id): bool
@@ -73,23 +76,32 @@ class PackagesService
         if (!$package) {
             return false;
         }
+
         $username = session()->get('username');
         $company = session()->get('company');
         $company_id = session()->get('company_id');
         $paymentExpire = now()->addMonths((int) $package->months)->format('Y-m-d');
+        $staff_limit = $package->staff_limit;
 
-        session()->put('package', $package->title);
-        session()->put('expire_date', $paymentExpire);
-        session()->put('payment_expired', false);
+        $registeredEmployees = $this->employeesRepository ->countAllEmployees($company_id);
+        if($registeredEmployees > $package->staff_limit){
+            throw new \Exception(__('pages.staff_limit_package'));
+            return false;
+        }
 
-        $changed = $this->repository->change($username, $company_id, (string) $package->title, $paymentExpire);
+        $changed = $this->repository->change($username, $company_id, $package->title, $paymentExpire, $staff_limit );
         if (!$changed) {
             return false;
         }
 
+        session()->put('package', $package->title);
+        session()->put('expire_date', $paymentExpire);
+        session()->put('payment_expired', false);
+        session()->put('staff_limit', $staff_limit);
+
         $this->companiesRepository->savePayment([
             'company' => $company,
-            'package' => (string) $package->title,
+            'package' => $package->title,
             'price' => $package->price,
         ]);
 

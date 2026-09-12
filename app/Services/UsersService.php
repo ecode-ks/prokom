@@ -69,6 +69,7 @@ class UsersService
             session()->put('role', 'company');
             session()->put('expire_date', $company->payment_expire);
             session()->put('package', $company->package);
+            session()->put('staff_limit', $company->staff_limit);
             session()->put('language', $this->normalizeLanguage($company->language ?? null));
 
             if ($isExpired) {

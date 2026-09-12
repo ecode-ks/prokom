@@ -54,7 +54,8 @@ class UsersController extends Controller
     public function profile()
     {
         $page = 'My Profile';
-        $packages = $this->packagesService->getAllPackages();
+        $language = session('language');
+        $packages = $this->packagesService->getAllPackages($language);
         return view('management.profile')
             ->with('page', $page)
             ->with('packages', $packages);

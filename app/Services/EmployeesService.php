@@ -23,6 +23,11 @@ class EmployeesService
     //---------------
     public function createEmployee(array $data): bool
     {
+        if($this->repository->countAllEmployees($this->companyId) >= session('staff_limit')){
+            throw new \Exception(__('pages.employees_errors_limit'));
+            return false;
+        }
+
         if($this->usersRepository->checkUserExists($data['username']) || $this->companiesRepository->checkCompanyExists($data['username']) || $this->repository->checkEmployeeUsername($data['username'])) {
             throw new \Exception(__('pages.username_taken'));
         }

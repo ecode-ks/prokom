@@ -41,6 +41,18 @@
                             <label for="months" class="form-label">{{ __('pages.packages_duration') }}</label>
                             <input type="text" name="months" id="months" value="{{ old('months', $editPackage->months) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.packages_duration_placeholder') }}">
                         </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label for="staff_limit" class="form-label">{{ __('pages.staff_limit') }}</label>
+                            <input type="text" name="staff_limit" id="staff_limit" value="{{ old('staff_limit', $editPackage->staff_limit) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.staff_limit_placeholder') }}">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label for="language" class="form-label">{{ __('pages.language') }}</label>
+                            <select name="language" id="language" value="{{ old('language', $editPackage->language) }}" class="form-control shadow-sm rounded-3">
+                                <option value="sq">{{ __('pages.language_sq') }}</option>
+                                <option value="en">{{ __('pages.language_en') }}</option>
+                                <option value="de">{{ __('pages.language_de') }}</option>
+                            </select>
+                        </div>
                         <div class="col-12">
                             <label for="description" class="form-label">{{ __('pages.description') }}</label>
                             <textarea name="description" id="description" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.packages_description_placeholder') }}" rows="5">{{ old('description', $editPackage->description) }}</textarea>
@@ -103,6 +115,18 @@
                             <label for="months" class="form-label">{{ __('pages.packages_duration') }}</label>
                             <input type="text" name="months" id="months" value="{{ old('months') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.packages_duration_placeholder') }}">
                         </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label for="staff_limit" class="form-label">{{ __('pages.staff_limit') }}</label>
+                            <input type="text" name="staff_limit" id="staff_limit" value="{{ old('staff_limit') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.staff_limit_placeholder') }}">
+                        </div>
+                        <div class="col-12 col-md-4 col-lg-4">
+                            <label for="language" class="form-label">{{ __('pages.language') }}</label>
+                            <select name="language" id="language" value="{{ old('language') }}" class="form-control shadow-sm rounded-3">
+                                <option value="sq">{{ __('pages.language_sq') }}</option>
+                                <option value="en">{{ __('pages.language_en') }}</option>
+                                <option value="de">{{ __('pages.language_de') }}</option>
+                            </select>
+                        </div>
                         <div class="col-12">
                             <label for="description" class="form-label">{{ __('pages.description') }}</label>
                             <textarea name="description" id="description" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.packages_description_placeholder') }}" rows="5">{{ old('description') }}</textarea>
@@ -133,13 +157,14 @@
                                 <th scope="col" class="text-nowrap">{{ __('pages.packages_title_col') }}</th>
                                 <th scope="col" class="text-nowrap">{{ __('pages.price') }}</th>
                                 <th scope="col" class="text-nowrap">{{ __('pages.packages_duration_col') }}</th>
+                                <th scope="col" class="text-nowrap">{{ __('pages.staff_limit') }}</th>
                                 <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($packages) === 0)
                                 <tr>
-                                    <td colspan="5" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
+                                    <td colspan="6" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach ($packages as $package)
@@ -148,6 +173,7 @@
                                         <td class="text-nowrap">{{ $package->title }}</td>
                                         <td class="text-nowrap">€{{ number_format($package->price, 2) }}</td>
                                         <td class="text-nowrap">{{ $package->months }} <small class="text-muted">({{ __('pages.packages_months_unit') }})</small></td>
+                                        <td class="text-nowrap">{{ $package->staff_limit }}</td>
                                         <td class="text-nowrap text-end">
                                             <a href="{{ route('edit.package', $package->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>
                                             <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $package->id }}"><i class="fa-solid fa-trash"></i></button>
@@ -199,6 +225,7 @@
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.packages_package') }} : </span><span>{{ $package->title }}</span></span>
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-tag"></i> {{ __('pages.price') }} : </span>€{{ $package->price }}</span>
                                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('pages.packages_duration') }} : </span>{{ $package->months }}</span>
+                                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-users"></i> {{ __('pages.staff_limit') }} : </span>{{ $package->staff_limit }}</span>
                                 <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> {{ __('pages.description') }}</span>
                                 <div class="card card-body rounded-4">
                                     <span>{!! nl2br(e($package->description)) !!}</span>

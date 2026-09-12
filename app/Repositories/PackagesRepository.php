@@ -34,9 +34,10 @@ class PackagesRepository
             ->cursorPaginate($limit);
     }
     //---------------
-    public function getAllPackages()
+    public function getAllPackages(string $language)
     {
         return DB::table($this->table)
+            ->where('language', $language)
             ->orderByDesc('id')
             ->get();
     }
@@ -78,11 +79,11 @@ class PackagesRepository
             ->first();
     }
     //---------------
-    public function change(string $username, int $company_id, string $package, string $paymentExpire): bool
+    public function change(string $username, int $company_id, string $package, string $paymentExpire, int $staff_limit): bool
     {
         return DB::table('companies')
             ->where('username', $username)
             ->where('id', $company_id)
-            ->update(['package' => $package, 'payment_expire' => $paymentExpire]) > 0;
+            ->update(['package' => $package, 'payment_expire' => $paymentExpire, 'staff_limit' => $staff_limit]) > 0;
     }
 }
