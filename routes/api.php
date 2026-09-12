@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\API\CheckInApiController;
+use App\Http\Controllers\API\CompanyNewsApiController;
 use App\Http\Controllers\API\NotificationsApiController;
 use App\Http\Controllers\API\ProjectReportsApiController;
 use App\Http\Controllers\API\TaskReportsApiController;
@@ -13,6 +14,11 @@ Route::controller(UsersApiController::class)->group(function () {
     Route::post('/api/check-login', 'checkLogin')->name('api.check.login');
     Route::post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
     Route::post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
+});
+
+// Company News
+Route::controller(CompanyNewsApiController::class)->group(function () {
+    Route::get('/api/company-news/{companyId}', 'read')->name('api.company.news.read');
 });
 
 // Tasks
@@ -74,5 +80,4 @@ Route::controller(NotificationsApiController::class)->prefix('api.notifications'
     Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
     Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
 });
-
 
