@@ -55,6 +55,21 @@ class TasksApiService
         return $this->tasks->getTaskStatuses();
     }
 
+    public function resolveStatus(string $status): ?string
+    {
+        $aliases = [
+            'planning' => 'new',
+            'in_progress' => 'working',
+            'in progress' => 'working',
+            'reviewing' => 'review',
+            'on_hold' => 'blocked',
+        ];
+        $normalized = strtolower(trim(urldecode($status)));
+        $normalized = $aliases[$normalized] ?? $normalized;
+
+        return in_array($normalized, $this->getTaskStatuses(), true) ? $normalized : null;
+    }
+
     public function updateTask(int $id, array $data, int $companyId): bool
     {
         return $this->tasks->updateTask($id, $data, $companyId);

@@ -59,4 +59,16 @@ class TaskReportsApiService
     {
         return $this->reports->updateReportStatus($id, $status, $companyId);
     }
+
+    public function getReportStatuses(): array
+    {
+        return ['active', 'under_review', 'resolved', 'closed'];
+    }
+
+    public function resolveStatus(string $status): ?string
+    {
+        $normalized = strtolower(trim(urldecode($status)));
+
+        return in_array($normalized, $this->getReportStatuses(), true) ? $normalized : null;
+    }
 }

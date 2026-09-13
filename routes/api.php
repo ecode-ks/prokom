@@ -25,39 +25,6 @@ Route::controller(CompanyNewsApiController::class)->group(function () {
     Route::get('/api/company-news/{companyId}', 'read')->name('api.company.news.read');
 });
 
-// Tasks
-Route::controller(TasksApiController::class)->group(function () {
-    Route::post('/api/create', 'create')->name('api.tasks.create');
-    Route::get('/api/tasks/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
-    Route::get('/api/{id}/edit', 'edit')->name('api.tasks.edit');
-    Route::get('/api/{id}', 'taskDetails')->name('api.tasks.details');
-    Route::post('/api/update', 'update')->name('api.tasks.update');
-    Route::delete('/api/{id}', 'delete')->name('api.tasks.delete');
-    Route::patch('/api/{id}/status/{status}', 'updateStatus')->name('api.tasks.status');
-});
-
-// Task Reports
-Route::controller(TaskReportsApiController::class)->prefix('task-reports/{companyId}/{employeeId}/{role}')->group(function () {
-    Route::post('/api/create', 'create')->name('api.task.reports.create');
-    Route::get('/api/read', 'read')->name('api.task.reports.read');
-    Route::get('/api/{id}', 'details')->name('api.task.reports.details');
-    Route::get('/api/{id}/edit', 'edit')->name('api.task.reports.edit');
-    Route::post('/api/update', 'update')->name('api.task.reports.update');
-    Route::delete('/api/{id}', 'delete')->name('api.task.reports.delete');
-    Route::patch('/api/{id}/status/{status}', 'updateStatus')->name('api.task.reports.status');
-});
-
-// Project Reports
-Route::controller(ProjectReportsApiController::class)->prefix('project-reports/{companyId}/{employeeId}/{role}')->group(function () {
-    Route::post('/api/create', 'create')->name('api.project.reports.create');
-    Route::get('/api/read', 'read')->name('api.project.reports.read');
-    Route::get('/api/{id}', 'reportDetails')->name('api.project.reports.details');
-    Route::get('/api/{id}/edit', 'edit')->name('api.project.reports.edit');
-    Route::post('/api/update', 'update')->name('api.project.reports.update');
-    Route::delete('/api/{id}', 'delete')->name('api.project.reports.delete');
-    Route::patch('/api/{id}/status/{status}', 'updateStatus')->name('api.project.reports.status');
-});
-
 // Working Hours
 Route::controller(WorkingHoursApiController::class)->group(function () {
     Route::post('/api/working-hours/create', 'create')->name('api.working.hours.create');
@@ -109,4 +76,23 @@ Route::controller(VacationsApiController::class)->group(function () {
     Route::post('/api/vacations/update/{companyId}/{employeeId}/{role}', 'update')->name('api.vacations.update');
     Route::delete('/api/vacations/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.vacations.delete');
 });
+
+// Tasks
+Route::controller(TasksApiController::class)->group(function () {
+    Route::get('/api/tasks/read/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
+    Route::get('/api/tasks/{id}/details/{companyId}/{employeeId}/{role}', 'taskDetails')->name('api.tasks.details');
+    Route::get('/api/tasks/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.tasks.status');
+});
+
+// Task Reports
+Route::controller(TaskReportsApiController::class)->group(function () {
+    Route::post('/api/task-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.task.reports.create');
+    Route::get('/api/task-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.task.reports.read');
+    Route::get('/api/task-reports/{id}/details/{companyId}/{employeeId}/{role}', 'details')->name('api.task.reports.details');
+    Route::get('/api/task-reports/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.task.reports.edit');
+    Route::post('/api/task-reports/update/{companyId}/{employeeId}/{role}', 'update')->name('api.task.reports.update');
+    Route::delete('/api/task-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.task.reports.delete');
+    Route::get('/api/task-reports/{id}/status/{status}/{companyId}', 'updateStatus')->name('api.task.reports.status');
+});
+
 
