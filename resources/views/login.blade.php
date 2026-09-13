@@ -9,7 +9,7 @@
 
         {{-- Assets --}}
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link rel="stylesheet" href="{{ asset('assets/custom.css') }}?v={{ @filemtime(public_path('assets/custom.css')) }}">
+        <link rel="stylesheet" href="{{ asset('assets/custom.css') }}">
     </head>
     <body>
         <div class="lang-switcher-fixed">
