@@ -14,13 +14,13 @@ class NotificationsRepository
         $this->table = $model->getTable();
     }
     //---------------
-    public function create(array $data): bool
+    public function create(array $data): int
     {
         if (empty($data['created_at'])) {
             $data['created_at'] = now();
         }
 
-        return DB::table($this->table)->insert($data);
+        return (int) DB::table($this->table)->insertGetId($data);
     }
     //---------------
     public function getNotifications(int $limit, int $companyId, string $recipientType, int $recipientId)

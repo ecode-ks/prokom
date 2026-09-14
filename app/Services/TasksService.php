@@ -36,7 +36,7 @@ class TasksService
 
         $assigneeIds = array_values(array_filter(array_map('intval', explode(',', (string) ($data['assigned_to'] ?? '')))));
         $companyId = (int) ($data['company_id'] ?? 0);
-        $title = (string) ($data['title'] ?? __('pages.new_task_default'));
+        $title = (string) ($data['title'] ?? $this->notifications->line($companyId, 'pages.new_task_default'));
 
         foreach ($assigneeIds as $employeeId) {
             $this->notifications->notify(
@@ -44,9 +44,10 @@ class TasksService
                 'employee',
                 $employeeId,
                 'task_assigned',
-                __('pages.notif_new_task'),
-                __('pages.notif_new_task_body', ['title' => $title]),
-                route('task.details', $taskId)
+                'pages.notif_new_task',
+                'pages.notif_new_task_body',
+                route('task.details', $taskId),
+                ['title' => $title]
             );
         }
 

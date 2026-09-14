@@ -81,9 +81,10 @@ class TaskReportsService
             'company',
             $companyId,
             'task_report',
-            __('pages.notif_task_report'),
-            __('pages.notif_task_report_body', ['title' => $taskTitle]),
-            route('task.report.details', $reportId)
+            'pages.notif_task_report',
+            'pages.notif_task_report_body',
+            route('task.report.details', $reportId),
+            ['title' => $taskTitle]
         );
 
         return true;
@@ -110,6 +111,16 @@ class TaskReportsService
     public function findOrFail(int $id, int $companyId): bool
     {
         return $this->repository->checkReportExist($id, $companyId);
+    }
+    //---------------
+    public function managerOwnsReport(int $reportId, int $companyId, int $managerId): bool
+    {
+        $report = $this->repository->findReport($reportId, $companyId);
+        if (!$report) {
+            return false;
+        }
+
+        return $this->repository->isTaskManagedBy((int) $report->task_id, $companyId, $managerId);
     }
     //---------------
     public function getReportById(int $id, int $companyId)

@@ -35,6 +35,11 @@ class TaskReportsApiService
         return $this->reports->findOrFail($id, $companyId);
     }
 
+    public function managerOwnsReport(int $reportId, int $companyId, int $managerId): bool
+    {
+        return $this->reports->managerOwnsReport($reportId, $companyId, $managerId);
+    }
+
     public function getReportDetails(int $id, int $companyId)
     {
         return $this->reports->getReportDetails($id, $companyId);

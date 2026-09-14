@@ -64,4 +64,22 @@ class NotificationsApiController extends Controller
 
         return json_encode(['success' => __('pages.notif_all_read')]);
     }
+
+    public function registerPushToken(Request $request)
+    {
+        if (!$this->bindFromRequest($request)) {
+            return response()->json(['error' => __('pages.notif_no_access')], 403);
+        }
+
+        $saved = $this->service->registerPushToken(
+            (string) $request->input('token'),
+            $request->input('platform')
+        );
+
+        if (!$saved) {
+            return response()->json(['error' => __('pages.push_token_save_failed')], 422);
+        }
+
+        return response()->json(['success' => true]);
+    }
 }
