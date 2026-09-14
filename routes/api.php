@@ -120,12 +120,11 @@ Route::controller(ProjectReportsApiController::class)->group(function () {
     Route::delete('/api/project-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.project.reports.delete');
     Route::get('/api/project-reports/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.project.reports.status');
 });
-
-// Employee Report
-Route::controller(EmployeeReportApiController::class)->group(function () {
-   Route::get('/employee-report/read/{companyId}/{employeeId}/{role}', 'read')
-       ->name('api.employee.report.read');
-});
+  
+  // Employee Report
+Route::middleware('auth:sanctum')->controller(EmployeeReportApiController::class)->group(function () {
+    Route::get('/employee-report/read/{companyId}/{employeeId}/{role}', 'read')
+        ->name('api.employee.report.read');
 
 // Projects
 Route::controller(ProjectsApiController::class)->group(function () {
@@ -139,4 +138,14 @@ Route::controller(NotificationsApiController::class)->prefix('api.notifications'
     Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
     Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
     Route::post('/api/push-token', 'registerPushToken')->name('api.notifications.push.token');
+Route::middleware('auth:sanctum')->controller(TaskReportsApiController::class)->group(function () {
+    Route::post('/api/task-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.task.reports.create');
+    Route::get('/api/task-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.task.reports.read');
+    Route::get('/api/task-reports/{id}/details/{companyId}/{employeeId}/{role}', 'details')->name('api.task.reports.details');
+    Route::get('/api/task-reports/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.task.reports.edit');
+    Route::post('/api/task-reports/update/{companyId}/{employeeId}/{role}', 'update')->name('api.task.reports.update');
+    Route::delete('/api/task-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.task.reports.delete');
+    Route::get('/api/task-reports/{id}/status/{status}/{companyId}', 'updateStatus')->name('api.task.reports.status');
+});
+
 });
