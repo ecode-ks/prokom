@@ -119,23 +119,28 @@ class EmployeesRepository
     //---------------
     public function checkEmployee(array $credentials)
     {
-        return DB::table($this->table)
-            ->where('username', $credentials['username'])
-            ->first();
+        return EmployeesModel::where(
+            'username',
+            $credentials['username']
+        )->first();
     }
     //---------------
     public function findEmployeeByUsername(string $username)
     {
-        return DB::table($this->table)
-            ->where('username', $username)
-            ->first();
+        return EmployeesModel::where(
+            'username',
+            $username
+        )->first();
     }
     //---------------
     public function updatePasswordByUsername(string $username, string $password): bool
     {
-        return DB::table($this->table)
-            ->where('username', $username)
-            ->update(['password' => $password]) > 0;
+        return EmployeesModel::where(
+                'username',
+                $username
+            )->update([
+                'password' => $password,
+            ]) > 0;
     }
     //---------------
     public function activate(int $id, int $companyId): bool

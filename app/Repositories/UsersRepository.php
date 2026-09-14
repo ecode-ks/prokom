@@ -35,22 +35,27 @@ class UsersRepository
     //---------------
     public function checkUser(array $credentials)
     {
-        return DB::table($this->table)
-            ->where('username', $credentials['username'])
-            ->first();
+        return UsersModel::where(
+            'username',
+            $credentials['username']
+        )->first();
     }
     //---------------
     public function findUserByUsername(string $username)
     {
-        return DB::table($this->table)
-            ->where('username', $username)
-            ->first();
+        return UsersModel::where(
+            'username',
+            $username
+        )->first();
     }
     //---------------
     public function updatePasswordByUsername(string $username, string $password): bool
     {
-        return DB::table($this->table)
-            ->where('username', $username)
-            ->update(['password' => $password]) > 0;
+        return UsersModel::where(
+                'username',
+                $username
+            )->update([
+                'password' => $password,
+            ]) > 0;
     }
 }
