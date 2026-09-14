@@ -18,8 +18,12 @@ class TaskReportsApiController extends Controller
 
     public function create(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $validator = Validator::make($request->all(), [
-            'task_id' => 'required|integer|exists:tasks,id',
+            'task_id' => 'required|integer',
             'report' => 'required|string',
             'images' => 'nullable|array',
             'images.*' => 'image',
@@ -52,6 +56,10 @@ class TaskReportsApiController extends Controller
 
     public function read(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $search = trim((string) $request->query('search', ''));
 
         return json_encode([
@@ -64,7 +72,15 @@ class TaskReportsApiController extends Controller
 
     public function details(int $id, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return json_encode(['error' => __('pages.report_not_found')]);
+        }
+
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -76,7 +92,15 @@ class TaskReportsApiController extends Controller
 
     public function edit(int $id, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return json_encode(['error' => __('pages.report_not_found')]);
+        }
+
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -89,9 +113,13 @@ class TaskReportsApiController extends Controller
 
     public function update(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:task_reports,id',
-            'task_id' => 'required|integer|exists:tasks,id',
+            'task_id' => 'required|integer',
             'report' => 'required|string',
             'images' => 'nullable|array',
             'images.*' => 'image',
@@ -103,6 +131,10 @@ class TaskReportsApiController extends Controller
 
         $id = (int) $request->id;
         if (!$this->service->findOrFail($id, $companyId)) {
+            return json_encode(['error' => __('pages.report_not_found')]);
+        }
+
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -125,9 +157,17 @@ class TaskReportsApiController extends Controller
         }
     }
 
-    public function delete(int $id, int $companyId)
+    public function delete(int $id, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return json_encode(['error' => __('pages.report_not_found')]);
+        }
+
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -139,9 +179,17 @@ class TaskReportsApiController extends Controller
         }
     }
 
-    public function updateStatus(int $id, string $status, int $companyId)
+    public function updateStatus(int $id, string $status, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canUse($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         if (!$this->service->findOrFail($id, $companyId)) {
+            return json_encode(['error' => __('pages.report_not_found')]);
+        }
+
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -159,5 +207,10 @@ class TaskReportsApiController extends Controller
         } catch (\Exception $e) {
             return json_encode(['error' => __('pages.try_again')]);
         }
+    }
+
+    private function canUse(string $role): bool
+    {
+        return in_array($role, ['company', 'manager', 'employee'], true);
     }
 }

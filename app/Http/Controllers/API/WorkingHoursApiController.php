@@ -17,14 +17,17 @@ class WorkingHoursApiController extends Controller
         $this->service = $service;
     }
 
-    public function create(Request $request)
+    public function create(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canManage($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $validator = Validator::make($request->all(), [
             'date' => 'required|date',
-            'employee_id' => 'required|integer|exists:employees,id',
-            'company_id' => 'required|integer|exists:companies,id',
-            'check_in' => 'required|date|before:check_out',
-            'check_out' => 'required|date|after:check_in'
+            'employee_id' => 'required|integer',
+            'check_in' => 'required|date',
+            'check_out' => 'required|date',
         ]);
 
         if ($validator->fails()) {
@@ -34,17 +37,20 @@ class WorkingHoursApiController extends Controller
         $data = $request->only(['date', 'employee_id', 'check_in', 'check_out']);
         try {
             $data['hours'] = Carbon::parse($data['check_in'])->diff(Carbon::parse($data['check_out']))->format('%H:%I');
-            $this->service->createWorkingHour($data, (int) $request->input('company_id'));
+            $this->service->createWorkingHour($data, $companyId);
             return json_encode(['success' => __('pages.working_hour_created')]);
         } catch (\Exception $e) {
-            return json_encode(['error' => __('pages.register_failed_reason', ['message' => $e->getMessage()])]);
+            return json_encode(['error' => __('pages.try_again')]);
         }
     }
 
     public function read(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canView($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $search = $request->query('search', '');
-        $employees = $this->service->getAllEmployees($companyId);
         $fromDate = null;
         $toDate = null;
         $workingHoursTotalLabel = null;
@@ -54,25 +60,27 @@ class WorkingHoursApiController extends Controller
             $toDate = $request->query('to_date') ?: null;
             $workingHours = $this->service->getEmployeeWorkingHours($companyId, $employeeId, $fromDate, $toDate, 10);
             $workingHoursTotalLabel = $this->service->getEmployeeWorkingHoursTotal($companyId, $employeeId, $fromDate, $toDate);
+            $employees = collect();
         } else {
             $workingHours = $this->service->getWorkingHours(10, $search, $companyId);
+            $employees = $this->service->getAllEmployees($companyId);
         }
 
         return json_encode([
             'workingHours' => $workingHours,
             'workingHoursTotalLabel' => $workingHoursTotalLabel,
             'employees' => $employees,
+            'canManage' => $this->canManage($role),
             'role' => $role,
             'fromDate' => $fromDate,
-            'toDate' => $toDate
+            'toDate' => $toDate,
         ]);
     }
 
-    public function delete(Request $request, int $id)
+    public function delete(int $id, int $companyId, int $employeeId, string $role)
     {
-        $companyId = (int) $request->input('company_id');
-        if (!$companyId) {
-            return json_encode(['error' => __('pages.fields_invalid')]);
+        if (!$this->canManage($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
         }
 
         if (!$this->service->findOrFail($id, $companyId)) {
@@ -85,5 +93,15 @@ class WorkingHoursApiController extends Controller
         } catch (\Exception $e) {
             return json_encode(['error' => __('pages.try_again')]);
         }
+    }
+
+    private function canManage(string $role): bool
+    {
+        return in_array($role, ['company', 'manager', 'hr'], true);
+    }
+
+    private function canView(string $role): bool
+    {
+        return in_array($role, ['company', 'manager', 'hr', 'employee'], true);
     }
 }

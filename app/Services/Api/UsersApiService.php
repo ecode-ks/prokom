@@ -53,6 +53,8 @@ class UsersApiService
                 'company' => $company->company,
                 'company_id' => (int) $company->id,
                 'employee_id' => null,
+                'email' => $company->email ?? null,
+                'phone' => $company->phone ?? null,
                 'language' => $this->normalizeLanguage($company->language ?? null),
             ];
         }
@@ -79,6 +81,8 @@ class UsersApiService
                 'company' => $companyRow->company ?? null,
                 'company_id' => (int) $employee->company_id,
                 'employee_id' => (int) $employee->id,
+                'email' => $employee->email ?? null,
+                'phone' => $employee->phone ?? null,
                 'language' => $this->normalizeLanguage($companyRow->language ?? null),
             ];
         }

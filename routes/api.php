@@ -14,6 +14,7 @@ use App\Http\Controllers\API\EmployeeReportApiController;
 use App\Http\Controllers\API\ContractsApiController;
 use App\Http\Controllers\API\SalariesApiController;
 use App\Http\Controllers\API\VacationsApiController;
+use App\Http\Controllers\API\ProjectsApiController;
 
 // Users / auth
 Route::controller(UsersApiController::class)->group(function () {
@@ -33,9 +34,9 @@ Route::controller(CompanyNewsApiController::class)->group(function () {
 
 // Working Hours
 Route::controller(WorkingHoursApiController::class)->group(function () {
-   Route::post('/api/working-hours/create', 'create')->name('api.working.hours.create');
-   Route::get('/api/working-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.working.hours.read');
-   Route::delete('/api/working-hours/delete/{id}', 'delete')->name('api.working.hours.delete');
+    Route::post('/api/working-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.working.hours.create');
+    Route::get('/api/working-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.working.hours.read');
+    Route::delete('/api/working-hours/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.working.hours.delete');
 });
 
 // Check-ins
@@ -60,7 +61,11 @@ Route::controller(NotificationsApiController::class)->prefix('api.notifications'
 
 // Extra Hours
 Route::controller(ExtraHoursApiController::class)->group(function () {
-   Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
+    Route::post('/api/extra-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.extra.hours.create');
+    Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
+    Route::get('/api/extra-hours/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.extra.hours.edit');
+    Route::post('/api/extra-hours/update/{companyId}/{employeeId}/{role}', 'update')->name('api.extra.hours.update');
+    Route::delete('/api/extra-hours/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.extra.hours.delete');
 });
 
 // Contracts
@@ -85,9 +90,13 @@ Route::controller(VacationsApiController::class)->group(function () {
 
 // Tasks
 Route::controller(TasksApiController::class)->group(function () {
-   Route::get('/api/tasks/read/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
-   Route::get('/api/tasks/{id}/details/{companyId}/{employeeId}/{role}', 'taskDetails')->name('api.tasks.details');
-   Route::get('/api/tasks/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.tasks.status');
+    Route::post('/api/tasks/create/{companyId}/{employeeId}/{role}', 'create')->name('api.tasks.create');
+    Route::get('/api/tasks/read/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
+    Route::get('/api/tasks/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.tasks.edit');
+    Route::get('/api/tasks/{id}/details/{companyId}/{employeeId}/{role}', 'taskDetails')->name('api.tasks.details');
+    Route::post('/api/tasks/update/{companyId}/{employeeId}/{role}', 'update')->name('api.tasks.update');
+    Route::delete('/api/tasks/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.tasks.delete');
+    Route::get('/api/tasks/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.tasks.status');
 });
 
 // Task Reports
@@ -98,13 +107,31 @@ Route::controller(TaskReportsApiController::class)->group(function () {
    Route::get('/api/task-reports/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.task.reports.edit');
    Route::post('/api/task-reports/update/{companyId}/{employeeId}/{role}', 'update')->name('api.task.reports.update');
    Route::delete('/api/task-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.task.reports.delete');
-   Route::get('/api/task-reports/{id}/status/{status}/{companyId}', 'updateStatus')->name('api.task.reports.status');
+   Route::get('/api/task-reports/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.task.reports.status');
+});
+
+// Project Reports
+Route::controller(ProjectReportsApiController::class)->group(function () {
+    Route::post('/api/project-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.project.reports.create');
+    Route::get('/api/project-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.project.reports.read');
+    Route::get('/api/project-reports/{id}/details/{companyId}/{employeeId}/{role}', 'reportDetails')->name('api.project.reports.details');
+    Route::get('/api/project-reports/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.project.reports.edit');
+    Route::post('/api/project-reports/update/{companyId}/{employeeId}/{role}', 'update')->name('api.project.reports.update');
+    Route::delete('/api/project-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.project.reports.delete');
+    Route::get('/api/project-reports/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.project.reports.status');
 });
 
 // Employee Report
 Route::controller(EmployeeReportApiController::class)->group(function () {
    Route::get('/employee-report/read/{companyId}/{employeeId}/{role}', 'read')
        ->name('api.employee.report.read');
+});
+
+// Projects
+Route::controller(ProjectsApiController::class)->group(function () {
+    Route::get('/api/projects/read/{companyId}/{employeeId}/{role}', 'read')->name('api.projects.read');
+    Route::get('/api/projects/{id}/details/{companyId}/{employeeId}/{role}', 'projectDetails')->name('api.projects.details');
+    Route::get('/api/projects/{id}/context/{companyId}/{employeeId}/{role}', 'setProjectContext')->name('api.projects.context');
 });
 
 Route::controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
