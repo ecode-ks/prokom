@@ -4,18 +4,24 @@ namespace App\Services\Api;
 
 use App\Repositories\EmployeesRepository;
 use App\Repositories\NotificationsRepository;
+use App\Repositories\PushTokensRepository;
 
 class NotificationsApiService
 {
     protected NotificationsRepository $repository;
     protected EmployeesRepository $employees;
+    protected PushTokensRepository $pushTokens;
     protected ?array $recipient = null;
     protected array $employeeRoles = ['manager', 'employee', 'finance', 'hr'];
 
-    public function __construct(NotificationsRepository $repository, EmployeesRepository $employees)
-    {
+    public function __construct(
+        NotificationsRepository $repository,
+        EmployeesRepository $employees,
+        PushTokensRepository $pushTokens
+    ) {
         $this->repository = $repository;
         $this->employees = $employees;
+        $this->pushTokens = $pushTokens;
     }
 
     public function bindRecipient(?string $username = null, ?int $employeeId = null, ?int $companyId = null, ?string $role = null): ?array
@@ -149,5 +155,26 @@ class NotificationsApiService
         $query = parse_url($link, PHP_URL_QUERY);
 
         return $query ? $path . '?' . $query : $path;
+    }
+
+    public function registerPushToken(string $token, ?string $platform = null): bool
+    {
+        $recipient = $this->resolveRecipient();
+        if (!$recipient) {
+            return false;
+        }
+
+        $token = trim($token);
+        if ($token === '' || !str_starts_with($token, 'ExponentPushToken[')) {
+            return false;
+        }
+
+        return $this->pushTokens->upsert([
+            'company_id' => $recipient['company_id'],
+            'recipient_type' => $recipient['recipient_type'],
+            'recipient_id' => $recipient['recipient_id'],
+            'expo_push_token' => $token,
+            'platform' => $platform,
+        ]);
     }
 }

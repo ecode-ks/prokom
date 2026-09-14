@@ -9,13 +9,18 @@ class NotificationsService
 {
     protected NotificationsRepository $repository;
     protected EmployeesRepository $employees;
+    protected ExpoPushService $push;
 
     protected array $employeeRoles = ['manager', 'employee', 'finance', 'hr'];
 
-    public function __construct(NotificationsRepository $repository, EmployeesRepository $employees)
-    {
+    public function __construct(
+        NotificationsRepository $repository,
+        EmployeesRepository $employees,
+        ExpoPushService $push
+    ) {
         $this->repository = $repository;
         $this->employees = $employees;
+        $this->push = $push;
     }
     //---------------
     public function notify(
@@ -35,17 +40,30 @@ class NotificationsService
             return false;
         }
 
-        return $this->repository->create([
+        $appLink = $this->toAppPath($link);
+        $id = $this->repository->create([
             'company_id' => $companyId,
             'recipient_type' => $recipientType,
             'recipient_id' => $recipientId,
             'type' => $type,
             'title' => $title,
             'message' => $message,
-            'link' => $this->toAppPath($link),
+            'link' => $appLink,
             'is_read' => 0,
             'created_at' => now(),
         ]);
+
+        if ($id <= 0) {
+            return false;
+        }
+
+        $this->push->sendToRecipient($companyId, $recipientType, $recipientId, $title, $message, [
+            'notificationId' => $id,
+            'type' => $type,
+            'link' => $appLink,
+        ]);
+
+        return true;
     }
     //---------------
     public function resolveRecipient(): ?array
