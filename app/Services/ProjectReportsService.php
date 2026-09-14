@@ -41,16 +41,17 @@ class ProjectReportsService
         $companyId = (int) ($data['company_id'] ?? 0);
         $projectId = (int) ($data['project_id'] ?? 0);
         $project = $projectId > 0 ? $this->projects->getProjectById($projectId, $companyId) : null;
-        $projectName = $project->project_name ?? __('pages.project_word');
+        $projectName = $project->project_name ?? $this->notifications->line($companyId, 'pages.project_word');
 
         $this->notifications->notify(
             $companyId,
             'company',
             $companyId,
             'project_report',
-            __('pages.notif_project_report'),
-            __('pages.notif_project_report_body', ['name' => $projectName]),
-            route('project.report.details', $reportId)
+            'pages.notif_project_report',
+            'pages.notif_project_report_body',
+            route('project.report.details', $reportId),
+            ['name' => $projectName]
         );
 
         if (!empty($project->project_manager)) {
@@ -59,9 +60,10 @@ class ProjectReportsService
                 'employee',
                 (int) $project->project_manager,
                 'project_report',
-                __('pages.notif_project_report'),
-                __('pages.notif_project_report_body', ['name' => $projectName]),
-                route('project.report.details', $reportId)
+                'pages.notif_project_report',
+                'pages.notif_project_report_body',
+                route('project.report.details', $reportId),
+                ['name' => $projectName]
             );
         }
 

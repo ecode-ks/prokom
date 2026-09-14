@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\CompaniesRepository;
 use App\Repositories\EmployeesRepository;
 use App\Repositories\NotificationsRepository;
 
@@ -9,18 +10,42 @@ class NotificationsService
 {
     protected NotificationsRepository $repository;
     protected EmployeesRepository $employees;
+    protected CompaniesRepository $companies;
     protected ExpoPushService $push;
+    protected array $localeCache = [];
 
     protected array $employeeRoles = ['manager', 'employee', 'finance', 'hr'];
 
     public function __construct(
         NotificationsRepository $repository,
         EmployeesRepository $employees,
+        CompaniesRepository $companies,
         ExpoPushService $push
     ) {
         $this->repository = $repository;
         $this->employees = $employees;
+        $this->companies = $companies;
         $this->push = $push;
+    }
+    //---------------
+    public function localeForCompany(int $companyId): string
+    {
+        if ($companyId <= 0) {
+            return 'sq';
+        }
+
+        if (!isset($this->localeCache[$companyId])) {
+            $company = $this->companies->findCompanyById($companyId);
+            $language = (string) ($company->language ?? 'sq');
+            $this->localeCache[$companyId] = in_array($language, ['sq', 'en', 'de'], true) ? $language : 'sq';
+        }
+
+        return $this->localeCache[$companyId];
+    }
+    //---------------
+    public function line(int $companyId, string $key, array $replace = []): string
+    {
+        return trans($key, $replace, $this->localeForCompany($companyId));
     }
     //---------------
     public function notify(
@@ -30,7 +55,8 @@ class NotificationsService
         string $type,
         string $title,
         string $message,
-        ?string $link = null
+        ?string $link = null,
+        array $replace = []
     ): bool {
         if ($recipientId <= 0 || $companyId <= 0) {
             return false;
@@ -39,6 +65,9 @@ class NotificationsService
         if (!in_array($recipientType, ['company', 'employee'], true)) {
             return false;
         }
+
+        $title = $this->localize($companyId, $title, $replace);
+        $message = $this->localize($companyId, $message, $replace);
 
         $appLink = $this->toAppPath($link);
         $id = $this->repository->create([
@@ -210,5 +239,14 @@ class NotificationsService
         $query = parse_url($link, PHP_URL_QUERY);
 
         return $query ? $path . '?' . $query : $path;
+    }
+    //---------------
+    private function localize(int $companyId, string $value, array $replace = []): string
+    {
+        if (!str_starts_with($value, 'pages.')) {
+            return $value;
+        }
+
+        return $this->line($companyId, $value, $replace);
     }
 }

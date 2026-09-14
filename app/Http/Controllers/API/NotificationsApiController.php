@@ -77,7 +77,7 @@ class NotificationsApiController extends Controller
         );
 
         if (!$saved) {
-            return response()->json(['error' => 'Push token nuk u ruajt.'], 422);
+            return response()->json(['error' => __('pages.push_token_save_failed')], 422);
         }
 
         return response()->json(['success' => true]);

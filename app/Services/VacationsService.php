@@ -42,9 +42,9 @@ class VacationsService
         $from = $data['from_date'] ?? '';
         $to = $data['to_date'] ?? '';
         $period = trim($from . ' - ' . $to, ' -');
-        $message = $period !== ''
-            ? __('pages.notif_vacation_body_period', ['period' => $period])
-            : __('pages.notif_vacation_body');
+        $replace = ['period' => $period];
+        $bodyKey = $period !== '' ? 'pages.notif_vacation_body_period' : 'pages.notif_vacation_body';
+        $pendingKey = $period !== '' ? 'pages.notif_vacation_body_period_pending' : 'pages.notif_vacation_body_pending';
 
         if ($employeeId > 0) {
             $this->notifications->notify(
@@ -52,9 +52,10 @@ class VacationsService
                 'employee',
                 $employeeId,
                 'vacation_created',
-                __('pages.notif_vacation_title'),
-                $message . ' ' . __('pages.notif_pending'),
-                route('vacations')
+                'pages.notif_vacation_title',
+                $pendingKey,
+                route('vacations'),
+                $replace
             );
         }
 
@@ -63,9 +64,10 @@ class VacationsService
             'company',
             $companyId,
             'vacation_request',
-            __('pages.notif_vacation_new'),
-            $message,
-            route('vacations')
+            'pages.notif_vacation_new',
+            $bodyKey,
+            route('vacations'),
+            $replace
         );
 
         $hrEmployees = $this->employees->getEmployeesByRole($companyId, 'hr');
@@ -79,9 +81,10 @@ class VacationsService
                 'employee',
                 (int) $hr->id,
                 'vacation_request',
-                __('pages.notif_vacation_new'),
-                $message . ' ' . __('pages.notif_pending'),
-                route('vacations')
+                'pages.notif_vacation_new',
+                $pendingKey,
+                route('vacations'),
+                $replace
             );
         }
 
@@ -205,15 +208,18 @@ class VacationsService
 
         $period = trim(($vacation->from_date ?? '') . ' - ' . ($vacation->to_date ?? ''), ' -');
 
+        $replace = ['period' => $period];
+
         if ($status === 'Approved') {
             $this->notifications->notify(
                 $companyId,
                 'employee',
                 $employeeId,
                 'vacation_status',
-                __('pages.notif_vacation_approved'),
-                __('pages.notif_vacation_approved_body', ['period' => $period]),
-                route('vacations')
+                'pages.notif_vacation_approved',
+                'pages.notif_vacation_approved_body',
+                route('vacations'),
+                $replace
             );
         } elseif ($status === 'Refused') {
             $this->notifications->notify(
@@ -221,9 +227,10 @@ class VacationsService
                 'employee',
                 $employeeId,
                 'vacation_status',
-                __('pages.notif_vacation_refused'),
-                __('pages.notif_vacation_refused_body', ['period' => $period]),
-                route('vacations')
+                'pages.notif_vacation_refused',
+                'pages.notif_vacation_refused_body',
+                route('vacations'),
+                $replace
             );
         }
 
