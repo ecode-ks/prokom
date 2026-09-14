@@ -24,7 +24,11 @@ Route::controller(UsersApiController::class)->group(function () {
 
 // Company News
 Route::controller(CompanyNewsApiController::class)->group(function () {
-   Route::get('/api/company-news/{companyId}', 'read')->name('api.company.news.read');
+    Route::post('/api/company-news/create/{companyId}/{employeeId}/{role}', 'create')->name('api.company.news.create');
+    Route::get('/api/company-news/read/{companyId}/{employeeId}/{role}', 'read')->name('api.company.news.read');
+    Route::get('/api/company-news/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.company.news.edit');
+    Route::post('/api/company-news/update/{companyId}/{employeeId}/{role}', 'update')->name('api.company.news.update');
+    Route::delete('/api/company-news/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.company.news.delete');
 });
 
 // Working Hours
