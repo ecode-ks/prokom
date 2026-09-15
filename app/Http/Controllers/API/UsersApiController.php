@@ -138,41 +138,41 @@ class UsersApiController extends Controller
         }
     }
 
-    /**
-     * Update company language.
-     */
-    public function updateCompanyLanguage(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'language' => 'required|in:sq,en,de',
-        ]);
+    // /**
+    //  * Update company language.
+    //  */
+    // public function updateCompanyLanguage(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'language' => 'required|in:sq,en,de',
+    //     ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => __('pages.fields_invalid'),
-            ], 422);
-        }
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'error' => __('pages.fields_invalid'),
+    //         ], 422);
+    //     }
 
-        try {
-            $updated = $this->usersService->updateCompanyLanguage(
-                $request->user(),
-                $request->input('language')
-            );
+    //     try {
+    //         $updated = $this->usersService->updateCompanyLanguage(
+    //             $request->user(),
+    //             $request->input('language')
+    //         );
 
-            if (!$updated) {
-                return response()->json([
-                    'error' => __('pages.language_update_failed'),
-                ], 422);
-            }
+    //         if (!$updated) {
+    //             return response()->json([
+    //                 'error' => __('pages.language_update_failed'),
+    //             ], 422);
+    //         }
 
-            return response()->json([
-                'success' => __('pages.language_updated'),
-            ], 200);
+    //         return response()->json([
+    //             'success' => __('pages.language_updated'),
+    //         ], 200);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => __('pages.language_update_failed'),
-            ], 422);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'error' => __('pages.language_update_failed'),
+    //         ], 422);
+    //     }
+    // }
 }

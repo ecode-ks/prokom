@@ -20,7 +20,7 @@ use App\Http\Controllers\API\ProjectsApiController;
 Route::controller(UsersApiController::class)->group(function () {
    Route::post('/api/check-login', 'checkLogin')->name('api.check.login');
    Route::middleware('auth:sanctum')->post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
-   Route::middleware('auth:sanctum')->post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
+//    Route::middleware('auth:sanctum')->post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
 });
 
 // Company News

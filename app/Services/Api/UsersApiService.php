@@ -373,64 +373,63 @@ class UsersApiService
         return $account->save();
     }
 
-    /**
-     * Update company language.
-     */
-    public function updateCompanyLanguage(
-        $account,
-        string $language
-    ): bool {
-        if (!$account) {
-            return false;
-        }
+    // /**
+    //  * Update company language.
+    //  */
+    // public function updateCompanyLanguage(
+    //     $account,
+    //     string $language
+    // ): bool {
+    //     if (!$account) {
+    //         return false;
+    //     }
 
-        $language =
-            $this->normalizeLanguage(
-                $language
-            );
+    //     $language =
+    //         $this->normalizeLanguage(
+    //             $language
+    //         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | COMPANY
-        |--------------------------------------------------------------------------
-        */
+    //     /*
+    //     |--------------------------------------------------------------------------
+    //     | COMPANY
+    //     |--------------------------------------------------------------------------
+    //     */
 
-        if ($this->isCompany($account)) {
-            return $this
-                ->companiesRepository
-                ->updateLanguage(
-                    (int) $account->id,
-                    $language
-                );
-        }
+    //     if ($this->isCompany($account)) {
+    //         return $this
+    //             ->companiesRepository->updateLanguage(
+    //                 (int) $account->id,
+    //                 $language
+    //             );
+    //     }
 
-        /*
-        |--------------------------------------------------------------------------
-        | EMPLOYEE
-        |--------------------------------------------------------------------------
-        |
-        | Employee updates the language
-        | of the company they belong to.
-        |
-        | If employees should NOT be allowed
-        | to do this, remove this block.
-        |
-        */
+    //     /*
+    //     |--------------------------------------------------------------------------
+    //     | EMPLOYEE
+    //     |--------------------------------------------------------------------------
+    //     |
+    //     | Employee updates the language
+    //     | of the company they belong to.
+    //     |
+    //     | If employees should NOT be allowed
+    //     | to do this, remove this block.
+    //     |
+    //     */
 
-        if (
-            $this->isEmployee($account) &&
-            !empty($account->company_id)
-        ) {
-            return $this
-                ->companiesRepository
-                ->updateLanguage(
-                    (int) $account->company_id,
-                    $language
-                );
-        }
+    //     if (
+    //         $this->isEmployee($account) &&
+    //         !empty($account->company_id)
+    //     ) {
+    //         return $this
+    //             ->companiesRepository
+    //             ->updateLanguage(
+    //                 (int) $account->company_id,
+    //                 $language
+    //             );
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     /**
      * Normalize supported languages.
