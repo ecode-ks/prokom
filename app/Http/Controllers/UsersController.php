@@ -90,31 +90,31 @@ class UsersController extends Controller
         }
     }
     //---------------
-    public function updateCompanyLanguage(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'language' => 'required|in:sq,en,de',
-        ]);
-
-        if ($validator->fails()) {
-            return back()->with('error', __('pages.fields_invalid'));
-        }
-
-        $companyId = (int) session('company_id');
-        if (!$companyId) {
-            return back()->with('error', __('pages.language_update_failed'));
-        }
-
-        try {
-            $updated = $this->usersService->updateCompanyLanguage($companyId, $request->input('language'));
-            if ($updated) {
-                return back()->with('success', __('pages.language_updated'));
-            }
-            return back()->with('error', __('pages.language_update_failed'));
-        } catch (\Exception $e) {
-            return back()->with('error', __('pages.language_update_failed'));
-        }
-    }
+//    public function updateCompanyLanguage(Request $request)
+//    {
+//        $validator = Validator::make($request->all(), [
+//            'language' => 'required|in:sq,en,de',
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return back()->with('error', __('pages.fields_invalid'));
+//        }
+//
+//        $companyId = (int) session('company_id');
+//        if (!$companyId) {
+//            return back()->with('error', __('pages.language_update_failed'));
+//        }
+//
+//        try {
+//            $updated = $this->usersService->updateCompanyLanguage($companyId, $request->input('language'));
+//            if ($updated) {
+//                return back()->with('success', __('pages.language_updated'));
+//            }
+//            return back()->with('error', __('pages.language_update_failed'));
+//        } catch (\Exception $e) {
+//            return back()->with('error', __('pages.language_update_failed'));
+//        }
+//    }
     //---------------
     public function checkLogin(Request $request)
     {

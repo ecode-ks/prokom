@@ -56,6 +56,14 @@ class PackagesRepository
             ->exists();
     }
     //---------------
+    public function checkPackageExistByLanguage(int $id, string $language): bool
+    {
+        return DB::table($this->table)
+            ->where('id', $id)
+            ->where('language', $language)
+            ->exists();
+    }
+    //---------------
     public function update(int $id, array $data): bool
     {
         return DB::table($this->table)

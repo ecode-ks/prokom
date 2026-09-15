@@ -114,15 +114,15 @@ class UsersService
         throw new \Exception(__('pages.invalid_credentials'));
     }
     //---------------
-    public function updateCompanyLanguage(int $companyId, string $language): bool
-    {
-        $language = $this->normalizeLanguage($language);
-        $updated = $this->companiesRepository->updateLanguage($companyId, $language);
-        if ($updated) {
-            session()->put('language', $language);
-        }
-        return $updated;
-    }
+//    public function updateCompanyLanguage(int $companyId, string $language): bool
+//    {
+//        $language = $this->normalizeLanguage($language);
+//        $updated = $this->companiesRepository->updateLanguage($companyId, $language);
+//        if ($updated) {
+//            session()->put('language', $language);
+//        }
+//        return $updated;
+//    }
     //---------------
     private function normalizeLanguage(?string $language): string
     {

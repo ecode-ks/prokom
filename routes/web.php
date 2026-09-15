@@ -54,7 +54,7 @@ Route::middleware('payment.expired')->group(function () {
 Route::controller(UsersController::class)->group(function () {
     Route::get('/profile', 'profile')->middleware('authorization:admin,company,manager,employee,finance,hr')->name('profile');
     Route::post('/profile-password', 'updateProfilePassword')->middleware('authorization:admin,company,manager,employee,finance,hr')->name('update.profile.password');
-    Route::post('/profile-language', 'updateCompanyLanguage')->middleware('authorization:company')->name('update.company.language');
+//    Route::post('/profile-language', 'updateCompanyLanguage')->middleware('authorization:company')->name('update.company.language');
 });
 
 // Companies

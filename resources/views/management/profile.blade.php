@@ -42,48 +42,48 @@
                             <input type="text" class="form-control shadow-sm rounded-3 bg-light" value="{{ session('username') }}" placeholder="{{ __('pages.username') }}" disabled>
                         </div>
                     </div>
-                    @if(session('role') === 'company')
-                        @php $companyLanguage = session('language', 'sq'); @endphp
-                        <form action="{{ route('update.company.language') }}" method="post" class="mb-4">
-                            @csrf
-                            <label class="form-label">{{ __('pages.language') }}</label>
-                            <div>
-                                <div class="dropdown dropup lang-dropdown w-100">
-                                    <button class="btn bg-custom rounded-3 border dropdown-toggle d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="lang-flag-wrap">
-                                            @if($companyLanguage === 'sq')
-                                                <span class="lang-flag" aria-hidden="true"><img src="{{ asset('assets/flags/al.png') }}" alt="" width="21" height="15"></span>
-                                            @elseif($companyLanguage === 'en')
-                                                <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="15" fill="#012169"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#fff" stroke-width="3"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#c8102e" stroke-width="2"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#fff" stroke-width="5"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#c8102e" stroke-width="3"/></svg></span>
-                                            @else
-                                                <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="5" y="0" fill="#000"/><rect width="21" height="5" y="5" fill="#dd0000"/><rect width="21" height="5" y="10" fill="#ffce00"/></svg></span>
-                                            @endif
-                                        </span>
-                                        {{ __('pages.language_' . $companyLanguage) }}
-                                    </button>
-                                    <ul class="dropdown-menu lang-menu rounded-4 p-1">
-                                        @foreach (['sq', 'en', 'de'] as $code)
-                                            <li>
-                                                <button type="submit" name="language" value="{{ $code }}" class="dropdown-item lang-option {{ $companyLanguage === $code ? 'is-active' : '' }}">
-                                                    <span class="lang-flag-wrap">
-                                                        @if($code === 'sq')
-                                                            <span class="lang-flag" aria-hidden="true"><img src="{{ asset('assets/flags/al.png') }}" alt="" width="21" height="15"></span>
-                                                        @elseif($code === 'en')
-                                                            <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="15" fill="#012169"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#fff" stroke-width="3"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#c8102e" stroke-width="2"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#fff" stroke-width="5"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#c8102e" stroke-width="3"/></svg></span>
-                                                        @else
-                                                            <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="5" y="0" fill="#000"/><rect width="21" height="5" y="5" fill="#dd0000"/><rect width="21" height="5" y="10" fill="#ffce00"/></svg></span>
-                                                        @endif
-                                                    </span>
-                                                    <span class="lang-option-name">{{ __('pages.language_' . $code) }}</span>
-                                                    <i class="fa-solid fa-check lang-option-check" aria-hidden="true"></i>
-                                                </button>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </form>
-                    @endif
+{{--                    @if(session('role') === 'company')--}}
+{{--                        @php $companyLanguage = session('language', 'sq'); @endphp--}}
+{{--                        <form action="{{ route('update.company.language') }}" method="post" class="mb-4">--}}
+{{--                            @csrf--}}
+{{--                            <label class="form-label">{{ __('pages.language') }}</label>--}}
+{{--                            <div>--}}
+{{--                                <div class="dropdown dropup lang-dropdown w-100">--}}
+{{--                                    <button class="btn bg-custom rounded-3 border dropdown-toggle d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">--}}
+{{--                                        <span class="lang-flag-wrap">--}}
+{{--                                            @if($companyLanguage === 'sq')--}}
+{{--                                                <span class="lang-flag" aria-hidden="true"><img src="{{ asset('assets/flags/al.png') }}" alt="" width="21" height="15"></span>--}}
+{{--                                            @elseif($companyLanguage === 'en')--}}
+{{--                                                <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="15" fill="#012169"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#fff" stroke-width="3"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#c8102e" stroke-width="2"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#fff" stroke-width="5"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#c8102e" stroke-width="3"/></svg></span>--}}
+{{--                                            @else--}}
+{{--                                                <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="5" y="0" fill="#000"/><rect width="21" height="5" y="5" fill="#dd0000"/><rect width="21" height="5" y="10" fill="#ffce00"/></svg></span>--}}
+{{--                                            @endif--}}
+{{--                                        </span>--}}
+{{--                                        {{ __('pages.language_' . $companyLanguage) }}--}}
+{{--                                    </button>--}}
+{{--                                    <ul class="dropdown-menu lang-menu rounded-4 p-1">--}}
+{{--                                        @foreach (['sq', 'en', 'de'] as $code)--}}
+{{--                                            <li>--}}
+{{--                                                <button type="submit" name="language" value="{{ $code }}" class="dropdown-item lang-option {{ $companyLanguage === $code ? 'is-active' : '' }}">--}}
+{{--                                                    <span class="lang-flag-wrap">--}}
+{{--                                                        @if($code === 'sq')--}}
+{{--                                                            <span class="lang-flag" aria-hidden="true"><img src="{{ asset('assets/flags/al.png') }}" alt="" width="21" height="15"></span>--}}
+{{--                                                        @elseif($code === 'en')--}}
+{{--                                                            <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="15" fill="#012169"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#fff" stroke-width="3"/><path d="M0,0 L21,15 M21,0 L0,15" stroke="#c8102e" stroke-width="2"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#fff" stroke-width="5"/><path d="M10.5,0 V15 M0,7.5 H21" stroke="#c8102e" stroke-width="3"/></svg></span>--}}
+{{--                                                        @else--}}
+{{--                                                            <span class="lang-flag" aria-hidden="true"><svg viewBox="0 0 21 15" xmlns="http://www.w3.org/2000/svg"><rect width="21" height="5" y="0" fill="#000"/><rect width="21" height="5" y="5" fill="#dd0000"/><rect width="21" height="5" y="10" fill="#ffce00"/></svg></span>--}}
+{{--                                                        @endif--}}
+{{--                                                    </span>--}}
+{{--                                                    <span class="lang-option-name">{{ __('pages.language_' . $code) }}</span>--}}
+{{--                                                    <i class="fa-solid fa-check lang-option-check" aria-hidden="true"></i>--}}
+{{--                                                </button>--}}
+{{--                                            </li>--}}
+{{--                                        @endforeach--}}
+{{--                                    </ul>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </form>--}}
+{{--                    @endif--}}
                     <form action="{{ route('update.profile.password') }}" method="post">
                         @csrf
                         <div class="row g-3">

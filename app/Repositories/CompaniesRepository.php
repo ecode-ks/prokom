@@ -63,15 +63,15 @@ class CompaniesRepository
             ]) > 0;
     }
     //---------------
-    public function updateLanguage(int $id, string $language): bool
-    {
-        return CompaniesModel::where(
-                'id',
-                $id
-            )->update([
-                'language' => $language,
-            ]) > 0;
-    }
+//    public function updateLanguage(int $id, string $language): bool
+//    {
+//        return CompaniesModel::where(
+//                'id',
+//                $id
+//            )->update([
+//                'language' => $language,
+//            ]) > 0;
+//    }
     //---------------
     public function checkIfCompanyIsBlocked(int $companyId): bool
     {

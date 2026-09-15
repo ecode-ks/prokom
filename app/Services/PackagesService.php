@@ -42,6 +42,11 @@ class PackagesService
         return $this->repository->checkPackageExist($id);
     }
     //---------------
+    public function findOrFailByLanguage(int $id, string $language): bool
+    {
+        return $this->repository->checkPackageExistByLanguage($id, $language);
+    }
+    //---------------
     public function getPackageById(int $id)
     {
         return $this->repository->findPackage($id);

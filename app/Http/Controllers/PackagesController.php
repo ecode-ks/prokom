@@ -116,7 +116,8 @@ class PackagesController extends Controller
     //---------------
     public function change(int $id)
     {
-        if (!$this->service->findOrFail($id)) {
+        $language = session('language');
+        if (!$this->service->findOrFailByLanguage($id, $language)) {
             return redirect()->route('profile')->with('error',__('pages.package_not_found'));
         } else {
             try {
