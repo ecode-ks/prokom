@@ -17,10 +17,10 @@ use App\Http\Controllers\API\VacationsApiController;
 use App\Http\Controllers\API\ProjectsApiController;
 
 // Users / auth
-Route::middleware('auth:sanctum')->controller(UsersApiController::class)->group(function () {
+Route::controller(UsersApiController::class)->group(function () {
    Route::post('/api/check-login', 'checkLogin')->name('api.check.login');
-   Route::post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
-   Route::post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
+   Route::middleware('auth:sanctum')->post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
+   Route::middleware('auth:sanctum')->post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
 });
 
 // Company News
