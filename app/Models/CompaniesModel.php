@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class CompaniesModel extends Model
+class CompaniesModel extends Authenticatable
 {
+    use HasApiTokens;
+
     protected $table = 'companies';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -20,5 +24,10 @@ class CompaniesModel extends Model
         'payment_expire',
         'package',
         'language',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 }

@@ -113,6 +113,16 @@ class TaskReportsService
         return $this->repository->checkReportExist($id, $companyId);
     }
     //---------------
+    public function managerOwnsReport(int $reportId, int $companyId, int $managerId): bool
+    {
+        $report = $this->repository->findReport($reportId, $companyId);
+        if (!$report) {
+            return false;
+        }
+
+        return $this->repository->isTaskManagedBy((int) $report->task_id, $companyId, $managerId);
+    }
+    //---------------
     public function getReportById(int $id, int $companyId)
     {
         return $this->repository->findReport($id, $companyId);

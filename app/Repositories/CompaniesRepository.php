@@ -47,23 +47,30 @@ class CompaniesRepository
     //---------------
     public function findCompanyByUsername(string $username)
     {
-        return DB::table($this->table)
-            ->where('username', $username)
-            ->first();
+        return CompaniesModel::where(
+            'username',
+            $username
+        )->first();
     }
     //---------------
     public function updatePasswordByUsername(string $username, string $password): bool
     {
-        return DB::table($this->table)
-            ->where('username', $username)
-            ->update(['password' => $password]) > 0;
+        return CompaniesModel::where(
+                'username',
+                $username
+            )->update([
+                'password' => $password,
+            ]) > 0;
     }
     //---------------
     public function updateLanguage(int $id, string $language): bool
     {
-        return DB::table($this->table)
-            ->where('id', $id)
-            ->update(['language' => $language]) > 0;
+        return CompaniesModel::where(
+                'id',
+                $id
+            )->update([
+                'language' => $language,
+            ]) > 0;
     }
     //---------------
     public function checkIfCompanyIsBlocked(int $companyId): bool
@@ -76,9 +83,10 @@ class CompaniesRepository
     //---------------
     public function checkCompany(array $credentials)
     {
-        return DB::table($this->table)
-            ->where('username', $credentials['username'])
-            ->first();
+        return CompaniesModel::where(
+            'username',
+            $credentials['username']
+        )->first();
     }
     //---------------
     public function findCompanyById(int $id)

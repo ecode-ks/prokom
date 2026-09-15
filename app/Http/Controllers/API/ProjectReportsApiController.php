@@ -15,111 +15,116 @@ class ProjectReportsApiController extends Controller
     {
         $this->service = $service;
     }
-    //---------------
+
     public function create(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->isManager($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $validator = Validator::make($request->all(), [
-            'project_id' => 'required|integer|min:1|exists:projects,id',
-            'report' => 'required|string|min:1',
+            'project_id' => 'required|integer',
+            'report' => 'required|string',
             'images' => 'nullable|array',
-            'images.*' => 'image|max:5120',
+            'images.*' => 'image',
         ]);
 
         if ($validator->fails()) {
             return json_encode(['error' => __('pages.fields_invalid')]);
         }
 
-        if (!$this->service->projectExists((int) $request->project_id, $companyId)) {
-            return json_encode(['error' => __('pages.project_not_found')]);
-        }
-
-        if ($role === 'manager' && !$this->service->getAllProjects($companyId, $employeeId)->contains('id', (int) $request->project_id)) {
+        $projectId = (int) $request->project_id;
+        if (!$this->service->getAllProjects($companyId, $employeeId)->contains('id', $projectId)) {
             return json_encode(['error' => __('pages.report_own_projects_only')]);
         }
 
         $data = [
-            'project_id' => (int) $request->project_id,
-            'report' => $request->report,
-            'images' => $request->file('images', []),
-            'reported_by' => session('user_id'),
+            'project_id' => $projectId,
+            'report' => trim((string) $request->report),
+            'images' => $request->hasFile('images') ? $request->file('images') : [],
+            'reported_by' => $employeeId,
             'company_id' => $companyId,
             'status' => 'active',
+            'date' => now(),
         ];
 
         try {
             $this->service->createReport($data);
             return json_encode(['success' => __('pages.project_report_created')]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Project report create failed: '.$e->getMessage(), [
+                'exception' => $e,
+            ]);
             return json_encode(['error' => __('pages.try_again')]);
         }
     }
-    //---------------
+
     public function read(Request $request, int $companyId, int $employeeId, string $role)
     {
-        $search = trim((string) $request->query('search', ''));
-        $scopedManagerId = $role === 'manager' ? (int) ($employeeId ?? 0) : null;
-        $projects = $this->service->getAllProjects($companyId, $scopedManagerId);
-
-        if (count($projects) === 0) {
-            return json_encode(['error' => __('pages.register_projects_first')]);
+        if (!$this->canView($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
         }
 
-        $reports = $this->service->getReports(10, $companyId, $search, $role, $employeeId);
-        $reportStats = $this->service->getReportStatistics((int) $companyId, $role, $employeeId);
+        $search = trim((string) $request->query('search', ''));
+        $managerId = $role === 'manager' ? $employeeId : null;
 
         return json_encode([
-            'projects' => $projects,
-            'reports' => $reports,
-            'reportStats' => $reportStats,
+            'projects' => $this->service->getAllProjects($companyId, $managerId),
+            'reports' => $this->service->getReports(10, $companyId, $search, $role, $employeeId),
+            'reportStats' => $this->service->getReportStatistics($companyId, $role, $employeeId),
             'role' => $role,
         ]);
     }
-    //---------------
+
     public function reportDetails(int $id, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->canView($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         if (!$this->service->findOrFail($id, $companyId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
-        if ($role === 'manager' && !$this->service->managerOwnsReport($id, (int) $companyId, (int) ($employeeId ?? 0))) {
+        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
-        $reportDetails = $this->service->getReportDetails($id, $companyId);
-
         return json_encode([
-            'reportDetails' => $reportDetails,
+            'reportDetails' => $this->service->getReportDetails($id, $companyId),
             'role' => $role,
         ]);
     }
-    //---------------
-    public function edit(int $id, int $companyId)
+
+    public function edit(int $id, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->service->findOrFail($id, $companyId)) {
+        if (!$this->isManager($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
+        if (!$this->service->findOrFail($id, $companyId) || !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
-        $projects = $this->service->getAllProjects($companyId);
-        if (count($projects) === 0) {
-            return json_encode(['error' => __('pages.register_projects_first')]);
-        }
-
-        $editReport = $this->service->getReportById($id, $companyId);
-
         return json_encode([
-            'projects' => $projects,
-            'editReport' => $editReport,
+            'projects' => $this->service->getAllProjects($companyId, $employeeId),
+            'editReport' => $this->service->getReportById($id, $companyId),
+            'role' => $role,
         ]);
     }
-    //---------------
-    public function update(Request $request, int $companyId)
+
+    public function update(Request $request, int $companyId, int $employeeId, string $role)
     {
+        if (!$this->isManager($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
         $validator = Validator::make($request->all(), [
-            'id' => 'required|integer|min:1|exists:project_reports,id',
-            'project_id' => 'required|integer|min:1|exists:projects,id',
-            'report' => 'required|string|min:1',
+            'id' => 'required|integer|exists:project_reports,id',
+            'project_id' => 'required|integer',
+            'report' => 'required|string',
             'images' => 'nullable|array',
-            'images.*' => 'image|max:5120',
+            'images.*' => 'image',
         ]);
 
         if ($validator->fails()) {
@@ -127,20 +132,20 @@ class ProjectReportsApiController extends Controller
         }
 
         $id = (int) $request->id;
+        $projectId = (int) $request->project_id;
 
-        if (!$this->service->findOrFail($id, $companyId)) {
+        if (!$this->service->findOrFail($id, $companyId) || !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
-        if (!$this->service->projectExists((int) $request->project_id, $companyId)) {
-            return json_encode(['error' => __('pages.project_not_found')]);
+        if (!$this->service->getAllProjects($companyId, $employeeId)->contains('id', $projectId)) {
+            return json_encode(['error' => __('pages.report_own_projects_only')]);
         }
 
         $data = [
-            'project_id' => (int) $request->project_id,
-            'report' => $request->report,
+            'project_id' => $projectId,
+            'report' => trim((string) $request->report),
         ];
-
         if ($request->hasFile('images')) {
             $data['images'] = $request->file('images');
         }
@@ -155,10 +160,14 @@ class ProjectReportsApiController extends Controller
             return json_encode(['error' => __('pages.try_again')]);
         }
     }
-    //---------------
-    public function delete(int $id, int $companyId)
+
+    public function delete(int $id, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->service->findOrFail($id, $companyId)) {
+        if (!$this->isManager($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
+        if (!$this->service->findOrFail($id, $companyId) || !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -169,15 +178,24 @@ class ProjectReportsApiController extends Controller
             return json_encode(['error' => __('pages.try_again')]);
         }
     }
-    //---------------
-    public function updateStatus(int $id, string $status, int $companyId)
+
+    public function updateStatus(int $id, string $status, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->service->findOrFail($id, $companyId)) {
+        if (!$this->isManager($role)) {
+            return json_encode(['error' => __('pages.no_access')]);
+        }
+
+        if (!$this->service->findOrFail($id, $companyId) || !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
+        $normalizedStatus = $this->service->resolveStatus($status);
+        if (!$normalizedStatus) {
+            return json_encode(['error' => __('pages.invalid_status')]);
+        }
+
         try {
-            if (!$this->service->updateReportStatus($id, $status, $companyId)) {
+            if (!$this->service->updateReportStatus($id, $normalizedStatus, $companyId)) {
                 return json_encode(['error' => __('pages.invalid_status')]);
             }
 
@@ -185,5 +203,15 @@ class ProjectReportsApiController extends Controller
         } catch (\Exception $e) {
             return json_encode(['error' => __('pages.try_again')]);
         }
+    }
+
+    private function isManager(string $role): bool
+    {
+        return $role === 'manager';
+    }
+
+    private function canView(string $role): bool
+    {
+        return in_array($role, ['manager', 'company'], true);
     }
 }

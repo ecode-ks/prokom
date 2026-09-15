@@ -42,10 +42,11 @@ class ProjectReportsController extends Controller
         $data = [
             'project_id' => (int) $request->project_id,
             'report' => $request->report,
-            'images' => $request->file('images', []),
-            'reported_by' => session('user_id'),
+            'images' => $request->hasFile('images') ? $request->file('images') : [],
+            'reported_by' => $employeeId,
             'company_id' => $companyId,
             'status' => 'active',
+            'date' => now(),
         ];
 
         try {

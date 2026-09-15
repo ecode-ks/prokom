@@ -7,6 +7,11 @@ use App\Repositories\ExtraHoursRepository;
 
 class ExtraHoursApiService
 {
+    public const TYPES = [
+        'Orët jashtë orarit',
+        'Orët në vikend',
+    ];
+
     protected ExtraHoursRepository $repository;
     protected EmployeesRepository $employeesRepository;
 
@@ -14,6 +19,16 @@ class ExtraHoursApiService
     {
         $this->repository = $repository;
         $this->employeesRepository = $employeesRepository;
+    }
+
+    public function getTypes(): array
+    {
+        return self::TYPES;
+    }
+
+    public function resolveType(?string $type): ?string
+    {
+        return in_array((string) $type, self::TYPES, true) ? $type : null;
     }
 
     public function createExtraHour(array $data, int $companyId): bool

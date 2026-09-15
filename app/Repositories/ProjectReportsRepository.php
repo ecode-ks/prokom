@@ -140,7 +140,7 @@ class ProjectReportsRepository
             ->join('projects as p', 'pr.project_id', '=', 'p.id')
             ->leftJoin('employees as m', 'p.project_manager', '=', 'm.id')
             ->leftJoin('clients as cl', 'p.client_id', '=', 'cl.id')
-            ->leftJoin('users as u', 'pr.reported_by', '=', 'u.id')
+            ->leftJoin('employees as e', 'pr.reported_by', '=', 'e.id')
             ->leftJoin('companies as c', 'pr.company_id', '=', 'c.id')
             ->where('pr.company_id', $companyId)
             ->select(
@@ -160,7 +160,7 @@ class ProjectReportsRepository
                 'p.status as project_status',
                 'm.employee as manager_name',
                 'cl.client as client_name',
-                DB::raw('COALESCE(u.user, c.company) as reporter_name')
+                DB::raw('COALESCE(e.employee, c.company) as reporter_name')
             );
     }
     //---------------

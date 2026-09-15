@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
-class EmployeesModel extends Model
+class EmployeesModel extends Authenticatable
 {
+    use HasApiTokens;
+
     protected $table = 'employees';
+
     protected $primaryKey = 'id';
 
     protected $fillable = [
@@ -16,5 +20,12 @@ class EmployeesModel extends Model
         'username',
         'password',
         'role',
+        'company_id',
+        'status',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 }
