@@ -18,9 +18,9 @@
         <p class="text-muted">{{ __('pages.update_contract_lead') }}</p>
         <hr class="mb-4">
     @else
-        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ $isEmployee ? 'Kontratat' : 'HR' }}</small>
-        <h3 class="fw-semibold pt-2">{{ $isEmployee ? 'Kontratat e Mia' : 'Kontratat' }}</h3>
-        <p class="text-muted">{{ $isEmployee ? 'Shiko kontratat e tua të punës.' : 'Kontratat e punës me pagë mujore, me orë ose me ditë, orë shtesë dhe afat. Kontratat që skadojnë theksohen.' }}</p>
+        <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ $isEmployee ? __('pages.nav_contracts') : __('pages.hr') }}</small>
+        <h3 class="fw-semibold pt-2">{{ $isEmployee ? __('pages.my_contracts') : __('pages.nav_contracts') }}</h3>
+        <p class="text-muted">{{ $isEmployee ? __('pages.my_contracts_lead') : __('pages.contracts_lead') }}</p>
         <hr class="mb-4">
     @endif
 
@@ -44,16 +44,16 @@
                 @else
                     <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.contract_status') }} : </span><span class="badge rounded-pill text-danger text-bg-danger bg-opacity-25 border border-danger">{{ __('pages.contract_expired') }}</span></span>
                 @endif
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user"></i> Punonjësi : </span>{{ $contractDetails->employee }}</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-phone"></i> Telefoni : </span>{{ $contractDetails->phone }}</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-envelope"></i> Email : </span>{{ $contractDetails->email }}</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-briefcase"></i> Pozita : </span>{{ $contractDetails->position }}</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-coins"></i> Lloji i pagesës : </span>{{ \App\Support\PayTypes::label($contractDetails->pay_type ?? 'monthly') }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user"></i> {{ __('pages.employee') }} : </span>{{ $contractDetails->employee }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-phone"></i> {{ __('pages.phone') }} : </span>{{ $contractDetails->phone }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-envelope"></i> {{ __('pages.email') }} : </span>{{ $contractDetails->email }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-briefcase"></i> {{ __('pages.position') }} : </span>{{ $contractDetails->position }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-coins"></i> {{ __('pages.pay_type') }} : </span>{{ \App\Support\PayTypes::label($contractDetails->pay_type ?? 'monthly') }}</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-euro-sign"></i> {{ \App\Support\PayTypes::rateLabel($contractDetails->pay_type ?? 'monthly') }} : </span>{{ $contractDetails->salary }}€</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-clock"></i> Çmimi i Orëve Shtesë : </span>{{ $contractDetails->extra_hours_price }}€</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-calendar-week"></i> Çmimi i Orëve të Fundjavës : </span>{{ $contractDetails->weekend_hours_price }}€</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> Periudha e Kontratës : </span>{{ Carbon\Carbon::parse($contractDetails->from_date)->format('d/m/Y') }} &rarr; {{ Carbon\Carbon::parse($contractDetails->to_date)->format('d/m/Y') }}</span>
-                <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> Dokumentet</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-clock"></i> {{ __('pages.extra_hours_price') }} : </span>{{ $contractDetails->extra_hours_price }}€</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-calendar-week"></i> {{ __('pages.weekend_hours_price') }} : </span>{{ $contractDetails->weekend_hours_price }}€</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('pages.contract_period') }} : </span>{{ Carbon\Carbon::parse($contractDetails->from_date)->format('d/m/Y') }} &rarr; {{ Carbon\Carbon::parse($contractDetails->to_date)->format('d/m/Y') }}</span>
+                <span class="d-block mt-4 mb-3 text-muted"><i class="fa-regular fa-file-lines"></i> {{ __('pages.documents') }}</span>
                 <div class="card card-body rounded-4">
                     @if(!empty($docs))
                         @foreach($docs as $doc)
@@ -101,7 +101,7 @@
                             <input type="text" name="position" id="position" value="{{ old('position', $editContract->position) }}" class="form-control shadow-sm rounded-3">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label for="pay_type" class="form-label">Lloji i pagesës</label>
+                            <label for="pay_type" class="form-label">{{ __('pages.pay_type') }}</label>
                             <select name="pay_type" id="pay_type" class="form-control shadow-sm rounded-3">
                                 @foreach(\App\Support\PayTypes::options() as $value => $label)
                                     <option value="{{ $value }}" {{ old('pay_type', $editContract->pay_type ?? 'monthly') === $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -217,7 +217,7 @@
                                 <input type="text" name="position" id="position" value="{{ old('position') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_position') }}">
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
-                                <label for="pay_type" class="form-label">Lloji i pagesës</label>
+                                <label for="pay_type" class="form-label">{{ __('pages.pay_type') }}</label>
                                 <select name="pay_type" id="pay_type" class="form-control shadow-sm rounded-3">
                                     @foreach(\App\Support\PayTypes::options() as $value => $label)
                                         <option value="{{ $value }}" {{ old('pay_type', 'monthly') === $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -226,11 +226,7 @@
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
                                 <label for="salary" class="form-label" id="salary_label">{{ \App\Support\PayTypes::rateLabel(old('pay_type', 'monthly')) }}</label>
-                                <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani shumën...">
-                            </div>
-                            <div class="col-12 col-md-4 col-lg-4">
-                                <label for="salary" class="form-label" id="salary_label">{{ \App\Support\PayTypes::rateLabel(old('pay_type', 'monthly')) }}</label>
-                                <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani shumën...">
+                                <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_salary') }}">
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
                                 <label for="extra_hours_price" class="form-label">{{ __('pages.extra_hours_price') }}</label>

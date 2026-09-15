@@ -247,7 +247,9 @@ class SalariesRepository
                 $payType = 'monthly';
             }
 
-            $workingHours = (float) $row->working_hours;
+            $grossWorkingHours = (float) $row->working_hours;
+            $extraHoursDeducted = $overtimeHours + $weekendHours;
+            $workingHours = max(0.0, $grossWorkingHours - $extraHoursDeducted);
             $workedDays = (int) ($row->worked_days ?? 0);
 
             $basePay = match ($payType) {

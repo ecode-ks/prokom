@@ -20,18 +20,18 @@ class PayTypes
     public static function label(string $type): string
     {
         return match ($type) {
-            self::HOURLY => 'Me orë',
-            self::DAILY => 'Me ditë',
-            default => 'Mujore (fikse)',
+            self::HOURLY => __('pages.pay_type_hourly'),
+            self::DAILY => __('pages.pay_type_daily'),
+            default => __('pages.pay_type_monthly'),
         };
     }
 
     public static function rateLabel(string $type): string
     {
         return match ($type) {
-            self::HOURLY => 'Tarifa / orë',
-            self::DAILY => 'Tarifa / ditë',
-            default => 'Paga bazë (mujore)',
+            self::HOURLY => __('pages.pay_rate_hourly'),
+            self::DAILY => __('pages.pay_rate_daily'),
+            default => __('pages.pay_rate_monthly'),
         };
     }
 
