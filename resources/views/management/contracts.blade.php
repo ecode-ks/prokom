@@ -229,6 +229,10 @@
                                 <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani shumën...">
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
+                                <label for="salary" class="form-label" id="salary_label">{{ \App\Support\PayTypes::rateLabel(old('pay_type', 'monthly')) }}</label>
+                                <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="Shkruani shumën...">
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
                                 <label for="extra_hours_price" class="form-label">{{ __('pages.extra_hours_price') }}</label>
                                 <input type="number" step="0.01" name="extra_hours_price" id="extra_hours_price" value="{{ old('extra_hours_price') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_extra_hours_price') }}">
                             </div>

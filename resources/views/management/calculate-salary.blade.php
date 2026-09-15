@@ -155,6 +155,8 @@
                                     <span class="salary-calc-dot"></span>
                                     <span>{{ \App\Support\PayTypes::label($payType) }}</span>
                                     <span class="salary-calc-dot"></span>
+                                    <span>{{ \App\Support\PayTypes::label($payType) }}</span>
+                                    <span class="salary-calc-dot"></span>
                                     <span>
                                         {{ __('pages.contract_label', [
                                             'from' => \Carbon\Carbon::parse($row->contract_from)->format('d/m/Y'),
