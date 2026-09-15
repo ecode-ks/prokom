@@ -28,7 +28,7 @@ class CheckInController extends Controller
     //---------------
     public function map()
     {
-        if (session('role') !== 'company') {
+        if (!in_array(session('role'), ['company', 'manager'], true)) {
             return redirect()->route('dashboard')->with('error', __('pages.no_access'));
         }
 
@@ -43,7 +43,7 @@ class CheckInController extends Controller
     {
         $page = 'Check In';
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('checkins')->with('error', __('pages.checkin_not_found'));
+            return $this->redirectAfterManage()->with('error', __('pages.checkin_not_found'));
         }
 
         $checkinDetails = $this->service->getCheckInById($id);
@@ -56,29 +56,38 @@ class CheckInController extends Controller
     public function accept(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('checkins')->with('error', __('pages.checkin_not_found'));
+            return $this->redirectAfterManage()->with('error', __('pages.checkin_not_found'));
         }
 
         try {
             $this->service->acceptCheckIn($id);
-            return redirect()->route('checkins')->with('success', __('pages.checkin_accepted_msg'));
+            return $this->redirectAfterManage()->with('success', __('pages.checkin_accepted_msg'));
         } catch (\Exception $e) {
-            return redirect()->route('checkins')->with('error', $e->getMessage() ?: __('pages.checkin_accept_failed'));
+            return $this->redirectAfterManage()->with('error', $e->getMessage() ?: __('pages.checkin_accept_failed'));
         }
     }
     //---------------
     public function delete(int $id)
     {
         if (!$this->service->findOrFail($id)) {
-            return redirect()->route('checkins')->with('error', __('pages.checkin_not_found'));
+            return $this->redirectAfterManage()->with('error', __('pages.checkin_not_found'));
         }
 
         try {
             $this->service->deleteCheckIn($id);
-            return redirect()->route('checkins')->with('success', __('pages.checkin_deleted'));
+            return $this->redirectAfterManage()->with('success', __('pages.checkin_deleted'));
         } catch (\Exception $e) {
-            return redirect()->route('checkins')->with('error', __('pages.checkin_delete_failed'));
+            return $this->redirectAfterManage()->with('error', __('pages.checkin_delete_failed'));
         }
+    }
+    //---------------
+    private function redirectAfterManage()
+    {
+        if (in_array(session('role'), ['company', 'manager'], true)) {
+            return redirect()->route('checkins');
+        }
+
+        return redirect()->route('dashboard');
     }
     //---------------
     public function startWork(Request $request)

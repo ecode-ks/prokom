@@ -103,29 +103,29 @@ class CheckInApiService
         return $checkin;
     }
 
-    public function getCheckIns(int $limit, string $search = '')
+    public function getCheckIns(int $limit, string $search, int $companyId)
     {
         $limit = $limit ?: 10;
         if (!empty($search)) {
-            return $this->repository->getSearchedCheckIns($limit, $this->companyId, $search);
+            return $this->repository->getSearchedCheckIns($limit, $companyId, $search);
         }
 
-        return $this->repository->getCheckIns($limit, $this->companyId);
+        return $this->repository->getCheckIns($limit, $companyId);
     }
 
-    public function findOrFail(int $id): bool
+    public function findOrFail(int $id, int $companyId): bool
     {
-        return $this->repository->checkCheckinExist($id, $this->companyId);
+        return $this->repository->checkCheckinExist($id, $companyId);
     }
 
-    public function getCheckInById(int $id)
+    public function getCheckInById(int $id, int $companyId)
     {
-        return $this->repository->findCheckInDetails($id, $this->companyId);
+        return $this->repository->findCheckInDetails($id, $companyId);
     }
 
-    public function acceptCheckIn(int $id): bool
+    public function acceptCheckIn(int $id, int $companyId): bool
     {
-        $checkin = $this->repository->findById($id, $this->companyId);
+        $checkin = $this->repository->findById($id, $companyId);
         if (!$checkin) {
             return false;
         }
@@ -138,23 +138,23 @@ class CheckInApiService
             throw new \Exception(__('pages.checkin_need_checkout'));
         }
 
-        $this->syncToWorkingHours($checkin, $checkin->check_out_time);
+        $this->syncToWorkingHours($checkin, $checkin->check_out_time, $companyId);
 
-        return $this->repository->accept($id, $this->companyId);
+        return $this->repository->accept($id, $companyId);
     }
 
-    public function deleteCheckIn(int $id): bool
+    public function deleteCheckIn(int $id, int $companyId): bool
     {
-        if (!$this->repository->checkCheckinExist($id, $this->companyId)) {
+        if (!$this->repository->checkCheckinExist($id, $companyId)) {
             return false;
         }
 
-        return $this->repository->delete($id, $this->companyId);
+        return $this->repository->delete($id, $companyId);
     }
 
-    public function getMapLocations(): array
+    public function getMapLocations(int $companyId): array
     {
-        $rows = $this->repository->getActiveMapLocations($this->companyId);
+        $rows = $this->repository->getActiveMapLocations($companyId);
         $locations = [];
 
         foreach ($rows as $row) {
@@ -220,7 +220,7 @@ class CheckInApiService
         ];
     }
 
-    private function syncToWorkingHours(object $checkin, ?string $checkOutTime): void
+    private function syncToWorkingHours(object $checkin, ?string $checkOutTime, int $companyId): void
     {
         if (empty($checkin->check_in_time) || empty($checkOutTime)) {
             return;
@@ -251,7 +251,7 @@ class CheckInApiService
             'check_in' => $checkin->check_in_time,
             'check_out' => $checkOutTime,
             'hours' => $hours,
-            'company_id' => $this->companyId,
+            'company_id' => $companyId,
         ]);
     }
 }

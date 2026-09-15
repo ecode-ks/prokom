@@ -36,6 +36,10 @@ class TaskReportsService
     //---------------
     public function createReport(array $data, string $role, ?int $employeeId, int $companyId): bool
     {
+        if ($role === 'company') {
+            return false;
+        }
+
         $taskId = $data['task_id'];
 
         if (!$this->repository->taskExists($taskId, $companyId)) {
@@ -141,6 +145,10 @@ class TaskReportsService
     //---------------
     public function updateReport(int $id, array $data, string $role, ?int $employeeId, int $companyId): bool
     {
+        if ($role === 'company') {
+            return false;
+        }
+
         $report = $this->repository->findReport($id, $companyId);
         if (!$report) {
             return false;
