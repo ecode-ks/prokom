@@ -16,6 +16,7 @@
         $employeeCount = (int) ($summary['employee_count'] ?? $calculations->count());
         $payrollTotal = (float) ($summary['payroll_total'] ?? 0);
         $hoursTotal = (float) ($summary['hours_total'] ?? 0);
+        $daysTotal = (int) ($summary['days_total'] ?? 0);
         $extraTotal = (float) ($summary['extra_total'] ?? 0);
         $fmtHours = function ($decimal) {
             $totalMinutes = (int) round(((float) $decimal) * 60);
@@ -27,9 +28,9 @@
 
     <div class="salary-calc-hero mb-4">
         <div>
-            <small class="d-block txt-lightblue fw-semibold text-uppercase">{{ __('pages.nav_finance') }}</small>
-            <h3 class="fw-semibold pt-2 mb-1">{{ __('pages.calculate_salary_title') }}</h3>
-            <p class="text-muted mb-0">{{ __('pages.calculate_salary_lead') }}</p>
+            <small class="d-block txt-lightblue fw-semibold text-uppercase">Financat</small>
+            <h3 class="fw-semibold pt-2 mb-1">Kalkulimi i Pagave</h3>
+            <p class="text-muted mb-0">Filtro periudhën, shiko përmbledhjen sipas llojit të pagesës (mujore / orë / ditë) dhe ruaj pagat.</p>
         </div>
         @if($hasResults && $calculations->isNotEmpty())
             <form action="{{ route('save.calculated.salaries') }}" method="post" class="m-0">
@@ -91,9 +92,9 @@
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="dashboard-kpi dashboard-kpi--blue">
-                        <small>{{ __('pages.work_hours') }}</small>
+                        <small>Orë / ditë pune</small>
                         <strong>{{ $fmtHours($hoursTotal) }}</strong>
-                        <span>{{ __('pages.total_hours') }}</span>
+                        <span>{{ $daysTotal }} ditë të regjistruara</span>
                     </div>
                 </div>
                 <div class="col-6 col-lg-3">
@@ -123,6 +124,10 @@
 
                 @foreach($calculations as $row)
                     @php
+                        $payType = $row->pay_type ?? 'monthly';
+                        $basePay = (float) ($row->base_pay ?? $row->salary);
+                        $rate = (float) ($row->salary ?? 0);
+                        $workedDays = (int) ($row->worked_days ?? 0);
                         $overtimeHours = (float) ($row->overtime_hours ?? 0);
                         $overtimeRate = (float) ($row->extra_hours_price ?? 0);
                         $overtimeAmount = $overtimeHours * $overtimeRate;
@@ -134,6 +139,11 @@
                             ->take(2)
                             ->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))
                             ->implode('');
+                        $baseEq = match ($payType) {
+                            'hourly' => number_format((float) $row->working_hours, 2) . ' orë × €' . number_format($rate, 2),
+                            'daily' => $workedDays . ' ditë × €' . number_format($rate, 2),
+                            default => 'Paga fikse e kontratës',
+                        };
                     @endphp
                     <article class="salary-calc-item">
                         <div class="salary-calc-item-main">
@@ -142,6 +152,10 @@
                                 <strong class="salary-calc-name">{{ $row->employee }}</strong>
                                 <div class="salary-calc-meta">
                                     <span>{{ $row->position ?: __('pages.no_position') }}</span>
+                                    <span class="salary-calc-dot"></span>
+                                    <span>{{ \App\Support\PayTypes::label($payType) }}</span>
+                                    <span class="salary-calc-dot"></span>
+                                    <span>{{ \App\Support\PayTypes::label($payType) }}</span>
                                     <span class="salary-calc-dot"></span>
                                     <span>
                                         {{ __('pages.contract_label', [
@@ -155,12 +169,18 @@
 
                         <div class="salary-calc-metrics">
                             <div class="salary-calc-metric">
-                                <small>{{ __('pages.base_salary') }}</small>
-                                <strong>€{{ number_format((float) $row->salary, 2) }}</strong>
+                                <small>{{ \App\Support\PayTypes::rateLabel($payType) }}</small>
+                                <strong>€{{ number_format($basePay, 2) }}</strong>
+                                <div class="salary-calc-extra-eq">
+                                    <span>{{ $baseEq }}</span>
+                                </div>
                             </div>
                             <div class="salary-calc-metric">
-                                <small>{{ __('pages.work_hours') }}</small>
+                                <small>Orë / ditë</small>
                                 <strong>{{ $fmtHours($row->working_hours) }}</strong>
+                                <div class="salary-calc-extra-eq">
+                                    <span>{{ $workedDays }} ditë</span>
+                                </div>
                             </div>
                             <div class="salary-calc-metric salary-calc-metric--extra">
                                 <small>{{ __('pages.overtime') }}</small>

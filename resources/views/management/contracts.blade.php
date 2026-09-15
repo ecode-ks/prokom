@@ -48,7 +48,8 @@
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-phone"></i> {{ __('pages.phone') }} : </span>{{ $contractDetails->phone }}</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-envelope"></i> {{ __('pages.email') }} : </span>{{ $contractDetails->email }}</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-briefcase"></i> {{ __('pages.position') }} : </span>{{ $contractDetails->position }}</span>
-                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-euro-sign"></i> {{ __('pages.salary') }} : </span>{{ $contractDetails->salary }}€</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-coins"></i> {{ __('pages.pay_type') }} : </span>{{ \App\Support\PayTypes::label($contractDetails->pay_type ?? 'monthly') }}</span>
+                <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-euro-sign"></i> {{ \App\Support\PayTypes::rateLabel($contractDetails->pay_type ?? 'monthly') }} : </span>{{ $contractDetails->salary }}€</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-clock"></i> {{ __('pages.extra_hours_price') }} : </span>{{ $contractDetails->extra_hours_price }}€</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-calendar-week"></i> {{ __('pages.weekend_hours_price') }} : </span>{{ $contractDetails->weekend_hours_price }}€</span>
                 <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('pages.contract_period') }} : </span>{{ Carbon\Carbon::parse($contractDetails->from_date)->format('d/m/Y') }} &rarr; {{ Carbon\Carbon::parse($contractDetails->to_date)->format('d/m/Y') }}</span>
@@ -100,7 +101,15 @@
                             <input type="text" name="position" id="position" value="{{ old('position', $editContract->position) }}" class="form-control shadow-sm rounded-3">
                         </div>
                         <div class="col-12 col-md-4">
-                            <label for="salary" class="form-label">{{ __('pages.salary') }}</label>
+                            <label for="pay_type" class="form-label">{{ __('pages.pay_type') }}</label>
+                            <select name="pay_type" id="pay_type" class="form-control shadow-sm rounded-3">
+                                @foreach(\App\Support\PayTypes::options() as $value => $label)
+                                    <option value="{{ $value }}" {{ old('pay_type', $editContract->pay_type ?? 'monthly') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label for="salary" class="form-label" id="salary_label">{{ \App\Support\PayTypes::rateLabel(old('pay_type', $editContract->pay_type ?? 'monthly')) }}</label>
                             <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary', $editContract->salary) }}" class="form-control shadow-sm rounded-3">
                         </div>
                         <div class="col-12 col-md-4">
@@ -208,7 +217,15 @@
                                 <input type="text" name="position" id="position" value="{{ old('position') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_position') }}">
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
-                                <label for="salary" class="form-label">{{ __('pages.salary') }}</label>
+                                <label for="pay_type" class="form-label">{{ __('pages.pay_type') }}</label>
+                                <select name="pay_type" id="pay_type" class="form-control shadow-sm rounded-3">
+                                    @foreach(\App\Support\PayTypes::options() as $value => $label)
+                                        <option value="{{ $value }}" {{ old('pay_type', 'monthly') === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4 col-lg-4">
+                                <label for="salary" class="form-label" id="salary_label">{{ \App\Support\PayTypes::rateLabel(old('pay_type', 'monthly')) }}</label>
                                 <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_salary') }}">
                             </div>
                             <div class="col-12 col-md-4 col-lg-4">
@@ -330,3 +347,28 @@
         @endif
     @endif
 @endsection
+
+@push('scripts')
+<script>
+    (function () {
+        const rateLabels = {
+            monthly: @json(\App\Support\PayTypes::rateLabel('monthly')),
+            hourly: @json(\App\Support\PayTypes::rateLabel('hourly')),
+            daily: @json(\App\Support\PayTypes::rateLabel('daily')),
+        };
+
+        document.querySelectorAll('#pay_type').forEach((select) => {
+            const form = select.closest('form');
+            const label = form ? form.querySelector('#salary_label') : null;
+            if (!label) return;
+
+            const sync = () => {
+                label.textContent = rateLabels[select.value] || rateLabels.monthly;
+            };
+
+            select.addEventListener('change', sync);
+            sync();
+        });
+    })();
+</script>
+@endpush

@@ -13,6 +13,7 @@ class ContractsModel extends Model
         'employee_id',
         'position',
         'salary',
+        'pay_type',
         'extra_hours_price',
         'weekend_hours_price',
         'from_date',
