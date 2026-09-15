@@ -99,7 +99,8 @@ class CheckInRepository
             ->leftJoin('companies as c', 'ci.company_id', '=', 'c.id')
             ->select(
                 'ci.*',
-                DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee")
+                DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee"),
+                DB::raw('(SELECT ct.position FROM contracts ct WHERE ct.employee_id = e.id AND ct.company_id = ci.company_id ORDER BY ct.id DESC LIMIT 1) as position')
             )
             ->where('ci.company_id', $companyId)
             ->orderByDesc('ci.id')
@@ -113,7 +114,8 @@ class CheckInRepository
             ->leftJoin('companies as c', 'ci.company_id', '=', 'c.id')
             ->select(
                 'ci.*',
-                DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee")
+                DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee"),
+                DB::raw('(SELECT ct.position FROM contracts ct WHERE ct.employee_id = e.id AND ct.company_id = ci.company_id ORDER BY ct.id DESC LIMIT 1) as position')
             )
             ->where('ci.company_id', $companyId)
             ->where(function ($q) use ($search) {
@@ -134,7 +136,8 @@ class CheckInRepository
                 'ci.*',
                 DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee"),
                 'e.phone',
-                'e.email'
+                'e.email',
+                DB::raw('(SELECT ct.position FROM contracts ct WHERE ct.employee_id = e.id AND ct.company_id = ci.company_id ORDER BY ct.id DESC LIMIT 1) as position')
             )
             ->where('ci.id', $id)
             ->where('ci.company_id', $companyId)
@@ -182,11 +185,37 @@ class CheckInRepository
         ];
     }
     //---------------
-    public function getActiveMapLocations(int $companyId)
+    public function getActiveMapLocations(int $companyId, ?int $managerId = null, ?int $projectId = null)
     {
-        return DB::table($this->table . ' as ci')
+        $projectNamesSql = "
+            SELECT GROUP_CONCAT(DISTINCT p.project_name ORDER BY p.project_name SEPARATOR ', ')
+            FROM tasks t
+            INNER JOIN projects p ON p.id = t.project_id
+            WHERE ci.employee_id IS NOT NULL
+              AND FIND_IN_SET(ci.employee_id, t.assigned_to)
+              AND t.company_id = ci.company_id
+              AND LOWER(COALESCE(t.status, '')) <> 'completed'
+        ";
+
+        if ($managerId) {
+            $projectNamesSql .= ' AND p.project_manager = ' . (int) $managerId;
+        }
+        if ($projectId) {
+            $projectNamesSql .= ' AND p.id = ' . (int) $projectId;
+        }
+
+        $latestContracts = DB::table('contracts')
+            ->selectRaw('MAX(id) as id, employee_id')
+            ->where('company_id', $companyId)
+            ->groupBy('employee_id');
+
+        $query = DB::table($this->table . ' as ci')
             ->leftJoin('employees as e', 'ci.employee_id', '=', 'e.id')
             ->leftJoin('companies as c', 'ci.company_id', '=', 'c.id')
+            ->leftJoinSub($latestContracts, 'latest_c', function ($join) {
+                $join->on('ci.employee_id', '=', 'latest_c.employee_id');
+            })
+            ->leftJoin('contracts as con', 'con.id', '=', 'latest_c.id')
             ->select(
                 'ci.id',
                 'ci.employee_id',
@@ -198,16 +227,9 @@ class CheckInRepository
                 'ci.status',
                 'e.phone as employee_phone',
                 'e.role as employee_role',
+                'con.position as position',
                 DB::raw("COALESCE(e.employee, c.company, 'Kompania') as employee"),
-                DB::raw("(
-                    SELECT GROUP_CONCAT(DISTINCT p.project_name ORDER BY p.project_name SEPARATOR ', ')
-                    FROM tasks t
-                    INNER JOIN projects p ON p.id = t.project_id
-                    WHERE ci.employee_id IS NOT NULL
-                      AND FIND_IN_SET(ci.employee_id, t.assigned_to)
-                      AND t.company_id = ci.company_id
-                      AND LOWER(COALESCE(t.status, '')) <> 'completed'
-                ) as project_names")
+                DB::raw("($projectNamesSql) as project_names")
             )
             ->where('ci.company_id', $companyId)
             ->whereNull('ci.check_out_time')
@@ -219,7 +241,24 @@ class CheckInRepository
                         $q2->whereNotNull('ci.pause_start_location')
                             ->where('ci.pause_start_location', '<>', '');
                     });
-            })
+            });
+
+        if ($managerId) {
+            $query->whereExists(function ($sub) use ($managerId, $projectId) {
+                $sub->selectRaw('1')
+                    ->from('tasks as t')
+                    ->join('projects as p', 'p.id', '=', 't.project_id')
+                    ->whereColumn('t.company_id', 'ci.company_id')
+                    ->where('p.project_manager', $managerId)
+                    ->whereRaw('FIND_IN_SET(ci.employee_id, t.assigned_to)');
+
+                if ($projectId) {
+                    $sub->where('p.id', $projectId);
+                }
+            });
+        }
+
+        return $query
             ->orderBy('employee')
             ->get();
     }

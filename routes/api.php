@@ -65,10 +65,12 @@ Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(Not
 // Extra Hours
 Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(ExtraHoursApiController::class)->group(function () {
     Route::post('/api/extra-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.extra.hours.create');
-    Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
     Route::get('/api/extra-hours/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.extra.hours.edit');
     Route::post('/api/extra-hours/update/{companyId}/{employeeId}/{role}', 'update')->name('api.extra.hours.update');
     Route::delete('/api/extra-hours/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.extra.hours.delete');
+});
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(ExtraHoursApiController::class)->group(function () {
+    Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
 });
 
 // Contracts

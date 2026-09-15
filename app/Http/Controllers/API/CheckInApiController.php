@@ -31,14 +31,25 @@ class CheckInApiController extends Controller
         ]);
     }
 
-    public function map(int $companyId, int $employeeId, string $role)
+    public function map(Request $request, int $companyId, int $employeeId, string $role)
     {
         if (!$this->canList($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
+        $normalizedRole = strtolower($role);
+        $managerId = $normalizedRole === 'manager' ? $employeeId : null;
+        $projectId = $managerId && $request->filled('project_id') ? (int) $request->query('project_id') : null;
+
+        if ($normalizedRole === 'manager' && $employeeId <= 0) {
+            return json_encode([
+                'checkIns' => [],
+                'role' => $role,
+            ]);
+        }
+
         return json_encode([
-            'checkIns' => $this->service->getMapLocations($companyId),
+            'checkIns' => $this->service->getMapLocations($companyId, $managerId ?: null, $projectId),
             'role' => $role,
         ]);
     }

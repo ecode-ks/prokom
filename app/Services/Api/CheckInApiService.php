@@ -152,9 +152,9 @@ class CheckInApiService
         return $this->repository->delete($id, $companyId);
     }
 
-    public function getMapLocations(int $companyId): array
+    public function getMapLocations(int $companyId, ?int $managerId = null, ?int $projectId = null): array
     {
-        $rows = $this->repository->getActiveMapLocations($companyId);
+        $rows = $this->repository->getActiveMapLocations($companyId, $managerId, $projectId);
         $locations = [];
 
         foreach ($rows as $row) {
@@ -183,10 +183,14 @@ class CheckInApiService
                 ? __('pages.on_pause')
                 : ($statusKey === 'work' ? __('pages.at_work') : __('pages.checkin_under_review'));
 
+            $position = trim((string) ($row->position ?? ''));
+            $position = $position !== '' ? $position : null;
+
             $locations[] = [
                 'id' => (int) $row->id,
                 'employee_id' => $row->employee_id ? (int) $row->employee_id : null,
                 'name' => $row->employee,
+                'position' => $position,
                 'phone' => $row->employee_phone ?: null,
                 'role' => strtolower((string) ($row->employee_role ?? '')),
                 'lat' => $coords['lat'],

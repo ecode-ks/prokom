@@ -103,12 +103,21 @@ class TasksRepository
     //---------------
     public function getAllEmployees(int $companyId)
     {
-        return DB::table('employees')
+        $latestContracts = DB::table('contracts')
+            ->selectRaw('MAX(id) as id, employee_id')
             ->where('company_id', $companyId)
-            ->where('role', 'employee')
-            ->where('status', 'Active')
-            ->orderBy('employee')
-            ->get(['id', 'employee']);
+            ->groupBy('employee_id');
+
+        return DB::table('employees as e')
+            ->leftJoinSub($latestContracts, 'latest_c', function ($join) {
+                $join->on('e.id', '=', 'latest_c.employee_id');
+            })
+            ->leftJoin('contracts as con', 'con.id', '=', 'latest_c.id')
+            ->where('e.company_id', $companyId)
+            ->where('e.role', 'employee')
+            ->where('e.status', 'Active')
+            ->orderBy('e.employee')
+            ->get(['e.id', 'e.employee', 'con.position']);
     }
     //---------------
     public function getMyOpenTasks(int $employeeId, int $companyId, int $limit = 5)
