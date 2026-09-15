@@ -59,7 +59,7 @@ class UsersApiController extends Controller
 
         if (!$account) {
             return response()->json([
-                'error' => 'Unauthenticated.',
+                'error' => __('pages.unauthenticated'),
             ], 401);
         }
 
@@ -78,7 +78,7 @@ class UsersApiController extends Controller
 
         if (!$account || !$account->currentAccessToken()) {
             return response()->json([
-                'error' => 'Unauthenticated.',
+                'error' => __('pages.unauthenticated'),
             ], 401);
         }
 
@@ -86,7 +86,7 @@ class UsersApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Logged out successfully.',
+            'message' => __('pages.logout_success'),
         ], 200);
     }
 

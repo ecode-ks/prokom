@@ -56,6 +56,7 @@ return [
     'login_success' => 'Mirë se vini në WORKOM! Jeni kyçur me sukses.',
     'login_failed' => 'Kyçja dështoi: :message',
     'logout_success' => 'Ju jeni shkyçur me sukses nga sistemi.',
+    'unauthenticated' => 'Jeni të paautentikuar.',
     'invalid_credentials' => 'Emri i përdoruesit ose fjalëkalimi është i pasaktë.',
     'company_blocked' => 'Kompania nuk është aktive. Pritni që administratori ta aktivizojë llogarinë.',
     'employee_no_company' => 'Punonjësi nuk është i lidhur me asnjë kompani.',

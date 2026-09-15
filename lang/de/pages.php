@@ -56,6 +56,7 @@ return [
     'login_success' => 'Willkommen bei WORKOM! Sie sind angemeldet.',
     'login_failed' => 'Anmeldung fehlgeschlagen: :message',
     'logout_success' => 'Sie wurden erfolgreich abgemeldet.',
+    'unauthenticated' => 'Nicht authentifiziert.',
     'invalid_credentials' => 'Benutzername oder Passwort ist falsch.',
     'company_blocked' => 'Das Unternehmen ist nicht aktiv. Warten Sie, bis der Administrator das Konto aktiviert.',
     'employee_no_company' => 'Der Mitarbeiter ist mit keinem Unternehmen verknüpft.',

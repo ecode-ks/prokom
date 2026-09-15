@@ -2,7 +2,6 @@
 
 namespace App\Services\Api;
 
-use App\Repositories\CompaniesRepository;
 use App\Repositories\EmployeesRepository;
 use App\Repositories\NotificationsRepository;
 use App\Repositories\PushTokensRepository;
@@ -11,7 +10,6 @@ class NotificationsApiService
 {
     protected NotificationsRepository $repository;
     protected EmployeesRepository $employees;
-    protected CompaniesRepository $companies;
     protected PushTokensRepository $pushTokens;
     protected ?array $recipient = null;
     protected array $employeeRoles = ['manager', 'employee', 'finance', 'hr'];
@@ -19,12 +17,10 @@ class NotificationsApiService
     public function __construct(
         NotificationsRepository $repository,
         EmployeesRepository $employees,
-        CompaniesRepository $companies,
         PushTokensRepository $pushTokens
     ) {
         $this->repository = $repository;
         $this->employees = $employees;
-        $this->companies = $companies;
         $this->pushTokens = $pushTokens;
     }
 
@@ -38,15 +34,12 @@ class NotificationsApiService
                     'recipient_type' => 'employee',
                     'recipient_id' => (int) $employee->id,
                 ];
-                $this->applyLocale($this->recipient['company_id']);
                 return $this->recipient;
             }
         }
 
         $role = (string) $role;
         $companyId = (int) $companyId;
-        $this->applyLocale($companyId);
-
         if ($role === 'company' && $companyId > 0) {
             $this->recipient = [
                 'company_id' => $companyId,
@@ -161,21 +154,6 @@ class NotificationsApiService
         $query = parse_url($link, PHP_URL_QUERY);
 
         return $query ? $path . '?' . $query : $path;
-    }
-
-    private function applyLocale(int $companyId): void
-    {
-        if ($companyId <= 0) {
-            return;
-        }
-
-        $company = $this->companies->findCompanyById($companyId);
-        $language = (string) ($company->language ?? 'sq');
-        if (!in_array($language, ['sq', 'en', 'de'], true)) {
-            $language = 'sq';
-        }
-
-        app()->setLocale($language);
     }
 
     public function registerPushToken(string $token, ?string $platform = null): bool

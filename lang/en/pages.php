@@ -56,6 +56,7 @@ return [
     'login_success' => 'Welcome to WORKOM! You are signed in.',
     'login_failed' => 'Sign-in failed: :message',
     'logout_success' => 'You have been signed out successfully.',
+    'unauthenticated' => 'Unauthenticated.',
     'invalid_credentials' => 'The username or password is incorrect.',
     'company_blocked' => 'The company is not active. Wait for the administrator to activate the account.',
     'employee_no_company' => 'The employee is not linked to any company.',
