@@ -17,14 +17,14 @@ use App\Http\Controllers\API\VacationsApiController;
 use App\Http\Controllers\API\ProjectsApiController;
 
 // Users / auth
-Route::controller(UsersApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(UsersApiController::class)->group(function () {
    Route::post('/api/check-login', 'checkLogin')->name('api.check.login');
    Route::post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
    Route::post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
 });
 
 // Company News
-Route::controller(CompanyNewsApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(CompanyNewsApiController::class)->group(function () {
     Route::post('/api/company-news/create/{companyId}/{employeeId}/{role}', 'create')->name('api.company.news.create');
     Route::get('/api/company-news/read/{companyId}/{employeeId}/{role}', 'read')->name('api.company.news.read');
     Route::get('/api/company-news/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.company.news.edit');
@@ -33,14 +33,14 @@ Route::controller(CompanyNewsApiController::class)->group(function () {
 });
 
 // Working Hours
-Route::controller(WorkingHoursApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(WorkingHoursApiController::class)->group(function () {
     Route::post('/api/working-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.working.hours.create');
     Route::get('/api/working-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.working.hours.read');
     Route::delete('/api/working-hours/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.working.hours.delete');
 });
 
 // Check-ins
-Route::controller(CheckInApiController::class)->prefix('check-ins')->group(function () {
+Route::middleware('auth:sanctum')->controller(CheckInApiController::class)->prefix('check-ins')->group(function () {
    Route::get('/', 'read')->name('api.checkins.read');
    Route::get('/api/map', 'map')->name('api.checkins.map');
    Route::get('/api/{id}', 'details')->name('api.checkins.details');
@@ -53,14 +53,14 @@ Route::controller(CheckInApiController::class)->prefix('check-ins')->group(funct
 });
 
 // Notifications
-Route::controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
+Route::middleware('auth:sanctum')->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
    Route::get('/api/', 'read')->name('api.notifications.read');
    Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
    Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
 });
 
 // Extra Hours
-Route::controller(ExtraHoursApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(ExtraHoursApiController::class)->group(function () {
     Route::post('/api/extra-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.extra.hours.create');
     Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
     Route::get('/api/extra-hours/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.extra.hours.edit');
@@ -69,18 +69,18 @@ Route::controller(ExtraHoursApiController::class)->group(function () {
 });
 
 // Contracts
-Route::controller(ContractsApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(ContractsApiController::class)->group(function () {
    Route::get('/api/contracts/read/{companyId}/{employeeId}/{role}', 'read')->name('api.contracts.read');
    Route::get('/api/contracts/{id}/details/{companyId}/{employeeId}/{role}', 'contractDetails')->name('api.contracts.details');
 });
 
 // Salaries
-Route::controller(SalariesApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(SalariesApiController::class)->group(function () {
    Route::get('/api/salaries/read/{companyId}/{employeeId}/{role}', 'read')->name('api.salaries.read');
 });
 
 // Vacations
-Route::controller(VacationsApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(VacationsApiController::class)->group(function () {
    Route::post('/api/vacations/create/{companyId}/{employeeId}/{role}', 'create')->name('api.vacations.create');
    Route::get('/api/vacations/read/{companyId}/{employeeId}/{role}', 'read')->name('api.vacations.read');
    Route::get('/api/vacations/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.vacations.edit');
@@ -89,7 +89,7 @@ Route::controller(VacationsApiController::class)->group(function () {
 });
 
 // Tasks
-Route::controller(TasksApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(TasksApiController::class)->group(function () {
     Route::post('/api/tasks/create/{companyId}/{employeeId}/{role}', 'create')->name('api.tasks.create');
     Route::get('/api/tasks/read/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
     Route::get('/api/tasks/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.tasks.edit');
@@ -100,7 +100,7 @@ Route::controller(TasksApiController::class)->group(function () {
 });
 
 // Task Reports
-Route::controller(TaskReportsApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(TaskReportsApiController::class)->group(function () {
    Route::post('/api/task-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.task.reports.create');
    Route::get('/api/task-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.task.reports.read');
    Route::get('/api/task-reports/{id}/details/{companyId}/{employeeId}/{role}', 'details')->name('api.task.reports.details');
@@ -111,7 +111,7 @@ Route::controller(TaskReportsApiController::class)->group(function () {
 });
 
 // Project Reports
-Route::controller(ProjectReportsApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(ProjectReportsApiController::class)->group(function () {
     Route::post('/api/project-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.project.reports.create');
     Route::get('/api/project-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.project.reports.read');
     Route::get('/api/project-reports/{id}/details/{companyId}/{employeeId}/{role}', 'reportDetails')->name('api.project.reports.details');
@@ -120,24 +120,27 @@ Route::controller(ProjectReportsApiController::class)->group(function () {
     Route::delete('/api/project-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.project.reports.delete');
     Route::get('/api/project-reports/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.project.reports.status');
 });
-  
+
   // Employee Report
 Route::middleware('auth:sanctum')->controller(EmployeeReportApiController::class)->group(function () {
     Route::get('/employee-report/read/{companyId}/{employeeId}/{role}', 'read')
         ->name('api.employee.report.read');
+});
 
 // Projects
-Route::controller(ProjectsApiController::class)->group(function () {
+Route::middleware('auth:sanctum')->controller(ProjectsApiController::class)->group(function () {
     Route::get('/api/projects/read/{companyId}/{employeeId}/{role}', 'read')->name('api.projects.read');
     Route::get('/api/projects/{id}/details/{companyId}/{employeeId}/{role}', 'projectDetails')->name('api.projects.details');
     Route::get('/api/projects/{id}/context/{companyId}/{employeeId}/{role}', 'setProjectContext')->name('api.projects.context');
 });
 
-Route::controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
+Route::middleware('auth:sanctum')->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
     Route::get('/api/', 'read')->name('api.notifications.read');
     Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
     Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
     Route::post('/api/push-token', 'registerPushToken')->name('api.notifications.push.token');
+});
+
 Route::middleware('auth:sanctum')->controller(TaskReportsApiController::class)->group(function () {
     Route::post('/api/task-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.task.reports.create');
     Route::get('/api/task-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.task.reports.read');
@@ -146,6 +149,4 @@ Route::middleware('auth:sanctum')->controller(TaskReportsApiController::class)->
     Route::post('/api/task-reports/update/{companyId}/{employeeId}/{role}', 'update')->name('api.task.reports.update');
     Route::delete('/api/task-reports/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.task.reports.delete');
     Route::get('/api/task-reports/{id}/status/{status}/{companyId}', 'updateStatus')->name('api.task.reports.status');
-});
-
 });
