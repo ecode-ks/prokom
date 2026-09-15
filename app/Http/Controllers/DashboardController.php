@@ -84,7 +84,7 @@ class DashboardController extends Controller
             'isHr' => $role === 'hr',
             'isAdmin' => $role === 'admin',
             'showCheckIn' => in_array($role, ['employee', 'manager', 'finance', 'hr'], true),
-            'showTeamMap' => $role === 'company',
+            'showTeamMap' => in_array($role, ['company', 'manager'], true),
             'showQuickActions' => in_array($role, ['admin', 'company', 'manager', 'employee', 'finance', 'hr'], true),
             'dashboardNews' => $companyId > 0
                 ? $this->companyNewsService->getLatestForDashboard($companyId, 3)

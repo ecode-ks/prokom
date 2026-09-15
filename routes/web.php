@@ -80,10 +80,16 @@ Route::controller(DashboardController::class)->group(function () {
 // Check In
 Route::middleware('authorization:company,manager,hr,finance,employee')->controller(CheckInController::class)->group(function () {
     Route::get('/checkins', 'read')->name('checkins');
+});
+Route::middleware('authorization:company,manager')->controller(CheckInController::class)->group(function () {
     Route::get('/checkins-map', 'map')->name('checkins.map');
+});
+Route::middleware('authorization:company,manager,hr')->controller(CheckInController::class)->group(function () {
     Route::get('/checkin-details/{id}', 'details')->name('checkin.details');
     Route::get('/accept-checkin/{id}', 'accept')->name('accept.checkin');
     Route::get('/delete-checkin/{id}', 'delete')->name('delete.checkin');
+});
+Route::middleware('authorization:company,manager,hr,finance,employee')->controller(CheckInController::class)->group(function () {
     Route::post('/start-work', 'startWork')->name('start.work');
     Route::post('/start-break', 'startBreak')->name('start.break');
     Route::post('/end-break', 'endBreak')->name('end.break');

@@ -353,7 +353,7 @@
                         <div
                             class="checkin-location-item"
                             data-map-index="{{ $index }}"
-                            data-search="{{ strtolower(($loc['name'] ?? '') . ' ' . ($loc['project'] ?? '')) }}"
+                            data-search="{{ strtolower(($loc['name'] ?? '') . ' ' . ($loc['position'] ?? '') . ' ' . ($loc['project'] ?? '')) }}"
                             role="button"
                             tabindex="0"
                         >
@@ -367,6 +367,12 @@
                                             {{ $statusLabel }}
                                         </span>
                                     </div>
+                                    @if(!empty($loc['position']))
+                                        <div class="small text-muted mt-1">
+                                            <i class="fa-solid fa-briefcase me-1 opacity-75"></i>
+                                            {{ __('pages.position') }}: {{ $loc['position'] }}
+                                        </div>
+                                    @endif
                                     <div class="small text-muted mt-1">
                                         <i class="fa-solid fa-diagram-project me-1 opacity-75"></i>
                                         {{ $loc['project'] ?: '-' }}
@@ -411,6 +417,7 @@
     const locations = @json($locations);
     const i18n = {
         project: @json(__('pages.checkin_popup_project')),
+        position: @json(__('pages.position')),
         status: @json(__('pages.checkin_popup_status')),
         checkin: @json(__('pages.checkin_entry')),
         maps: @json(__('pages.checkin_open_maps')),
@@ -472,19 +479,24 @@
 
     function personPopup(p) {
         var mapsQuery = p.lat + ',' + p.lng;
-        return ''
-            + '<div class="checkin-popup-name">' + esc(p.name) + '</div>'
+        var html = ''
+            + '<div class="checkin-popup-name">' + esc(p.name || '') + '</div>';
+        if (p.position) {
+            html += '<div class="checkin-popup-meta">' + esc(i18n.position) + ': ' + esc(p.position) + '</div>';
+        }
+        html += ''
             + '<div class="checkin-popup-meta">' + esc(i18n.project) + ': ' + esc(p.project || '-') + '</div>'
             + '<div class="checkin-popup-meta">' + esc(i18n.status) + ': ' + esc(p.status || '-') + '</div>'
             + '<div class="checkin-popup-meta">' + esc(i18n.checkin) + ': ' + esc(p.check_in_time || '-') + '</div>'
             + '<a class="checkin-popup-link txt-lightblue" href="https://www.google.com/maps?q=' + encodeURIComponent(mapsQuery) + '" target="_blank" rel="noopener noreferrer">' + esc(i18n.maps) + '</a>';
+        return html;
     }
 
     function stackPopup(idxs) {
         var html = '<div class="checkin-popup-name">' + esc(togetherTpl.replace(':count', String(idxs.length))) + '</div>';
         idxs.forEach(function (index) {
             var p = locations[index];
-            html += '<div class="checkin-popup-person"><span class="checkin-marker ' + statusClass(p) + '">' + esc(initials(p.name)) + '</span><span>' + esc(p.name) + ' · ' + esc(p.status || '') + '</span></div>';
+            html += '<div class="checkin-popup-person"><span class="checkin-marker ' + statusClass(p) + '">' + esc(initials(p.name)) + '</span><span>' + esc(p.name || '') + ' · ' + esc(p.status || '') + '</span></div>';
         });
         return html;
     }

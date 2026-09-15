@@ -78,7 +78,7 @@
                         <a href="{{ route('calculate.salary') }}" class="dashboard-quick-btn"><i class="fa-solid fa-calculator"></i> {{ __('pages.nav_calculate_salary') }}</a>
                     @elseif($isHr)
                         <a href="{{ route('employees') }}" class="dashboard-quick-btn"><i class="fa-solid fa-users"></i> {{ __('pages.nav_employees') }}</a>
-                        <a href="{{ route('checkins') }}" class="dashboard-quick-btn"><i class="fa-solid fa-user-check"></i> {{ __('pages.nav_checkin') }}</a>
+                        <a href="{{ route('working.hours') }}" class="dashboard-quick-btn"><i class="fa-solid fa-clock"></i> {{ __('pages.nav_working_hours') }}</a>
                         <a href="{{ route('vacations') }}" class="dashboard-quick-btn"><i class="fa-solid fa-calendar-days"></i> {{ __('pages.nav_vacations') }}</a>
                         <a href="{{ route('contracts') }}" class="dashboard-quick-btn"><i class="fa-solid fa-file-contract"></i> {{ __('pages.nav_contracts') }}</a>
                     @endif

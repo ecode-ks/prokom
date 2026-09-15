@@ -5,7 +5,7 @@
 
 {{-- Page Content --}}
 @section('content')
-    <small class="d-block text-uppercase"><a href="{{ route('checkins') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('pages.back') }}</a></small>
+    <small class="d-block text-uppercase"><a href="{{ in_array(session('role'), ['company', 'manager'], true) ? route('checkins') : route('dashboard') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('pages.back') }}</a></small>
     <h3 class="fw-semibold pt-2">{{ __('pages.checkin_details_title') }}</h3>
     <p class="text-muted">{{ __('pages.checkin_details_lead') }}</p>
     <hr class="mb-4">

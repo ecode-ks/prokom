@@ -49,7 +49,7 @@ class UsersApiService
             return [
                 'token' => $token,
 
-                'user' => [
+                'user' => $this->withContact([
                     'id' => (int) $user->id,
                     'username' => $user->username,
                     'role' => $user->role,
@@ -61,7 +61,7 @@ class UsersApiService
 
                     'language' => 'sq',
                     'account_type' => 'user',
-                ],
+                ], $user),
             ];
         }
 
@@ -95,7 +95,7 @@ class UsersApiService
             return [
                 'token' => $token,
 
-                'user' => [
+                'user' => $this->withContact([
                     'id' => (int) $company->id,
                     'username' => $company->username,
                     'role' => 'company',
@@ -111,7 +111,7 @@ class UsersApiService
                     ),
 
                     'account_type' => 'company',
-                ],
+                ], $company),
             ];
         }
 
@@ -190,7 +190,7 @@ class UsersApiService
             return [
                 'token' => $token,
 
-                'user' => [
+                'user' => $this->withContact([
                     'id' => (int) $employee->id,
                     'username' => $employee->username,
                     'role' => $employee->role,
@@ -207,7 +207,7 @@ class UsersApiService
                     ),
 
                     'account_type' => 'employee',
-                ],
+                ], $employee),
             ];
         }
 
@@ -238,7 +238,7 @@ class UsersApiService
         */
 
         if ($account instanceof UsersModel) {
-            return [
+            return $this->withContact([
                 'id' => (int) $account->id,
                 'username' => $account->username,
                 'role' => $account->role,
@@ -252,7 +252,7 @@ class UsersApiService
                 'language' => 'sq',
 
                 'account_type' => 'user',
-            ];
+            ], $account);
         }
 
         /*
@@ -272,7 +272,7 @@ class UsersApiService
                         );
             }
 
-            return [
+            return $this->withContact([
                 'id' => (int) $account->id,
                 'username' => $account->username,
                 'role' => $account->role,
@@ -292,7 +292,7 @@ class UsersApiService
                 ),
 
                 'account_type' => 'employee',
-            ];
+            ], $account);
         }
 
         /*
@@ -302,7 +302,7 @@ class UsersApiService
         */
 
         if ($this->isCompany($account)) {
-            return [
+            return $this->withContact([
                 'id' => (int) $account->id,
                 'username' => $account->username,
                 'role' => 'company',
@@ -319,7 +319,7 @@ class UsersApiService
                 ),
 
                 'account_type' => 'company',
-            ];
+            ], $account);
         }
 
         throw new \Exception(
@@ -434,6 +434,14 @@ class UsersApiService
     /**
      * Normalize supported languages.
      */
+    private function withContact(array $identity, $account): array
+    {
+        $identity['email'] = !empty($account->email) ? (string) $account->email : null;
+        $identity['phone'] = !empty($account->phone) ? (string) $account->phone : null;
+
+        return $identity;
+    }
+
     private function normalizeLanguage(
         ?string $language
     ): string {

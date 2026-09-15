@@ -39,7 +39,7 @@
                                 $selectedEmployeeLabels = [];
                                 foreach ($employees as $employee) {
                                     if (in_array((string) $employee->id, $selectedEmployees, true)) {
-                                        $selectedEmployeeLabels[] = $employee->employee . (!empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '');
+                                        $selectedEmployeeLabels[] = $employee->employee . (!empty($employee->position) ? ' (' . $employee->position . ')' : '');
                                     }
                                 }
                                 $selectedEmployeesText = count($selectedEmployeeLabels) > 0
@@ -67,11 +67,11 @@
                                                 name="assigned_to[]"
                                                 value="{{ $employee->id }}"
                                                 id="assigned_to_edit_{{ $employee->id }}"
-                                                data-label="{{ $employee->employee }}{{ !empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '' }}"
+                                                data-label="{{ $employee->employee }}{{ !empty($employee->position) ? ' (' . $employee->position . ')' : '' }}"
                                                 {{ in_array((string) $employee->id, $selectedEmployees, true) ? 'checked' : '' }}
                                             >
                                             <span class="flex-grow-1">
-                                                {{ $employee->employee }}
+                                                {{ $employee->employee }}{{ !empty($employee->position) ? ' (' . $employee->position . ')' : '' }}
                                                 @if(!empty($employee->leave_label))
                                                     <small class="d-block text-warning">{{ $employee->leave_label }}</small>
                                                 @endif
@@ -168,7 +168,7 @@
                                 $oldAssignedLabels = [];
                                 foreach ($employees as $employee) {
                                     if (in_array((string) $employee->id, $oldAssignedTo, true)) {
-                                        $oldAssignedLabels[] = $employee->employee . (!empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '');
+                                        $oldAssignedLabels[] = $employee->employee . (!empty($employee->position) ? ' (' . $employee->position . ')' : '');
                                     }
                                 }
                                 $oldAssignedText = count($oldAssignedLabels) > 0
@@ -196,11 +196,11 @@
                                                 name="assigned_to[]"
                                                 value="{{ $employee->id }}"
                                                 id="assigned_to_create_{{ $employee->id }}"
-                                                data-label="{{ $employee->employee }}{{ !empty($employee->leave_label) ? ' (' . $employee->leave_label . ')' : '' }}"
+                                                data-label="{{ $employee->employee }}{{ !empty($employee->position) ? ' (' . $employee->position . ')' : '' }}"
                                                 {{ in_array((string) $employee->id, $oldAssignedTo, true) ? 'checked' : '' }}
                                             >
                                             <span class="flex-grow-1">
-                                                {{ $employee->employee }}
+                                                {{ $employee->employee }}{{ !empty($employee->position) ? ' (' . $employee->position . ')' : '' }}
                                                 @if(!empty($employee->leave_label))
                                                     <small class="d-block text-warning">{{ $employee->leave_label }}</small>
                                                 @endif

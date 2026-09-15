@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Services\Api\ContractsApiService;
+use App\Support\PayTypes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
@@ -85,6 +86,24 @@ class ContractsApiController extends Controller
         if ($role === 'employee' && (int) ($contractDetails->employee_id ?? 0) !== (int) $employeeId) {
             return json_encode(['error' => __('pages.contract_not_found')]);
         }
+
+        $payType = $contractDetails->pay_type ?? PayTypes::MONTHLY;
+        $docs = $contractDetails->docs ?? [];
+        if (is_string($docs)) {
+            $docs = json_decode($docs, true) ?: [];
+        }
+
+        $contractDetails->pay_type = $payType;
+        $contractDetails->pay_type_label = PayTypes::label($payType);
+        $contractDetails->rate_label = PayTypes::rateLabel($payType);
+        $contractDetails->docs = collect(is_array($docs) ? $docs : [])
+            ->filter()
+            ->map(fn ($doc) => [
+                'path' => $doc,
+                'name' => basename((string) $doc),
+            ])
+            ->values()
+            ->all();
 
         return json_encode([
             'contractDetails' => $contractDetails,

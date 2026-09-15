@@ -18,6 +18,8 @@ class ExtraHoursApiController extends Controller
 
     public function create(Request $request, int $companyId, int $employeeId, string $role)
     {
+        $role = strtolower($role);
+
         if (!$this->canManage($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
@@ -44,8 +46,20 @@ class ExtraHoursApiController extends Controller
 
     public function read(Request $request, int $companyId, int $employeeId, string $role)
     {
+        $role = strtolower($role);
+
         if (!$this->canView($role)) {
             return json_encode(['error' => __('pages.no_access')]);
+        }
+
+        if ($role === 'employee' && $employeeId <= 0) {
+            return json_encode([
+                'extraHours' => [],
+                'employees' => collect(),
+                'types' => $this->service->getTypes(),
+                'canManage' => false,
+                'role' => $role,
+            ]);
         }
 
         $search = $request->query('search', '');
@@ -73,6 +87,8 @@ class ExtraHoursApiController extends Controller
 
     public function edit(int $id, int $companyId, int $employeeId, string $role)
     {
+        $role = strtolower($role);
+
         if (!$this->canManage($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
@@ -91,6 +107,8 @@ class ExtraHoursApiController extends Controller
 
     public function update(Request $request, int $companyId, int $employeeId, string $role)
     {
+        $role = strtolower($role);
+
         if (!$this->canManage($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
@@ -120,6 +138,8 @@ class ExtraHoursApiController extends Controller
 
     public function delete(int $id, int $companyId, int $employeeId, string $role)
     {
+        $role = strtolower($role);
+
         if (!$this->canManage($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }

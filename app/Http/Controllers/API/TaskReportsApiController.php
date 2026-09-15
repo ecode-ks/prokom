@@ -18,7 +18,7 @@ class TaskReportsApiController extends Controller
 
     public function create(Request $request, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canUse($role)) {
+        if (!$this->canMutate($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
@@ -63,9 +63,10 @@ class TaskReportsApiController extends Controller
         $search = trim((string) $request->query('search', ''));
 
         return json_encode([
-            'tasks' => $this->service->getAvailableTasks($companyId, $role, $employeeId),
+            'tasks' => $this->canMutate($role) ? $this->service->getAvailableTasks($companyId, $role, $employeeId) : collect(),
             'reports' => $this->service->getReports(10, $companyId, $role, $employeeId, $search),
             'reportStats' => $this->service->getReportStatistics($companyId, $role, $employeeId ?: null),
+            'canCreate' => $this->canMutate($role),
             'role' => $role,
         ]);
     }
@@ -92,7 +93,7 @@ class TaskReportsApiController extends Controller
 
     public function edit(int $id, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canUse($role)) {
+        if (!$this->canMutate($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
@@ -113,7 +114,7 @@ class TaskReportsApiController extends Controller
 
     public function update(Request $request, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canUse($role)) {
+        if (!$this->canMutate($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
@@ -159,7 +160,7 @@ class TaskReportsApiController extends Controller
 
     public function delete(int $id, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canUse($role)) {
+        if (!$this->canMutate($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
@@ -181,7 +182,7 @@ class TaskReportsApiController extends Controller
 
     public function updateStatus(int $id, string $status, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canUse($role)) {
+        if (!$this->canMutate($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
@@ -212,5 +213,10 @@ class TaskReportsApiController extends Controller
     private function canUse(string $role): bool
     {
         return in_array($role, ['company', 'manager', 'employee'], true);
+    }
+
+    private function canMutate(string $role): bool
+    {
+        return in_array($role, ['manager', 'employee'], true);
     }
 }

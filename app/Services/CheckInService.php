@@ -153,7 +153,9 @@ class CheckInService
     //---------------
     public function getMapLocations(): array
     {
-        $rows = $this->repository->getActiveMapLocations($this->companyId);
+        $managerId = session('role') === 'manager' ? ($this->employeeId ?: null) : null;
+        $projectId = $managerId ? ((int) (session('project_id') ?? 0) ?: null) : null;
+        $rows = $this->repository->getActiveMapLocations($this->companyId, $managerId, $projectId);
         $locations = [];
 
         foreach ($rows as $row) {
@@ -182,10 +184,14 @@ class CheckInService
                 ? __('pages.on_pause')
                 : ($statusKey === 'work' ? __('pages.at_work') : __('pages.checkin_under_review'));
 
+            $position = trim((string) ($row->position ?? ''));
+            $position = $position !== '' ? $position : null;
+
             $locations[] = [
                 'id' => (int) $row->id,
                 'employee_id' => $row->employee_id ? (int) $row->employee_id : null,
                 'name' => $row->employee,
+                'position' => $position,
                 'phone' => $row->employee_phone ?: null,
                 'role' => strtolower((string) ($row->employee_role ?? '')),
                 'lat' => $coords['lat'],

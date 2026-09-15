@@ -44,7 +44,7 @@ class CheckApiPaymentExpired
             'code' => 'payment_expired',
             'error' => $message,
             'alert' => $message,
-            'payment_expire' => $company->payment_expire,
+            'payment_expire' => \Illuminate\Support\Carbon::parse($company->payment_expire)->toDateString(),
         ], 403);
     }
 

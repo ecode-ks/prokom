@@ -76,16 +76,18 @@ class TasksApiController extends Controller
                 'tasks' => $this->service->getTasks(10, $search, $companyId, $scopedEmployeeId),
                 'taskStats' => $this->service->getTaskStatistics($search, $companyId, $scopedEmployeeId),
                 'canManage' => false,
+                'canChangeStatus' => true,
                 'role' => $role,
             ]);
         }
 
         return json_encode([
-            'employees' => $this->service->getAllEmployees($companyId),
+            'employees' => $this->canManage($role) ? $this->service->getAllEmployees($companyId) : collect(),
             'projects' => $this->service->getAllProjects($companyId, $scopedManagerId),
             'tasks' => $this->service->getTasks(10, $search, $companyId, null, $scopedManagerId),
             'taskStats' => $this->service->getTaskStatistics($search, $companyId, null, $scopedManagerId),
-            'canManage' => true,
+            'canManage' => $this->canManage($role),
+            'canChangeStatus' => $this->canChangeStatus($role),
             'role' => $role,
         ]);
     }
@@ -138,6 +140,7 @@ class TasksApiController extends Controller
             'taskDetails' => $taskDetails,
             'taskStatuses' => $this->service->getTaskStatuses(),
             'canManage' => $this->canManage($role),
+            'canChangeStatus' => $this->canChangeStatus($role),
             'role' => $role,
         ]);
     }
@@ -213,7 +216,7 @@ class TasksApiController extends Controller
 
     public function updateStatus(int $id, string $status, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canView($role)) {
+        if (!$this->canChangeStatus($role)) {
             return json_encode(['error' => __('pages.no_access')]);
         }
 
@@ -251,7 +254,12 @@ class TasksApiController extends Controller
 
     private function canManage(string $role): bool
     {
-        return in_array($role, ['company', 'manager'], true);
+        return $role === 'manager';
+    }
+
+    private function canChangeStatus(string $role): bool
+    {
+        return in_array($role, ['manager', 'employee'], true);
     }
 
     private function canView(string $role): bool
