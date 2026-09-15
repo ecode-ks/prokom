@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'authorization' => \App\Http\Middleware\CheckAuthorization::class,
             'payment.expired' => \App\Http\Middleware\CheckPaymentExpired::class,
             'api.locale' => \App\Http\Middleware\SetApiLocale::class,
+            'api.payment' => \App\Http\Middleware\CheckApiPaymentExpired::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

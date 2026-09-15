@@ -19,12 +19,12 @@ use App\Http\Controllers\API\ProjectsApiController;
 // Users / auth
 Route::controller(UsersApiController::class)->group(function () {
    Route::post('/api/check-login', 'checkLogin')->name('api.check.login');
-   Route::middleware(['auth:sanctum', 'api.locale'])->post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
+   Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
 //    Route::middleware('auth:sanctum')->post('/api/update-company-language', 'updateCompanyLanguage')->name('api.update.company.language');
 });
 
 // Company News
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(CompanyNewsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(CompanyNewsApiController::class)->group(function () {
     Route::post('/api/company-news/create/{companyId}/{employeeId}/{role}', 'create')->name('api.company.news.create');
     Route::get('/api/company-news/read/{companyId}/{employeeId}/{role}', 'read')->name('api.company.news.read');
     Route::get('/api/company-news/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.company.news.edit');
@@ -33,14 +33,14 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(CompanyNewsApiCont
 });
 
 // Working Hours
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(WorkingHoursApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(WorkingHoursApiController::class)->group(function () {
     Route::post('/api/working-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.working.hours.create');
     Route::get('/api/working-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.working.hours.read');
     Route::delete('/api/working-hours/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.working.hours.delete');
 });
 
 // Check-ins
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(CheckInApiController::class)->prefix('check-ins')->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(CheckInApiController::class)->prefix('check-ins')->group(function () {
    Route::get('/', 'read')->name('api.checkins.read');
    Route::get('/api/map', 'map')->name('api.checkins.map');
    Route::get('/api/{id}', 'details')->name('api.checkins.details');
@@ -53,14 +53,14 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(CheckInApiControll
 });
 
 // Notifications
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
    Route::get('/api/', 'read')->name('api.notifications.read');
    Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
    Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
 });
 
 // Extra Hours
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(ExtraHoursApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(ExtraHoursApiController::class)->group(function () {
     Route::post('/api/extra-hours/create/{companyId}/{employeeId}/{role}', 'create')->name('api.extra.hours.create');
     Route::get('/api/extra-hours/read/{companyId}/{employeeId}/{role}', 'read')->name('api.extra.hours.read');
     Route::get('/api/extra-hours/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.extra.hours.edit');
@@ -69,18 +69,18 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(ExtraHoursApiContr
 });
 
 // Contracts
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(ContractsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(ContractsApiController::class)->group(function () {
    Route::get('/api/contracts/read/{companyId}/{employeeId}/{role}', 'read')->name('api.contracts.read');
    Route::get('/api/contracts/{id}/details/{companyId}/{employeeId}/{role}', 'contractDetails')->name('api.contracts.details');
 });
 
 // Salaries
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(SalariesApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(SalariesApiController::class)->group(function () {
    Route::get('/api/salaries/read/{companyId}/{employeeId}/{role}', 'read')->name('api.salaries.read');
 });
 
 // Vacations
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(VacationsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(VacationsApiController::class)->group(function () {
    Route::post('/api/vacations/create/{companyId}/{employeeId}/{role}', 'create')->name('api.vacations.create');
    Route::get('/api/vacations/read/{companyId}/{employeeId}/{role}', 'read')->name('api.vacations.read');
    Route::get('/api/vacations/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.vacations.edit');
@@ -89,7 +89,7 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(VacationsApiContro
 });
 
 // Tasks
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(TasksApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(TasksApiController::class)->group(function () {
     Route::post('/api/tasks/create/{companyId}/{employeeId}/{role}', 'create')->name('api.tasks.create');
     Route::get('/api/tasks/read/{companyId}/{employeeId}/{role}', 'read')->name('api.tasks.read');
     Route::get('/api/tasks/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.tasks.edit');
@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(TasksApiController
 });
 
 // Task Reports
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(TaskReportsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(TaskReportsApiController::class)->group(function () {
    Route::post('/api/task-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.task.reports.create');
    Route::get('/api/task-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.task.reports.read');
    Route::get('/api/task-reports/{id}/details/{companyId}/{employeeId}/{role}', 'details')->name('api.task.reports.details');
@@ -111,7 +111,7 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(TaskReportsApiCont
 });
 
 // Project Reports
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(ProjectReportsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(ProjectReportsApiController::class)->group(function () {
     Route::post('/api/project-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.project.reports.create');
     Route::get('/api/project-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.project.reports.read');
     Route::get('/api/project-reports/{id}/details/{companyId}/{employeeId}/{role}', 'reportDetails')->name('api.project.reports.details');
@@ -122,26 +122,26 @@ Route::middleware(['auth:sanctum', 'api.locale'])->controller(ProjectReportsApiC
 });
 
   // Employee Report
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(EmployeeReportApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(EmployeeReportApiController::class)->group(function () {
     Route::get('/employee-report/read/{companyId}/{employeeId}/{role}', 'read')
         ->name('api.employee.report.read');
 });
 
 // Projects
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(ProjectsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(ProjectsApiController::class)->group(function () {
     Route::get('/api/projects/read/{companyId}/{employeeId}/{role}', 'read')->name('api.projects.read');
     Route::get('/api/projects/{id}/details/{companyId}/{employeeId}/{role}', 'projectDetails')->name('api.projects.details');
     Route::get('/api/projects/{id}/context/{companyId}/{employeeId}/{role}', 'setProjectContext')->name('api.projects.context');
 });
 
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
     Route::get('/api/', 'read')->name('api.notifications.read');
     Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
     Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
     Route::post('/api/push-token', 'registerPushToken')->name('api.notifications.push.token');
 });
 
-Route::middleware(['auth:sanctum', 'api.locale'])->controller(TaskReportsApiController::class)->group(function () {
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(TaskReportsApiController::class)->group(function () {
     Route::post('/api/task-reports/create/{companyId}/{employeeId}/{role}', 'create')->name('api.task.reports.create');
     Route::get('/api/task-reports/read/{companyId}/{employeeId}/{role}', 'read')->name('api.task.reports.read');
     Route::get('/api/task-reports/{id}/details/{companyId}/{employeeId}/{role}', 'details')->name('api.task.reports.details');
