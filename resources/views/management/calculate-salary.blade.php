@@ -153,9 +153,9 @@
                                 <div class="salary-calc-meta">
                                     <span>{{ $row->position ?: __('pages.no_position') }}</span>
                                     <span class="salary-calc-dot"></span>
-                                    <span>{{ \App\Support\PayTypes::label($payType) }}</span>
+                                    <span>{{ \App\Services\ContractsService::payTypeLabel($payType) }}</span>
                                     <span class="salary-calc-dot"></span>
-                                    <span>{{ \App\Support\PayTypes::label($payType) }}</span>
+                                    <span>{{ \App\Services\ContractsService::payTypeLabel($payType) }}</span>
                                     <span class="salary-calc-dot"></span>
                                     <span>
                                         {{ __('pages.contract_label', [
@@ -169,7 +169,7 @@
 
                         <div class="salary-calc-metrics">
                             <div class="salary-calc-metric">
-                                <small>{{ \App\Support\PayTypes::rateLabel($payType) }}</small>
+                                <small>{{ \App\Services\ContractsService::payRateLabel($payType) }}</small>
                                 <strong>€{{ number_format($basePay, 2) }}</strong>
                                 <div class="salary-calc-extra-eq">
                                     <span>{{ $baseEq }}</span>

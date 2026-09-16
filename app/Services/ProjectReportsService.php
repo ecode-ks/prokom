@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Repositories\ProjectReportsRepository;
-use App\Support\StoredFiles;
 
 class ProjectReportsService
 {
+    use DeletesStoredFiles;
     protected ProjectReportsRepository $repository;
     protected ProjectsService $projects;
     protected NotificationsService $notifications;
@@ -128,7 +128,7 @@ class ProjectReportsService
         }
 
         if (!empty($data['images'])) {
-            StoredFiles::delete($report->images ?? null);
+            $this->deleteStoredFiles($report->images ?? null);
             $data['images'] = $this->storeImages($data['images']);
         } else {
             unset($data['images']);
@@ -144,19 +144,19 @@ class ProjectReportsService
             return false;
         }
 
-        StoredFiles::delete($report->images ?? null);
+        $this->deleteStoredFiles($report->images ?? null);
 
         return $this->repository->delete($id, $companyId);
     }
     //---------------
     public function deleteStoredFilesForCompany(int $companyId): void
     {
-        StoredFiles::deleteMany($this->repository->getImagePayloadsByCompany($companyId));
+        $this->deleteManyStoredFiles($this->repository->getImagePayloadsByCompany($companyId));
     }
     //---------------
     public function deleteStoredFilesForProject(int $projectId, int $companyId): void
     {
-        StoredFiles::deleteMany($this->repository->getImagePayloadsByProject($projectId, $companyId));
+        $this->deleteManyStoredFiles($this->repository->getImagePayloadsByProject($projectId, $companyId));
     }
     //---------------
     public function updateReportStatus(int $id, string $status, int $companyId): bool

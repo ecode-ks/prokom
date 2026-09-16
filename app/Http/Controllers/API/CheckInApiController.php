@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Services\Api\CheckInApiService;
-use App\Support\CheckInMapLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
@@ -51,7 +50,7 @@ class CheckInApiController extends Controller
         }
 
         $projects = $this->service->getMapProjects($companyId, $managerId ?: null);
-        $locations = CheckInMapLinks::hydrate(
+        $locations = $this->service->attachMapProjectLinks(
             $this->service->getMapLocations($companyId, $managerId ?: null, $projectId),
             $projects,
             $companyId,

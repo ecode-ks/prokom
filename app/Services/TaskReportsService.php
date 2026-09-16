@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Repositories\TaskReportsRepository;
-use App\Support\StoredFiles;
 
 class TaskReportsService
 {
+    use DeletesStoredFiles;
     protected TaskReportsRepository $repository;
     protected TasksService $tasks;
     protected NotificationsService $notifications;
@@ -34,30 +34,13 @@ class TaskReportsService
         return $this->repository->getAllTasks($companyId);
     }
     //---------------
-    public function createReport(array $data, string $role, ?int $employeeId, int $companyId): bool
+    public function taskExists(int $taskId, int $companyId): bool
     {
-        if ($role === 'company') {
-            return false;
-        }
-
-        $taskId = $data['task_id'];
-
-        if (!$this->repository->taskExists($taskId, $companyId)) {
-            return false;
-        }
-
-        if ($role === 'manager' && $employeeId) {
-            if (!$this->repository->isTaskManagedBy($taskId, $companyId, $employeeId)) {
-                return false;
-            }
-        }
-
-        if ($role === 'employee' && $employeeId) {
-            if (!$this->repository->isTaskAssignedToEmployee($taskId, $companyId, $employeeId)) {
-                return false;
-            }
-        }
-
+        return $this->repository->taskExists($taskId, $companyId);
+    }
+    //---------------
+    public function createReport(array $data): bool
+    {
         if (!empty($data['images'])) {
             $data['images'] = $this->storeImages($data['images']);
         } else {
@@ -68,28 +51,30 @@ class TaskReportsService
             $data['status'] = 'active';
         }
 
-        if (empty($data['date'])) {
-            $data['date'] = now();
-        }
-
         $reportId = $this->repository->create($data);
         if ($reportId <= 0) {
             return false;
         }
 
-        $task = $this->tasks->getTaskById((int) $taskId, $companyId);
-        $taskTitle = $task->title ?? ('#' . $taskId);
+        $companyId = (int) ($data['company_id'] ?? 0);
+        $taskId = (int) ($data['task_id'] ?? 0);
+        $task = $taskId > 0 ? $this->tasks->getTaskById($taskId, $companyId) : null;
+        $taskTitle = $task?->title ?? ('#' . $taskId);
 
-        $this->notifications->notify(
-            $companyId,
-            'company',
-            $companyId,
-            'task_report',
-            'pages.notif_task_report',
-            'pages.notif_task_report_body',
-            route('task.report.details', $reportId),
-            ['title' => $taskTitle]
-        );
+        try {
+            $this->notifications->notify(
+                $companyId,
+                'company',
+                $companyId,
+                'task_report',
+                'pages.notif_task_report',
+                'pages.notif_task_report_body',
+                route('task.report.details', $reportId),
+                ['title' => $taskTitle]
+            );
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Task report notify failed: '.$e->getMessage());
+        }
 
         return true;
     }
@@ -143,37 +128,15 @@ class TaskReportsService
         return $report;
     }
     //---------------
-    public function updateReport(int $id, array $data, string $role, ?int $employeeId, int $companyId): bool
+    public function updateReport(int $id, array $data, int $companyId): bool
     {
-        if ($role === 'company') {
-            return false;
-        }
-
         $report = $this->repository->findReport($id, $companyId);
         if (!$report) {
             return false;
         }
 
-        $taskId = (int) $data['task_id'];
-
-        if (!$this->repository->taskExists($taskId, $companyId)) {
-            return false;
-        }
-
-        if ($role === 'manager' && $employeeId) {
-            if (!$this->repository->isTaskManagedBy($taskId, $companyId, $employeeId)) {
-                return false;
-            }
-        }
-
-        if ($role === 'employee' && $employeeId) {
-            if (!$this->repository->isTaskAssignedToEmployee($taskId, $companyId, $employeeId)) {
-                return false;
-            }
-        }
-
         if (!empty($data['images'])) {
-            StoredFiles::delete($report->images ?? null);
+            $this->deleteStoredFiles($report->images ?? null);
             $data['images'] = $this->storeImages($data['images']);
         } else {
             unset($data['images']);
@@ -189,24 +152,24 @@ class TaskReportsService
             return false;
         }
 
-        StoredFiles::delete($report->images ?? null);
+        $this->deleteStoredFiles($report->images ?? null);
 
         return $this->repository->delete($id, $companyId);
     }
     //---------------
     public function deleteStoredFilesForCompany(int $companyId): void
     {
-        StoredFiles::deleteMany($this->repository->getImagePayloadsByCompany($companyId));
+        $this->deleteManyStoredFiles($this->repository->getImagePayloadsByCompany($companyId));
     }
     //---------------
     public function deleteStoredFilesForTask(int $taskId, int $companyId): void
     {
-        StoredFiles::deleteMany($this->repository->getImagePayloadsByTask($taskId, $companyId));
+        $this->deleteManyStoredFiles($this->repository->getImagePayloadsByTask($taskId, $companyId));
     }
     //---------------
     public function deleteStoredFilesForProject(int $projectId, int $companyId): void
     {
-        StoredFiles::deleteMany($this->repository->getImagePayloadsByProject($projectId, $companyId));
+        $this->deleteManyStoredFiles($this->repository->getImagePayloadsByProject($projectId, $companyId));
     }
     //---------------
     public function deleteReportsForTask(int $taskId, int $companyId): void
@@ -253,6 +216,10 @@ class TaskReportsService
         $paths = [];
 
         foreach ($images as $image) {
+            if (!is_object($image) || !method_exists($image, 'storeAs')) {
+                continue;
+            }
+
             $fileName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME)
                 . '_' . time() . '_' . uniqid()
                 . '.' . $image->getClientOriginalExtension();

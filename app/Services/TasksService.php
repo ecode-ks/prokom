@@ -5,11 +5,11 @@ namespace App\Services;
 use App\Repositories\TasksRepository;
 use App\Repositories\TaskReportsRepository;
 use App\Repositories\VacationsRepository;
-use App\Support\StoredFiles;
 use Carbon\Carbon;
 
 class TasksService
 {
+    use DeletesStoredFiles;
     protected TasksRepository $repository;
     protected VacationsRepository $vacations;
     protected NotificationsService $notifications;
@@ -165,7 +165,7 @@ class TasksService
             return false;
         }
 
-        StoredFiles::deleteMany($this->taskReports->getImagePayloadsByTask($id, $companyId));
+        $this->deleteManyStoredFiles($this->taskReports->getImagePayloadsByTask($id, $companyId));
         $this->taskReports->deleteByTask($id, $companyId);
 
         return $this->repository->delete($id, $companyId);

@@ -5,10 +5,10 @@ namespace App\Services;
 use App\Repositories\ProjectReportsRepository;
 use App\Repositories\ProjectsRepository;
 use App\Repositories\TaskReportsRepository;
-use App\Support\StoredFiles;
 
 class ProjectsService
 {
+    use DeletesStoredFiles;
     protected ProjectsRepository $repository;
     protected ClientsService $clients;
     protected ProjectReportsRepository $projectReports;
@@ -118,8 +118,8 @@ class ProjectsService
         }
 
         // Cascade DB deletes leave orphan files — clean storage first.
-        StoredFiles::deleteMany($this->projectReports->getImagePayloadsByProject($id, $companyId));
-        StoredFiles::deleteMany($this->taskReports->getImagePayloadsByProject($id, $companyId));
+        $this->deleteManyStoredFiles($this->projectReports->getImagePayloadsByProject($id, $companyId));
+        $this->deleteManyStoredFiles($this->taskReports->getImagePayloadsByProject($id, $companyId));
         $this->taskReports->deleteByProject($id, $companyId);
 
         return $this->repository->delete($id, $companyId);

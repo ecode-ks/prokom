@@ -1,17 +1,14 @@
 <?php
 
-namespace App\Support;
+namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
 
-class StoredFiles
+trait DeletesStoredFiles
 {
-    /**
-     * Delete files stored on the public disk from a JSON column value or path list.
-     */
-    public static function delete(mixed $payload): void
+    private function deleteStoredFiles(mixed $payload): void
     {
-        $paths = self::paths($payload);
+        $paths = $this->storedFilePaths($payload);
         if ($paths === []) {
             return;
         }
@@ -19,20 +16,14 @@ class StoredFiles
         Storage::disk('public')->delete($paths);
     }
 
-    /**
-     * Delete many JSON/path payloads (e.g. pluck from DB).
-     */
-    public static function deleteMany(iterable $payloads): void
+    private function deleteManyStoredFiles(iterable $payloads): void
     {
         foreach ($payloads as $payload) {
-            self::delete($payload);
+            $this->deleteStoredFiles($payload);
         }
     }
 
-    /**
-     * @return list<string>
-     */
-    public static function paths(mixed $payload): array
+    private function storedFilePaths(mixed $payload): array
     {
         if ($payload === null || $payload === '') {
             return [];
@@ -57,7 +48,6 @@ class StoredFiles
         }
 
         $paths = [];
-
         foreach ($items as $item) {
             if (!is_string($item) || trim($item) === '') {
                 continue;

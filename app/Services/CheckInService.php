@@ -5,12 +5,11 @@ namespace App\Services;
 use App\Repositories\CheckInRepository;
 use App\Repositories\ProjectsRepository;
 use App\Repositories\WorkingHoursRepository;
-use App\Support\GeoPoint;
-use App\Support\ProjectMapPins;
 use Carbon\Carbon;
 
 class CheckInService
 {
+    use CheckInMapHelpers;
     protected int $companyId;
     protected int $employeeId;
     protected CheckInRepository $repository;
@@ -172,7 +171,7 @@ class CheckInService
                 ? $row->pause_start_location
                 : ($row->check_in_location ?? null);
 
-            $coords = GeoPoint::parse($rawLocation);
+            $coords = $this->parseLatLng($rawLocation);
             if (!$coords) {
                 continue;
             }
@@ -221,12 +220,7 @@ class CheckInService
         $managerId = session('role') === 'manager' ? ($this->employeeId ?: null) : null;
         $rows = $this->projectsRepository->getProjectsForMap($this->companyId, $managerId);
 
-        return ProjectMapPins::fromRows($rows);
-    }
-    //---------------
-    private function parseLatLng(?string $value): ?array
-    {
-        return GeoPoint::parse($value);
+        return $this->projectMapPinsFromRows($rows);
     }
     //---------------
     private function syncToWorkingHours(object $checkin, ?string $checkOutTime): void

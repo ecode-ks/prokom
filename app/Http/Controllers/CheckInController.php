@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\CheckInService;
-use App\Support\CheckInMapLinks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -41,7 +40,7 @@ class CheckInController extends Controller
             })
             ->all();
         $managerId = session('role') === 'manager' ? ((int) session('employee_id') ?: null) : null;
-        $locations = CheckInMapLinks::hydrate(
+        $locations = $this->service->attachMapProjectLinks(
             $locations,
             $projects,
             (int) session('company_id'),

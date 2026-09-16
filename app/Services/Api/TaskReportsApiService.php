@@ -10,9 +10,9 @@ class TaskReportsApiService
     {
     }
 
-    public function createReport(array $data, string $role, ?int $employeeId, int $companyId): bool
+    public function createReport(array $data): bool
     {
-        return $this->reports->createReport($data, $role, $employeeId, $companyId);
+        return $this->reports->createReport($data);
     }
 
     public function getAvailableTasks(int $companyId, string $role, ?int $employeeId)
@@ -50,9 +50,9 @@ class TaskReportsApiService
         return $this->reports->getReportById($id, $companyId);
     }
 
-    public function updateReport(int $id, array $data, string $role, ?int $employeeId, int $companyId): bool
+    public function updateReport(int $id, array $data, int $companyId): bool
     {
-        return $this->reports->updateReport($id, $data, $role, $employeeId, $companyId);
+        return $this->reports->updateReport($id, $data, $companyId);
     }
 
     public function deleteReport(int $id, int $companyId): bool
