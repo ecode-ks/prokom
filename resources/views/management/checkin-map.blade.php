@@ -239,6 +239,39 @@
         border-color: rgba(37, 99, 235, 0.35);
         box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
+    .checkin-map-item-head {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        width: 100%;
+    }
+    .checkin-map-item-head .checkin-map-item-name {
+        flex: 1;
+        min-width: 0;
+        font-weight: 600;
+        color: #071838;
+        line-height: 1.25;
+    }
+    .checkin-map-chevron {
+        color: #94A3B8;
+        font-size: 0.72rem;
+        transition: transform 0.18s ease;
+        flex-shrink: 0;
+    }
+    .checkin-location-item.is-open .checkin-map-chevron {
+        transform: rotate(180deg);
+        color: #2563EB;
+    }
+    .checkin-map-item-body {
+        display: none;
+        padding-top: 0.65rem;
+        margin-top: 0.65rem;
+        margin-left: 2.55rem;
+        border-top: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    .checkin-location-item.is-open .checkin-map-item-body {
+        display: block;
+    }
 
     .checkin-map-avatar {
         width: 2rem;
@@ -625,61 +658,61 @@
                             data-search="{{ strtolower(($loc['name'] ?? '') . ' ' . ($loc['position'] ?? '') . ' ' . ($loc['project'] ?? '') . ' ' . collect($loc['project_links'] ?? [])->pluck('name')->implode(' ')) }}"
                             role="button"
                             tabindex="0"
+                            aria-expanded="false"
                         >
-                            <div class="d-flex align-items-start gap-2">
+                            <div class="checkin-map-item-head">
                                 <span class="checkin-map-avatar {{ $statusClass }}">{{ $initials }}</span>
-                                <div class="min-w-0 flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start gap-2">
-                                        <span class="fw-semibold txt-darkblue">{{ $loc['name'] }}</span>
-                                        <span class="checkin-map-status {{ $statusClass }}">
-                                            <span class="checkin-map-status-dot"></span>
-                                            {{ $statusLabel }}
-                                        </span>
-                                    </div>
-                                    @if(!empty($loc['position']))
-                                        <div class="small text-muted mt-1">
-                                            <i class="fa-solid fa-briefcase me-1 opacity-75"></i>
-                                            {{ __('pages.position') }}: {{ $loc['position'] }}
-                                        </div>
-                                    @endif
+                                <span class="checkin-map-item-name">{{ $loc['name'] }}</span>
+                                <i class="fa-solid fa-chevron-down checkin-map-chevron"></i>
+                            </div>
+                            <div class="checkin-map-item-body">
+                                <span class="checkin-map-status {{ $statusClass }}">
+                                    <span class="checkin-map-status-dot"></span>
+                                    {{ $statusLabel }}
+                                </span>
+                                @if(!empty($loc['position']))
                                     <div class="small text-muted mt-1">
-                                        <i class="fa-solid fa-diagram-project me-1 opacity-75"></i>
-                                        {{ $loc['project'] ?: '-' }}
+                                        <i class="fa-solid fa-briefcase me-1 opacity-75"></i>
+                                        {{ __('pages.position') }}: {{ $loc['position'] }}
                                     </div>
-                                    @php
-                                        $onsiteLinks = collect($loc['project_links'] ?? [])->where('on_site', true);
-                                        $remoteLinks = collect($loc['project_links'] ?? [])->where('on_site', false);
-                                    @endphp
-                                    @if($onsiteLinks->isNotEmpty())
-                                        <span class="checkin-map-together is-onsite">{{ __('pages.checkin_map_onsite') }}</span>
-                                    @endif
-                                    @foreach($remoteLinks as $link)
-                                        <div class="small text-muted">
-                                            <i class="fa-solid fa-ruler-horizontal me-1 opacity-75"></i>
-                                            {{ __('pages.checkin_map_distance') }} · {{ $link['name'] }}: {{ $link['distance'] }}
-                                        </div>
-                                    @endforeach
+                                @endif
+                                <div class="small text-muted mt-1">
+                                    <i class="fa-solid fa-diagram-project me-1 opacity-75"></i>
+                                    {{ $loc['project'] ?: '-' }}
+                                </div>
+                                @php
+                                    $onsiteLinks = collect($loc['project_links'] ?? [])->where('on_site', true);
+                                    $remoteLinks = collect($loc['project_links'] ?? [])->where('on_site', false);
+                                @endphp
+                                @if($onsiteLinks->isNotEmpty())
+                                    <span class="checkin-map-together is-onsite">{{ __('pages.checkin_map_onsite') }}</span>
+                                @endif
+                                @foreach($remoteLinks as $link)
                                     <div class="small text-muted">
-                                        <i class="fa-solid fa-clock me-1 opacity-75"></i>
-                                        {{ $loc['check_in_time'] }}
+                                        <i class="fa-solid fa-ruler-horizontal me-1 opacity-75"></i>
+                                        {{ __('pages.checkin_map_distance') }} · {{ $link['name'] }}: {{ $link['distance'] }}
                                     </div>
-                                    <span class="checkin-map-together d-none" data-together-label></span>
-                                    <div class="checkin-map-actions">
-                                        @if($tel)
-                                            <a class="checkin-map-action" href="tel:{{ $tel }}" data-map-action>
-                                                <i class="fa-solid fa-phone"></i> {{ __('pages.checkin_map_call') }}
-                                            </a>
-                                        @else
-                                            <span class="checkin-map-action is-disabled" title="{{ __('pages.checkin_map_no_phone') }}">
-                                                <i class="fa-solid fa-phone"></i> {{ __('pages.checkin_map_call') }}
-                                            </span>
-                                        @endif
-                                        @if($canAssignTask && $employeeId && $isWorker)
-                                            <a class="checkin-map-action" href="{{ route('tasks', ['assigned_to' => $employeeId]) }}#create-task" data-map-action>
-                                                <i class="fa-solid fa-list-check"></i> {{ __('pages.checkin_map_assign_task') }}
-                                            </a>
-                                        @endif
-                                    </div>
+                                @endforeach
+                                <div class="small text-muted">
+                                    <i class="fa-solid fa-clock me-1 opacity-75"></i>
+                                    {{ $loc['check_in_time'] }}
+                                </div>
+                                <span class="checkin-map-together d-none" data-together-label></span>
+                                <div class="checkin-map-actions">
+                                    @if($tel)
+                                        <a class="checkin-map-action" href="tel:{{ $tel }}" data-map-action>
+                                            <i class="fa-solid fa-phone"></i> {{ __('pages.checkin_map_call') }}
+                                        </a>
+                                    @else
+                                        <span class="checkin-map-action is-disabled" title="{{ __('pages.checkin_map_no_phone') }}">
+                                            <i class="fa-solid fa-phone"></i> {{ __('pages.checkin_map_call') }}
+                                        </span>
+                                    @endif
+                                    @if($canAssignTask && $employeeId && $isWorker)
+                                        <a class="checkin-map-action" href="{{ route('tasks', ['assigned_to' => $employeeId]) }}#create-task" data-map-action>
+                                            <i class="fa-solid fa-list-check"></i> {{ __('pages.checkin_map_assign_task') }}
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -695,33 +728,33 @@
                             data-search="{{ strtolower(($project['name'] ?? '') . ' ' . ($project['client_name'] ?? '') . ' ' . ($project['manager_name'] ?? '') . ' ' . ($project['location_label'] ?? '')) }}"
                             role="button"
                             tabindex="0"
+                            aria-expanded="false"
                         >
-                            <div class="d-flex align-items-start gap-2">
+                            <div class="checkin-map-item-head">
                                 <span class="checkin-map-avatar is-project"><i class="fa-solid fa-building"></i></span>
-                                <div class="min-w-0 flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start gap-2">
-                                        <span class="fw-semibold txt-darkblue">{{ $project['name'] }}</span>
-                                        <span class="checkin-map-status is-review">{{ $project['status_label'] }}</span>
-                                    </div>
-                                    <div class="small text-muted mt-1">
-                                        <i class="fa-solid fa-user-tie me-1 opacity-75"></i>
-                                        {{ __('pages.checkin_popup_manager') }}: {{ $project['manager_name'] ?? '-' }}
-                                    </div>
-                                    <div class="small text-muted">
-                                        <i class="fa-solid fa-building-user me-1 opacity-75"></i>
-                                        {{ __('pages.checkin_popup_client') }}: {{ $project['client_name'] ?? '-' }}
-                                    </div>
-                                    <div class="small text-muted">
-                                        <i class="fa-solid fa-location-dot me-1 opacity-75"></i>
-                                        {{ $project['location_label'] }}
-                                    </div>
-                                    <div class="checkin-map-actions">
-                                        @if(!empty($project['details_url']))
-                                            <a class="checkin-map-action" href="{{ $project['details_url'] }}" data-map-action>
-                                                <i class="fa-solid fa-eye"></i> {{ __('pages.checkin_open_project') }}
-                                            </a>
-                                        @endif
-                                    </div>
+                                <span class="checkin-map-item-name">{{ $project['name'] }}</span>
+                                <i class="fa-solid fa-chevron-down checkin-map-chevron"></i>
+                            </div>
+                            <div class="checkin-map-item-body">
+                                <span class="checkin-map-status is-review">{{ $project['status_label'] }}</span>
+                                <div class="small text-muted mt-1">
+                                    <i class="fa-solid fa-user-tie me-1 opacity-75"></i>
+                                    {{ __('pages.checkin_popup_manager') }}: {{ $project['manager_name'] ?? '-' }}
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="fa-solid fa-building-user me-1 opacity-75"></i>
+                                    {{ __('pages.checkin_popup_client') }}: {{ $project['client_name'] ?? '-' }}
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="fa-solid fa-location-dot me-1 opacity-75"></i>
+                                    {{ $project['location_label'] }}
+                                </div>
+                                <div class="checkin-map-actions">
+                                    @if(!empty($project['details_url']))
+                                        <a class="checkin-map-action" href="{{ $project['details_url'] }}" data-map-action>
+                                            <i class="fa-solid fa-eye"></i> {{ __('pages.checkin_open_project') }}
+                                        </a>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -1026,16 +1059,26 @@
         if (activeItem) activeItem.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
+    function toggleListItem(el) {
+        var willOpen = !el.classList.contains('is-open');
+        document.querySelectorAll('.checkin-location-item').forEach(function (item) {
+            var open = willOpen && item === el;
+            item.classList.toggle('is-open', open);
+            item.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        focusLocation(el.getAttribute('data-map-kind') || 'worker', parseInt(el.getAttribute('data-map-index'), 10));
+    }
+
     document.querySelectorAll('.checkin-location-item').forEach(function (el) {
         el.addEventListener('click', function (event) {
             if (event.target.closest('[data-map-action]')) return;
-            focusLocation(el.getAttribute('data-map-kind') || 'worker', parseInt(el.getAttribute('data-map-index'), 10));
+            toggleListItem(el);
         });
         el.addEventListener('keydown', function (event) {
             if (event.key !== 'Enter' && event.key !== ' ') return;
             if (event.target.closest('[data-map-action]')) return;
             event.preventDefault();
-            focusLocation(el.getAttribute('data-map-kind') || 'worker', parseInt(el.getAttribute('data-map-index'), 10));
+            toggleListItem(el);
         });
     });
 
