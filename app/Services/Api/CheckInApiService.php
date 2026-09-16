@@ -4,7 +4,10 @@ namespace App\Services\Api;
 
 use App\Repositories\CheckInRepository;
 use App\Repositories\EmployeesRepository;
+use App\Repositories\ProjectsRepository;
 use App\Repositories\WorkingHoursRepository;
+use App\Support\GeoPoint;
+use App\Support\ProjectMapPins;
 use Carbon\Carbon;
 
 class CheckInApiService
@@ -15,15 +18,18 @@ class CheckInApiService
     protected CheckInRepository $repository;
     protected WorkingHoursRepository $workingHoursRepository;
     protected EmployeesRepository $employeesRepository;
+    protected ProjectsRepository $projectsRepository;
 
     public function __construct(
         CheckInRepository $repository,
         WorkingHoursRepository $workingHoursRepository,
-        EmployeesRepository $employeesRepository
+        EmployeesRepository $employeesRepository,
+        ProjectsRepository $projectsRepository
     ) {
         $this->repository = $repository;
         $this->workingHoursRepository = $workingHoursRepository;
         $this->employeesRepository = $employeesRepository;
+        $this->projectsRepository = $projectsRepository;
     }
 
     public function bindActor(?string $username = null, ?int $employeeId = null, ?int $companyId = null, ?string $role = null): void
@@ -163,7 +169,7 @@ class CheckInApiService
                 ? $row->pause_start_location
                 : ($row->check_in_location ?? null);
 
-            $coords = $this->parseLatLng($rawLocation);
+            $coords = GeoPoint::parse($rawLocation);
             if (!$coords) {
                 continue;
             }
@@ -207,21 +213,16 @@ class CheckInApiService
         return $locations;
     }
 
+    public function getMapProjects(int $companyId, ?int $managerId = null): array
+    {
+        return ProjectMapPins::fromRows(
+            $this->projectsRepository->getProjectsForMap($companyId, $managerId)
+        );
+    }
+
     private function parseLatLng(?string $value): ?array
     {
-        if (empty($value) || !str_contains($value, ',')) {
-            return null;
-        }
-
-        [$lat, $lng] = array_map('trim', explode(',', $value, 2));
-        if (!is_numeric($lat) || !is_numeric($lng)) {
-            return null;
-        }
-
-        return [
-            'lat' => (float) $lat,
-            'lng' => (float) $lng,
-        ];
+        return GeoPoint::parse($value);
     }
 
     private function syncToWorkingHours(object $checkin, ?string $checkOutTime, int $companyId): void

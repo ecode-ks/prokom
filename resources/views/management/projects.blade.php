@@ -7,6 +7,43 @@
 @section('content')
     @php $isManager = ($role ?? session('role')) === 'manager'; @endphp
 
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <style>
+        .location-input-wrap { position: relative; }
+        .location-input-wrap .form-control { padding-right: 2.75rem; }
+        .location-map-open-btn {
+            position: absolute;
+            top: 50%;
+            right: 0.4rem;
+            transform: translateY(-50%);
+            width: 2rem;
+            height: 2rem;
+            border: 0;
+            border-radius: 0.5rem;
+            background: #eef2f7;
+            color: #0F2942;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+        .location-map-open-btn.is-open,
+        .location-map-open-btn:hover {
+            background: #0F2942;
+            color: #fff;
+        }
+        .location-map-panel { display: none; margin-top: 0.5rem; }
+        .location-map-panel.is-open { display: block; }
+        .location-map-picker { width: 100%; height: 160px; z-index: 1; }
+        .location-map-picker .leaflet-container { font-family: inherit; height: 100%; }
+        @media (min-width: 768px) {
+            .location-map-picker { height: 200px; }
+        }
+        @media (min-width: 1200px) {
+            .location-map-picker { height: 240px; }
+        }
+    </style>
+
     @if(isset($editProject))
         <small class="d-block txt-lightblue fw-semibold text-uppercase"><a href="{{ route('projects') }}" class="text-decoration-none txt-lightblue fw-semibold"><i class="fa-solid fa-circle-chevron-left"></i> {{ __('pages.back_full') }}</a></small>
         <h3 class="fw-semibold pt-2">{{ __('pages.update_project') }}</h3>
@@ -53,9 +90,23 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-6 col-xl-4">
                             <label for="location" class="form-label">{{ __('pages.location') }}</label>
-                            <input type="text" name="location" id="location" value="{{ old('location', $editProject->location) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_location') }}">
+                            <div class="location-input-wrap">
+                                <input type="text" name="location" id="location" value="{{ old('location', $editProject->location) }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_location') }}" autocomplete="off">
+                                <button type="button" class="location-map-open-btn" id="location-open" title="{{ __('pages.location_open_map') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-map-location-dot"></i>
+                                </button>
+                            </div>
+                            <div class="location-map-panel" id="location-panel">
+                                <div class="d-flex gap-2 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-3" id="location-gps">
+                                        <i class="fa-solid fa-location-crosshairs me-1"></i> {{ __('pages.location_use_current') }}
+                                    </button>
+                                </div>
+                                <div id="location-map" class="location-map-picker rounded-4 border overflow-hidden"></div>
+                                <small class="text-muted d-block mt-2">{{ __('pages.location_map_hint') }}</small>
+                            </div>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="start_date" class="form-label">{{ __('pages.start_date') }}</label>
@@ -159,9 +210,23 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-12 col-md-4 col-lg-4">
+                        <div class="col-12 col-md-6 col-xl-4">
                             <label for="location" class="form-label">{{ __('pages.location') }}</label>
-                            <input type="text" name="location" id="location" value="{{ old('location') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_location') }}">
+                            <div class="location-input-wrap">
+                                <input type="text" name="location" id="location" value="{{ old('location') }}" class="form-control shadow-sm rounded-3" placeholder="{{ __('pages.placeholder_location') }}" autocomplete="off">
+                                <button type="button" class="location-map-open-btn" id="location-open" title="{{ __('pages.location_open_map') }}" aria-expanded="false">
+                                    <i class="fa-solid fa-map-location-dot"></i>
+                                </button>
+                            </div>
+                            <div class="location-map-panel" id="location-panel">
+                                <div class="d-flex gap-2 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-3" id="location-gps">
+                                        <i class="fa-solid fa-location-crosshairs me-1"></i> {{ __('pages.location_use_current') }}
+                                    </button>
+                                </div>
+                                <div id="location-map" class="location-map-picker rounded-4 border overflow-hidden"></div>
+                                <small class="text-muted d-block mt-2">{{ __('pages.location_map_hint') }}</small>
+                            </div>
                         </div>
                         <div class="col-12 col-md-4 col-lg-4">
                             <label for="start_date" class="form-label">{{ __('pages.start_date') }}</label>
@@ -287,3 +352,162 @@
         @endif
     @endif
 @endsection
+
+@push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var DEFAULT_CENTER = [42.6629, 21.1655];
+            var DEFAULT_ZOOM = 12;
+            var input = document.getElementById('location');
+            var mapEl = document.getElementById('location-map');
+            var panel = document.getElementById('location-panel');
+            var openBtn = document.getElementById('location-open');
+            var gpsBtn = document.getElementById('location-gps');
+            if (!input || !mapEl || !panel || !openBtn || typeof L === 'undefined') return;
+
+            var map = null;
+            var marker = null;
+
+            function parseCoords(value) {
+                var match = String(value || '').trim().match(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/);
+                if (!match) return null;
+                var lat = parseFloat(match[1]);
+                var lng = parseFloat(match[2]);
+                if (!isFinite(lat) || !isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+                return [lat, lng];
+            }
+
+            function formatCoords(lat, lng) {
+                return lat.toFixed(6) + ',' + lng.toFixed(6);
+            }
+
+            function formatLocation(latlng, address) {
+                var coords = formatCoords(latlng.lat, latlng.lng);
+                if (!address) return coords;
+                var extra = String(address).replace(/(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/g, '').replace(/\s*\|\s*/g, ' ').trim();
+                var combined = extra ? coords + ' | ' + extra : coords;
+                return combined.slice(0, 255);
+            }
+
+            function nominatim(url) {
+                return fetch(url, { headers: { Accept: 'application/json' } }).then(function (res) {
+                    if (!res.ok) throw new Error('geocode');
+                    return res.json();
+                });
+            }
+
+            function setPoint(latlng, label) {
+                if (!map || !marker) return;
+                marker.setLatLng(latlng);
+                map.setView(latlng, Math.max(map.getZoom(), 16));
+                input.value = label || formatCoords(latlng.lat, latlng.lng);
+            }
+
+            function reverseFill(latlng) {
+                setPoint(latlng, formatLocation(latlng));
+                nominatim(
+                    'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' +
+                        encodeURIComponent(latlng.lat) +
+                        '&lon=' +
+                        encodeURIComponent(latlng.lng)
+                )
+                    .then(function (data) {
+                        if (data && data.display_name) {
+                            input.value = formatLocation(latlng, data.display_name);
+                        }
+                    })
+                    .catch(function () {});
+            }
+
+            function searchAddress() {
+                var query = String(input.value || '').trim();
+                if (!query) return;
+                var coords = parseCoords(query);
+                if (coords) {
+                    ensureMap();
+                    setPoint({ lat: coords[0], lng: coords[1] });
+                    return;
+                }
+                nominatim(
+                    'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=' +
+                        encodeURIComponent(query)
+                )
+                    .then(function (rows) {
+                        if (!rows || !rows[0]) return;
+                        ensureMap();
+                        setPoint({ lat: parseFloat(rows[0].lat), lng: parseFloat(rows[0].lon) }, formatLocation(
+                            { lat: parseFloat(rows[0].lat), lng: parseFloat(rows[0].lon) },
+                            query
+                        ));
+                    })
+                    .catch(function () {});
+            }
+
+            function ensureMap() {
+                if (map) {
+                    map.invalidateSize();
+                    return;
+                }
+                var start = parseCoords(input.value) || DEFAULT_CENTER;
+                map = L.map(mapEl).setView(start, parseCoords(input.value) ? 16 : DEFAULT_ZOOM);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap'
+                }).addTo(map);
+                marker = L.marker(start, { draggable: true }).addTo(map);
+                map.on('click', function (event) {
+                    reverseFill(event.latlng);
+                });
+                marker.on('dragend', function () {
+                    reverseFill(marker.getLatLng());
+                });
+                setTimeout(function () {
+                    map.invalidateSize();
+                }, 80);
+            }
+
+            openBtn.addEventListener('click', function () {
+                if (panel.classList.contains('is-open')) {
+                    panel.classList.remove('is-open');
+                    openBtn.classList.remove('is-open');
+                    openBtn.setAttribute('aria-expanded', 'false');
+                    return;
+                }
+                panel.classList.add('is-open');
+                openBtn.classList.add('is-open');
+                openBtn.setAttribute('aria-expanded', 'true');
+                ensureMap();
+                if (input.value && !parseCoords(input.value)) {
+                    searchAddress();
+                }
+            });
+
+            if (gpsBtn) {
+                gpsBtn.addEventListener('click', function () {
+                    if (!navigator.geolocation) {
+                        alert(@json(__('pages.dash_geo_unsupported')));
+                        return;
+                    }
+                    gpsBtn.disabled = true;
+                    navigator.geolocation.getCurrentPosition(
+                        function (pos) {
+                            gpsBtn.disabled = false;
+                            ensureMap();
+                            reverseFill({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                        },
+                        function () {
+                            gpsBtn.disabled = false;
+                            alert(@json(__('pages.dash_geo_denied')));
+                        },
+                        { enableHighAccuracy: true, timeout: 10000 }
+                    );
+                });
+            }
+
+            window.addEventListener('resize', function () {
+                if (map && panel.classList.contains('is-open')) map.invalidateSize();
+            });
+        });
+    </script>
+@endpush

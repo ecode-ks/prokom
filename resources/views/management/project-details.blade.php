@@ -28,7 +28,17 @@
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-circle-info"></i> {{ __('pages.project_col') }} : </span>{{ $projectDetails->project_name }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-user-tag"></i> {{ __('pages.project_manager') }} : </span>{{ $projectDetails->manager_name }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-circle-user"></i> {{ __('pages.client') }} : </span>{{ $projectDetails->client_name }}</span>
-            <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-location-dot"></i> {{ __('pages.location') }} : </span>{{ $projectDetails->location }}</span>
+            <span class="d-block mb-2">
+                <span class="text-muted"><i class="fa-solid fa-location-dot"></i> {{ __('pages.location') }} : </span>
+                @if(!empty($projectDetails->location))
+                    <a href="https://www.google.com/maps?q={{ urlencode($projectDetails->location) }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+                        {{ $projectDetails->location }}
+                        <i class="fa-solid fa-up-right-from-square ms-1"></i>
+                    </a>
+                @else
+                    -
+                @endif
+            </span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('pages.start_date') }} : </span>{{ \Carbon\Carbon::parse($projectDetails->start_date)->format('d/m/Y') }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-regular fa-calendar"></i> {{ __('pages.expected_end_date') }} : </span>{{ \Carbon\Carbon::parse($projectDetails->expected_end_date)->format('d/m/Y') }}</span>
             <span class="d-block mb-2"><span class="text-muted"><i class="fa-solid fa-money-check-dollar"></i> {{ __('pages.budget') }} : </span>{{ number_format((float) $projectDetails->budget, 2) }} EUR</span>
