@@ -33,10 +33,24 @@ class CheckInController extends Controller
         }
 
         $locations = $this->service->getMapLocations();
+        $projects = collect($this->service->getMapProjects())
+            ->map(function (array $project) {
+                $project['details_url'] = route('project.details', $project['id']);
+                return $project;
+            })
+            ->all();
+        $managerId = session('role') === 'manager' ? ((int) session('employee_id') ?: null) : null;
+        $locations = $this->service->attachMapProjectLinks(
+            $locations,
+            $projects,
+            (int) session('company_id'),
+            $managerId
+        );
 
         return view('management.checkin-map')
             ->with('page', 'Check In Map')
-            ->with('locations', $locations);
+            ->with('locations', $locations)
+            ->with('projects', $projects);
     }
     //---------------
     public function details(int $id)

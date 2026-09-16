@@ -4,26 +4,32 @@ namespace App\Services\Api;
 
 use App\Repositories\CheckInRepository;
 use App\Repositories\EmployeesRepository;
+use App\Repositories\ProjectsRepository;
 use App\Repositories\WorkingHoursRepository;
+use App\Services\CheckInMapHelpers;
 use Carbon\Carbon;
 
 class CheckInApiService
 {
+    use CheckInMapHelpers;
     protected int $companyId = 0;
     protected int $employeeId = 0;
     protected ?string $actorRole = null;
     protected CheckInRepository $repository;
     protected WorkingHoursRepository $workingHoursRepository;
     protected EmployeesRepository $employeesRepository;
+    protected ProjectsRepository $projectsRepository;
 
     public function __construct(
         CheckInRepository $repository,
         WorkingHoursRepository $workingHoursRepository,
-        EmployeesRepository $employeesRepository
+        EmployeesRepository $employeesRepository,
+        ProjectsRepository $projectsRepository
     ) {
         $this->repository = $repository;
         $this->workingHoursRepository = $workingHoursRepository;
         $this->employeesRepository = $employeesRepository;
+        $this->projectsRepository = $projectsRepository;
     }
 
     public function bindActor(?string $username = null, ?int $employeeId = null, ?int $companyId = null, ?string $role = null): void
@@ -207,21 +213,11 @@ class CheckInApiService
         return $locations;
     }
 
-    private function parseLatLng(?string $value): ?array
+    public function getMapProjects(int $companyId, ?int $managerId = null): array
     {
-        if (empty($value) || !str_contains($value, ',')) {
-            return null;
-        }
-
-        [$lat, $lng] = array_map('trim', explode(',', $value, 2));
-        if (!is_numeric($lat) || !is_numeric($lng)) {
-            return null;
-        }
-
-        return [
-            'lat' => (float) $lat,
-            'lng' => (float) $lng,
-        ];
+        return $this->projectMapPinsFromRows(
+            $this->projectsRepository->getProjectsForMap($companyId, $managerId)
+        );
     }
 
     private function syncToWorkingHours(object $checkin, ?string $checkOutTime, int $companyId): void

@@ -277,4 +277,34 @@ class ProjectsRepository
             ->where('company_id', $companyId)
             ->count();
     }
+    //---------------
+    public function getProjectsForMap(int $companyId, ?int $managerId = null)
+    {
+        $query = DB::table($this->table . ' as p')
+            ->join('employees as e', 'p.project_manager', '=', 'e.id')
+            ->join('clients as c', 'p.client_id', '=', 'c.id')
+            ->where('p.company_id', $companyId)
+            ->whereNotNull('p.location')
+            ->where('p.location', '<>', '');
+
+        if ($managerId) {
+            $query->where('p.project_manager', $managerId);
+        }
+
+        return $query
+            ->select(
+                'p.id',
+                'p.project_name',
+                'p.location',
+                'p.status',
+                'p.start_date',
+                'p.expected_end_date',
+                'p.budget',
+                'p.description',
+                'e.employee as manager_name',
+                'c.client as client_name'
+            )
+            ->orderBy('p.project_name')
+            ->get();
+    }
 }

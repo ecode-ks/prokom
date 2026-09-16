@@ -18,8 +18,17 @@ class TaskReportsController extends Controller
     public function create(Request $request)
     {
         $companyId = session('company_id');
-        $role = session('role');
-        $employeeId = session('employee_id') ?  session('employee_id') : null;
+        $role = strtolower(trim((string) session('role')));
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
+
+        $images = $request->file('images', []);
+        if (!is_array($images)) {
+            $images = $images ? [$images] : [];
+        }
+        $images = array_values(array_filter($images, function ($file) {
+            return $file instanceof \Illuminate\Http\UploadedFile && $file->isValid();
+        }));
+        $request->files->set('images', $images);
 
         $validator = Validator::make($request->all(), [
             'task_id' => 'required|integer|min:1|exists:tasks,id',
@@ -32,21 +41,34 @@ class TaskReportsController extends Controller
             return redirect()->route('task.reports')->with('error', __('pages.fields_invalid'))->withInput();
         }
 
+        if ($role !== 'company') {
+            if (!$this->service->taskExists((int) $request->task_id, $companyId)) {
+                return redirect()->route('task.reports')->with('error', __('pages.cannot_report_task'))->withInput();
+            }
+
+            if (in_array($role, ['manager', 'employee'], true)
+                && !$this->service->getAvailableTasks($companyId, $role, $employeeId)->contains('id', (int) $request->task_id)) {
+                return redirect()->route('task.reports')->with('error', __('pages.cannot_report_task'))->withInput();
+            }
+        }
+
         $data = [
-            'task_id' => $request->task_id,
-            'report' => trim( $request->report),
-            'images' => $request->hasFile('images') ? $request->file('images') : [],
+            'task_id' => (int) $request->task_id,
+            'report' => $request->report,
+            'images' => $images,
             'reported_by' => $employeeId,
             'company_id' => $companyId,
             'status' => 'active',
             'date' => now(),
         ];
 
-        if (!$this->service->createReport($data, $role, $employeeId, $companyId)) {
-            return redirect()->route('task.reports')->with('error', __('pages.cannot_report_task'))->withInput();
+        try {
+            $this->service->createReport($data);
+            return redirect()->route('task.reports')->with('success', __('pages.task_report_created'));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Task report create failed: '.$e->getMessage());
+            return redirect()->route('task.reports')->with('error', __('pages.try_again'))->withInput();
         }
-
-        return redirect()->route('task.reports')->with('success', __('pages.task_report_created'));
     }
     //---------------
     public function read(Request $request)
@@ -55,7 +77,7 @@ class TaskReportsController extends Controller
         $search = trim((string) $request->query('search', ''));
         $companyId = session('company_id');
         $role = session('role');
-        $employeeId = session('employee_id') ? session('employee_id') : null;
+        $employeeId = session('employee_id') ? (int) session('employee_id') : null;
 
         $tasks = $this->service->getAvailableTasks($companyId, $role, $employeeId);
 
@@ -64,7 +86,7 @@ class TaskReportsController extends Controller
         }
 
         $reports = $this->service->getReports(10, $companyId, $role, $employeeId, $search);
-        $reportStats = $this->service->getReportStatistics((int) $companyId, $role, $employeeId ? (int) $employeeId : null);
+        $reportStats = $this->service->getReportStatistics((int) $companyId, $role, $employeeId);
 
         return view('management.task-reports')
             ->with('page', $page)
@@ -116,9 +138,6 @@ class TaskReportsController extends Controller
     public function update(Request $request)
     {
         $companyId = session('company_id');
-        $role = session('role');
-        $employeeId = session('employee_id') ? session('employee_id') : null;
-
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|min:1|exists:task_reports,id',
             'task_id' => 'required|integer|min:1|exists:tasks,id',
@@ -131,15 +150,19 @@ class TaskReportsController extends Controller
             return back()->with('error', __('pages.fields_invalid'))->withInput();
         }
 
-        $id = $request->id;
+        $id = (int) $request->id;
 
         if (!$this->service->findOrFail($id, $companyId)) {
             return redirect()->route('task.reports')->with('error', __('pages.report_not_found'));
         }
 
+        if (session('role') !== 'company' && !$this->service->taskExists((int) $request->task_id, $companyId)) {
+            return back()->with('error', __('pages.cannot_report_task'))->withInput();
+        }
+
         $data = [
-            'task_id' => $request->task_id,
-            'report' => trim( $request->report),
+            'task_id' => (int) $request->task_id,
+            'report' => $request->report,
         ];
 
         if ($request->hasFile('images')) {
@@ -147,7 +170,7 @@ class TaskReportsController extends Controller
         }
 
         try {
-            if (!$this->service->updateReport($id, $data, $role, $employeeId, $companyId)) {
+            if (!$this->service->updateReport($id, $data, $companyId)) {
                 return back()->with('error', __('pages.report_not_updated'))->withInput();
             }
 

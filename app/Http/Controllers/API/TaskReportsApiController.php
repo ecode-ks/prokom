@@ -33,8 +33,13 @@ class TaskReportsApiController extends Controller
             return json_encode(['error' => __('pages.fields_invalid')]);
         }
 
+        $taskId = (int) $request->task_id;
+        if (!$this->service->getAvailableTasks($companyId, $role, $employeeId)->contains('id', $taskId)) {
+            return json_encode(['error' => __('pages.cannot_report_task')]);
+        }
+
         $data = [
-            'task_id' => $request->task_id,
+            'task_id' => $taskId,
             'report' => trim((string) $request->report),
             'images' => $request->hasFile('images') ? $request->file('images') : [],
             'reported_by' => $employeeId,
@@ -44,12 +49,9 @@ class TaskReportsApiController extends Controller
         ];
 
         try {
-            if (!$this->service->createReport($data, $role, $employeeId, $companyId)) {
-                return json_encode(['error' => __('pages.cannot_report_task')]);
-            }
-
+            $this->service->createReport($data);
             return json_encode(['success' => __('pages.task_report_created')]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return json_encode(['error' => __('pages.try_again')]);
         }
     }
@@ -148,7 +150,7 @@ class TaskReportsApiController extends Controller
         }
 
         try {
-            if (!$this->service->updateReport($id, $data, $role, $employeeId, $companyId)) {
+            if (!$this->service->updateReport($id, $data, $companyId)) {
                 return json_encode(['error' => __('pages.report_not_updated')]);
             }
 
@@ -217,6 +219,6 @@ class TaskReportsApiController extends Controller
 
     private function canMutate(string $role): bool
     {
-        return in_array($role, ['manager', 'employee'], true);
+        return in_array(strtolower($role), ['manager', 'employee'], true);
     }
 }

@@ -44,12 +44,22 @@ class CheckInApiController extends Controller
         if ($normalizedRole === 'manager' && $employeeId <= 0) {
             return json_encode([
                 'checkIns' => [],
+                'projects' => [],
                 'role' => $role,
             ]);
         }
 
+        $projects = $this->service->getMapProjects($companyId, $managerId ?: null);
+        $locations = $this->service->attachMapProjectLinks(
+            $this->service->getMapLocations($companyId, $managerId ?: null, $projectId),
+            $projects,
+            $companyId,
+            $managerId ?: null
+        );
+
         return json_encode([
-            'checkIns' => $this->service->getMapLocations($companyId, $managerId ?: null, $projectId),
+            'checkIns' => $locations,
+            'projects' => $projects,
             'role' => $role,
         ]);
     }

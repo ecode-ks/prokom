@@ -9,11 +9,11 @@ use App\Repositories\EmployeesRepository;
 use App\Repositories\ContractsRepository;
 use App\Repositories\ProjectReportsRepository;
 use App\Repositories\TaskReportsRepository;
-use App\Support\StoredFiles;
 use Illuminate\Support\Facades\Hash;
 
 class CompaniesService
 {
+    use DeletesStoredFiles;
     //---------------
     protected CompaniesRepository $companiesRepository;
     protected UsersRepository $usersRepository;
@@ -99,9 +99,9 @@ class CompaniesService
             return false;
         }
 
-        StoredFiles::deleteMany($this->contractsRepository->getDocPayloadsByCompany($id));
-        StoredFiles::deleteMany($this->projectReportsRepository->getImagePayloadsByCompany($id));
-        StoredFiles::deleteMany($this->taskReportsRepository->getImagePayloadsByCompany($id));
+        $this->deleteManyStoredFiles($this->contractsRepository->getDocPayloadsByCompany($id));
+        $this->deleteManyStoredFiles($this->projectReportsRepository->getImagePayloadsByCompany($id));
+        $this->deleteManyStoredFiles($this->taskReportsRepository->getImagePayloadsByCompany($id));
 
         return $this->companiesRepository->delete($id);
     }

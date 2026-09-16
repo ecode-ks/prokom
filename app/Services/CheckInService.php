@@ -3,20 +3,27 @@
 namespace App\Services;
 
 use App\Repositories\CheckInRepository;
+use App\Repositories\ProjectsRepository;
 use App\Repositories\WorkingHoursRepository;
 use Carbon\Carbon;
 
 class CheckInService
 {
+    use CheckInMapHelpers;
     protected int $companyId;
     protected int $employeeId;
     protected CheckInRepository $repository;
     protected WorkingHoursRepository $workingHoursRepository;
+    protected ProjectsRepository $projectsRepository;
 
-    public function __construct(CheckInRepository $repository, WorkingHoursRepository $workingHoursRepository)
-    {
+    public function __construct(
+        CheckInRepository $repository,
+        WorkingHoursRepository $workingHoursRepository,
+        ProjectsRepository $projectsRepository
+    ) {
         $this->repository = $repository;
         $this->workingHoursRepository = $workingHoursRepository;
+        $this->projectsRepository = $projectsRepository;
         $this->companyId = (int) (session('company_id') ?? 0);
         $this->employeeId = (int) (session('employee_id') ?? 0);
     }
@@ -208,21 +215,12 @@ class CheckInService
         return $locations;
     }
     //---------------
-    private function parseLatLng(?string $value): ?array
+    public function getMapProjects(): array
     {
-        if (empty($value) || !str_contains($value, ',')) {
-            return null;
-        }
+        $managerId = session('role') === 'manager' ? ($this->employeeId ?: null) : null;
+        $rows = $this->projectsRepository->getProjectsForMap($this->companyId, $managerId);
 
-        [$lat, $lng] = array_map('trim', explode(',', $value, 2));
-        if (!is_numeric($lat) || !is_numeric($lng)) {
-            return null;
-        }
-
-        return [
-            'lat' => (float) $lat,
-            'lng' => (float) $lng,
-        ];
+        return $this->projectMapPinsFromRows($rows);
     }
     //---------------
     private function syncToWorkingHours(object $checkin, ?string $checkOutTime): void
