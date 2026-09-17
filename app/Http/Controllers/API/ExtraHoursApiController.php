@@ -16,7 +16,7 @@ class ExtraHoursApiController extends Controller
         $this->service = $service;
     }
 
-    public function create(Request $request, int $companyId, int $employeeId, string $role)
+    public function create(Request $request, int $companyId, string $reporter, int $employeeId, string $role)
     {
         $role = strtolower($role);
 
@@ -37,7 +37,7 @@ class ExtraHoursApiController extends Controller
 
         $data = $request->only(['date', 'employee_id', 'hours', 'type']);
         try {
-            $this->service->createExtraHour($data, $companyId);
+            $this->service->createExtraHour($data, $reporter, $companyId);
             return json_encode(['success' => __('pages.extra_hours_created')]);
         } catch (\Exception $e) {
             return json_encode(['error' => __('pages.try_again')]);
@@ -105,7 +105,7 @@ class ExtraHoursApiController extends Controller
         ]);
     }
 
-    public function update(Request $request, int $companyId, int $employeeId, string $role)
+    public function update(Request $request, int $companyId, string $reporter, int $employeeId, string $role)
     {
         $role = strtolower($role);
 
@@ -129,7 +129,7 @@ class ExtraHoursApiController extends Controller
         $data = $request->only(['date', 'employee_id', 'hours', 'type']);
 
         try {
-            $this->service->updateExtraHour($id, $data, $companyId);
+            $this->service->updateExtraHour($id, $data, $reporter, $companyId);
             return json_encode(['success' => __('pages.extra_hours_updated')]);
         } catch (\Exception $e) {
             return json_encode(['error' => __('pages.try_again')]);

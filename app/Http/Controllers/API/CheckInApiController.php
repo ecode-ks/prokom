@@ -80,7 +80,7 @@ class CheckInApiController extends Controller
         ]);
     }
 
-    public function accept(int $id, int $companyId, int $employeeId, string $role)
+    public function accept(int $id, int $companyId, string $reporter, int $employeeId, string $role)
     {
         if (!$this->canManage($role)) {
             return json_encode(['error' => __('pages.no_access')]);
@@ -91,7 +91,7 @@ class CheckInApiController extends Controller
         }
 
         try {
-            $this->service->acceptCheckIn($id, $companyId);
+            $this->service->acceptCheckIn($id, $reporter, $companyId);
             return json_encode(['success' => __('pages.checkin_accepted_msg')]);
         } catch (\Exception $e) {
             return json_encode(['error' => $e->getMessage() ?: __('pages.checkin_accept_failed')]);

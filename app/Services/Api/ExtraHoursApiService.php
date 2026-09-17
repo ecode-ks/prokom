@@ -31,8 +31,9 @@ class ExtraHoursApiService
         return in_array((string) $type, self::TYPES, true) ? $type : null;
     }
 
-    public function createExtraHour(array $data, int $companyId): bool
+    public function createExtraHour(array $data, string $reporter, int $companyId): bool
     {
+        $data['reported_by'] = $reporter;
         $data['company_id'] = $companyId;
         return $this->repository->create($data);
     }
@@ -61,8 +62,9 @@ class ExtraHoursApiService
         return $this->repository->findExtraHour($id, $companyId);
     }
 
-    public function updateExtraHour(int $id, array $data, int $companyId): bool
+    public function updateExtraHour(int $id, array $data, string $reporter, int $companyId): bool
     {
+        $data['reported_by'] = $reporter;
         $extraHour = $this->repository->findExtraHour($id, $companyId);
         if (!$extraHour) {
             return false;

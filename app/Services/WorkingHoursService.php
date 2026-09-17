@@ -17,6 +17,7 @@ class WorkingHoursService
     public function createWorkingHour(array $data): bool
     {
         $data['company_id'] = session('company_id');
+        $data['reported_by'] = session('user') ?? session('company') ?? null;
         return $this->repository->create($data);
     }
 	//---------------

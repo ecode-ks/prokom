@@ -16,8 +16,9 @@ class WorkingHoursApiService
         $this->employeesRepository = $employeesRepository;
     }
 
-    public function createWorkingHour(array $data, int $companyId): bool
+    public function createWorkingHour(array $data, string $reporter, int $companyId): bool
     {
+        $data['reported_by'] = $reporter;
         $data['company_id'] = $companyId;
         return $this->repository->create($data);
     }

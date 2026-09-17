@@ -129,7 +129,7 @@ class CheckInApiService
         return $this->repository->findCheckInDetails($id, $companyId);
     }
 
-    public function acceptCheckIn(int $id, int $companyId): bool
+    public function acceptCheckIn(int $id, string $reporter, int $companyId): bool
     {
         $checkin = $this->repository->findById($id, $companyId);
         if (!$checkin) {
@@ -144,7 +144,7 @@ class CheckInApiService
             throw new \Exception(__('pages.checkin_need_checkout'));
         }
 
-        $this->syncToWorkingHours($checkin, $checkin->check_out_time, $companyId);
+        $this->syncToWorkingHours($checkin, $checkin->check_out_time, $reporter, $companyId);
 
         return $this->repository->accept($id, $companyId);
     }
@@ -220,7 +220,7 @@ class CheckInApiService
         );
     }
 
-    private function syncToWorkingHours(object $checkin, ?string $checkOutTime, int $companyId): void
+    private function syncToWorkingHours(object $checkin, ?string $checkOutTime, string $reporter, int $companyId): void
     {
         if (empty($checkin->check_in_time) || empty($checkOutTime)) {
             return;
@@ -251,6 +251,7 @@ class CheckInApiService
             'check_in' => $checkin->check_in_time,
             'check_out' => $checkOutTime,
             'hours' => $hours,
+            'reported_by' => $reporter,
             'company_id' => $companyId,
         ]);
     }

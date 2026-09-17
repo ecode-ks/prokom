@@ -17,6 +17,7 @@ class ExtraHoursService
     public function createExtraHour(array $data): bool
     {
         $data['company_id'] = $this->companyId;
+        $data['reported_by'] = session('user') ?? session('company') ?? null;
         return $this->repository->create($data);
     }
     //---------------
@@ -41,6 +42,7 @@ class ExtraHoursService
     //---------------
     public function updateExtraHour(int $id, array $data): bool
     {
+        $data['reported_by'] = session('user') ?? session('company') ?? null;
         $extraHour = $this->repository->findExtraHour($id, $this->companyId);
         if (!$extraHour) {
             return false;

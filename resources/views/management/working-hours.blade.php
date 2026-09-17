@@ -97,6 +97,7 @@
                             <th scope="col" class="text-nowrap">{{ __('pages.check_in_short') }}</th>
                             <th scope="col" class="text-nowrap">{{ __('pages.check_out_short') }}</th>
                             <th scope="col" class="text-nowrap">{{ __('pages.hours_min') }}</th>
+                            <th scope="col" class="text-nowrap text-center">{{ __('pages.reported_by') }}</th>
                             @if(!$isEmployee)
                                 <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                             @endif
@@ -105,7 +106,7 @@
                     <tbody>
                         @if($workingHours && count($workingHours) === 0)
                             <tr>
-                                <td colspan="{{ $isEmployee ? 6 : 9 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
+                                <td colspan="{{ $isEmployee ? 7 : 8 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                             </tr>
                         @elseif($workingHours)
                             @foreach ($workingHours as $workingHour)
@@ -116,6 +117,7 @@
                                     <td class="text-nowrap">{{ $workingHour->check_in ? \Carbon\Carbon::parse($workingHour->check_in)->format('d/m/Y - H:i') : '-' }}</td>
                                     <td class="text-nowrap">{{ $workingHour->check_out ? \Carbon\Carbon::parse($workingHour->check_out)->format('d/m/Y - H:i') : '-' }}</td>
                                     <td class="text-nowrap">{{ $workingHour->hours }}</td>
+                                    <td class="text-nowrap text-center">{{ $workingHour->reported_by ?? '-' }}</td>
                                     @if(!$isEmployee)
                                         <td class="text-nowrap text-end">
                                             <button class="btn btn-outline-danger btn-sm rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $workingHour->id }}"><i class="fa-solid fa-trash"></i></button>

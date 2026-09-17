@@ -143,6 +143,7 @@
                                 <th scope="col" class="text-nowrap">{{ __('pages.hours') }}</th>
                                 <th scope="col" class="text-nowrap">{{ __('pages.extra_hours_type') }}</th>
                                 <th scope="col" class="text-nowrap">{{ __('pages.date') }}</th>
+                                <th scope="col" class="text-nowrap text-center">{{ __('pages.reported_by') }}</th>
                                 @if(!$isEmployee)
                                     <th scope="col" class="text-nowrap text-end">{{ __('pages.operations') }}</th>
                                 @endif
@@ -151,7 +152,7 @@
                         <tbody>
                             @if(count($extraHours) === 0)
                                 <tr>
-                                    <td colspan="{{ $isEmployee ? 5 : 6 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
+                                    <td colspan="{{ $isEmployee ? 6 : 7 }}" class="text-center"><i class="fa-regular fa-face-frown"></i> {{ __('pages.no_data') }}</td>
                                 </tr>
                             @else
                                 @foreach ($extraHours as $extraHour)
@@ -161,6 +162,7 @@
                                         <td class="text-nowrap">{{ $extraHour->hours }}</td>
                                         <td class="text-nowrap">{{ $extraHourTypeLabel($extraHour->type) }}</td>
                                         <td class="text-nowrap">{{ $extraHour->date ? \Carbon\Carbon::parse($extraHour->date)->format('d/m/Y') : '-' }}</td>
+                                        <td class="text-nowrap text-center">{{ $extraHour->reported_by ?? '-' }}</td>
                                         @if(!$isEmployee)
                                             <td class="text-nowrap text-end">
                                                 <a href="{{ route('edit.extra.hour', $extraHour->id) }}" class="btn btn-outline-success btn-sm rounded-3 shadow-sm"><i class="fa-solid fa-pen"></i></a>

@@ -254,6 +254,7 @@ class CheckInService
             'check_in' => $checkin->check_in_time,
             'check_out' => $checkOutTime,
             'hours' => $hours,
+            'reported_by' => session('user') ?? session('company') ?? null,
             'company_id' => $this->companyId,
         ]);
     }
