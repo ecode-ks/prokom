@@ -241,6 +241,11 @@ class TasksApiController extends Controller
             return json_encode(['error' => __('pages.invalid_status')]);
         }
 
+        $current = $this->service->resolveStatus((string) ($this->service->getTaskById($id, $companyId)->status ?? ''));
+        if ($current === 'completed' && $normalizedStatus !== 'completed') {
+            return json_encode(['error' => __('pages.invalid_status')]);
+        }
+
         try {
             if (!$this->service->updateTaskStatus($id, $normalizedStatus, $companyId)) {
                 return json_encode(['error' => __('pages.invalid_status')]);
@@ -254,7 +259,7 @@ class TasksApiController extends Controller
 
     private function canManage(string $role): bool
     {
-        return $role === 'manager';
+        return in_array($role, ['manager', 'company'], true);
     }
 
     private function canChangeStatus(string $role): bool

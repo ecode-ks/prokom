@@ -22,11 +22,9 @@ class TaskReportsApiController extends Controller
             return json_encode(['error' => __('pages.no_access')]);
         }
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->only(['task_id', 'report']), [
             'task_id' => 'required|integer',
             'report' => 'required|string',
-            'images' => 'nullable|array',
-            'images.*' => 'image',
         ]);
 
         if ($validator->fails()) {
@@ -41,7 +39,7 @@ class TaskReportsApiController extends Controller
         $data = [
             'task_id' => $taskId,
             'report' => trim((string) $request->report),
-            'images' => $request->hasFile('images') ? $request->file('images') : [],
+            'images' => $this->uploadedImages($request),
             'reported_by' => $employeeId,
             'company_id' => $companyId,
             'status' => 'active',
@@ -99,11 +97,7 @@ class TaskReportsApiController extends Controller
             return json_encode(['error' => __('pages.no_access')]);
         }
 
-        if (!$this->service->findOrFail($id, $companyId)) {
-            return json_encode(['error' => __('pages.report_not_found')]);
-        }
-
-        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
+        if (!$this->service->findOrFail($id, $companyId) || !$this->canEditReport($role, $id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -120,12 +114,10 @@ class TaskReportsApiController extends Controller
             return json_encode(['error' => __('pages.no_access')]);
         }
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->only(['id', 'task_id', 'report']), [
             'id' => 'required|integer|exists:task_reports,id',
             'task_id' => 'required|integer',
             'report' => 'required|string',
-            'images' => 'nullable|array',
-            'images.*' => 'image',
         ]);
 
         if ($validator->fails()) {
@@ -133,11 +125,7 @@ class TaskReportsApiController extends Controller
         }
 
         $id = (int) $request->id;
-        if (!$this->service->findOrFail($id, $companyId)) {
-            return json_encode(['error' => __('pages.report_not_found')]);
-        }
-
-        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
+        if (!$this->service->findOrFail($id, $companyId) || !$this->canEditReport($role, $id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -146,7 +134,7 @@ class TaskReportsApiController extends Controller
             'report' => trim((string) $request->report),
         ];
         if ($request->hasFile('images')) {
-            $data['images'] = $request->file('images');
+            $data['images'] = $this->uploadedImages($request);
         }
 
         try {
@@ -166,11 +154,7 @@ class TaskReportsApiController extends Controller
             return json_encode(['error' => __('pages.no_access')]);
         }
 
-        if (!$this->service->findOrFail($id, $companyId)) {
-            return json_encode(['error' => __('pages.report_not_found')]);
-        }
-
-        if ($role === 'manager' && !$this->service->managerOwnsReport($id, $companyId, $employeeId)) {
+        if (!$this->service->findOrFail($id, $companyId) || !$this->canEditReport($role, $id, $companyId, $employeeId)) {
             return json_encode(['error' => __('pages.report_not_found')]);
         }
 
@@ -220,5 +204,36 @@ class TaskReportsApiController extends Controller
     private function canMutate(string $role): bool
     {
         return in_array(strtolower($role), ['manager', 'employee'], true);
+    }
+
+    private function canEditReport(string $role, int $id, int $companyId, int $employeeId): bool
+    {
+        $role = strtolower($role);
+        $report = $this->service->getReportById($id, $companyId);
+        if (!$report) {
+            return false;
+        }
+
+        if ($role === 'employee') {
+            return (int) ($report->reported_by ?? 0) === (int) $employeeId;
+        }
+
+        if ($role === 'manager') {
+            return $this->service->managerOwnsReport($id, $companyId, $employeeId);
+        }
+
+        return false;
+    }
+
+    private function uploadedImages(Request $request): array
+    {
+        $images = $request->file('images', []);
+        if (!is_array($images)) {
+            $images = $images ? [$images] : [];
+        }
+
+        return array_values(array_filter($images, function ($file) {
+            return $file && method_exists($file, 'isValid') && $file->isValid();
+        }));
     }
 }

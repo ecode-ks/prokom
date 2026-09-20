@@ -22,11 +22,9 @@ class ProjectReportsApiController extends Controller
             return json_encode(['error' => __('pages.no_access')]);
         }
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->only(['project_id', 'report']), [
             'project_id' => 'required|integer',
             'report' => 'required|string',
-            'images' => 'nullable|array',
-            'images.*' => 'image',
         ]);
 
         if ($validator->fails()) {
@@ -41,7 +39,7 @@ class ProjectReportsApiController extends Controller
         $data = [
             'project_id' => $projectId,
             'report' => trim((string) $request->report),
-            'images' => $request->hasFile('images') ? $request->file('images') : [],
+            'images' => $this->uploadedImages($request),
             'reported_by' => $employeeId,
             'company_id' => $companyId,
             'status' => 'active',
@@ -119,12 +117,10 @@ class ProjectReportsApiController extends Controller
             return json_encode(['error' => __('pages.no_access')]);
         }
 
-        $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->only(['id', 'project_id', 'report']), [
             'id' => 'required|integer|exists:project_reports,id',
             'project_id' => 'required|integer',
             'report' => 'required|string',
-            'images' => 'nullable|array',
-            'images.*' => 'image',
         ]);
 
         if ($validator->fails()) {
@@ -147,7 +143,7 @@ class ProjectReportsApiController extends Controller
             'report' => trim((string) $request->report),
         ];
         if ($request->hasFile('images')) {
-            $data['images'] = $request->file('images');
+            $data['images'] = $this->uploadedImages($request);
         }
 
         try {
@@ -213,5 +209,17 @@ class ProjectReportsApiController extends Controller
     private function canView(string $role): bool
     {
         return in_array($role, ['manager', 'company'], true);
+    }
+
+    private function uploadedImages(Request $request): array
+    {
+        $images = $request->file('images', []);
+        if (!is_array($images)) {
+            $images = $images ? [$images] : [];
+        }
+
+        return array_values(array_filter($images, function ($file) {
+            return $file && method_exists($file, 'isValid') && $file->isValid();
+        }));
     }
 }
