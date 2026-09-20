@@ -30,6 +30,7 @@ class CheckInRepository
     {
         return $this->applyOwner(DB::table($this->table), $employeeId, $companyId)
             ->whereNull('check_out_time')
+            ->orderByDesc('id')
             ->first();
     }
     //---------------

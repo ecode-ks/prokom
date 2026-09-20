@@ -102,6 +102,6 @@ class WorkingHoursApiController extends Controller
 
     private function canView(string $role): bool
     {
-        return in_array($role, ['company', 'manager', 'hr', 'employee'], true);
+        return in_array($role, ['company', 'manager', 'finance', 'hr', 'employee'], true);
     }
 }

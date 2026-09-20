@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\EmployeesModel;
 use App\Services\Api\CheckInApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -28,6 +29,33 @@ class CheckInApiController extends Controller
         return json_encode([
             'checkIns' => $checkIns,
             'role' => $role,
+        ]);
+    }
+
+    /**
+     * Return the authenticated employee's latest unfinished check-in.
+     */
+    public function active(Request $request)
+    {
+        $account = $request->user();
+
+        if (!$account instanceof EmployeesModel || empty($account->company_id)) {
+            return response()->json([
+                'success' => true,
+                'has_active_checkin' => false,
+                'checkin' => null,
+            ]);
+        }
+
+        $checkin = $this->service->getActiveCheckIn(
+            (int) $account->id,
+            (int) $account->company_id
+        );
+
+        return response()->json([
+            'success' => true,
+            'has_active_checkin' => $checkin !== null,
+            'checkin' => $checkin,
         ]);
     }
 

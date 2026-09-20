@@ -63,6 +63,14 @@ class CheckInApiService
         return $this->employeeId > 0 && $this->companyId > 0;
     }
 
+    /**
+     * Return the most recent unfinished check-in for an authenticated employee.
+     */
+    public function getActiveCheckIn(int $employeeId, int $companyId)
+    {
+        return $this->repository->getActiveCheckIn($employeeId, $companyId);
+    }
+
     public function startWork(array $data): bool
     {
         if (!$this->canCheckIn()) {

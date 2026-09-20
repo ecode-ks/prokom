@@ -23,7 +23,8 @@ Route::controller(UsersApiController::class)->group(function () {
    Route::middleware(['auth:sanctum', 'api.locale'])->get('/api/user', 'profile')->name('api.user.profile.nested');
    Route::middleware(['auth:sanctum', 'api.locale'])->post('/logout', 'logout')->name('api.logout');
    Route::middleware(['auth:sanctum', 'api.locale'])->post('/api/logout', 'logout')->name('api.logout.nested');
-   Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
+   Route::middleware(['auth:sanctum', 'api.locale'])->post('/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password');
+   Route::middleware(['auth:sanctum', 'api.locale'])->post('/api/update-profile-password', 'updateProfilePassword')->name('api.update.profile.password.legacy');
 });
 
 // Company News
@@ -43,6 +44,11 @@ Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(Wor
 });
 
 // Check-ins
+Route::middleware(['auth:sanctum', 'api.locale'])->controller(CheckInApiController::class)->group(function () {
+    Route::get('/check-ins/active', 'active')->name('api.checkins.active');
+    Route::get('/api/check-ins/active', 'active')->name('api.checkins.active.legacy');
+});
+
 Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(CheckInApiController::class)->group(function () {
     Route::get('/api/check-ins/read/{companyId}/{employeeId}/{role}', 'read')->name('api.checkins.read');
     Route::get('/api/check-ins/map/{companyId}/{employeeId}/{role}', 'map')->name('api.checkins.map');

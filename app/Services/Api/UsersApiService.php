@@ -6,6 +6,7 @@ use App\Models\UsersModel;
 use App\Repositories\CompaniesRepository;
 use App\Repositories\EmployeesRepository;
 use App\Repositories\UsersRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsersApiService
@@ -364,13 +365,14 @@ class UsersApiService
         }
 
         /*
-         * Save new hashed password.
+         * These legacy account tables do not consistently have Eloquent
+         * timestamp columns. Update only the authenticated account's password.
          */
-        $account->password = Hash::make(
-            $newPassword
-        );
-
-        return $account->save();
+        return DB::table($account->getTable())
+            ->where($account->getKeyName(), $account->getKey())
+            ->update([
+                'password' => Hash::make($newPassword),
+            ]) === 1;
     }
 
     // /**
