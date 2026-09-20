@@ -97,6 +97,7 @@ Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(Vac
    Route::get('/api/vacations/{id}/edit/{companyId}/{employeeId}/{role}', 'edit')->name('api.vacations.edit');
    Route::post('/api/vacations/update/{companyId}/{employeeId}/{role}', 'update')->name('api.vacations.update');
    Route::delete('/api/vacations/{id}/{companyId}/{employeeId}/{role}', 'delete')->name('api.vacations.delete');
+   Route::get('/api/vacations/{id}/status/{status}/{companyId}/{employeeId}/{role}', 'updateStatus')->name('api.vacations.status');
 });
 
 // Tasks

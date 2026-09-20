@@ -18,7 +18,7 @@ class VacationsApiController extends Controller
 
     public function create(Request $request, int $companyId, int $employeeId, string $role)
     {
-        $isEmployee = $role === 'employee';
+        $isEmployee = in_array(strtolower($role), ['employee', 'finance'], true);
 
         $validator = Validator::make($request->all(), [
             'employee_id' => $isEmployee ? 'nullable' : 'required|integer|exists:employees,id',
@@ -49,7 +49,7 @@ class VacationsApiController extends Controller
         $search = $request->query('search', '');
         $statuses = array_values(array_filter((array) $request->query('statuses', [])));
         $selectedType = $this->service->resolveType($request->query('type'));
-        $isEmployee = $role === 'employee';
+        $isEmployee = in_array(strtolower($role), ['employee', 'finance'], true);
         $scopedEmployeeId = $isEmployee ? (int) $employeeId : null;
         $employees = $isEmployee ? collect() : $this->service->getAllEmployees($companyId);
 
@@ -72,7 +72,7 @@ class VacationsApiController extends Controller
         }
 
         $editVacation = $this->service->getVacationById($id, $companyId);
-        $isEmployee = $role === 'employee';
+        $isEmployee = in_array(strtolower($role), ['employee', 'finance'], true);
 
         if ($isEmployee && (int) $editVacation->employee_id !== (int) $employeeId) {
             return json_encode(['error' => __('pages.vacation_no_edit')]);
@@ -90,7 +90,7 @@ class VacationsApiController extends Controller
 
     public function update(Request $request, int $companyId, int $employeeId, string $role)
     {
-        $isEmployee = $role === 'employee';
+        $isEmployee = in_array(strtolower($role), ['employee', 'finance'], true);
 
         $validator = Validator::make($request->all(), [
             'id' => 'required|integer|exists:vacations,id',
@@ -134,13 +134,42 @@ class VacationsApiController extends Controller
         }
 
         $vacation = $this->service->getVacationById($id, $companyId);
-        if ($role === 'employee' && (int) $vacation->employee_id !== (int) $employeeId) {
+        $isEmployee = in_array(strtolower($role), ['employee', 'finance'], true);
+        if ($isEmployee && (int) $vacation->employee_id !== (int) $employeeId) {
             return json_encode(['error' => __('pages.vacation_no_delete')]);
         }
 
         try {
             $this->service->deleteVacation($id, $companyId);
             return json_encode(['success' => __('pages.vacation_deleted')]);
+        } catch (\Exception $e) {
+            return json_encode(['error' => __('pages.try_again')]);
+        }
+    }
+
+    public function updateStatus(int $id, string $status, int $companyId, int $employeeId, string $role)
+    {
+        $role = strtolower($role);
+        $status = urldecode($status);
+
+        if (!in_array($role, ['company', 'hr'], true)) {
+            return json_encode(['error' => __('pages.vacation_no_status')]);
+        }
+
+        if (!in_array($status, ['Approved', 'Refused'], true)) {
+            return json_encode(['error' => __('pages.invalid_status')]);
+        }
+
+        if (!$this->service->findOrFail($id, $companyId)) {
+            return json_encode(['error' => __('pages.vacation_not_found')]);
+        }
+
+        try {
+            if (!$this->service->updateVacationStatus($id, $status, $role, $companyId)) {
+                return json_encode(['error' => __('pages.invalid_status')]);
+            }
+
+            return json_encode(['success' => __('pages.vacation_status_updated')]);
         } catch (\Exception $e) {
             return json_encode(['error' => __('pages.try_again')]);
         }
