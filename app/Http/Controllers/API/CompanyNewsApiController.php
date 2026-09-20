@@ -44,10 +44,6 @@ class CompanyNewsApiController extends Controller
 
     public function read(Request $request, int $companyId, int $employeeId, string $role)
     {
-        if (!$this->canManage($role)) {
-            return json_encode(['error' => __('pages.no_access')]);
-        }
-
         $search = trim((string) $request->query('search', ''));
 
         return json_encode([
