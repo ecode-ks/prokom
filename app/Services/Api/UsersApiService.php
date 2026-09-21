@@ -37,34 +37,34 @@ class UsersApiService
         |--------------------------------------------------------------------------
         */
 
-        $user = $this->usersRepository->checkUser($credentials);
-
-        if (
-            $user &&
-            Hash::check($credentials['password'], $user->password)
-        ) {
-            $token = $user
-                ->createToken('mobile-app')
-                ->plainTextToken;
-
-            return [
-                'token' => $token,
-
-                'user' => $this->withContact([
-                    'id' => (int) $user->id,
-                    'username' => $user->username,
-                    'role' => $user->role,
-                    'user' => $user->user,
-
-                    'company' => null,
-                    'company_id' => null,
-                    'employee_id' => null,
-
-                    'language' => 'sq',
-                    'account_type' => 'user',
-                ], $user),
-            ];
-        }
+//        $user = $this->usersRepository->checkUser($credentials);
+//
+//        if (
+//            $user &&
+//            Hash::check($credentials['password'], $user->password)
+//        ) {
+//            $token = $user
+//                ->createToken('mobile-app')
+//                ->plainTextToken;
+//
+//            return [
+//                'token' => $token,
+//
+//                'user' => $this->withContact([
+//                    'id' => (int) $user->id,
+//                    'username' => $user->username,
+//                    'role' => $user->role,
+//                    'user' => $user->user,
+//
+//                    'company' => null,
+//                    'company_id' => null,
+//                    'employee_id' => null,
+//
+//                    'language' => 'sq',
+//                    'account_type' => 'user',
+//                ], $user),
+//            ];
+//        }
 
         /*
         |--------------------------------------------------------------------------
