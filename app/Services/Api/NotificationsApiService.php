@@ -2,59 +2,48 @@
 
 namespace App\Services\Api;
 
-use App\Repositories\EmployeesRepository;
+use App\Models\CompaniesModel;
+use App\Models\EmployeesModel;
 use App\Repositories\NotificationsRepository;
 use App\Repositories\PushTokensRepository;
 
 class NotificationsApiService
 {
     protected NotificationsRepository $repository;
-    protected EmployeesRepository $employees;
     protected PushTokensRepository $pushTokens;
     protected ?array $recipient = null;
-    protected array $employeeRoles = ['manager', 'employee', 'finance', 'hr'];
 
     public function __construct(
         NotificationsRepository $repository,
-        EmployeesRepository $employees,
         PushTokensRepository $pushTokens
     ) {
         $this->repository = $repository;
-        $this->employees = $employees;
         $this->pushTokens = $pushTokens;
     }
 
-    public function bindRecipient(?string $username = null, ?int $employeeId = null, ?int $companyId = null, ?string $role = null): ?array
+    public function bindRecipient(mixed $account): ?array
     {
-        if ($username) {
-            $employee = $this->employees->findEmployeeByUsername(trim($username));
-            if ($employee && strcasecmp((string) ($employee->status ?? ''), 'Active') === 0) {
-                $this->recipient = [
-                    'company_id' => (int) $employee->company_id,
-                    'recipient_type' => 'employee',
-                    'recipient_id' => (int) $employee->id,
-                ];
-                return $this->recipient;
-            }
-        }
-
-        $role = (string) $role;
-        $companyId = (int) $companyId;
-        if ($role === 'company' && $companyId > 0) {
+        if ($account instanceof CompaniesModel) {
             $this->recipient = [
-                'company_id' => $companyId,
+                'company_id' => (int) $account->id,
                 'recipient_type' => 'company',
-                'recipient_id' => $companyId,
+                'recipient_id' => (int) $account->id,
             ];
+
             return $this->recipient;
         }
 
-        if (in_array($role, $this->employeeRoles, true) && $employeeId > 0 && $companyId > 0) {
+        if (
+            $account instanceof EmployeesModel &&
+            $account->status === 'Active' &&
+            $account->company_id
+        ) {
             $this->recipient = [
-                'company_id' => $companyId,
+                'company_id' => (int) $account->company_id,
                 'recipient_type' => 'employee',
-                'recipient_id' => $employeeId,
+                'recipient_id' => (int) $account->id,
             ];
+
             return $this->recipient;
         }
 

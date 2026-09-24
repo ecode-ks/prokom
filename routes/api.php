@@ -62,10 +62,19 @@ Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(Che
 });
 
 // Notifications
-Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
-   Route::get('/api/', 'read')->name('api.notifications.read');
-   Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
-   Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(NotificationsApiController::class)->prefix('notifications')->group(function () {
+    Route::get('/', 'read')->name('api.notifications.read');
+    Route::post('/open/{id}', 'open')->name('api.notifications.open');
+    Route::post('/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
+    Route::post('/push-token', 'registerPushToken')->name('api.notifications.push.token');
+});
+
+// Temporary compatibility for mobile clients released before the canonical route.
+Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(NotificationsApiController::class)->prefix('api.notifications/api')->group(function () {
+    Route::get('/', 'read')->name('api.notifications.read.legacy');
+    Route::post('/open/{id}', 'open')->name('api.notifications.open.legacy');
+    Route::post('/mark-all-read', 'markAllRead')->name('api.notifications.mark.all.legacy');
+    Route::post('/push-token', 'registerPushToken')->name('api.notifications.push.token.legacy');
 });
 
 // Extra Hours
@@ -144,13 +153,6 @@ Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(Pro
     Route::get('/api/projects/read/{companyId}/{employeeId}/{role}', 'read')->name('api.projects.read');
     Route::get('/api/projects/{id}/details/{companyId}/{employeeId}/{role}', 'projectDetails')->name('api.projects.details');
     Route::get('/api/projects/{id}/context/{companyId}/{employeeId}/{role}', 'setProjectContext')->name('api.projects.context');
-});
-
-Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(NotificationsApiController::class)->prefix('api.notifications')->group(function () {
-    Route::get('/api/', 'read')->name('api.notifications.read');
-    Route::post('/api/open/{id}', 'open')->name('api.notifications.open');
-    Route::post('/api/mark-all-read', 'markAllRead')->name('api.notifications.mark.all');
-    Route::post('/api/push-token', 'registerPushToken')->name('api.notifications.push.token');
 });
 
 Route::middleware(['auth:sanctum', 'api.locale', 'api.payment'])->controller(TaskReportsApiController::class)->group(function () {

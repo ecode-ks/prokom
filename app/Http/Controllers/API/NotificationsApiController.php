@@ -17,12 +17,7 @@ class NotificationsApiController extends Controller
 
     private function bindFromRequest(Request $request): ?array
     {
-        return $this->service->bindRecipient(
-            $request->input('username'),
-            $request->filled('employee_id') ? (int) $request->input('employee_id') : null,
-            $request->filled('company_id') ? (int) $request->input('company_id') : null,
-            $request->input('role')
-        );
+        return $this->service->bindRecipient($request->user());
     }
 
     public function read(Request $request)
