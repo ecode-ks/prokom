@@ -87,60 +87,6 @@
         </div>
     </section>
 
-    <section class="wo-section wo-animate" id="cmimet">
-        <span class="wo-label wo-animate-item">{{ __('marketing.pricing_label') }}</span>
-        <h2 class="wo-animate-item">{{ __('marketing.pricing_title_1') }}<br>{{ __('marketing.pricing_title_2') }}</h2>
-        <p class="wo-lead wo-animate-item">{{ __('marketing.pricing_lead') }}</p>
-        <div class="wo-prices-wrap">
-            <div class="wo-prices" id="woPrices" tabindex="0" aria-label="{{ __('marketing.pricing_title') }}">
-                <article class="wo-price wo-animate-item">
-                    <header class="wo-price-head">
-                        <h3>{{ __('marketing.price_trial') }}</h3>
-                        <p class="wo-price-amount">{{ __('marketing.price_trial_tag') }}</p>
-                    </header>
-                    <p class="wo-price-desc">{{ __('marketing.price_trial_d') }}</p>
-                    <ul class="wo-price-list">
-                        <li>{{ __('marketing.price_trial_f1') }}</li>
-                        <li>{{ __('marketing.price_trial_f2') }}</li>
-                        <li>{{ __('marketing.price_trial_f3') }}</li>
-                    </ul>
-                    <a class="wo-btn wo-btn-ghost" href="{{ route('login') }}">{{ __('marketing.price_cta') }}</a>
-                </article>
-                <article class="wo-price is-featured wo-animate-item">
-                    <span class="wo-price-badge">{{ __('marketing.price_std_badge') }}</span>
-                    <header class="wo-price-head">
-                        <h3>{{ __('marketing.price_std') }}</h3>
-                        <p class="wo-price-amount">
-                            {{ __('marketing.price_std_tag') }}
-                            <span class="wo-price-period">{{ __('marketing.price_std_period') }}</span>
-                        </p>
-                    </header>
-                    <p class="wo-price-desc">{{ __('marketing.price_std_d') }}</p>
-                    <ul class="wo-price-list">
-                        <li>{{ __('marketing.price_std_f1') }}</li>
-                        <li>{{ __('marketing.price_std_f2') }}</li>
-                        <li>{{ __('marketing.price_std_f3') }}</li>
-                        <li>{{ __('marketing.price_std_f4') }}</li>
-                    </ul>
-                    <a class="wo-btn wo-btn-primary" href="{{ route('login') }}">{{ __('marketing.price_cta') }}</a>
-                </article>
-                <article class="wo-price wo-animate-item">
-                    <header class="wo-price-head">
-                        <h3>{{ __('marketing.price_pro') }}</h3>
-                        <p class="wo-price-amount is-text">{{ __('marketing.price_pro_tag') }}</p>
-                    </header>
-                    <p class="wo-price-desc">{{ __('marketing.price_pro_d') }}</p>
-                    <ul class="wo-price-list">
-                        <li>{{ __('marketing.price_pro_f1') }}</li>
-                        <li>{{ __('marketing.price_pro_f2') }}</li>
-                        <li>{{ __('marketing.price_pro_f3') }}</li>
-                    </ul>
-                    <a class="wo-btn wo-btn-ghost" href="{{ route('marketing.contact') }}">{{ __('marketing.price_cta') }}</a>
-                </article>
-            </div>
-        </div>
-    </section>
-
     <section class="wo-section wo-clients wo-animate" id="klientet">
         <span class="wo-label wo-animate-item">{{ __('marketing.clients_label') }}</span>
         @php
