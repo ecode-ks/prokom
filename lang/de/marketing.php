@@ -259,4 +259,5 @@ return [
     'footer_clients' => 'Kunden',
     'footer_bottom_tag' => 'Eine Plattform für Betrieb, Kunden und Personal.',
     'footer_rights' => 'Alle Rechte vorbehalten.',
+    'footer_privacy' => 'Datenschutz',
 ];

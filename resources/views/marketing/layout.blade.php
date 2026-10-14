@@ -9,9 +9,14 @@
         'hr' => __('marketing.meta_hr'),
         'faq' => __('marketing.meta_faq'),
         'contact' => __('marketing.meta_contact'),
+        'privacy' => __('privacy.meta_title'),
         default => __('marketing.meta_title'),
     };
-    $description = __('marketing.meta_' . ($page === 'home' ? 'description' : $page . '_description'));
+    $description = match ($page) {
+        'home' => __('marketing.meta_description'),
+        'privacy' => __('privacy.meta_description'),
+        default => __('marketing.meta_' . $page . '_description'),
+    };
     $ogLocale = match (app()->getLocale()) {
         'sq' => 'sq_AL',
         'de' => 'de_DE',
@@ -73,6 +78,10 @@
     @php
         $locale = app()->getLocale();
         $navCurrent = fn (bool $on) => $on ? 'class=is-active aria-current=page' : '';
+        // the privacy page carries its language in the URL, so switch by URL there
+        $langUrl = fn (string $lang) => $page === 'privacy'
+            ? route('marketing.privacy', $lang)
+            : route('marketing.locale', $lang);
     @endphp
     {{-- On the home page the header sits over the dark hero photo until the visitor scrolls past it --}}
     <header class="wo-top{{ $page === 'home' ? ' wo-top--over' : '' }}" id="woTop">
@@ -110,7 +119,7 @@
             <div class="wo-actions">
                 <div class="wo-lang" role="group" aria-label="Language">
                     @foreach (['sq', 'en', 'de'] as $lang)
-                        <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                        <a href="{{ $langUrl($lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
                     @endforeach
                 </div>
                 <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
@@ -147,7 +156,7 @@
                         <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
                         <div class="wo-lang" role="group" aria-label="Language">
                             @foreach (['sq', 'en', 'de'] as $lang)
-                                <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                                <a href="{{ $langUrl($lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
                             @endforeach
                         </div>
                     </div>
@@ -206,7 +215,7 @@
             </div>
 
             <div class="wo-footer-bottom">
-                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }}</p>
+                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }} · <a href="{{ route('marketing.privacy') }}">{{ __('marketing.footer_privacy') }}</a></p>
                 <p class="wo-footer-bottom-tag">{{ __('marketing.footer_bottom_tag') }}</p>
             </div>
         </div>
