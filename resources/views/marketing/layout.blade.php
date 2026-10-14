@@ -78,10 +78,6 @@
     @php
         $locale = app()->getLocale();
         $navCurrent = fn (bool $on) => $on ? 'class=is-active aria-current=page' : '';
-        // the privacy page carries its language in the URL, so switch by URL there
-        $langUrl = fn (string $lang) => $page === 'privacy'
-            ? route('marketing.privacy', $lang)
-            : route('marketing.locale', $lang);
     @endphp
     {{-- On the home page the header sits over the dark hero photo until the visitor scrolls past it --}}
     <header class="wo-top{{ $page === 'home' ? ' wo-top--over' : '' }}" id="woTop">
@@ -119,7 +115,7 @@
             <div class="wo-actions">
                 <div class="wo-lang" role="group" aria-label="Language">
                     @foreach (['sq', 'en', 'de'] as $lang)
-                        <a href="{{ $langUrl($lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                        <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
                     @endforeach
                 </div>
                 <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
@@ -156,7 +152,7 @@
                         <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
                         <div class="wo-lang" role="group" aria-label="Language">
                             @foreach (['sq', 'en', 'de'] as $lang)
-                                <a href="{{ $langUrl($lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                                <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
                             @endforeach
                         </div>
                     </div>

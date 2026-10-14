@@ -93,14 +93,8 @@ class MarketingController extends Controller
         return view('marketing.contact', ['page' => 'contact']);
     }
 
-    public function privacy(?string $locale = null)
+    public function privacy()
     {
-        // A language in the URL wins over the session, so store reviewers always get that version.
-        if ($locale !== null) {
-            app()->setLocale($locale);
-            session()->put('marketing_locale', $locale);
-        }
-
         return view('marketing.privacy', ['page' => 'privacy']);
     }
 

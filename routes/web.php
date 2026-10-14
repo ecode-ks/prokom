@@ -36,8 +36,7 @@ Route::middleware(\App\Http\Middleware\SetMarketingLocale::class)->group(functio
     Route::get('/produkti/hr', [MarketingController::class, 'hr'])->name('marketing.hr');
     Route::get('/faq', [MarketingController::class, 'faq'])->name('marketing.faq');
     Route::get('/kontakt', [MarketingController::class, 'contact'])->name('marketing.contact');
-// Linked from Google Play / App Store; /privacy-policy/en etc. open a fixed language without a session
-Route::get('/privacy-policy/{locale?}', [MarketingController::class, 'privacy'])->where('locale', 'sq|en|de')->name('marketing.privacy');
+Route::get('/privacy-policy', [MarketingController::class, 'privacy'])->name('marketing.privacy');
     Route::get('/locale/{locale}', [MarketingController::class, 'setLocale'])->name('marketing.locale');
     Route::post('/kontakt', [MarketingController::class, 'submitContact'])->name('marketing.contact.submit');
 });
