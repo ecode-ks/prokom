@@ -2,15 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\PackagesService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class MarketingController extends Controller
 {
-    public function home()
+    public function home(PackagesService $packages)
     {
-        return view('marketing.home', ['page' => 'home']);
+        return view('marketing.home', [
+            'page' => 'home',
+            'packages' => $this->publicPackages($packages),
+        ]);
+    }
+
+    /**
+     * Packages managed in the admin panel, in the visitor's language, smallest team first.
+     * The home page must still render if the database is unavailable.
+     */
+    private function publicPackages(PackagesService $packages): Collection
+    {
+        try {
+            return collect($packages->getAllPackages(app()->getLocale()))
+                ->sortBy([['staff_limit', 'asc'], ['price', 'asc']])
+                ->values();
+        } catch (\Throwable $e) {
+            report($e);
+
+            return collect();
+        }
     }
 
     public function product()

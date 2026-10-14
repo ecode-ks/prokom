@@ -1,5 +1,5 @@
 /* WORKOM marketing PWA — static assets + marketing pages only */
-const CACHE_VERSION = 'workom-marketing-v1';
+const CACHE_VERSION = 'workom-marketing-v2';
 const PRECACHE_URLS = [
     '/',
     '/produkti',

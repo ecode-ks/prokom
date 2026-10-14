@@ -1,0 +1,2250 @@
+/*
+ * WORKOM marketing — design system
+ *
+ * Loaded after marketing.css. Each redesign phase moves its section here and
+ * removes the old rules from marketing.css, until marketing.css is gone.
+ *
+ * Palette is taken from the logo: navy #071838 + brand blue.
+ * Type: Sora (display) + Inter (text). Both loaded in marketing/layout.
+ */
+
+/* ---------------------------------------------------------------
+ * 1. Tokens
+ * ------------------------------------------------------------- */
+.wo {
+    /* Colour */
+    --ink: #071838;               /* logo navy — headings, primary text */
+    --ink-2: #4a5a75;             /* body / lead text (7:1 on white) */
+    --ink-3: #66758e;             /* meta, captions (4.6:1 on white) */
+    --bg: #ffffff;
+    --bg-2: #f5f7fb;              /* quiet alternate section */
+    --bg-3: #eaeff6;              /* image placeholders, wells */
+    --bg-ink: #071838;            /* dark band / footer */
+    --line: rgba(7, 24, 56, 0.1);
+    --line-strong: rgba(7, 24, 56, 0.2);
+    --accent: #1f66e5;            /* logo blue, 5.1:1 with white text */
+    --accent-hover: #1852c0;
+    --accent-soft: #eaf1fd;
+
+    /* Type */
+    --font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --display: "Sora", "Inter", "Segoe UI", system-ui, sans-serif;
+    --fs-display: clamp(2.375rem, 1.6rem + 3.6vw, 4rem);
+    --fs-h2: clamp(1.875rem, 1.35rem + 2.2vw, 2.875rem);
+    --fs-h3: 1.25rem;
+    --fs-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    --fs-body: 1rem;
+    --fs-small: 0.875rem;
+    --fs-eyebrow: 0.75rem;
+
+    /* Space */
+    --gutter: clamp(1rem, 4vw, 2rem);
+    --max: 1200px;
+    --section-y: clamp(4rem, 2.5rem + 6vw, 7rem);
+    --stack-sm: 0.75rem;
+    --stack-md: 1.25rem;
+    --stack-lg: 2.5rem;
+
+    /* Shape */
+    --r-sm: 8px;                  /* buttons, inputs */
+    --radius: 12px;               /* cards, images */
+    --shadow-1: 0 1px 2px rgba(7, 24, 56, 0.06), 0 4px 16px rgba(7, 24, 56, 0.05);
+
+    /* Motion */
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --dur: 200ms;
+
+    /* Legacy names still read by marketing.css */
+    --navy: var(--ink);
+    --navy-deep: var(--ink);
+    --text: var(--ink);
+    --muted: var(--ink-2);
+    --faint: var(--ink-3);
+    --logo: var(--ink);
+    --logo-soft: var(--accent);
+    --footer-bg: var(--bg-ink);
+    --surface-glow: transparent;
+    --shot-grad-a: var(--bg-3);
+    --shot-grad-b: var(--bg-3);
+    --shadow-card: var(--shadow-1);
+
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: var(--fs-body);
+    line-height: 1.6;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+}
+
+/* ---------------------------------------------------------------
+ * 2. Base
+ * ------------------------------------------------------------- */
+.wo ::selection {
+    background: var(--accent-soft);
+    color: var(--ink);
+}
+
+.wo :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+.wo a {
+    transition: color var(--dur) var(--ease);
+}
+
+.wo h1,
+.wo h2,
+.wo h3,
+.wo h4 {
+    font-family: var(--display);
+    color: var(--ink);
+    text-wrap: balance;
+}
+
+.wo p {
+    text-wrap: pretty;
+}
+
+.wo-wrap {
+    width: min(var(--max), 100% - 2 * var(--gutter));
+    margin-inline: auto;
+}
+
+/* ---------------------------------------------------------------
+ * 3. Type roles
+ * ------------------------------------------------------------- */
+
+.wo-section h2,
+.wo-how h2,
+.wo-pricing h2,
+.wo-close h2,
+.wo-module-hero__title {
+    font-size: var(--fs-h2);
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+}
+
+.wo-module-card h3 {
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+}
+
+/* Eyebrow above a heading */
+.wo-label {
+    display: inline-block;
+    margin: 0 0 var(--stack-sm);
+    font-family: var(--font);
+    font-size: var(--fs-eyebrow);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.wo-lead,
+.wo-section .wo-lead,
+.wo-module-hero__lead {
+    font-size: var(--fs-lead);
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ink-2);
+    max-width: 38rem;
+}
+
+/* ---------------------------------------------------------------
+ * 4. Buttons
+ * ------------------------------------------------------------- */
+.wo-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    min-height: 48px;
+    padding: 0 1.375rem;
+    border-radius: var(--r-sm);
+    border: 1px solid transparent;
+    font-family: var(--font);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    line-height: 1;
+    box-shadow: none;
+    transition:
+        background-color var(--dur) var(--ease),
+        border-color var(--dur) var(--ease),
+        color var(--dur) var(--ease);
+}
+
+.wo-btn-primary,
+.wo-top .wo-btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: none;
+}
+
+.wo-btn-primary:hover,
+.wo-top .wo-btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+    color: #fff;
+}
+
+/* `a.` prefix beats `.wo a { color: inherit }` in marketing.css */
+a.wo-btn-primary,
+a.wo-btn-primary:hover {
+    color: #fff;
+}
+
+a.wo-btn-ghost {
+    color: var(--ink);
+}
+
+.wo-btn-ghost {
+    background: var(--bg);
+    border-color: var(--line-strong);
+    color: var(--ink);
+}
+
+.wo-btn-ghost:hover {
+    background: var(--bg-2);
+    border-color: var(--ink);
+    color: var(--ink);
+}
+
+.wo-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--stack-sm);
+}
+
+/* ---------------------------------------------------------------
+ * 5. Header
+ *
+ * < 1080px: logo · Demo · menu button, full-screen drawer.
+ * ≥ 1080px: logo · links · language · sign in · CTA.
+ * ------------------------------------------------------------- */
+.wo {
+    --top-h: 64px;
+}
+
+@media (min-width: 1080px) {
+    .wo {
+        --top-h: 76px;
+    }
+}
+
+.wo-top {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 1px solid transparent;
+    transition:
+        background-color var(--dur) var(--ease),
+        border-color var(--dur) var(--ease);
+}
+
+.wo-top.is-scrolled {
+    background: rgba(255, 255, 255, 0.86);
+    border-bottom-color: var(--line);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+}
+
+/* backdrop-filter would make the fixed drawer position against the header */
+body.wo-nav-open .wo-top {
+    background: var(--bg);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+
+.wo-top-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: var(--top-h);
+}
+
+.wo-logo {
+    display: inline-flex;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.wo-top .wo-logo img {
+    width: auto;
+    height: 28px;
+}
+
+@media (min-width: 1080px) {
+    .wo-top .wo-logo img {
+        height: 32px;
+    }
+}
+
+/* Primary links */
+.wo-nav {
+    display: none;
+}
+
+.wo-nav > a,
+.wo-nav-drop-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    height: 40px;
+    padding: 0 0.625rem;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: none;
+    font: 500 0.9375rem/1 var(--font);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: color var(--dur) var(--ease);
+}
+
+.wo-nav > a:hover,
+.wo-nav-drop-trigger:hover,
+.wo-nav-drop.is-open .wo-nav-drop-trigger {
+    color: var(--ink);
+}
+
+.wo-nav > a.is-active,
+.wo-nav-drop-trigger.is-active {
+    color: var(--ink);
+}
+
+.wo-nav > a.is-active::after,
+.wo-nav-drop-trigger.is-active::after {
+    content: "";
+    position: absolute;
+    left: 0.625rem;
+    right: 0.625rem;
+    bottom: 2px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.wo-nav-caret {
+    width: 10px;
+    height: 10px;
+    transition: transform var(--dur) var(--ease);
+}
+
+.wo-nav-drop.is-open .wo-nav-caret {
+    transform: rotate(180deg);
+}
+
+/* Modules dropdown */
+.wo-nav-drop {
+    position: relative;
+}
+
+.wo-nav-drop-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    width: 300px;
+    padding: 0.375rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 16px 40px rgba(7, 24, 56, 0.1), 0 2px 6px rgba(7, 24, 56, 0.04);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 4px);
+    transition:
+        opacity 160ms var(--ease),
+        transform 160ms var(--ease),
+        visibility 0s linear 160ms;
+}
+
+/* keeps hover alive while the pointer crosses the gap */
+.wo-nav-drop-menu::before {
+    content: "";
+    position: absolute;
+    inset: -12px 0 auto;
+    height: 12px;
+}
+
+.wo-nav-drop.is-open .wo-nav-drop-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition-delay: 0s;
+}
+
+.wo-nav-drop-item {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.75rem 0.875rem;
+    border-radius: var(--r-sm);
+    transition: background-color var(--dur) var(--ease);
+}
+
+.wo-nav-drop-item:hover {
+    background: var(--bg-2);
+}
+
+.wo-nav-drop-item__title {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--ink);
+}
+
+.wo-nav-drop-item.is-active .wo-nav-drop-item__title {
+    color: var(--accent);
+}
+
+.wo-nav-drop-item__desc {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--ink-3);
+}
+
+/* Right side */
+.wo-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.wo-actions > .wo-lang,
+.wo-actions > .wo-login {
+    display: none;
+}
+
+.wo-lang {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+}
+
+.wo-lang a {
+    padding: 0.375rem 0.4rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--ink-3);
+}
+
+.wo-lang a:hover {
+    color: var(--ink);
+}
+
+.wo-lang a.is-active {
+    color: var(--ink);
+    background: var(--bg-2);
+}
+
+.wo-login {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+.wo-login:hover {
+    color: var(--accent);
+}
+
+.wo-top-cta {
+    min-height: 40px;
+    padding: 0 1rem;
+    font-size: 0.875rem;
+}
+
+.wo-top-cta__long {
+    display: none;
+}
+
+/* Menu button */
+.wo-menu {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -0.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-sm);
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.wo-menu:hover {
+    background: var(--bg-2);
+}
+
+.wo-menu-bars {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 12px;
+}
+
+.wo-menu-bars span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.75px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform var(--dur) var(--ease), top var(--dur) var(--ease);
+}
+
+.wo-menu-bars span:nth-child(1) { top: 1px; }
+.wo-menu-bars span:nth-child(2) { top: 9px; }
+
+.wo-menu[aria-expanded="true"] .wo-menu-bars span:nth-child(1) {
+    top: 5px;
+    transform: rotate(45deg);
+}
+
+.wo-menu[aria-expanded="true"] .wo-menu-bars span:nth-child(2) {
+    top: 5px;
+    transform: rotate(-45deg);
+}
+
+/* Drawer (mobile / tablet) */
+.wo-drawer {
+    position: fixed;
+    inset: calc(var(--top-h) + 1px) 0 0;
+    z-index: 49;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.wo-drawer.is-open {
+    opacity: 1;
+    transform: none;
+}
+
+.wo-drawer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-height: 100%;
+    padding-block: 0.5rem 1.5rem;
+}
+
+.wo-drawer-nav > a {
+    display: block;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    font: 600 1.25rem/1.3 var(--display);
+    letter-spacing: -0.015em;
+    color: var(--ink);
+}
+
+.wo-drawer-nav a.is-active,
+.wo-drawer-nav a.is-active span {
+    color: var(--accent);
+}
+
+.wo-drawer-group {
+    margin: 1.5rem 0 0.25rem;
+    font-size: var(--fs-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.wo-drawer-sub {
+    display: grid;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.wo-drawer-sub a {
+    display: grid;
+    gap: 0.125rem;
+    padding: 0.625rem 0;
+}
+
+.wo-drawer-sub span {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.wo-drawer-sub small {
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+}
+
+.wo-drawer-foot {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: auto;
+}
+
+.wo-drawer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.wo-nav-open {
+    overflow: hidden;
+}
+
+@media (min-width: 560px) {
+    .wo-top-cta__long { display: inline; }
+    .wo-top-cta__short { display: none; }
+}
+
+@media (min-width: 1080px) {
+    .wo-top-row {
+        gap: 2rem;
+    }
+
+    .wo-nav {
+        display: flex;
+        align-items: center;
+        gap: 0.125rem;
+        margin-inline: auto;
+    }
+
+    .wo-actions {
+        gap: 1.25rem;
+        margin-left: 0;
+    }
+
+    .wo-actions > .wo-lang,
+    .wo-actions > .wo-login {
+        display: flex;
+    }
+
+    .wo-menu,
+    .wo-drawer {
+        display: none !important;
+    }
+}
+
+/* 1080–1279: German labels are long, tighten the right side */
+@media (min-width: 1080px) and (max-width: 1279px) {
+    .wo-top-row {
+        gap: 1.25rem;
+    }
+
+    .wo-actions {
+        gap: 0.875rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    .wo-nav {
+        gap: 0.5rem;
+    }
+}
+
+/* Header over the home hero (dark, transparent → dark glass).
+ * JS adds .is-light once the hero has scrolled away or the drawer opens. */
+/* .wo-top prefix beats `.wo img { display: block }` in marketing.css */
+.wo-top .wo-logo__light {
+    display: none;
+}
+
+.wo-top--over:not(.is-light) {
+    background: transparent;
+    border-bottom-color: transparent;
+}
+
+.wo-top--over:not(.is-light).is-scrolled {
+    background: rgba(4, 13, 34, 0.62);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
+    backdrop-filter: saturate(160%) blur(16px);
+}
+
+.wo-top--over:not(.is-light) .wo-logo__dark { display: none; }
+.wo-top--over:not(.is-light) .wo-logo__light { display: block; }
+
+.wo-top--over:not(.is-light) .wo-nav > a,
+.wo-top--over:not(.is-light) .wo-nav-drop-trigger {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.wo-top--over:not(.is-light) .wo-nav > a:hover,
+.wo-top--over:not(.is-light) .wo-nav > a.is-active,
+.wo-top--over:not(.is-light) .wo-nav-drop-trigger:hover,
+.wo-top--over:not(.is-light) .wo-nav-drop-trigger.is-active,
+.wo-top--over:not(.is-light) .wo-nav-drop.is-open .wo-nav-drop-trigger,
+.wo-top--over:not(.is-light) .wo-login,
+.wo-top--over:not(.is-light) .wo-menu {
+    color: #fff;
+}
+
+.wo-top--over:not(.is-light) .wo-nav > a.is-active::after,
+.wo-top--over:not(.is-light) .wo-nav-drop-trigger.is-active::after {
+    background: #3d8bff;
+}
+
+.wo-top--over:not(.is-light) .wo-lang a {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.wo-top--over:not(.is-light) .wo-lang a:hover,
+.wo-top--over:not(.is-light) .wo-lang a.is-active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.wo-top--over:not(.is-light) .wo-login:hover {
+    color: #8fb4ff;
+}
+
+.wo-top--over:not(.is-light) .wo-menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.wo-top--over:not(.is-light) :focus-visible {
+    outline-color: #8fb4ff;
+}
+
+/* ---------------------------------------------------------------
+ * 6. Home hero — duotone site photo, centred copy, horizon edge
+ * ------------------------------------------------------------- */
+.wo-hero {
+    --night: #040d22;
+    --sky: #8fb4ff;
+    --glow: #3d8bff;
+
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    display: flex;
+    flex-direction: column;
+    min-height: min(100svh, 920px);
+    padding-top: calc(var(--top-h) + 1px);
+    background: var(--night);
+    color: #fff;
+}
+
+/* slides under the sticky header; on desktop it also pins the hero for a stretch of scroll */
+.wo-hero-pin {
+    position: relative;
+    margin-top: calc(-1 * (var(--top-h) + 1px));
+}
+
+@media (min-width: 760px) {
+    .wo-hero-pin .wo-hero {
+        position: sticky;
+        top: 0;
+    }
+
+    .wo-hero-pin__space {
+        height: 60vh;
+    }
+}
+
+.wo-hero__bg,
+.wo-hero__bg > * {
+    position: absolute;
+    inset: 0;
+}
+
+.wo-hero__bg {
+    z-index: -1;
+    overflow: hidden;
+}
+
+.wo-hero__photo {
+    background-position: 50% 35%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    filter: grayscale(1) contrast(1.15) brightness(1.05);
+}
+
+/* Parallax (JS sets --py / --cy / --co while the hero is on screen).
+ * The photo is taller than the hero so moving it never reveals an edge. */
+.wo-hero__bg > .wo-hero__photo {
+    inset: -14% 0;
+    transform: translate3d(0, var(--py, 0px), 0) scale(var(--ps, 1.04));
+    will-change: transform;
+}
+
+.wo-hero__copy {
+    transform: translate3d(0, var(--cy, 0px), 0);
+    opacity: var(--co, 1);
+    will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wo-hero__bg > .wo-hero__photo,
+    .wo-hero__copy {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+.wo-hero__tint {
+    background: var(--accent);
+    mix-blend-mode: multiply;
+    opacity: 0.72;
+}
+
+/* darker behind the copy, edges open; bottom sinks into night */
+.wo-hero__shade {
+    background:
+        radial-gradient(ellipse 60% 55% at 50% 50%, rgba(4, 13, 34, 0.72) 0%, rgba(4, 13, 34, 0.45) 60%, rgba(4, 13, 34, 0.3) 100%),
+        linear-gradient(180deg, rgba(4, 13, 34, 0.55) 0%, transparent 22%, transparent 62%, var(--night) 100%);
+}
+
+/* fine grain stops banding in the gradients */
+.wo-hero__grain {
+    opacity: 0.1;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.wo-hero__copy {
+    display: grid;
+    justify-items: center;
+    gap: 1.375rem;
+    max-width: 52rem;
+    padding-block: clamp(4rem, 2rem + 6vw, 8.5rem) clamp(7rem, 5rem + 6vw, 10rem);
+    text-align: center;
+}
+
+.wo-hero h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 1.35rem + 4.6vw, 4.75rem);
+    font-weight: 650;
+    line-height: 1.02;
+    letter-spacing: -0.042em;
+    color: #fff;
+    text-shadow: 0 2px 30px rgba(4, 13, 34, 0.35);
+}
+
+.wo-hero h1 em {
+    font-style: normal;
+    white-space: nowrap;
+    background: linear-gradient(100deg, #c3d6ff 0%, var(--sky) 35%, var(--glow) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.wo-hero__lead {
+    margin: 0;
+    max-width: 34rem;
+    font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.wo-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.wo-hero .wo-btn-primary {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 24px -6px rgba(31, 102, 229, 0.7);
+}
+
+.wo-btn-glass {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+.wo-btn-glass:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.26);
+    color: #fff;
+}
+
+.wo-hero :focus-visible {
+    outline-color: var(--sky);
+}
+
+/* the scene ends in an arc of light */
+.wo-hero__horizon {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    z-index: 1;
+    width: max(1800px, 160vw);
+    height: 9rem;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 0 -1px 0 rgba(160, 195, 255, 0.85), 0 -10px 60px -6px rgba(61, 139, 255, 0.8);
+    transform: translate(-50%, 50%);
+    pointer-events: none;
+}
+
+@media (max-width: 759px) {
+    .wo-hero {
+        min-height: 0;
+    }
+
+    .wo-hero__photo {
+        background-position: 62% 30%;
+    }
+
+    .wo-hero__shade {
+        background: linear-gradient(180deg, rgba(4, 13, 34, 0.5) 0%, rgba(4, 13, 34, 0.25) 14%, rgba(4, 13, 34, 0.7) 34%, rgba(4, 13, 34, 0.92) 60%, var(--night) 100%);
+    }
+
+    .wo-hero__copy {
+        padding-block: 5.5rem;
+    }
+
+    .wo-hero__actions {
+        width: 100%;
+    }
+
+    .wo-hero__actions .wo-btn {
+        flex: 1 1 100%;
+    }
+
+    .wo-hero__horizon {
+        width: 260vw;
+        height: 5rem;
+    }
+}
+
+/* Client logos right under the hero: one colour, same weight */
+.wo-trust {
+    display: grid;
+    justify-items: center;
+    gap: 1.5rem;
+    padding-top: 1.5rem;
+}
+
+.wo-trust__label {
+    margin: 0;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink-3);
+}
+
+.wo-trust__logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem 3rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wo-trust__logos img {
+    width: auto;
+    height: 28px;
+    filter: brightness(0) saturate(0);
+    opacity: 0.45;
+    transition: opacity var(--dur) var(--ease);
+}
+
+.wo-trust__logos img:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 759px) {
+    .wo-trust__logos {
+        gap: 1.25rem 2rem;
+    }
+
+    .wo-trust__logos img {
+        height: 22px;
+    }
+}
+
+/* ---------------------------------------------------------------
+ * 7. Home sections
+ * ------------------------------------------------------------- */
+
+/* Module cards ("Për kë është", product page) — flat, no decoration */
+.wo-module-card {
+    padding: 1.75rem 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: none;
+    transition:
+        border-color var(--dur) var(--ease),
+        box-shadow var(--dur) var(--ease),
+        transform var(--dur) var(--ease);
+}
+
+a.wo-module-card:hover {
+    border-color: var(--ink);
+    box-shadow: var(--shadow-1);
+    transform: translateY(-2px);
+}
+
+/* How it works — a line that fills while scrolling */
+.wo-how {
+    padding-top: var(--section-y);
+}
+
+.wo-how__intro {
+    max-width: 44rem;
+}
+
+.wo-how__intro .wo-lead {
+    margin: 0;
+}
+
+.wo-how__grid {
+    display: grid;
+    gap: 3rem;
+    margin-top: 2.5rem;
+}
+
+.wo-how__stage {
+    display: none;
+}
+
+.wo-how__rail {
+    position: relative;
+    padding-left: 52px;
+}
+
+/* top/bottom are set by JS to run exactly from the first to the last dot */
+.wo-how__track {
+    position: absolute;
+    left: 17px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--line);
+    overflow: hidden;
+}
+
+.wo-how__fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, var(--accent), #3d8bff);
+    transform: scaleY(0);
+    transform-origin: top;
+}
+
+.wo-how__steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wo-how__step {
+    position: relative;
+    padding-bottom: 2.75rem;
+}
+
+.wo-how__step:last-child {
+    padding-bottom: 0;
+}
+
+.wo-how__dot {
+    position: absolute;
+    left: -52px;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--bg);
+    font: 600 0.75rem/1 var(--display);
+    color: var(--ink-3);
+    transition:
+        background-color 300ms var(--ease),
+        border-color 300ms var(--ease),
+        color 300ms var(--ease),
+        box-shadow 300ms var(--ease);
+}
+
+.wo-how__step.is-reached .wo-how__dot {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.wo-how__step.is-active .wo-how__dot {
+    box-shadow: 0 0 0 6px rgba(31, 102, 229, 0.15);
+}
+
+.wo-how__body h3 {
+    margin: 0.375rem 0 0.375rem;
+    font-size: var(--fs-h3);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+}
+
+.wo-how__body p {
+    margin: 0;
+    max-width: 30rem;
+    color: var(--ink-2);
+}
+
+/* dim upcoming steps only once JS is running */
+.wo-how__rail.is-ready .wo-how__body {
+    opacity: 0.4;
+    transition: opacity 350ms var(--ease);
+}
+
+.wo-how__rail.is-ready .is-reached .wo-how__body {
+    opacity: 1;
+}
+
+/* mobile: each step carries its own scene */
+.wo-how__inline {
+    margin-top: 1.25rem;
+}
+
+@media (min-width: 960px) {
+    .wo-how__grid {
+        grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+        gap: 5rem;
+        align-items: start;
+    }
+
+    /* desktop: one sticky stage, scenes cross-fade */
+    .wo-how__stage {
+        position: sticky;
+        top: calc(var(--top-h) + 1.5rem);
+        display: block;
+        aspect-ratio: 16 / 11;
+    }
+
+    .wo-how__stage .wo-scene {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 450ms var(--ease);
+    }
+
+    .wo-how__stage .wo-scene.is-active {
+        opacity: 1;
+    }
+
+    /* steps start lower, so the stage is already fully in view when step 1 plays */
+    .wo-how__rail {
+        padding-top: 22vh;
+        padding-left: 64px;
+    }
+
+    .wo-how__track {
+        left: 19px;
+    }
+
+    .wo-how__dot {
+        left: -64px;
+        width: 40px;
+        height: 40px;
+        font-size: 0.8125rem;
+    }
+
+    .wo-how__step {
+        padding-bottom: 4.5rem;
+    }
+
+    .wo-how__inline {
+        display: none;
+    }
+}
+
+/* ---------------------------------------------------------------
+ * Illustrated scenes (partials/how-scene.blade.php)
+ * Sizes are in em; the em scales with the scene width (container units),
+ * so the same scene works in the desktop stage and inline on a phone.
+ * Every element rests in its "before" state and animates once the
+ * scene gets .is-on. Delays come from --d.
+ * ------------------------------------------------------------- */
+.wo-scene {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 16 / 11;
+    overflow: hidden;
+    border-radius: 18px;
+    background:
+        radial-gradient(ellipse 70% 60% at 25% 15%, rgba(61, 139, 255, 0.38), transparent 62%),
+        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(31, 102, 229, 0.3), transparent 60%),
+        linear-gradient(160deg, #0b2252 0%, #050f26 100%);
+    box-shadow: 0 30px 70px -30px rgba(4, 13, 34, 0.55);
+}
+
+/* faint dot grid */
+.wo-scene::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.13) 1px, transparent 1.4px);
+    background-size: 18px 18px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, #000 30%, transparent 85%);
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, #000 30%, transparent 85%);
+}
+
+.sc {
+    --t: 550ms;
+    --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+    position: absolute;
+    inset: 0;
+    font-family: var(--font);
+    font-size: clamp(8.5px, 2.45cqw, 14px);
+    line-height: 1.3;
+    color: var(--ink);
+}
+
+.sc svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.sc-card {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+    padding: 1em 1.1em;
+    background: #fff;
+    border-radius: 0.9em;
+    box-shadow: 0 1.4em 3em -1.2em rgba(2, 8, 24, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.sc-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6em;
+}
+
+.sc-h {
+    font: 600 0.95em/1.2 var(--display);
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.sc-m {
+    font-size: 0.72em;
+    color: var(--ink-3);
+}
+
+.sc-bar {
+    display: block;
+    height: 0.55em;
+    border-radius: 0.3em;
+    background: var(--bg-3);
+}
+
+.sc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding: 0.3em 0.65em;
+    border-radius: 999px;
+    background: var(--bg-2);
+    font-size: 0.7em;
+    font-weight: 600;
+    color: var(--ink-2);
+    white-space: nowrap;
+}
+
+.sc-chip svg {
+    width: 1.1em;
+    height: 1.1em;
+}
+
+.sc-chip--ok {
+    background: #e7f8ef;
+    color: #0b7a4b;
+}
+
+/* two chips in one spot: the second replaces the first */
+.sc-swap {
+    display: grid;
+}
+
+.sc-swap > * {
+    grid-area: 1 / 1;
+    justify-self: end;
+    transition: opacity 300ms var(--ease), transform 300ms var(--ease);
+}
+
+.sc-swap > :last-child {
+    opacity: 0;
+    transform: scale(0.85);
+}
+
+.is-on .sc-swap > :first-child {
+    opacity: 0;
+    transition-delay: var(--swap, 1.6s);
+}
+
+.is-on .sc-swap > :last-child {
+    opacity: 1;
+    transform: none;
+    transition-delay: var(--swap, 1.6s);
+}
+
+.sc-check {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.25em;
+    height: 1.25em;
+    padding: 0.15em;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 0.35em;
+    color: transparent;
+    transition: background-color 250ms var(--ease), border-color 250ms var(--ease), color 250ms var(--ease);
+}
+
+.is-on .sc-check--will {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transition-delay: var(--d, 0s);
+}
+
+.sc-map {
+    padding: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 30% 40%, #dfeafb 0 18%, transparent 19%),
+        radial-gradient(circle at 75% 65%, #e6effc 0 22%, transparent 23%),
+        #f3f7fd;
+}
+
+.sc-map::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(7, 24, 56, 0.12) 1px, transparent 1.3px);
+    background-size: 1.1em 1.1em;
+}
+
+.sc-roads {
+    position: absolute;
+    inset: 0;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.2;
+    vector-effect: non-scaling-stroke;
+}
+
+.sc-roads path {
+    stroke-width: 5px;
+}
+
+.sc-pin {
+    position: absolute;
+    width: 1.9em;
+    height: 1.9em;
+    margin: -1.9em 0 0 -0.95em;
+    color: var(--accent);
+    filter: drop-shadow(0 0.3em 0.3em rgba(7, 24, 56, 0.3));
+}
+
+.sc-avatar {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    font-size: 0.7em;
+    font-weight: 700;
+    color: #fff;
+}
+
+.sc-dot {
+    flex: none;
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: auto;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 0.25em rgba(34, 197, 94, 0.18);
+}
+
+.sc-progress {
+    display: block;
+    height: 0.4em;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--bg-3);
+}
+
+.sc-progress span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent), #3d8bff);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1s var(--ease);
+}
+
+.is-on .sc-progress span {
+    transform: none;
+    transition-delay: 0.6s;
+}
+
+/* 1 · Clocking in */
+.sc1-phone {
+    left: 8%;
+    top: 7%;
+    width: 31%;
+    height: 86%;
+    padding: 0.4em;
+    border-radius: 1.6em;
+    background: #0d1a36;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 1.6em 3em -1em rgba(0, 0, 0, 0.6);
+}
+
+.sc1-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45em;
+    height: 100%;
+    padding: 1.1em 0.8em;
+    border-radius: 1.25em;
+    background: #fff;
+    text-align: center;
+}
+
+.sc1-btn {
+    display: grid;
+    place-items: center;
+    width: 76%;
+    margin-block: auto;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, #5b9bff, var(--accent));
+    box-shadow: 0 0 0 0.55em rgba(31, 102, 229, 0.14), 0 0.9em 1.6em -0.5em rgba(31, 102, 229, 0.7);
+    font: 600 0.78em/1.15 var(--display);
+    color: #fff;
+    transition: background 400ms var(--ease), box-shadow 400ms var(--ease);
+}
+
+/* gradients can't transition, so the green state is a layer that fades in */
+.sc1-btn {
+    position: relative;
+}
+
+.sc1-btn::before {
+    content: "";
+    grid-area: 1 / 1;
+    align-self: stretch;
+    justify-self: stretch;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, #4ade80, #16a34a);
+    opacity: 0;
+    transition: opacity 400ms var(--ease);
+}
+
+.is-on .sc1-btn::before {
+    opacity: 1;
+    transition-delay: 450ms;
+}
+
+.sc1-btn > span {
+    position: relative;
+    grid-area: 1 / 1;
+    display: grid;
+    justify-items: center;
+    gap: 0.25em;
+    padding: 0 0.4em;
+    transition: opacity 250ms var(--ease);
+}
+
+.sc1-btn svg {
+    width: 1.6em;
+    height: 1.6em;
+}
+
+.sc1-btn__on {
+    opacity: 0;
+}
+
+.is-on .sc1-btn {
+    box-shadow: 0 0 0 0.55em rgba(22, 163, 74, 0.16), 0 0.9em 1.6em -0.5em rgba(22, 163, 74, 0.7);
+    animation: sc-press 500ms var(--ease) 300ms both;
+    transition-delay: 450ms;
+}
+
+.is-on .sc1-btn__off {
+    opacity: 0;
+    transition-delay: 450ms;
+}
+
+.is-on .sc1-btn__on {
+    opacity: 1;
+    transition-delay: 500ms;
+}
+
+@keyframes sc-press {
+    40% { transform: scale(0.88); }
+    100% { transform: scale(1); }
+}
+
+.sc1-status {
+    opacity: 0;
+    transform: translateY(0.4em);
+    transition: opacity 400ms var(--ease), transform 400ms var(--ease);
+}
+
+.is-on .sc1-status {
+    opacity: 1;
+    transform: none;
+    transition-delay: 800ms;
+}
+
+.sc1-map {
+    right: 7%;
+    top: 16%;
+    width: 47%;
+    height: 60%;
+}
+
+.sc1-pin {
+    left: 52%;
+    top: 52%;
+    opacity: 0;
+    transform: translateY(-2.5em);
+    transition: opacity 300ms var(--ease), transform var(--t) var(--spring);
+}
+
+.is-on .sc1-pin {
+    opacity: 1;
+    transform: none;
+    transition-delay: 1s;
+}
+
+.sc1-ripple {
+    position: absolute;
+    left: 52%;
+    top: 52%;
+    width: 1.4em;
+    height: 0.6em;
+    margin: -0.3em 0 0 -0.7em;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+}
+
+.is-on .sc1-ripple {
+    animation: sc-ripple 2.4s var(--ease) 1.3s infinite;
+}
+
+@keyframes sc-ripple {
+    0% { opacity: 0.7; transform: scale(0.6); }
+    100% { opacity: 0; transform: scale(4); }
+}
+
+.sc1-loc {
+    position: absolute;
+    left: 0.8em;
+    bottom: 0.8em;
+    background: #fff;
+    box-shadow: 0 0.4em 1em -0.4em rgba(7, 24, 56, 0.35);
+    opacity: 0;
+    transform: translateY(0.4em);
+    transition: opacity 400ms var(--ease), transform 400ms var(--ease);
+}
+
+.sc1-loc svg {
+    color: var(--accent);
+}
+
+.is-on .sc1-loc {
+    opacity: 1;
+    transform: none;
+    transition-delay: 1.5s;
+}
+
+/* 2 · Tasks and reports */
+.sc2-tasks {
+    left: 6%;
+    top: 9%;
+    width: 50%;
+}
+
+.sc2-row {
+    display: flex;
+    align-items: center;
+    gap: 0.7em;
+}
+
+.sc2-report {
+    --swap: 2s;
+
+    right: 6%;
+    bottom: 9%;
+    width: 50%;
+}
+
+.sc2-photos {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.45em;
+}
+
+.sc2-photo {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    padding: 28%;
+    border-radius: 0.5em;
+    background: linear-gradient(135deg, #cfe0f7, #8fb0dc);
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 0;
+    transform: scale(0.7);
+    transition: opacity 300ms var(--ease), transform var(--t) var(--spring);
+}
+
+.sc2-photo:nth-child(2) { background: linear-gradient(135deg, #d9e4d2, #9db58e); }
+.sc2-photo:nth-child(3) { background: linear-gradient(135deg, #e9dccb, #c2a27c); }
+
+.is-on .sc2-photo {
+    opacity: 1;
+    transform: none;
+    transition-delay: var(--d, 0s);
+}
+
+/* 3 · Office view */
+.sc3-map {
+    left: 5%;
+    top: 8%;
+    width: 58%;
+    height: 84%;
+}
+
+.sc3-pin {
+    opacity: 0;
+    transform: translateY(-1.5em) scale(0.6);
+    transition: opacity 250ms var(--ease), transform var(--t) var(--spring);
+}
+
+.sc3-pin--ok {
+    color: #16a34a;
+}
+
+.sc3-pin--off {
+    color: #94a3b8;
+}
+
+.is-on .sc3-pin {
+    opacity: 1;
+    transform: none;
+    transition-delay: var(--d, 0s);
+}
+
+.sc3-list {
+    right: 5%;
+    top: 14%;
+    width: 34%;
+}
+
+.sc3-count {
+    font: 650 1.3em/1 var(--display);
+    color: #16a34a;
+}
+
+.sc3-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    opacity: 0;
+    transform: translateX(1em);
+    transition: opacity 350ms var(--ease), transform 350ms var(--ease);
+}
+
+.is-on .sc3-row {
+    opacity: 1;
+    transform: none;
+    transition-delay: var(--d, 0s);
+}
+
+/* 4 · Hours become payroll */
+.sc4-week {
+    left: 5%;
+    top: 9%;
+    width: 54%;
+    height: 82%;
+}
+
+.sc4-total {
+    font: 650 0.95em/1 var(--display);
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 400ms var(--ease);
+}
+
+.is-on .sc4-total {
+    opacity: 1;
+    transition-delay: 1.1s;
+}
+
+.sc4-bars {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
+    gap: 0.7em;
+    min-height: 0;
+    padding-top: 0.4em;
+}
+
+.sc4-col {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4em;
+}
+
+.sc4-bar {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: var(--h);
+    overflow: hidden;
+    border-radius: 0.4em 0.4em 0.2em 0.2em;
+    background: linear-gradient(180deg, #3d8bff, var(--accent));
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 700ms var(--ease);
+}
+
+.sc4-over {
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--o);
+    background: repeating-linear-gradient(-45deg, #9cc2ff 0 0.3em, #b9d4ff 0.3em 0.6em);
+}
+
+.is-on .sc4-bar {
+    transform: none;
+    transition-delay: var(--d, 0s);
+}
+
+.sc4-pay {
+    right: 5%;
+    top: 22%;
+    width: 36%;
+}
+
+.sc4-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transition: opacity 400ms var(--ease);
+}
+
+.sc4-line b {
+    font: 650 0.85em/1 var(--display);
+}
+
+.sc4-ot {
+    color: var(--accent);
+}
+
+.is-on .sc4-line {
+    opacity: 1;
+    transition-delay: var(--d, 0s);
+}
+
+.sc4-ready {
+    align-self: flex-start;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: opacity 300ms var(--ease), transform var(--t) var(--spring);
+}
+
+.is-on .sc4-ready {
+    opacity: 1;
+    transform: none;
+    transition-delay: 1.9s;
+}
+
+/* 5 · Offers and finance */
+.sc5-offer {
+    --swap: 1.3s;
+
+    left: 6%;
+    top: 10%;
+    width: 44%;
+}
+
+.sc5-amount {
+    display: block;
+    width: 45%;
+    height: 1.1em;
+    margin-top: 0.3em;
+    border-radius: 0.3em;
+    background: linear-gradient(90deg, var(--accent), #3d8bff);
+    opacity: 0.85;
+}
+
+.sc5-chart {
+    right: 6%;
+    bottom: 9%;
+    width: 50%;
+    height: 62%;
+}
+
+.sc5-legend {
+    display: flex;
+    gap: 0.9em;
+    font-size: 0.68em;
+    color: var(--ink-3);
+}
+
+.sc5-legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+.sc5-legend i {
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 0.2em;
+}
+
+.sc5-bars {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    gap: 0.6em;
+    min-height: 0;
+}
+
+.sc5-pair {
+    display: flex;
+    flex: 1;
+    align-items: flex-end;
+    gap: 0.15em;
+    height: 100%;
+}
+
+.sc5-pair span {
+    flex: 1;
+    height: var(--h);
+    border-radius: 0.25em 0.25em 0.1em 0.1em;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 650ms var(--ease);
+}
+
+.sc5-in {
+    background: var(--accent);
+}
+
+.sc5-out {
+    background: #b9c7dc;
+}
+
+.is-on .sc5-pair span {
+    transform: none;
+    transition-delay: var(--d, 0s);
+}
+
+/* Pricing — cards from the packages table, team-size slider */
+.wo-pricing {
+    margin-top: var(--section-y);
+    padding-block: var(--section-y);
+    background: var(--bg-2);
+    border-top: 1px solid var(--line);
+}
+
+.wo-pricing__head {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+}
+
+.wo-pricing__head .wo-lead {
+    margin: 0;
+}
+
+.wo-pricing__team {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    max-width: 30rem;
+    margin: 2.5rem auto;
+}
+
+.wo-pricing__team label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink-2);
+}
+
+.wo-pricing__team output {
+    font: 600 1.75rem/1.2 var(--display);
+    letter-spacing: -0.02em;
+    color: var(--ink);
+}
+
+.wo-pricing__team input[type="range"] {
+    width: 100%;
+    height: 6px;
+    margin: 0.75rem 0 0;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--accent) var(--v, 0%), var(--bg-3) var(--v, 0%));
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.wo-pricing__team input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 0 2px 8px rgba(7, 24, 56, 0.2);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.wo-pricing__team input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: 0 2px 8px rgba(7, 24, 56, 0.2);
+}
+
+.wo-pricing__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 320px));
+    justify-content: center;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 1rem 0 0;
+    list-style: none;
+}
+
+.wo-plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem 1.5rem 1.5rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    transition:
+        border-color 250ms var(--ease),
+        box-shadow 250ms var(--ease),
+        opacity 250ms var(--ease),
+        transform 250ms var(--ease);
+}
+
+.wo-plan.is-fit {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 24px 48px -24px rgba(31, 102, 229, 0.45);
+    transform: translateY(-4px);
+}
+
+.wo-plan.is-small {
+    opacity: 0.55;
+}
+
+.wo-plan__fit {
+    position: absolute;
+    top: -11px;
+    left: 1.5rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    background: var(--accent);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 250ms var(--ease), transform 250ms var(--ease);
+}
+
+.wo-plan.is-fit .wo-plan__fit {
+    opacity: 1;
+    transform: none;
+}
+
+.wo-plan__title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.wo-plan__title::first-letter {
+    text-transform: uppercase;
+}
+
+.wo-plan__staff {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+    color: var(--ink-2);
+}
+
+.wo-plan__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.5rem;
+    margin: 1.25rem 0 0;
+}
+
+.wo-plan__price strong {
+    font: 650 2.25rem/1.1 var(--display);
+    letter-spacing: -0.03em;
+    color: var(--ink);
+}
+
+.wo-plan__price span {
+    font-size: 0.875rem;
+    color: var(--ink-3);
+}
+
+.wo-plan__monthly {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+}
+
+.wo-plan__features {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1.25rem 0 0;
+    padding: 1.25rem 0 0;
+    border-top: 1px solid var(--line);
+    list-style: none;
+    font-size: 0.9375rem;
+    color: var(--ink);
+}
+
+.wo-plan__features li {
+    position: relative;
+    padding-left: 1.625rem;
+}
+
+.wo-plan__features li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.2em;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background: var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%231f66e5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+}
+
+.wo-plan__cta {
+    width: 100%;
+    margin-top: auto;
+}
+
+.wo-plan__features + .wo-plan__cta,
+.wo-plan__monthly + .wo-plan__cta,
+.wo-plan__price + .wo-plan__cta {
+    margin-top: 1.5rem;
+}
+
+.wo-plan.is-fit .wo-plan__cta {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.wo-plan.is-fit .wo-plan__cta:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.wo-pricing__more {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem 0.75rem;
+    width: fit-content;
+    max-width: 100%;
+    margin: 2rem auto 0;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    text-align: center;
+    color: var(--ink-2);
+    transition: border-color 250ms var(--ease), background-color 250ms var(--ease);
+}
+
+.wo-pricing__more a {
+    font-weight: 600;
+    color: var(--accent);
+}
+
+.wo-pricing__more.is-active {
+    background: var(--bg);
+    border-color: var(--accent);
+    color: var(--ink);
+}
+
+.wo-pricing__empty {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    max-width: 36rem;
+    margin: 2.5rem auto 0;
+    padding: 2rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    text-align: center;
+    color: var(--ink-2);
+}
+
+.wo-pricing__empty p {
+    margin: 0;
+}
+
+/* Closing CTA — dark, with the hero's arc of light along its top edge */
+.wo-main:has(> .wo-close:last-child) {
+    padding-bottom: 0;
+}
+
+.wo-close {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding-block: clamp(6.5rem, 4.5rem + 6vw, 10rem) clamp(4.5rem, 3rem + 5vw, 7rem);
+    background: #040d22;
+    color: #fff;
+}
+
+.wo-close::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 55% 75% at 50% 110%, rgba(31, 102, 229, 0.5), transparent 70%);
+}
+
+.wo-close::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: max(1800px, 160vw);
+    height: 9rem;
+    border-radius: 50%;
+    background: var(--bg-2);
+    box-shadow: 0 1px 0 rgba(160, 195, 255, 0.85), 0 10px 60px -6px rgba(61, 139, 255, 0.8);
+    transform: translate(-50%, -50%);
+}
+
+.wo-close__inner {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+    text-align: center;
+}
+
+.wo-close .wo-label {
+    margin: 0;
+    color: #8fb4ff;
+}
+
+.wo-close h2 {
+    margin: 0;
+    color: #fff;
+}
+
+.wo-close__lead {
+    margin: 0;
+    max-width: 34rem;
+    font-size: var(--fs-lead);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.wo-close .wo-btn-primary {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 24px -6px rgba(31, 102, 229, 0.7);
+}
+
+.wo-close :focus-visible {
+    outline-color: #8fb4ff;
+}
+
+@media (max-width: 759px) {
+    .wo-close .wo-hero__actions {
+        width: 100%;
+    }
+
+    .wo-close .wo-hero__actions .wo-btn {
+        flex: 1 1 100%;
+    }
+
+    .wo-close::after {
+        width: 260vw;
+        height: 5rem;
+    }
+}
+
+/* ---------------------------------------------------------------
+ * 8. Section rhythm
+ * ------------------------------------------------------------- */
+.wo-section,
+.wo-section + .wo-section {
+    padding-top: var(--section-y);
+}
+
+/* ---------------------------------------------------------------
+ * 9. Motion preferences
+ * ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .wo *,
+    .wo *::before,
+    .wo *::after {
+        transition-duration: 1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
+}

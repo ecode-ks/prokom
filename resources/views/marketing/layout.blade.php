@@ -57,93 +57,103 @@
     <meta name="apple-mobile-web-app-title" content="WORKOM">
     <link rel="apple-touch-icon" href="{{ asset('icons/marketing/icon-192.png') }}">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=Sora:wght@500..700&display=swap">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}">
+    {{-- ?v= busts the service-worker cache whenever the file changes --}}
+    <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}?v={{ filemtime(public_path('assets/marketing.css')) }}">
+    <link rel="stylesheet" href="{{ asset('assets/workom.css') }}?v={{ filemtime(public_path('assets/workom.css')) }}">
     @stack('head')
 </head>
 <body class="wo">
     <a class="wo-skip" href="#main">Skip</a>
 
-    <header class="wo-top">
+    @php
+        $locale = app()->getLocale();
+        $navCurrent = fn (bool $on) => $on ? 'class=is-active aria-current=page' : '';
+    @endphp
+    {{-- On the home page the header sits over the dark hero photo until the visitor scrolls past it --}}
+    <header class="wo-top{{ $page === 'home' ? ' wo-top--over' : '' }}" id="woTop">
         <div class="wo-wrap wo-top-row">
-            <a href="{{ route('home') }}" class="wo-logo">
-                <img src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" width="170" height="48">
+            <a href="{{ route('home') }}" class="wo-logo" aria-label="WORKOM — {{ __('marketing.nav_home') }}">
+                <img class="wo-logo__dark" src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" width="1429" height="275">
+                @if ($page === 'home')
+                    <img class="wo-logo__light" src="{{ asset('images/marketing/workom_logo.png') }}" alt="" decoding="async" width="1423" height="266">
+                @endif
             </a>
 
-            <nav class="wo-tabs" aria-label="Primary">
-                <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
-                <div class="wo-nav-drop {{ $isModulesNav ? 'is-active' : '' }}">
-                    <button type="button" class="wo-nav-drop-trigger {{ $isModulesNav ? 'is-active' : '' }}" aria-haspopup="true" aria-expanded="false">
-                        <span class="wo-nav-drop-trigger__label">{{ __('marketing.nav_modules') }}</span>
+            <nav class="wo-nav" aria-label="{{ __('marketing.nav_menu') }}">
+                <a href="{{ route('home') }}" {!! $navCurrent($page === 'home') !!}>{{ __('marketing.nav_home') }}</a>
+                <a href="{{ route('marketing.product') }}" {!! $navCurrent($page === 'product') !!}>{{ __('marketing.nav_product') }}</a>
+                <div class="wo-nav-drop">
+                    <button type="button" class="wo-nav-drop-trigger{{ $isModulesNav ? ' is-active' : '' }}" aria-expanded="false" aria-controls="woModulesMenu">
+                        {{ __('marketing.nav_modules') }}
                         <svg class="wo-nav-caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
                             <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <div class="wo-nav-drop-menu" role="menu">
-                        <a href="{{ route('marketing.erp') }}" class="wo-nav-drop-item {{ $page === 'erp' ? 'is-active' : '' }}" role="menuitem">
-                            <span class="wo-nav-drop-item__title">{{ __('marketing.nav_erp') }}</span>
-                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_erp_d') }}</span>
-                        </a>
-                        <a href="{{ route('marketing.crm') }}" class="wo-nav-drop-item {{ $page === 'crm' ? 'is-active' : '' }}" role="menuitem">
-                            <span class="wo-nav-drop-item__title">{{ __('marketing.nav_crm') }}</span>
-                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_crm_d') }}</span>
-                        </a>
-                        <a href="{{ route('marketing.hr') }}" class="wo-nav-drop-item {{ $page === 'hr' ? 'is-active' : '' }}" role="menuitem">
-                            <span class="wo-nav-drop-item__title">{{ __('marketing.nav_hr') }}</span>
-                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_hr_d') }}</span>
-                        </a>
+                    <div class="wo-nav-drop-menu" id="woModulesMenu">
+                        @foreach (['erp', 'crm', 'hr'] as $mod)
+                            <a href="{{ route('marketing.' . $mod) }}" class="wo-nav-drop-item{{ $page === $mod ? ' is-active' : '' }}" @if($page === $mod) aria-current="page" @endif>
+                                <span class="wo-nav-drop-item__title">{{ __('marketing.nav_' . $mod) }}</span>
+                                <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_' . $mod . '_d') }}</span>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
-                <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
-                <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
+                <a href="{{ route('marketing.faq') }}" {!! $navCurrent($page === 'faq') !!}>{{ __('marketing.nav_faq') }}</a>
+                <a href="{{ route('marketing.contact') }}" {!! $navCurrent($page === 'contact') !!}>{{ __('marketing.nav_contact') }}</a>
             </nav>
 
             <div class="wo-actions">
                 <div class="wo-lang" role="group" aria-label="Language">
-                    <a href="{{ route('marketing.locale', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'is-active' : '' }}">SQ</a>
-                    <a href="{{ route('marketing.locale', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'is-active' : '' }}">EN</a>
-                    <a href="{{ route('marketing.locale', 'de') }}" class="{{ app()->getLocale() === 'de' ? 'is-active' : '' }}">DE</a>
+                    @foreach (['sq', 'en', 'de'] as $lang)
+                        <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                    @endforeach
                 </div>
-                <a class="wo-btn wo-btn-ghost wo-hide-sm wo-btn-login" href="{{ route('login') }}" aria-label="{{ __('marketing.nav_login') }}" title="{{ __('marketing.nav_login') }}">
-                    <svg class="wo-btn-icon text-primary" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.25c-3.6 0-6.75 1.8-6.75 4.05V20h13.5v-1.7c0-2.25-3.15-4.05-6.75-4.05z"/>
-                    </svg>
+                <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                <a class="wo-btn wo-btn-primary wo-top-cta" href="{{ route('marketing.contact') }}">
+                    <span class="wo-top-cta__long">{{ __('marketing.nav_demo') }}</span>
+                    <span class="wo-top-cta__short">{{ __('marketing.nav_demo_short') }}</span>
                 </a>
-                <button type="button" class="wo-menu" id="woMenu" aria-expanded="false" aria-controls="woDrawer" aria-label="{{ __('marketing.nav_menu') }}">
-                    <span class="wo-menu-bars" aria-hidden="true">
-                        <span></span><span></span><span></span>
-                    </span>
+                <button type="button" class="wo-menu" id="woMenu" aria-expanded="false" aria-controls="woDrawer" aria-label="{{ __('marketing.nav_menu') }}" data-label-open="{{ __('marketing.nav_menu') }}" data-label-close="{{ __('marketing.nav_close') }}">
+                    <span class="wo-menu-bars" aria-hidden="true"><span></span><span></span></span>
                 </button>
             </div>
         </div>
-        <div class="wo-nav-backdrop" id="woNavBackdrop" hidden aria-hidden="true"></div>
-        <nav class="wo-drawer" id="woDrawer" aria-label="Mobile">
+
+        <div class="wo-drawer" id="woDrawer" hidden>
             <div class="wo-wrap wo-drawer-inner">
-                <div class="wo-drawer-nav">
-                    <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                    <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
-                    <details class="wo-drawer-modules{{ $isModulesNav ? ' is-open' : '' }}" @if($isModulesNav) open @endif>
-                        <summary class="wo-drawer-modules__trigger">
-                            <span class="wo-drawer-modules__label">{{ __('marketing.nav_modules') }}</span>
-                            <svg class="wo-drawer-modules__caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
-                                <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </summary>
-                        <div class="wo-drawer-sub">
-                            <a href="{{ route('marketing.erp') }}" class="{{ $page === 'erp' ? 'is-active' : '' }}">{{ __('marketing.nav_erp') }}</a>
-                            <a href="{{ route('marketing.crm') }}" class="{{ $page === 'crm' ? 'is-active' : '' }}">{{ __('marketing.nav_crm') }}</a>
-                            <a href="{{ route('marketing.hr') }}" class="{{ $page === 'hr' ? 'is-active' : '' }}">{{ __('marketing.nav_hr') }}</a>
+                <nav class="wo-drawer-nav" aria-label="{{ __('marketing.nav_menu') }}">
+                    <a href="{{ route('home') }}" {!! $navCurrent($page === 'home') !!}>{{ __('marketing.nav_home') }}</a>
+                    <a href="{{ route('marketing.product') }}" {!! $navCurrent($page === 'product') !!}>{{ __('marketing.nav_product') }}</a>
+                    <p class="wo-drawer-group">{{ __('marketing.nav_modules') }}</p>
+                    <div class="wo-drawer-sub">
+                        @foreach (['erp', 'crm', 'hr'] as $mod)
+                            <a href="{{ route('marketing.' . $mod) }}" {!! $navCurrent($page === $mod) !!}>
+                                <span>{{ __('marketing.nav_' . $mod) }}</span>
+                                <small>{{ __('marketing.nav_' . $mod . '_d') }}</small>
+                            </a>
+                        @endforeach
+                    </div>
+                    <a href="{{ route('marketing.faq') }}" {!! $navCurrent($page === 'faq') !!}>{{ __('marketing.nav_faq') }}</a>
+                    <a href="{{ route('marketing.contact') }}" {!! $navCurrent($page === 'contact') !!}>{{ __('marketing.nav_contact') }}</a>
+                </nav>
+                <div class="wo-drawer-foot">
+                    <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
+                    <div class="wo-drawer-meta">
+                        <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                        <div class="wo-lang" role="group" aria-label="Language">
+                            @foreach (['sq', 'en', 'de'] as $lang)
+                                <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                            @endforeach
                         </div>
-                    </details>
-                    <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
-                    <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
-                </div>
-                <div class="wo-drawer-cta">
-                    <a class="wo-btn wo-btn-ghost" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main id="main" class="wo-main">
@@ -212,146 +222,97 @@
 
     <script>
         (function () {
+            var top = document.getElementById('woTop');
             var btn = document.getElementById('woMenu');
             var drawer = document.getElementById('woDrawer');
-            var backdrop = document.getElementById('woNavBackdrop');
-            var drawerCloseTimer = null;
-            function setMenu(open) {
+            var desktopNav = window.matchMedia('(min-width: 1080px)');
+            var drawerTimer = null;
+
+            // Header: hairline + solid background once the page scrolls.
+            // Over the home hero it stays dark (is-light off) until the hero has scrolled away
+            // or the mobile drawer opens.
+            // the pin wraps the hero plus the scroll it stays pinned for
+            var hero = document.querySelector('.wo-hero-pin') || document.querySelector('.wo-hero');
+            function syncTop() {
+                if (!top) return;
+                var y = window.scrollY;
+                top.classList.toggle('is-scrolled', y > 8);
+                if (top.classList.contains('wo-top--over')) {
+                    var pastHero = !hero || y > hero.offsetHeight - top.offsetHeight - 40;
+                    top.classList.toggle('is-light', pastHero || document.body.classList.contains('wo-nav-open'));
+                }
+            }
+            syncTop();
+            window.addEventListener('scroll', syncTop, { passive: true });
+            window.addEventListener('resize', syncTop);
+
+            // Mobile drawer
+            function setMenu(open, restoreFocus) {
                 if (!btn || !drawer) return;
-                window.clearTimeout(drawerCloseTimer);
+                var isOpen = btn.getAttribute('aria-expanded') === 'true';
+                if (open === isOpen) return;
+                window.clearTimeout(drawerTimer);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                btn.setAttribute('aria-label', btn.dataset[open ? 'labelClose' : 'labelOpen']);
+                document.body.classList.toggle('wo-nav-open', open);
+                syncTop();
                 if (open) {
-                    drawer.classList.remove('is-closing');
-                    drawer.classList.add('is-open');
-                    btn.classList.add('is-open');
-                    btn.setAttribute('aria-expanded', 'true');
-                    document.body.classList.add('wo-nav-open');
-                    if (backdrop) {
-                        backdrop.hidden = false;
-                        backdrop.setAttribute('aria-hidden', 'false');
-                    }
+                    drawer.hidden = false;
+                    requestAnimationFrame(function () { drawer.classList.add('is-open'); });
                 } else {
-                    if (!drawer.classList.contains('is-open') && !drawer.classList.contains('is-closing')) return;
-                    drawer.classList.add('is-closing');
                     drawer.classList.remove('is-open');
-                    btn.classList.remove('is-open');
-                    btn.setAttribute('aria-expanded', 'false');
-                    document.body.classList.remove('wo-nav-open');
-                    if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
-                    drawerCloseTimer = window.setTimeout(function () {
-                        drawer.classList.remove('is-closing');
-                        if (backdrop) backdrop.hidden = true;
-                    }, 380);
+                    drawerTimer = window.setTimeout(function () { drawer.hidden = true; }, 220);
+                    if (restoreFocus) btn.focus();
                 }
             }
             if (btn && drawer) {
                 btn.addEventListener('click', function () {
-                    setMenu(!drawer.classList.contains('is-open'));
+                    setMenu(btn.getAttribute('aria-expanded') !== 'true');
                 });
                 drawer.querySelectorAll('a').forEach(function (link) {
                     link.addEventListener('click', function () { setMenu(false); });
                 });
-                if (backdrop) {
-                    backdrop.addEventListener('click', function () { setMenu(false); });
-                }
                 document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') setMenu(false);
+                    if (e.key === 'Escape') setMenu(false, true);
                 });
-                window.addEventListener('resize', function () {
-                    if (window.matchMedia('(min-width: 920px)').matches) setMenu(false);
-                });
+                var onBreakpoint = function () { if (desktopNav.matches) setMenu(false); };
+                if (desktopNav.addEventListener) desktopNav.addEventListener('change', onBreakpoint);
             }
 
+            // Desktop "Modules" disclosure: hover on fine pointers, click/keyboard everywhere.
             function initNavDrop() {
-                if (document.documentElement.dataset.woNavDropReady === '1') return;
-                document.documentElement.dataset.woNavDropReady = '1';
-
                 document.querySelectorAll('.wo-nav-drop').forEach(function (drop) {
                     var trigger = drop.querySelector('.wo-nav-drop-trigger');
                     if (!trigger) return;
+                    var closeTimer = null;
 
                     function setOpen(open) {
+                        window.clearTimeout(closeTimer);
                         drop.classList.toggle('is-open', open);
                         trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
                     }
 
-                    var hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-                    if (hoverCapable) {
+                    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
                         drop.addEventListener('mouseenter', function () { setOpen(true); });
-                        drop.addEventListener('mouseleave', function () { setOpen(false); });
+                        drop.addEventListener('mouseleave', function () {
+                            closeTimer = window.setTimeout(function () { setOpen(false); }, 120);
+                        });
                     }
 
-                    trigger.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var willOpen = !drop.classList.contains('is-open');
-                        document.querySelectorAll('.wo-nav-drop.is-open').forEach(function (other) {
-                            if (other === drop) return;
-                            other.classList.remove('is-open');
-                            var otherTrigger = other.querySelector('.wo-nav-drop-trigger');
-                            if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
-                        });
-                        setOpen(willOpen);
+                    trigger.addEventListener('click', function () {
+                        setOpen(!drop.classList.contains('is-open'));
                     });
-
-                    drop.addEventListener('focusin', function () { setOpen(true); });
                     drop.addEventListener('focusout', function (e) {
                         if (!drop.contains(e.relatedTarget)) setOpen(false);
                     });
-                });
-
-                document.addEventListener('click', function (e) {
-                    if (e.target.closest('.wo-nav-drop')) return;
-                    document.querySelectorAll('.wo-nav-drop.is-open').forEach(function (drop) {
-                        drop.classList.remove('is-open');
-                        var trigger = drop.querySelector('.wo-nav-drop-trigger');
-                        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                    drop.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape' && drop.classList.contains('is-open')) {
+                            setOpen(false);
+                            trigger.focus();
+                        }
                     });
-                });
-            }
-
-            function initDrawerModules() {
-                document.querySelectorAll('.wo-drawer-modules').forEach(function (details) {
-                    var summary = details.querySelector('.wo-drawer-modules__trigger');
-                    var panel = details.querySelector('.wo-drawer-sub');
-                    if (!summary || !panel || details.dataset.woModulesReady === '1') return;
-                    details.dataset.woModulesReady = '1';
-                    details.classList.add('wo-drawer-modules-ready');
-                    if (details.open) details.classList.add('is-open');
-
-                    summary.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        var opening = !details.classList.contains('is-open');
-
-                        if (reduceMotion) {
-                            details.open = opening;
-                            details.classList.toggle('is-open', opening);
-                            return;
-                        }
-
-                        if (opening) {
-                            details.open = true;
-                            details.classList.remove('is-closing');
-                            requestAnimationFrame(function () {
-                                details.classList.add('is-open');
-                            });
-                            return;
-                        }
-
-                        details.classList.add('is-closing');
-                        details.classList.remove('is-open');
-                        var done = false;
-                        var finish = function () {
-                            if (done) return;
-                            done = true;
-                            details.open = false;
-                            details.classList.remove('is-closing');
-                        };
-                        panel.addEventListener('transitionend', function onEnd(ev) {
-                            if (ev.target !== panel) return;
-                            panel.removeEventListener('transitionend', onEnd);
-                            finish();
-                        });
-                        window.setTimeout(finish, 420);
+                    document.addEventListener('click', function (e) {
+                        if (!drop.contains(e.target)) setOpen(false);
                     });
                 });
             }
@@ -435,7 +396,6 @@
 
             var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             initNavDrop();
-            initDrawerModules();
             var animated = document.querySelectorAll('.wo-animate');
             if (!reduceMotion && 'IntersectionObserver' in window && animated.length) {
                 var io = new IntersectionObserver(function (entries) {
@@ -617,6 +577,7 @@
             })();
         })();
     </script>
+    @stack('scripts')
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
