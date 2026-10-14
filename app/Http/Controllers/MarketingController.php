@@ -2,37 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\PackagesService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class MarketingController extends Controller
 {
-    public function home(PackagesService $packages)
+    public function home()
     {
-        return view('marketing.home', [
-            'page' => 'home',
-            'packages' => $this->publicPackages($packages),
-        ]);
-    }
-
-    /**
-     * Packages managed in the admin panel, in the visitor's language, smallest team first.
-     * The home page must still render if the database is unavailable.
-     */
-    private function publicPackages(PackagesService $packages): Collection
-    {
-        try {
-            return collect($packages->getAllPackages(app()->getLocale()))
-                ->sortBy([['staff_limit', 'asc'], ['price', 'asc']])
-                ->values();
-        } catch (\Throwable $e) {
-            report($e);
-
-            return collect();
-        }
+        // the pricing section shows template packages from config/marketing.php
+        return view('marketing.home', ['page' => 'home']);
     }
 
     public function product()
@@ -122,6 +101,14 @@ class MarketingController extends Controller
         $locale = session('marketing_locale', 'sq');
         app()->setLocale($locale);
 
+        // Bots fill the hidden "website" field; they get the normal thank-you and nothing is sent.
+        if ($request->filled('website')) {
+            return redirect()
+                ->route('marketing.contact')
+                ->withFragment('forma')
+                ->with('contact_success', __('marketing.contact_success'));
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|min:2|max:120',
             'company' => 'required|string|min:2|max:120',
@@ -129,11 +116,19 @@ class MarketingController extends Controller
             'phone' => 'nullable|string|max:40',
             'intent' => 'required|in:demo,pricing,question',
             'message' => 'required|string|min:10|max:2000',
+        ], [
+            // the site has no validation language files, so the form's messages live with its copy
+            'required' => __('marketing.contact_err_required'),
+            'email' => __('marketing.contact_err_email'),
+            'min' => __('marketing.contact_err_min'),
+            'max' => __('marketing.contact_err_max'),
+            'intent.in' => __('marketing.contact_err_intent'),
         ]);
 
         if ($validator->fails()) {
             return redirect()
                 ->route('marketing.contact')
+                ->withFragment('forma')
                 ->withErrors($validator)
                 ->withInput()
                 ->with('contact_error', __('marketing.contact_error'));
@@ -160,11 +155,13 @@ class MarketingController extends Controller
                 );
             }
         } catch (\Throwable $e) {
-            // Mail may be unconfigured locally.
+            // Mail may be unconfigured locally; log it so a lost request is visible.
+            report($e);
         }
 
         return redirect()
             ->route('marketing.contact')
+            ->withFragment('forma')
             ->with('contact_success', __('marketing.contact_success'));
     }
 }

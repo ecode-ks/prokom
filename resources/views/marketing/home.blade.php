@@ -17,8 +17,6 @@
     ];
 @endphp
 
-{{-- The pin holds the hero in place for a stretch of scroll (desktop) while the parallax plays --}}
-<div class="wo-hero-pin">
 <section class="wo-hero" aria-labelledby="wo-hero-title">
     <div class="wo-hero__bg" aria-hidden="true">
         <div class="wo-hero__photo" style="background-image: url('{{ asset('images/marketing/hero_site.jpg') }}')"></div>
@@ -38,19 +36,6 @@
 
     <div class="wo-hero__horizon" aria-hidden="true"></div>
 </section>
-<div class="wo-hero-pin__space" aria-hidden="true"></div>
-</div>
-
-<section class="wo-wrap wo-trust" id="klientet" aria-labelledby="wo-trust-label">
-    <p class="wo-trust__label" id="wo-trust-label">{{ __('marketing.clients_label') }}</p>
-    <ul class="wo-trust__logos">
-        @foreach ($clients as $client)
-            @if (is_file(public_path('images/marketing/' . $client['file'])))
-                <li><img src="{{ asset('images/marketing/' . $client['file']) }}" alt="{{ $client['alt'] }}" loading="lazy" decoding="async"></li>
-            @endif
-        @endforeach
-    </ul>
-</section>
 
 <div class="wo-wrap">
     <section class="wo-section wo-animate" id="per-ke-eshte">
@@ -58,41 +43,31 @@
         <h2 class="wo-animate-item">{{ __('marketing.who_title') }}</h2>
         <p class="wo-lead wo-animate-item">{{ __('marketing.who_text') }}</p>
 
-        <div class="wo-module-cards wo-animate-item" style="margin-top:2rem">
-            <a href="{{ route('marketing.erp') }}" class="wo-module-card">
-                <h3>{{ __('marketing.nav_erp') }}</h3>
-                <p>{{ __('marketing.erp_text') }}</p>
-                <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
-            </a>
-            <a href="{{ route('marketing.crm') }}" class="wo-module-card">
-                <h3>{{ __('marketing.nav_crm') }}</h3>
-                <p>{{ __('marketing.crm_text') }}</p>
-                <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
-            </a>
-            <a href="{{ route('marketing.hr') }}" class="wo-module-card">
-                <h3>{{ __('marketing.nav_hr') }}</h3>
-                <p>{{ __('marketing.hr_text') }}</p>
-                <span class="wo-module-card-cta">{{ __('marketing.module_open') }} →</span>
-            </a>
+        <div class="wo-cards wo-cards--swipe wo-animate-item" style="margin-top:2rem">
+            @foreach (['erp', 'crm', 'hr'] as $mod)
+                @include('marketing.partials.module-card', ['mod' => $mod])
+            @endforeach
         </div>
     </section>
 
 </div>
 
 {{-- How it works: scrollytelling. A line fills as the visitor scrolls; each step plays its own illustrated scene. --}}
+{{-- Desktop: the stage sticks on the left; the intro starts on the same line beside it and the steps follow. --}}
 <section class="wo-how" id="si-funksionon" aria-labelledby="wo-how-title">
     <div class="wo-wrap">
-        <div class="wo-how__intro">
-            <span class="wo-label">{{ __('marketing.how_label') }}</span>
-            <h2 id="wo-how-title">{{ __('marketing.how_title') }}</h2>
-            <p class="wo-lead">{{ __('marketing.how_lead') }}</p>
-        </div>
-
         <div class="wo-how__grid">
         <div class="wo-how__stage" aria-hidden="true">
             @foreach (range(1, 5) as $n)
                 @include('marketing.partials.how-scene', ['n' => $n, 'shot' => $n - 1])
             @endforeach
+        </div>
+
+        <div class="wo-how__side">
+        <div class="wo-how__intro">
+            <span class="wo-label">{{ __('marketing.how_label') }}</span>
+            <h2 id="wo-how-title">{{ __('marketing.how_title') }}</h2>
+            <p class="wo-lead">{{ __('marketing.how_lead') }}</p>
         </div>
 
         <div class="wo-how__rail" data-how>
@@ -113,10 +88,24 @@
             </ol>
         </div>
         </div>
+        </div>
     </div>
 </section>
 
-{{-- Pricing: packages come from the admin panel (packages table), never hard-coded here --}}
+{{-- Client logos, right before the prices --}}
+<section class="wo-wrap wo-trust" id="klientet" aria-labelledby="wo-trust-label">
+    <p class="wo-trust__label" id="wo-trust-label">{{ __('marketing.clients_label') }}</p>
+    <ul class="wo-trust__logos">
+        @foreach ($clients as $client)
+            @if (is_file(public_path('images/marketing/' . $client['file'])))
+                <li><img src="{{ asset('images/marketing/' . $client['file']) }}" alt="{{ $client['alt'] }}" loading="lazy" decoding="async"></li>
+            @endif
+        @endforeach
+    </ul>
+</section>
+
+{{-- Pricing: template packages (config/marketing.php for prices, lang 'pricing_plans' for names and
+     features), not the packages table. A toggle switches between monthly and yearly prices. --}}
 @php
     $locale = app()->getLocale();
     $money = function ($amount) use ($locale) {
@@ -126,8 +115,15 @@
             ? '€' . number_format($amount, $decimals, '.', ',')
             : number_format($amount, $decimals, ',', '.') . ' €';
     };
-    $maxStaff = (int) $packages->max('staff_limit');
-    $startStaff = (int) ($packages->first()->staff_limit ?? 1);
+    $plans = config('marketing.plans', []);
+    $texts = __('marketing.pricing_plans');
+    $maxStaff = (int) collect($plans)->max('staff');
+    $periods = ['yearly' => 12, 'monthly' => 1];
+    $shown = 'yearly';
+    // best yearly saving against paying the same plan monthly
+    $savePct = (int) collect($plans)
+        ->map(fn ($plan) => $plan['monthly'] > 0 ? round(100 - $plan['yearly'] / ($plan['monthly'] * 12) * 100) : 0)
+        ->max();
 @endphp
 <section class="wo-pricing" id="cmimet" aria-labelledby="wo-pricing-title">
     <div class="wo-wrap">
@@ -137,122 +133,58 @@
             <p class="wo-lead">{{ __('marketing.pricing_lead') }}</p>
         </div>
 
-        @if ($packages->isNotEmpty())
-            <div class="wo-pricing__team" data-pricing
-                 data-one="{{ __('marketing.pricing_team_one') }}"
-                 data-many="{{ __('marketing.pricing_team_many') }}"
-                 data-over="{{ __('marketing.pricing_team_over', ['count' => $maxStaff]) }}">
-                <label for="woTeamSize">{{ __('marketing.pricing_team_label') }}</label>
-                <output for="woTeamSize" id="woTeamOut" aria-live="polite">{{ __('marketing.pricing_team_many', ['count' => $startStaff]) }}</output>
-                <input type="range" id="woTeamSize" min="1" max="{{ $maxStaff + 1 }}" step="1" value="{{ $startStaff }}">
+        <div class="wo-billing" role="group" aria-label="{{ __('marketing.pricing_billing') }}" data-billing>
+            <div class="wo-billing__seg">
+                @foreach (['monthly', 'yearly'] as $period)
+                    <button type="button" data-billing-for="{{ $period }}" aria-pressed="{{ $period === $shown ? 'true' : 'false' }}">{{ __('marketing.pricing_' . $period) }}</button>
+                @endforeach
             </div>
+            @if ($savePct > 0)
+                <span class="wo-billing__save">{{ __('marketing.pricing_save', ['pct' => $savePct]) }}</span>
+            @endif
+        </div>
 
-            <ul class="wo-pricing__cards" role="list">
-                @foreach ($packages as $package)
-                    @php
-                        $months = max(1, (int) $package->months);
-                        $features = collect(preg_split('/\r\n|\r|\n/', (string) $package->description))
-                            ->map(fn ($line) => trim($line, " \t-•*"))
-                            ->filter()
-                            ->values();
-                    @endphp
-                    <li class="wo-plan" data-limit="{{ (int) $package->staff_limit }}">
-                        <span class="wo-plan__fit">{{ __('marketing.pricing_fit') }}</span>
-                        <h3 class="wo-plan__title">{{ $package->title }}</h3>
-                        <p class="wo-plan__staff">{{ __('marketing.pricing_staff', ['count' => (int) $package->staff_limit]) }}</p>
-                        <p class="wo-plan__price">
-                            <strong>{{ $money($package->price) }}</strong>
-                            <span>{{ $months === 1 ? __('marketing.pricing_period_one') : __('marketing.pricing_period', ['count' => $months]) }}</span>
-                        </p>
-                        @if ($months > 1)
-                            <p class="wo-plan__monthly">{{ __('marketing.pricing_per_month', ['price' => $money(round($package->price / $months, 2))]) }}</p>
+        @foreach ($periods as $period => $months)
+            <ul class="wo-pricing__cards" role="list" data-billing-group="{{ $period }}" @if ($period !== $shown) hidden @endif>
+                @foreach ($plans as $key => $plan)
+                    @php $popular = ! empty($plan['popular']); @endphp
+                    <li class="wo-plan{{ $popular ? ' wo-plan--pop' : '' }}">
+                        @if ($popular)
+                            <span class="wo-plan__badge">{{ __('marketing.pricing_popular') }}</span>
                         @endif
-                        @if ($features->isNotEmpty())
+                        <h3 class="wo-plan__title">{{ $texts[$key]['name'] ?? ucfirst($key) }}</h3>
+                        <p class="wo-plan__staff">{{ __('marketing.pricing_staff', ['count' => $plan['staff']]) }}</p>
+                        <p class="wo-plan__price">
+                            <strong>{{ $money($plan[$period]) }}</strong>
+                            <span>{{ __('marketing.pricing_unit_' . ($months === 12 ? 'year' : 'month')) }}</span>
+                        </p>
+                        @if ($months === 12)
+                            <p class="wo-plan__monthly">{{ __('marketing.pricing_per_month', ['price' => $money(round($plan['yearly'] / 12, 2))]) }}</p>
+                        @endif
+                        @if (! empty($texts[$key]['features']))
                             <ul class="wo-plan__features">
-                                @foreach ($features as $feature)
+                                @foreach ($texts[$key]['features'] as $feature)
                                     <li>{{ $feature }}</li>
                                 @endforeach
                             </ul>
                         @endif
-                        <a class="wo-btn wo-btn-ghost wo-plan__cta" href="{{ route('register') }}">{{ __('marketing.pricing_cta') }}</a>
+                        <a class="wo-btn {{ $popular ? 'wo-btn-primary' : 'wo-btn-ghost' }} wo-plan__cta" href="{{ route('register') }}">{{ __('marketing.pricing_cta') }}</a>
                     </li>
                 @endforeach
             </ul>
+        @endforeach
 
-            <p class="wo-pricing__more" data-pricing-more>
-                <span>{{ __('marketing.pricing_more', ['count' => $maxStaff]) }}</span>
-                <a href="{{ route('marketing.contact') }}">{{ __('marketing.pricing_more_cta') }} →</a>
-            </p>
-        @else
-            <div class="wo-pricing__empty">
-                <p>{{ __('marketing.pricing_empty') }}</p>
-                <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.pricing_more_cta') }}</a>
-            </div>
-        @endif
+        <p class="wo-pricing__more">
+            <span>{{ __('marketing.pricing_more', ['count' => $maxStaff]) }}</span>
+            <a href="{{ route('marketing.contact', ['intent' => 'pricing']) }}">{{ __('marketing.pricing_more_cta') }} →</a>
+        </p>
     </div>
 </section>
 
-{{-- Closing CTA, echoing the hero --}}
-<section class="wo-close" id="demo" aria-labelledby="wo-close-title">
-    <div class="wo-wrap wo-close__inner">
-        <span class="wo-label">{{ __('marketing.cta_label') }}</span>
-        <h2 id="wo-close-title">{{ __('marketing.cta_title') }}</h2>
-        <p class="wo-close__lead">{{ __('marketing.cta_lead') }}</p>
-        <div class="wo-hero__actions">
-            <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
-            <a class="wo-btn wo-btn-glass" href="https://wa.me/{{ __('marketing.phone_wa') }}" target="_blank" rel="noopener noreferrer">{{ __('marketing.whatsapp_cta') }}</a>
-        </div>
-    </div>
-</section>
+@include('marketing.partials.close')
 @endsection
 
 @push('scripts')
-<script>
-    // Hero parallax.
-    // Desktop: the hero is pinned while the pin's spacer scrolls past (D px). During that stretch the photo
-    // slowly zooms and the copy rises and fades; afterwards the hero leaves with the photo still drifting.
-    // Phone (no pin, D = 0): the photo drifts slower than the page and the copy lags and fades.
-    (function () {
-        var hero = document.querySelector('.wo-hero');
-        var space = document.querySelector('.wo-hero-pin__space');
-        if (!hero || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        var ticking = false;
-        var clamp = function (v) { return Math.min(1, Math.max(0, v)); };
-
-        function update() {
-            ticking = false;
-            var y = window.scrollY;
-            var h = hero.offsetHeight;
-            var D = space ? space.offsetHeight : 0;
-            if (y > D + h) return; // hero is off screen, nothing to move
-
-            var py, ps, cy, co;
-            if (D > 0) {
-                var t = clamp(y / D);          // progress through the pinned stretch
-                var after = Math.max(0, y - D); // scroll after the pin releases
-                ps = 1.04 + 0.12 * t;
-                py = -24 * t + after * 0.35;
-                cy = -70 * t + after * 0.18;
-                co = 1 - clamp((t - 0.3) / 0.7);
-            } else {
-                ps = 1.04;
-                py = y * 0.3;
-                cy = y * 0.12;
-                co = 1 - clamp(y / (h * 1.1));
-            }
-            hero.style.setProperty('--py', py.toFixed(1) + 'px');
-            hero.style.setProperty('--ps', ps.toFixed(4));
-            hero.style.setProperty('--cy', cy.toFixed(1) + 'px');
-            hero.style.setProperty('--co', co.toFixed(3));
-        }
-        window.addEventListener('resize', update);
-
-        window.addEventListener('scroll', function () {
-            if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
-        }, { passive: true });
-        update();
-    })();
-</script>
 <script>
     // How it works: the line fills up to a reading line at 55% of the viewport;
     // every step whose dot has passed it lights up, the last one drives the screenshot.
@@ -313,40 +245,32 @@
         update();
     })();
 
-    // Pricing: the team-size slider highlights the smallest package that fits.
+    // Pricing: the billing toggle shows one group of packages at a time.
     (function () {
-        var box = document.querySelector('[data-pricing]');
+        var box = document.querySelector('[data-billing]');
         if (!box) return;
-        var input = box.querySelector('input');
-        var out = box.querySelector('output');
-        var cards = Array.prototype.slice.call(document.querySelectorAll('.wo-plan'));
-        var more = document.querySelector('[data-pricing-more]');
-        var min = Number(input.min);
-        var max = Number(input.max);
-
-        function label(n) {
-            if (n >= max) return box.dataset.over;
-            return n === 1 ? box.dataset.one : box.dataset.many.replace(':count', n);
+        var buttons = Array.prototype.slice.call(box.querySelectorAll('[data-billing-for]'));
+        var groups = Array.prototype.slice.call(document.querySelectorAll('[data-billing-group]'));
+        // phones: the cards are a sideways row; open it on the most popular card, in the middle
+        function centerPopular(group) {
+            var pop = group.querySelector('.wo-plan--pop');
+            if (!pop || group.scrollWidth <= group.clientWidth) return;
+            var g = group.getBoundingClientRect();
+            var p = pop.getBoundingClientRect();
+            group.scrollLeft += (p.left - g.left) - (g.width - p.width) / 2;
         }
 
-        function update() {
-            var n = Number(input.value);
-            out.textContent = label(n);
-            input.setAttribute('aria-valuetext', out.textContent);
-            input.style.setProperty('--v', ((n - min) / Math.max(1, max - min) * 100) + '%');
-
-            var fit = null;
-            cards.forEach(function (card) {
-                var limit = Number(card.dataset.limit);
-                if (!fit && n < max && limit >= n) fit = card;
-                card.classList.toggle('is-small', limit < n);
+        buttons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var months = button.getAttribute('data-billing-for');
+                buttons.forEach(function (b) { b.setAttribute('aria-pressed', b === button ? 'true' : 'false'); });
+                groups.forEach(function (g) {
+                    g.hidden = g.getAttribute('data-billing-group') !== months;
+                    if (!g.hidden) centerPopular(g);
+                });
             });
-            cards.forEach(function (card) { card.classList.toggle('is-fit', card === fit); });
-            if (more) more.classList.toggle('is-active', !fit);
-        }
-
-        input.addEventListener('input', update);
-        update();
+        });
+        groups.forEach(function (g) { if (!g.hidden) centerPopular(g); });
     })();
 </script>
 @endpush

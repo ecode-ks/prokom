@@ -72,7 +72,8 @@
     <link rel="stylesheet" href="{{ asset('assets/workom.css') }}?v={{ filemtime(public_path('assets/workom.css')) }}">
     @stack('head')
 </head>
-<body class="wo">
+{{-- inner pages share one background: white with a soft blue light at the top, behind the header --}}
+<body class="wo{{ $page !== 'home' ? ' wo--inner' : '' }}">
     <a class="wo-skip" href="#main">Skip</a>
 
     @php
@@ -165,54 +166,64 @@
         @yield('content')
     </main>
 
-    <footer class="wo-footer">
+    {{-- Footer: the same night blue as the closing CTA, so the two read as one dark block --}}
+    @php
+        $footerCols = [
+            'footer_product' => [
+                [route('marketing.product'), __('marketing.nav_product')],
+                [route('home') . '#si-funksionon', __('marketing.footer_how')],
+                [route('home') . '#cmimet', __('marketing.footer_pricing')],
+                [route('home') . '#per-ke-eshte', __('marketing.footer_for_who')],
+                [route('home') . '#klientet', __('marketing.footer_clients')],
+            ],
+            'footer_modules' => [
+                [route('marketing.erp'), __('marketing.nav_erp')],
+                [route('marketing.crm'), __('marketing.nav_crm')],
+                [route('marketing.hr'), __('marketing.nav_hr')],
+            ],
+            'footer_help' => [
+                [route('marketing.faq'), __('marketing.nav_faq')],
+                [route('marketing.contact'), __('marketing.nav_contact')],
+                [route('marketing.privacy'), __('marketing.footer_privacy')],
+            ],
+        ];
+    @endphp
+    <footer class="wo-foot">
         <div class="wo-wrap">
-            <div class="wo-footer-main">
-                <div class="wo-footer-brand">
-                    <a href="{{ route('home') }}" class="wo-logo wo-logo-footer">
-                        <img
-                            class="wo-lazy"
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23071838'/%3E%3C/svg%3E"
-                            data-wo-src="{{ asset('images/marketing/workom_logo.png') }}"
-                            alt="WORKOM"
-                            width="220"
-                            height="56"
-                            loading="lazy"
-                            decoding="async"
-                        >
+            <div class="wo-foot__top">
+                <div class="wo-foot__brand">
+                    <a href="{{ route('home') }}" class="wo-foot__logo" aria-label="WORKOM — {{ __('marketing.nav_home') }}">
+                        <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM" width="1423" height="266" loading="lazy" decoding="async">
                     </a>
-                    <p class="wo-footer-copy">{{ __('marketing.footer_copy') }}</p>
-                    <div class="wo-social-links" aria-label="{{ __('marketing.footer_social') }}">
-                        <a href="{{ __('marketing.social_linkedin') }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="{{ __('marketing.social_instagram') }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="{{ __('marketing.social_tiktok') }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    <p>{{ __('marketing.footer_copy') }}</p>
+                    <div class="wo-foot__contact">
+                        <a href="mailto:{{ __('marketing.contact_email_address') }}">{{ __('marketing.contact_email_address') }}</a>
+                        <a href="tel:+{{ __('marketing.phone_wa') }}">{{ __('marketing.phone_display') }}</a>
                     </div>
                 </div>
 
-                <div class="wo-footer-col">
-                    <h4>{{ __('marketing.footer_modules') }}</h4>
-                    <nav aria-label="{{ __('marketing.footer_modules') }}">
-                        <a href="{{ route('marketing.erp') }}">{{ __('marketing.nav_erp') }}</a>
-                        <a href="{{ route('marketing.crm') }}">{{ __('marketing.nav_crm') }}</a>
-                        <a href="{{ route('marketing.hr') }}">{{ __('marketing.nav_hr') }}</a>
-                        <a href="{{ route('home') }}#si-funksionon">{{ __('marketing.footer_how') }}</a>
-                    </nav>
-                </div>
-
-                <div class="wo-footer-col wo-footer-col--end">
-                    <h4>{{ __('marketing.footer_product') }}</h4>
-                    <nav aria-label="{{ __('marketing.footer_product') }}">
-                        <a href="{{ route('home') }}#cmimet">{{ __('marketing.footer_pricing') }}</a>
-                        <a href="{{ route('home') }}#per-ke-eshte">{{ __('marketing.footer_for_who') }}</a>
-                        <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
-                        <a href="{{ route('home') }}#klientet">{{ __('marketing.footer_clients') }}</a>
-                    </nav>
+                <div class="wo-foot__cols">
+                    @foreach ($footerCols as $title => $links)
+                        <nav aria-labelledby="wo-foot-{{ $loop->index }}">
+                            <h2 id="wo-foot-{{ $loop->index }}">{{ __('marketing.' . $title) }}</h2>
+                            <ul>
+                                @foreach ($links as [$href, $label])
+                                    <li><a href="{{ $href }}">{{ $label }}</a></li>
+                                @endforeach
+                            </ul>
+                        </nav>
+                    @endforeach
                 </div>
             </div>
 
-            <div class="wo-footer-bottom">
-                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }} · <a href="{{ route('marketing.privacy') }}">{{ __('marketing.footer_privacy') }}</a></p>
-                <p class="wo-footer-bottom-tag">{{ __('marketing.footer_bottom_tag') }}</p>
+            <div class="wo-foot__bottom">
+                <p>&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }}</p>
+                @include('marketing.partials.social', ['class' => 'wo-social--dark'])
+                <div class="wo-foot__lang" role="group" aria-label="Language">
+                    @foreach (['sq', 'en', 'de'] as $lang)
+                        <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if ($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                    @endforeach
+                </div>
             </div>
         </div>
     </footer>
@@ -236,8 +247,7 @@
             // Header: hairline + solid background once the page scrolls.
             // Over the home hero it stays dark (is-light off) until the hero has scrolled away
             // or the mobile drawer opens.
-            // the pin wraps the hero plus the scroll it stays pinned for
-            var hero = document.querySelector('.wo-hero-pin') || document.querySelector('.wo-hero');
+            var hero = document.querySelector('.wo-hero');
             function syncTop() {
                 if (!top) return;
                 var y = window.scrollY;
@@ -401,6 +411,21 @@
 
             var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             initNavDrop();
+
+            // Cards: the light inside follows the pointer (CSS reads --mx / --my); on leave it glides back.
+            if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                document.querySelectorAll('.wo-card, .wo-plan, .wo-channel').forEach(function (card) {
+                    card.addEventListener('pointermove', function (e) {
+                        var r = card.getBoundingClientRect();
+                        card.style.setProperty('--mx', (e.clientX - r.left).toFixed(0) + 'px');
+                        card.style.setProperty('--my', (e.clientY - r.top).toFixed(0) + 'px');
+                    });
+                    card.addEventListener('pointerleave', function () {
+                        card.style.removeProperty('--mx');
+                        card.style.removeProperty('--my');
+                    });
+                });
+            }
             var animated = document.querySelectorAll('.wo-animate');
             if (!reduceMotion && 'IntersectionObserver' in window && animated.length) {
                 var io = new IntersectionObserver(function (entries) {
@@ -415,171 +440,64 @@
                 animated.forEach(function (el) { el.classList.add('is-inview'); });
             }
 
-            document.querySelectorAll('.wo-faq details').forEach(function (details) {
-                var summary = details.querySelector('summary');
+            // FAQ: one answer open at a time; opening a question closes the one that was open.
+            var faqItems = Array.prototype.slice.call(document.querySelectorAll('.wo-faq details'));
+
+            // the wanted state is kept right away (data-open), so quick clicks never leave two answers open
+            function setFaq(details, open) {
                 var panel = details.querySelector('.wo-faq-panel');
-                if (!summary || !panel) return;
+                if (open === (details.dataset.open === '1')) return;
+                details.dataset.open = open ? '1' : '0';
+
+                if (reduceMotion) {
+                    details.open = open;
+                    details.classList.toggle('is-open', open);
+                    return;
+                }
+
+                if (open) {
+                    details.open = true;
+                    requestAnimationFrame(function () {
+                        if (details.dataset.open === '1') details.classList.add('is-open');
+                    });
+                    return;
+                }
+
+                details.classList.remove('is-open');
+                var done = false;
+                var finish = function () {
+                    // reopened before the panel finished closing: leave it open
+                    if (done || details.dataset.open === '1') return;
+                    done = true;
+                    details.open = false;
+                };
+                panel.addEventListener('transitionend', function onEnd(ev) {
+                    if (ev.target !== panel) return;
+                    panel.removeEventListener('transitionend', onEnd);
+                    finish();
+                });
+                window.setTimeout(finish, 400);
+            }
+
+            faqItems.forEach(function (details) {
+                var summary = details.querySelector('summary');
+                if (!summary || !details.querySelector('.wo-faq-panel')) return;
 
                 details.classList.add('wo-faq-ready');
+                details.dataset.open = details.open ? '1' : '0';
                 if (details.open) details.classList.add('is-open');
 
                 summary.addEventListener('click', function (e) {
                     e.preventDefault();
-                    var opening = !details.classList.contains('is-open');
-
-                    if (reduceMotion) {
-                        details.open = opening;
-                        details.classList.toggle('is-open', opening);
-                        return;
-                    }
-
+                    var opening = details.dataset.open !== '1';
                     if (opening) {
-                        details.open = true;
-                        requestAnimationFrame(function () {
-                            details.classList.add('is-open');
+                        faqItems.forEach(function (other) {
+                            if (other !== details) setFaq(other, false);
                         });
-                    } else {
-                        details.classList.remove('is-open');
-                        var done = false;
-                        var finish = function () {
-                            if (done) return;
-                            done = true;
-                            details.open = false;
-                        };
-                        panel.addEventListener('transitionend', function onEnd(ev) {
-                            if (ev.target !== panel) return;
-                            panel.removeEventListener('transitionend', onEnd);
-                            finish();
-                        });
-                        window.setTimeout(finish, 400);
                     }
+                    setFaq(details, opening);
                 });
             });
-
-            (function initPriceSlider() {
-                var track = document.getElementById('woPrices');
-                if (!track) return;
-
-                var cards = Array.prototype.slice.call(track.querySelectorAll('.wo-price'));
-                if (!cards.length) return;
-
-                var mq = window.matchMedia('(max-width: 639px)');
-                var index = Math.max(0, cards.findIndex(function (c) { return c.classList.contains('is-featured'); }));
-                if (index < 0) index = 0;
-                var ticking = false;
-                var drag = null;
-                var skipClick = false;
-
-                function setActive(i) {
-                    index = i;
-                    cards.forEach(function (card, n) {
-                        card.classList.toggle('is-slide-active', n === i);
-                    });
-                }
-
-                function goTo(i, smooth) {
-                    if (!mq.matches) return;
-                    i = Math.max(0, Math.min(cards.length - 1, i));
-                    var card = cards[i];
-                    var left = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
-                    track.scrollTo({ left: left, behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
-                    setActive(i);
-                }
-
-                function nearest() {
-                    var mid = track.scrollLeft + track.clientWidth / 2;
-                    var best = 0;
-                    var bestDist = Infinity;
-                    cards.forEach(function (card, i) {
-                        var c = card.offsetLeft + card.clientWidth / 2;
-                        var d = Math.abs(c - mid);
-                        if (d < bestDist) {
-                            bestDist = d;
-                            best = i;
-                        }
-                    });
-                    return best;
-                }
-
-                function onScroll() {
-                    if (!mq.matches || ticking) return;
-                    ticking = true;
-                    requestAnimationFrame(function () {
-                        setActive(nearest());
-                        ticking = false;
-                    });
-                }
-
-                function onPointerDown(e) {
-                    if (!mq.matches || e.button === 2) return;
-                    if (e.target.closest('a, button')) return;
-                    drag = {
-                        startX: e.clientX,
-                        startScroll: track.scrollLeft,
-                        moved: false,
-                        pointerId: e.pointerId
-                    };
-                    track.classList.add('is-dragging');
-                    if (e.pointerId != null && track.setPointerCapture) {
-                        try { track.setPointerCapture(e.pointerId); } catch (err) {}
-                    }
-                }
-
-                function onPointerMove(e) {
-                    if (!drag) return;
-                    var dx = e.clientX - drag.startX;
-                    if (Math.abs(dx) > 6) drag.moved = true;
-                    track.scrollLeft = drag.startScroll - dx;
-                    if (drag.moved && e.cancelable) e.preventDefault();
-                }
-
-                function onPointerUp(e) {
-                    if (!drag) return;
-                    var dx = e.clientX - drag.startX;
-                    var moved = drag.moved;
-                    track.classList.remove('is-dragging');
-                    if (drag.pointerId != null && track.releasePointerCapture) {
-                        try { track.releasePointerCapture(drag.pointerId); } catch (err) {}
-                    }
-                    drag = null;
-                    if (!moved) return;
-                    skipClick = true;
-                    var next = index;
-                    if (dx < -48) next = index + 1;
-                    else if (dx > 48) next = index - 1;
-                    else next = nearest();
-                    goTo(next, true);
-                }
-
-                track.addEventListener('scroll', onScroll, { passive: true });
-                track.addEventListener('pointerdown', onPointerDown);
-                track.addEventListener('pointermove', onPointerMove, { passive: false });
-                track.addEventListener('pointerup', onPointerUp);
-                track.addEventListener('pointercancel', onPointerUp);
-                track.addEventListener('click', function (e) {
-                    if (!skipClick) return;
-                    skipClick = false;
-                    e.preventDefault();
-                    e.stopPropagation();
-                }, true);
-
-                function syncMode() {
-                    if (mq.matches) goTo(index, false);
-                    else cards.forEach(function (card) { card.classList.remove('is-slide-active'); });
-                }
-
-                if (mq.addEventListener) mq.addEventListener('change', syncMode);
-                else if (mq.addListener) mq.addListener(syncMode);
-
-                window.addEventListener('resize', function () {
-                    if (mq.matches) goTo(index, false);
-                });
-
-                syncMode();
-                requestAnimationFrame(function () {
-                    if (mq.matches) goTo(index, false);
-                });
-            })();
         })();
     </script>
     @stack('scripts')

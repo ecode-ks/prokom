@@ -40,7 +40,7 @@
     /* Space */
     --gutter: clamp(1rem, 4vw, 2rem);
     --max: 1200px;
-    --section-y: clamp(4rem, 2.5rem + 6vw, 7rem);
+    --section-y: clamp(3rem, 2rem + 6vw, 7rem);
     --stack-sm: 0.75rem;
     --stack-md: 1.25rem;
     --stack-lg: 2.5rem;
@@ -119,19 +119,11 @@
 .wo-section h2,
 .wo-how h2,
 .wo-pricing h2,
-.wo-close h2,
-.wo-module-hero__title {
+.wo-close h2 {
     font-size: var(--fs-h2);
     font-weight: 650;
     line-height: 1.12;
     letter-spacing: -0.03em;
-}
-
-.wo-module-card h3 {
-    font-size: var(--fs-h3);
-    font-weight: 600;
-    line-height: 1.3;
-    letter-spacing: -0.015em;
 }
 
 /* Eyebrow above a heading */
@@ -148,8 +140,7 @@
 }
 
 .wo-lead,
-.wo-section .wo-lead,
-.wo-module-hero__lead {
+.wo-section .wo-lead {
     font-size: var(--fs-lead);
     font-weight: 400;
     line-height: 1.6;
@@ -465,6 +456,9 @@ body.wo-nav-open .wo-top {
     min-height: 40px;
     padding: 0 1rem;
     font-size: 0.875rem;
+    transition:
+        background-color var(--dur) var(--ease),
+        border-color var(--dur) var(--ease);
 }
 
 .wo-top-cta__long {
@@ -742,21 +736,9 @@ body.wo-nav-open {
     color: #fff;
 }
 
-/* slides under the sticky header; on desktop it also pins the hero for a stretch of scroll */
-.wo-hero-pin {
-    position: relative;
+/* slides under the sticky header */
+.wo-hero {
     margin-top: calc(-1 * (var(--top-h) + 1px));
-}
-
-@media (min-width: 760px) {
-    .wo-hero-pin .wo-hero {
-        position: sticky;
-        top: 0;
-    }
-
-    .wo-hero-pin__space {
-        height: 60vh;
-    }
 }
 
 .wo-hero__bg,
@@ -777,27 +759,6 @@ body.wo-nav-open {
     filter: grayscale(1) contrast(1.15) brightness(1.05);
 }
 
-/* Parallax (JS sets --py / --cy / --co while the hero is on screen).
- * The photo is taller than the hero so moving it never reveals an edge. */
-.wo-hero__bg > .wo-hero__photo {
-    inset: -14% 0;
-    transform: translate3d(0, var(--py, 0px), 0) scale(var(--ps, 1.04));
-    will-change: transform;
-}
-
-.wo-hero__copy {
-    transform: translate3d(0, var(--cy, 0px), 0);
-    opacity: var(--co, 1);
-    will-change: transform, opacity;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .wo-hero__bg > .wo-hero__photo,
-    .wo-hero__copy {
-        transform: none;
-        opacity: 1;
-    }
-}
 
 .wo-hero__tint {
     background: var(--accent);
@@ -932,18 +893,21 @@ body.wo-nav-open {
     }
 }
 
-/* Client logos right under the hero: one colour, same weight */
+/* Client logos, right before the prices: large and in one colour (some logos are white, so they are
+ * always drawn as a dark silhouette); on hover they turn solid and grow a little */
 .wo-trust {
     display: grid;
     justify-items: center;
-    gap: 1.5rem;
-    padding-top: 1.5rem;
+    gap: 2.5rem;
+    padding-top: var(--section-y);
 }
 
 .wo-trust__label {
     margin: 0;
-    font-size: 0.8125rem;
-    font-weight: 500;
+    font-size: var(--fs-eyebrow);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--ink-3);
 }
 
@@ -952,56 +916,48 @@ body.wo-nav-open {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 1.5rem 3rem;
+    gap: 2.5rem 4.5rem;
+    max-width: 68rem;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.wo-trust__logos img {
+.wo-trust .wo-trust__logos img {
     width: auto;
-    height: 28px;
-    filter: brightness(0) saturate(0);
+    max-width: 180px;
+    height: 48px;
+    object-fit: contain;
+    filter: grayscale(1) brightness(0);
     opacity: 0.45;
-    transition: opacity var(--dur) var(--ease);
+    transition: filter 300ms var(--ease), opacity 300ms var(--ease), transform 300ms var(--ease);
 }
 
-.wo-trust__logos img:hover {
-    opacity: 0.8;
+.wo-trust .wo-trust__logos img:hover {
+    filter: grayscale(1) brightness(0);
+    opacity: 0.9;
+    transform: scale(1.06);
+}
+
+/* the price band follows the logos closely */
+.wo-trust + .wo-pricing {
+    margin-top: clamp(3.5rem, 2.5rem + 3vw, 5rem);
 }
 
 @media (max-width: 759px) {
     .wo-trust__logos {
-        gap: 1.25rem 2rem;
+        gap: 1.75rem 2.5rem;
     }
 
-    .wo-trust__logos img {
-        height: 22px;
+    .wo-trust .wo-trust__logos img {
+        max-width: 130px;
+        height: 34px;
     }
 }
 
 /* ---------------------------------------------------------------
  * 7. Home sections
  * ------------------------------------------------------------- */
-
-/* Module cards ("Për kë është", product page) — flat, no decoration */
-.wo-module-card {
-    padding: 1.75rem 1.5rem;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    box-shadow: none;
-    transition:
-        border-color var(--dur) var(--ease),
-        box-shadow var(--dur) var(--ease),
-        transform var(--dur) var(--ease);
-}
-
-a.wo-module-card:hover {
-    border-color: var(--ink);
-    box-shadow: var(--shadow-1);
-    transform: translateY(-2px);
-}
 
 /* How it works — a line that fills while scrolling */
 .wo-how {
@@ -1010,6 +966,7 @@ a.wo-module-card:hover {
 
 .wo-how__intro {
     max-width: 44rem;
+    margin-bottom: 2.5rem;
 }
 
 .wo-how__intro .wo-lead {
@@ -1019,7 +976,10 @@ a.wo-module-card:hover {
 .wo-how__grid {
     display: grid;
     gap: 3rem;
-    margin-top: 2.5rem;
+}
+
+.wo-how__side {
+    min-width: 0;
 }
 
 .wo-how__stage {
@@ -1150,9 +1110,15 @@ a.wo-module-card:hover {
         opacity: 1;
     }
 
-    /* steps start lower, so the stage is already fully in view when step 1 plays */
+    /* the intro starts on the stage's line; the steps follow it */
+    .wo-how__intro {
+        margin-bottom: 4rem;
+    }
+
+    /* long gaps between the steps make a long line and a slow, deliberate scroll;
+       the space after the last step keeps the stage in view while it plays */
     .wo-how__rail {
-        padding-top: 22vh;
+        padding-bottom: 30vh;
         padding-left: 64px;
     }
 
@@ -1168,7 +1134,7 @@ a.wo-module-card:hover {
     }
 
     .wo-how__step {
-        padding-bottom: 4.5rem;
+        padding-bottom: 34vh;
     }
 
     .wo-how__inline {
@@ -1883,7 +1849,8 @@ a.wo-module-card:hover {
     transition-delay: var(--d, 0s);
 }
 
-/* Pricing — cards from the packages table, team-size slider */
+/* Pricing — packages from the admin panel, grouped by billing period (monthly / yearly toggle);
+ * the middle package is the dark "most popular" card. */
 .wo-pricing {
     margin-top: var(--section-y);
     padding-block: var(--section-y);
@@ -1901,117 +1868,106 @@ a.wo-module-card:hover {
     margin: 0;
 }
 
-.wo-pricing__team {
-    display: grid;
-    justify-items: center;
-    gap: 0.5rem;
-    max-width: 30rem;
-    margin: 2.5rem auto;
+/* billing toggle */
+.wo-billing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem 1rem;
+    margin-top: 2.25rem;
 }
 
-.wo-pricing__team label {
-    font-size: 0.9375rem;
-    font-weight: 500;
+.wo-billing__seg {
+    display: inline-flex;
+    padding: 0.25rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    box-shadow: var(--shadow-1);
+}
+
+.wo-billing__seg button {
+    padding: 0.5rem 1.25rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    font: 600 0.9375rem/1.2 var(--font);
     color: var(--ink-2);
+    cursor: pointer;
+    transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
-.wo-pricing__team output {
-    font: 600 1.75rem/1.2 var(--display);
-    letter-spacing: -0.02em;
+.wo-billing__seg button:hover {
     color: var(--ink);
 }
 
-.wo-pricing__team input[type="range"] {
-    width: 100%;
-    height: 6px;
-    margin: 0.75rem 0 0;
+.wo-billing__seg button[aria-pressed="true"] {
+    background: var(--ink);
+    color: #fff;
+}
+
+.wo-billing__save {
+    padding: 0.375rem 0.75rem;
     border-radius: 999px;
-    background: linear-gradient(to right, var(--accent) var(--v, 0%), var(--bg-3) var(--v, 0%));
-    -webkit-appearance: none;
-    appearance: none;
-    cursor: pointer;
-}
-
-.wo-pricing__team input[type="range"]::-webkit-slider-thumb {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    background: var(--bg);
-    box-shadow: 0 2px 8px rgba(7, 24, 56, 0.2);
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-.wo-pricing__team input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    border: 2px solid var(--accent);
-    border-radius: 50%;
-    background: var(--bg);
-    box-shadow: 0 2px 8px rgba(7, 24, 56, 0.2);
+    background: #e7f8ef;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #0b7a4b;
 }
 
 .wo-pricing__cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 320px));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 340px));
     justify-content: center;
-    gap: 1.25rem;
-    margin: 0;
-    padding: 1rem 0 0;
+    gap: 1.5rem;
+    margin: 3rem 0 0;
+    padding: 0;
     list-style: none;
 }
 
+.wo-pricing__cards:not([hidden]) {
+    animation: wo-plans-in 400ms var(--ease);
+}
+
+@keyframes wo-plans-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+}
+
 .wo-plan {
-    position: relative;
     display: flex;
     flex-direction: column;
-    padding: 1.75rem 1.5rem 1.5rem;
+    min-width: 0;
+    padding: 2rem 1.75rem 1.75rem;
     background: var(--bg);
     border: 1px solid var(--line);
-    border-radius: 16px;
-    transition:
-        border-color 250ms var(--ease),
-        box-shadow 250ms var(--ease),
-        opacity 250ms var(--ease),
-        transform 250ms var(--ease);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px rgba(7, 24, 56, 0.04), 0 16px 36px -28px rgba(7, 24, 56, 0.25);
 }
 
-.wo-plan.is-fit {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 1px var(--accent), 0 24px 48px -24px rgba(31, 102, 229, 0.45);
-    transform: translateY(-4px);
-}
-
-.wo-plan.is-small {
-    opacity: 0.55;
-}
-
-.wo-plan__fit {
+.wo-plan__badge {
     position: absolute;
-    top: -11px;
-    left: 1.5rem;
-    padding: 0.25rem 0.625rem;
+    top: -12px;
+    left: 50%;
+    padding: 0.3125rem 0.875rem;
     border-radius: 999px;
-    background: var(--accent);
+    background: linear-gradient(90deg, var(--accent), #3d8bff);
     font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
     color: #fff;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 250ms var(--ease), transform 250ms var(--ease);
+    box-shadow: 0 8px 18px -8px rgba(31, 102, 229, 0.8);
+    transform: translateX(-50%);
 }
 
-.wo-plan.is-fit .wo-plan__fit {
-    opacity: 1;
-    transform: none;
-}
-
-.wo-plan__title {
+.wo .wo-plan__title {
     margin: 0;
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     font-weight: 600;
 }
 
@@ -2030,31 +1986,31 @@ a.wo-module-card:hover {
     flex-wrap: wrap;
     align-items: baseline;
     gap: 0.25rem 0.5rem;
-    margin: 1.25rem 0 0;
+    margin: 1.5rem 0 0;
 }
 
 .wo-plan__price strong {
-    font: 650 2.25rem/1.1 var(--display);
-    letter-spacing: -0.03em;
+    font: 650 2.5rem/1.05 var(--display);
+    letter-spacing: -0.035em;
     color: var(--ink);
 }
 
 .wo-plan__price span {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     color: var(--ink-3);
 }
 
 .wo-plan__monthly {
-    margin: 0.25rem 0 0;
+    margin: 0.375rem 0 0;
     font-size: 0.8125rem;
     color: var(--ink-3);
 }
 
 .wo-plan__features {
     display: grid;
-    gap: 0.5rem;
-    margin: 1.25rem 0 0;
-    padding: 1.25rem 0 0;
+    gap: 0.625rem;
+    margin: 1.5rem 0 0;
+    padding: 1.5rem 0 0;
     border-top: 1px solid var(--line);
     list-style: none;
     font-size: 0.9375rem;
@@ -2070,33 +2026,51 @@ a.wo-module-card:hover {
     content: "";
     position: absolute;
     left: 0;
-    top: 0.2em;
+    top: 0.3em;
     width: 1rem;
     height: 1rem;
-    border-radius: 50%;
-    background: var(--accent-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%231f66e5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.4l2.8 2.8 6.2-6.4' fill='none' stroke='%231f66e5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
+/* the buttons line up at the bottom of every card */
 .wo-plan__cta {
     width: 100%;
     margin-top: auto;
 }
 
-.wo-plan__features + .wo-plan__cta,
-.wo-plan__monthly + .wo-plan__cta,
-.wo-plan__price + .wo-plan__cta {
-    margin-top: 1.5rem;
+.wo-plan > :nth-last-child(2) {
+    margin-bottom: 1.75rem;
 }
 
-.wo-plan.is-fit .wo-plan__cta {
-    background: var(--accent);
-    border-color: var(--accent);
+/* most popular: the dark card */
+.wo-plan--pop {
+    background: linear-gradient(165deg, #0e2656 0%, #081b3f 50%, #050f26 100%);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 30px 60px -30px rgba(4, 13, 34, 0.65);
+}
+
+.wo .wo-plan--pop .wo-plan__title,
+.wo-plan--pop .wo-plan__price strong {
     color: #fff;
 }
 
-.wo-plan.is-fit .wo-plan__cta:hover {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
+.wo-plan--pop .wo-plan__staff,
+.wo-plan--pop .wo-plan__price span,
+.wo-plan--pop .wo-plan__monthly {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.wo-plan--pop .wo-plan__features {
+    border-top-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.wo-plan--pop .wo-plan__features li::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.4l2.8 2.8 6.2-6.4' fill='none' stroke='%238fb4ff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.wo-plan--pop .wo-plan__cta {
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 8px 24px -6px rgba(31, 102, 229, 0.7);
 }
 
 .wo-pricing__more {
@@ -2106,43 +2080,15 @@ a.wo-module-card:hover {
     gap: 0.25rem 0.75rem;
     width: fit-content;
     max-width: 100%;
-    margin: 2rem auto 0;
-    padding: 0.75rem 1.25rem;
-    border: 1px solid transparent;
-    border-radius: 12px;
+    margin: 2.5rem auto 0;
     font-size: 0.9375rem;
     text-align: center;
     color: var(--ink-2);
-    transition: border-color 250ms var(--ease), background-color 250ms var(--ease);
 }
 
 .wo-pricing__more a {
     font-weight: 600;
     color: var(--accent);
-}
-
-.wo-pricing__more.is-active {
-    background: var(--bg);
-    border-color: var(--accent);
-    color: var(--ink);
-}
-
-.wo-pricing__empty {
-    display: grid;
-    justify-items: center;
-    gap: 1.25rem;
-    max-width: 36rem;
-    margin: 2.5rem auto 0;
-    padding: 2rem;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    text-align: center;
-    color: var(--ink-2);
-}
-
-.wo-pricing__empty p {
-    margin: 0;
 }
 
 /* Closing CTA — dark, with the hero's arc of light along its top edge */
@@ -2154,7 +2100,7 @@ a.wo-module-card:hover {
     position: relative;
     isolation: isolate;
     overflow: clip;
-    padding-block: clamp(6.5rem, 4.5rem + 6vw, 10rem) clamp(4.5rem, 3rem + 5vw, 7rem);
+    padding-block: clamp(5rem, 3.5rem + 6vw, 10rem) clamp(3.5rem, 2.5rem + 5vw, 7rem);
     background: #040d22;
     color: #fff;
 }
@@ -2165,6 +2111,9 @@ a.wo-module-card:hover {
     inset: 0;
     z-index: -1;
     background: radial-gradient(ellipse 55% 75% at 50% 110%, rgba(31, 102, 229, 0.5), transparent 70%);
+    /* fades out before the bottom edge, so it runs into the footer without a seam */
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
 }
 
 .wo-close::after {
@@ -2227,6 +2176,1639 @@ a.wo-module-card:hover {
     }
 }
 
+.wo-close--after-white::after {
+    background: var(--bg);
+}
+
+/* ---------------------------------------------------------------
+ * Inner pages — page head, module cards, product flow,
+ * module screens and features
+ * ------------------------------------------------------------- */
+.wo-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Inner pages: one background for the whole page — white, with a soft blue light at the top that
+ * runs behind the (transparent) header. No tinted bands, so sections never change colour. */
+.wo.wo--inner {
+    background:
+        radial-gradient(1100px 640px at 88% -160px, rgba(31, 102, 229, 0.12), transparent 70%),
+        radial-gradient(900px 520px at -5% -80px, rgba(31, 102, 229, 0.06), transparent 70%),
+        var(--bg);
+    background-repeat: no-repeat;
+}
+
+.wo--inner:not(.wo-nav-open) .wo-top:not(.is-scrolled) {
+    background: transparent;
+}
+
+/* Page head */
+.wo-phead {
+    --lift: 0px;
+
+    position: relative;
+    /* no band to close, so little room below: the next section brings its own */
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem) calc(clamp(1rem, 0.5rem + 1.5vw, 2rem) + var(--lift));
+}
+
+.wo-phead h1 {
+    margin: 0;
+    font-size: clamp(2.25rem, 1.45rem + 3.4vw, 3.875rem);
+    font-weight: 650;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    overflow-wrap: break-word;
+}
+
+.wo-phead .wo-cta-row {
+    margin-top: 2rem;
+}
+
+.wo-phead__lead {
+    margin: 1.25rem 0 0;
+    max-width: 34rem;
+    font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+    line-height: 1.55;
+    color: var(--ink);
+}
+
+.wo-phead__explain {
+    margin: 1rem 0 0;
+    max-width: 34rem;
+    color: var(--ink-2);
+}
+
+.wo-phead__grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.wo-phead--split .wo-phead__grid {
+    gap: 2.5rem;
+}
+
+.wo-phead__copy,
+.wo-phead__art,
+.wo-phead__side {
+    min-width: 0;
+}
+
+.wo-phead__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.75rem;
+}
+
+a.wo-textlink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(31, 102, 229, 0.35);
+    text-underline-offset: 0.35em;
+    transition: text-decoration-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+a.wo-textlink:hover {
+    text-decoration-color: currentColor;
+}
+
+a.wo-textlink--quiet {
+    color: var(--ink);
+    text-decoration-color: var(--line-strong);
+}
+
+@media (min-width: 960px) {
+    .wo-phead--split .wo-phead__grid {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+        align-items: center;
+        gap: 4rem;
+    }
+
+    .wo-phead__grid--module {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        align-items: end;
+        gap: 4rem;
+    }
+
+    .wo-phead__grid--module .wo-phead__explain {
+        margin-top: 0;
+    }
+}
+
+/* Section head: heading on the left, lead on the right */
+.wo-splithead {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+}
+
+.wo-splithead h2,
+.wo-section .wo-splithead h2 {
+    max-width: 18ch;
+    margin: 0;
+    font-size: var(--fs-h2);
+    font-weight: 650;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+}
+
+.wo-splithead .wo-lead {
+    margin: 0;
+}
+
+@media (min-width: 900px) {
+    .wo-splithead {
+        grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+        gap: 4rem;
+        align-items: end;
+    }
+}
+
+/* Cards — one design for every card grid (modules, features, "who it's for"): dark navy from the logo,
+ * white type, glass icon tile. A module card's title is the link and covers the whole card. */
+.wo-cards {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+@media (min-width: 640px) {
+    .wo-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* an odd last card spans the row instead of leaving a hole */
+    .wo-cards:not(.wo-cards--two) > :last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (min-width: 960px) {
+    .wo-cards:not(.wo-cards--two) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.5rem;
+    }
+
+    .wo-cards:not(.wo-cards--two) > :last-child:nth-child(odd) {
+        grid-column: auto;
+    }
+}
+
+.wo-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+    padding: 1.75rem;
+    overflow: hidden;
+    background: linear-gradient(165deg, #0e2656 0%, #081b3f 50%, #050f26 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 22px 44px -26px rgba(4, 13, 34, 0.6);
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.wo-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+/* glass tile; fills with the brand blue on hover */
+.wo-card__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #8fb4ff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: background-color 350ms var(--ease), color 350ms var(--ease), box-shadow 350ms var(--ease);
+}
+
+.wo-card__icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.wo-card__icon--num {
+    margin-bottom: 0.75rem;
+    font: 600 0.875rem/1 var(--display);
+    font-variant-numeric: tabular-nums;
+}
+
+.wo-card:hover .wo-card__icon {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18), 0 10px 24px -10px rgba(61, 139, 255, 0.9);
+}
+
+.wo-card__num {
+    font: 500 0.8125rem/1 var(--display);
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.wo .wo-card__title {
+    margin: 0;
+    font-size: 1.375rem;
+    font-weight: 650;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: #fff;
+}
+
+.wo li.wo-card .wo-card__title {
+    font-size: 1.1875rem;
+    font-weight: 600;
+}
+
+.wo-card__title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+}
+
+.wo-card__title a:focus-visible {
+    outline: none;
+}
+
+.wo-card:has(a:focus-visible) {
+    outline: 2px solid #8fb4ff;
+    outline-offset: 3px;
+}
+
+.wo-card__text {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.wo-card__list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0.25rem 0 0;
+    padding: 1rem 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    list-style: none;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.wo-card__list li {
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.wo-card__list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.3em;
+    width: 1rem;
+    height: 1rem;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.4l2.8 2.8 6.2-6.4' fill='none' stroke='%238fb4ff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.wo-card__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #8fb4ff;
+    transition: color var(--dur) var(--ease);
+}
+
+.wo-card__more svg {
+    width: 1rem;
+    height: 1rem;
+    transition: transform 300ms var(--ease);
+}
+
+.wo-card:hover .wo-card__more {
+    color: #fff;
+}
+
+.wo-card:hover .wo-card__more svg {
+    transform: translateX(4px);
+}
+
+/* Product: the example flow — a process diagram. Three arrows hand on to each other, light to dark
+ * (CRM → ERP → HR); the text sits under each arrow. On phones the arrows point down. */
+.wo-flowsec {
+    padding-bottom: clamp(3rem, 2rem + 3vw, 4.5rem);
+}
+
+.wo-chain {
+    --tip: 28px;
+
+    display: grid;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wo-chain__step {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.wo-chain__arrow {
+    --c1: #e9f1fe;
+    --c2: #d5e3fc;
+    --fg: var(--ink);
+    --tile: #fff;
+    --ic: var(--accent);
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-height: 84px;
+    padding: 1rem 1.5rem calc(1rem + 14px);
+    background: linear-gradient(120deg, var(--c1), var(--c2));
+    color: var(--fg);
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), 50% 100%, 0 calc(100% - 14px));
+}
+
+.wo-chain__step:nth-child(2) .wo-chain__arrow {
+    --c1: #3b7ff0;
+    --c2: var(--accent);
+    --fg: #fff;
+    --tile: rgba(255, 255, 255, 0.16);
+    --ic: #fff;
+}
+
+.wo-chain__step:nth-child(3) .wo-chain__arrow {
+    --c1: #10295c;
+    --c2: var(--ink);
+    --fg: #fff;
+    --tile: rgba(255, 255, 255, 0.1);
+    --ic: #8fb4ff;
+}
+
+.wo-chain__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 12px;
+    background: var(--tile);
+    color: var(--ic);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+.wo-chain__icon svg {
+    width: 1.375rem;
+    height: 1.375rem;
+}
+
+.wo-chain__mod {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+    font: 600 1.125rem/1.2 var(--display);
+    letter-spacing: -0.01em;
+}
+
+.wo-chain__mod small {
+    font: 600 0.75rem/1 var(--font);
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+}
+
+.wo-chain__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.25rem 0.25rem 0;
+}
+
+.wo-chain h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+}
+
+.wo-chain p {
+    margin: 0;
+    color: var(--ink-2);
+}
+
+/* what the step hands on to the next module */
+.wo-chain .wo-chain__out {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.wo-chain__out::before {
+    content: "";
+    flex: none;
+    width: 1.25rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+/* the arrows slide in one after another once the diagram is on screen (JS adds .is-inview) */
+@media (scripting: enabled) {
+    .wo-chain .wo-chain__step {
+        transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+    }
+
+    .wo-chain:not(.is-inview) .wo-chain__step {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+
+    .wo-chain .wo-chain__step:nth-child(2) {
+        transition-delay: 0.25s;
+    }
+
+    .wo-chain .wo-chain__step:nth-child(3) {
+        transition-delay: 0.5s;
+    }
+}
+
+@media (min-width: 900px) {
+    .wo-chain {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0;
+    }
+
+    .wo-chain__arrow {
+        min-height: 88px;
+        padding: 1rem calc(var(--tip) + 1rem) 1rem 1.5rem;
+        clip-path: polygon(0 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, 0 100%);
+    }
+
+    /* each arrow's point runs into the next one's notch */
+    .wo-chain__step:not(:last-child) .wo-chain__arrow {
+        margin-right: -18px;
+    }
+
+    .wo-chain__step:not(:first-child) .wo-chain__arrow {
+        padding-left: calc(var(--tip) + 1.25rem);
+        clip-path: polygon(0 0, calc(100% - var(--tip)) 0, 100% 50%, calc(100% - var(--tip)) 100%, 0 100%, var(--tip) 50%);
+    }
+
+    .wo-chain__body {
+        padding: 1.5rem 2.5rem 0 1.5rem;
+    }
+
+    .wo-chain__step:not(:first-child) .wo-chain__body {
+        padding-left: calc(var(--tip) + 1.25rem);
+    }
+}
+
+/* Module: real screens — the list of views beside the open screen, on a panel over the page head */
+.wo-phead--lift {
+    --lift: clamp(3rem, 2rem + 4vw, 6rem);
+}
+
+.wo-shots {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 1rem;
+    margin-top: calc(-1 * clamp(3rem, 2rem + 4vw, 6rem));
+    padding: 1rem;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px rgba(7, 24, 56, 0.04), 0 24px 60px -36px rgba(7, 24, 56, 0.35);
+    scroll-margin-top: calc(var(--top-h) + 1rem);
+}
+
+/* phones: a scrolling row of text tabs, the open one underlined */
+.wo-shots__tabs {
+    display: flex;
+    gap: 1.25rem;
+    min-width: 0;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--line);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+}
+
+.wo-shots__tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.wo-shots__tab {
+    flex: none;
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: -1px;
+    padding: 0.5rem 0 0.75rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    font: 600 0.9375rem/1.3 var(--font);
+    color: var(--ink-3);
+    text-align: left;
+    cursor: pointer;
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.wo-shots__tab:hover {
+    color: var(--ink);
+}
+
+.wo-shots__tab[aria-selected="true"] {
+    border-bottom-color: var(--ink);
+    color: var(--ink);
+}
+
+.wo-shots__caption {
+    display: none;
+}
+
+.wo-shots__frame {
+    min-width: 0;
+}
+
+.wo-shots__panel {
+    margin: 0;
+}
+
+.wo-shots.is-ready .wo-shots__panel:not([hidden]) {
+    animation: wo-shot-in 320ms var(--ease);
+}
+
+@keyframes wo-shot-in {
+    from {
+        opacity: 0;
+    }
+}
+
+.wo-shots__zoom {
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--bg-2);
+    cursor: zoom-in;
+}
+
+.wo-shots .wo-shots__zoom img {
+    width: 100%;
+    height: auto;
+}
+
+.wo-shots__panel figcaption {
+    padding: 0.875rem 0.25rem 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: var(--ink-2);
+}
+
+.wo-shots__panel figcaption strong {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.wo-shots__hint {
+    margin: 0;
+    padding: 0.75rem 0.25rem 0;
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+}
+
+@media (min-width: 960px) {
+    .wo-shots {
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 2.5rem;
+        padding: 1.25rem 1.25rem 1.25rem 2rem;
+    }
+
+    /* desktop: a quiet list; the open view is set in ink with its caption under it */
+    .wo-shots__tabs {
+        flex-direction: column;
+        gap: 0;
+        padding-top: 0.75rem;
+        overflow: visible;
+        border: 0;
+    }
+
+    .wo-shots__tab {
+        margin: 0;
+        padding: 0.75rem 0;
+        border: 0;
+        font-size: 1rem;
+    }
+
+    .wo-shots__tab[aria-selected="true"] .wo-shots__caption {
+        display: block;
+        max-width: 15rem;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--ink-2);
+    }
+
+    /* the open view already shows the caption */
+    .wo-shots.is-ready .wo-shots__panel figcaption {
+        display: none;
+    }
+}
+
+.wo-more {
+    padding-bottom: clamp(3rem, 2rem + 3vw, 4.5rem);
+}
+
+/* Product head illustration: shared data feeding the three modules (partials/product-map) */
+.scm-links {
+    position: absolute;
+    inset: 0;
+}
+
+.scm-link {
+    fill: none;
+    stroke: rgba(143, 180, 255, 0.4);
+    stroke-width: 0.5;
+    stroke-dasharray: 1.4 1.6;
+}
+
+.scm-pulse {
+    fill: none;
+    stroke: #a9c6ff;
+    stroke-width: 1;
+    stroke-linecap: round;
+    stroke-dasharray: 14 200;
+    stroke-dashoffset: -103;
+    filter: drop-shadow(0 0 1.5px #3d8bff);
+    animation: scm-pulse 3.3s linear infinite;
+    animation-delay: var(--d, 0s);
+}
+
+@keyframes scm-pulse {
+    0% {
+        stroke-dashoffset: 16;
+    }
+
+    40%,
+    100% {
+        stroke-dashoffset: -103;
+    }
+}
+
+.scm-core {
+    position: absolute;
+    left: 24.4%;
+    top: 47.3%;
+    display: grid;
+    place-items: center;
+    width: 20%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+        0 0 0 0.5em rgba(61, 139, 255, 0.16),
+        0 0 3.5em rgba(61, 139, 255, 0.55),
+        0 1.4em 3em -1.2em rgba(2, 8, 24, 0.7);
+    transform: translate(-50%, -50%);
+}
+
+.scm-core__mark {
+    width: 54%;
+    aspect-ratio: 400 / 275;
+    background: url("../images/marketing/workom_logo_dark.png") left center / auto 100% no-repeat;
+}
+
+.scm-core__ring {
+    position: absolute;
+    inset: -22%;
+    border: 1px solid rgba(143, 180, 255, 0.5);
+    border-radius: 50%;
+    opacity: 0;
+    animation: scm-ring 3.3s var(--ease) infinite;
+}
+
+@keyframes scm-ring {
+    0% {
+        opacity: 0.9;
+        transform: scale(0.8);
+    }
+
+    60%,
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+}
+
+.sc-chip.scm-core__label {
+    position: absolute;
+    left: 24.4%;
+    top: 68%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.08);
+    color: #cfe0ff;
+    transform: translateX(-50%);
+}
+
+.sc-card.scm-card {
+    left: 55%;
+    width: 40%;
+    height: 25.45%;
+    justify-content: center;
+    gap: 0.6em;
+    padding: 0.8em 1em;
+}
+
+.scm-card__head {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    min-width: 0;
+}
+
+.scm-card__icon {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.9em;
+    height: 1.9em;
+    border-radius: 0.5em;
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.sc .scm-card__icon svg {
+    width: 1.15em;
+    height: 1.15em;
+}
+
+.scm-card__chips {
+    display: flex;
+    gap: 0.4em;
+    overflow: hidden;
+}
+
+
+/* ---------------------------------------------------------------
+ * FAQ and contact — no hero band: the title (and a side note) sits
+ * beside the page's content. Phones: title, content, side note.
+ * ------------------------------------------------------------- */
+.wo-pagesplit {
+    display: grid;
+    grid-template-areas:
+        "intro"
+        "main"
+        "side";
+    gap: 2.5rem;
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) clamp(3rem, 2rem + 3vw, 4.5rem);
+}
+
+.wo-pagesplit__intro {
+    grid-area: intro;
+    min-width: 0;
+}
+
+.wo-pagesplit__main {
+    grid-area: main;
+}
+
+.wo-pagesplit__side {
+    grid-area: side;
+}
+
+.wo-pagesplit__intro h1 {
+    max-width: 16ch;
+    margin: 0;
+    font-size: clamp(2rem, 1.5rem + 2vw, 2.875rem);
+    font-weight: 650;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    overflow-wrap: break-word;
+}
+
+.wo-pagesplit__intro p {
+    max-width: 30rem;
+    margin: 1rem 0 0;
+    font-size: var(--fs-lead);
+    line-height: 1.55;
+    color: var(--ink-2);
+}
+
+@media (min-width: 960px) {
+    .wo-pagesplit {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+            "intro main"
+            "side  main";
+        column-gap: 5rem;
+        align-items: start;
+    }
+
+    .wo-pagesplit__side {
+        position: sticky;
+        top: calc(var(--top-h) + 2rem);
+    }
+}
+
+/* FAQ — questions in a ruled list */
+
+.wo-faq {
+    min-width: 0;
+    border-top: 1px solid var(--line-strong);
+}
+
+.wo-faq-item {
+    border-bottom: 1px solid var(--line-strong);
+}
+
+.wo-faq-item summary {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem 0;
+    cursor: pointer;
+    list-style: none;
+}
+
+.wo-faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.wo-faq-q {
+    font: 600 clamp(1.0625rem, 1rem + 0.4vw, 1.25rem)/1.4 var(--display);
+    letter-spacing: -0.015em;
+    color: var(--ink);
+    transition: color var(--dur) var(--ease);
+}
+
+.wo-faq-item summary:hover .wo-faq-q {
+    color: var(--accent);
+}
+
+/* plus that turns into a minus */
+.wo-faq-icon {
+    position: relative;
+    flex: none;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    transition: background-color 300ms var(--ease), border-color 300ms var(--ease);
+}
+
+.wo-faq-icon::before,
+.wo-faq-icon::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0.75rem;
+    height: 1.5px;
+    border-radius: 1px;
+    background: var(--ink);
+    transform: translate(-50%, -50%);
+    transition: transform 300ms var(--ease), background-color 300ms var(--ease);
+}
+
+.wo-faq-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.wo-faq-item[open]:not(.wo-faq-ready) .wo-faq-icon,
+.wo-faq-item.is-open .wo-faq-icon {
+    background: var(--ink);
+    border-color: var(--ink);
+}
+
+.wo-faq-item[open]:not(.wo-faq-ready) .wo-faq-icon::before,
+.wo-faq-item[open]:not(.wo-faq-ready) .wo-faq-icon::after,
+.wo-faq-item.is-open .wo-faq-icon::before,
+.wo-faq-item.is-open .wo-faq-icon::after {
+    background: #fff;
+}
+
+.wo-faq-item[open]:not(.wo-faq-ready) .wo-faq-icon::after,
+.wo-faq-item.is-open .wo-faq-icon::after {
+    transform: translate(-50%, -50%) rotate(0deg);
+}
+
+/* the layout script opens and closes the panel (.wo-faq-ready / .is-open) */
+.wo-faq-panel {
+    display: grid;
+    grid-template-rows: 1fr;
+}
+
+.wo-faq-ready .wo-faq-panel {
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 350ms var(--ease);
+}
+
+.wo-faq-ready.is-open .wo-faq-panel {
+    grid-template-rows: 1fr;
+}
+
+.wo-faq-panel-inner {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.wo-faq-panel-inner p {
+    max-width: 44rem;
+    margin: 0;
+    padding: 0 3.5rem 1.75rem 0;
+    color: var(--ink-2);
+}
+
+.wo-faq-more {
+    padding: 1.75rem;
+    background: var(--bg-2);
+    border-radius: 16px;
+}
+
+.wo-faq-more h2 {
+    max-width: none;
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+}
+
+.wo-faq-more p {
+    margin: 0;
+    color: var(--ink-2);
+}
+
+.wo-faq-more a.wo-textlink {
+    display: flex;
+    width: fit-content;
+    margin-top: 0.875rem;
+}
+
+@media (max-width: 639px) {
+    .wo-faq-panel-inner p {
+        padding-right: 0;
+    }
+}
+
+/* Contact — the form, with the direct channels under the title */
+.wo-form h2,
+.wo-channels h2 {
+    max-width: none;
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+}
+
+.wo-form {
+    min-width: 0;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: 0 1px 2px rgba(7, 24, 56, 0.04), 0 24px 60px -40px rgba(7, 24, 56, 0.35);
+    scroll-margin-top: calc(var(--top-h) + 1rem);
+}
+
+.wo-form__note {
+    margin: 0 0 1.5rem;
+    padding: 0.875rem 1rem;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+.wo-form__note--ok {
+    background: #e7f8ef;
+    color: #0b6b42;
+}
+
+.wo-form__note--err {
+    background: #fdeeee;
+    color: #a32020;
+}
+
+.wo-form__intent {
+    min-width: 0;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    border: 0;
+}
+
+.wo-form__intent legend,
+.wo-field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* reason for writing: a segmented control made of radios */
+.wo-seg {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    max-width: 100%;
+    padding: 0.25rem;
+    background: var(--bg-2);
+    border-radius: 12px;
+}
+
+.wo-seg label {
+    position: relative;
+    cursor: pointer;
+}
+
+.wo-seg input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.wo-seg span {
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: 9px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--ink-2);
+    transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.wo-seg label:hover span {
+    color: var(--ink);
+}
+
+.wo-seg input:checked + span {
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: var(--shadow-1);
+}
+
+.wo-seg input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.wo-form__grid {
+    display: grid;
+    gap: 1.25rem;
+}
+
+.wo-field {
+    min-width: 0;
+}
+
+.wo-field__opt {
+    margin-left: 0.375rem;
+    font-weight: 400;
+    color: var(--ink-3);
+}
+
+.wo-field input,
+.wo-field textarea {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-sm);
+    background: var(--bg);
+    font: 400 1rem/1.5 var(--font);
+    color: var(--ink);
+    transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.wo-field textarea {
+    min-height: 9rem;
+    resize: vertical;
+}
+
+.wo-field input::placeholder,
+.wo-field textarea::placeholder {
+    color: var(--ink-3);
+}
+
+.wo-field input:hover,
+.wo-field textarea:hover {
+    border-color: var(--ink-3);
+}
+
+.wo-field input:focus,
+.wo-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(31, 102, 229, 0.18);
+}
+
+.wo-field.is-invalid input,
+.wo-field.is-invalid textarea {
+    border-color: #d43c3c;
+}
+
+.wo-field.is-invalid input:focus,
+.wo-field.is-invalid textarea:focus {
+    box-shadow: 0 0 0 3px rgba(212, 60, 60, 0.18);
+}
+
+.wo-field__err {
+    margin: 0.375rem 0 0;
+    font-size: 0.8125rem;
+    color: #b42323;
+}
+
+.wo-form__trap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.wo-form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.75rem;
+}
+
+.wo-form__foot p {
+    flex: 1 1 16rem;
+    margin: 0;
+    font-size: 0.8125rem;
+    color: var(--ink-3);
+}
+
+.wo-form__foot a {
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.wo-channels {
+    min-width: 0;
+}
+
+.wo-channels > p {
+    margin: 0 0 1.5rem;
+    color: var(--ink-2);
+}
+
+.wo-channels__list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wo-channel {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.125rem;
+    overflow: hidden;
+    /* same dark surface as the cards */
+    background: linear-gradient(165deg, #0e2656 0%, #081b3f 50%, #050f26 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 18px 36px -24px rgba(4, 13, 34, 0.6);
+}
+
+.wo-channel__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #8fb4ff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    transition: background-color 350ms var(--ease), color 350ms var(--ease);
+}
+
+.wo-channel:hover .wo-channel__icon {
+    background: var(--accent);
+    color: #fff;
+}
+
+.wo-channel__icon svg {
+    width: 1.375rem;
+    height: 1.375rem;
+}
+
+.wo-channel__text {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+}
+
+.wo-channel__text small {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.wo-channel__text strong {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+.wo-channel__go {
+    color: #8fb4ff;
+    transition: color var(--dur) var(--ease), transform 300ms var(--ease);
+}
+
+.wo-channel:hover .wo-channel__go {
+    color: #fff;
+    transform: translate(2px, -2px);
+}
+
+.wo-channels__social {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-top: 1.75rem;
+    font-size: 0.9375rem;
+    color: var(--ink-3);
+}
+
+@media (min-width: 640px) {
+    .wo-form__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .wo-field--wide {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ---------------------------------------------------------------
+ * Card hover — one motion for every card on the site.
+ * A soft blue light sits in the card's top corner; under the pointer
+ * it follows the cursor (the layout script sets --mx / --my) and the
+ * card's edge lights up where the cursor is, while the card rises a
+ * little. When the pointer leaves, the light glides back to its corner.
+ * Pointer devices only, so a tap never leaves a card raised.
+ * ------------------------------------------------------------- */
+@property --mx {
+    syntax: "<length-percentage>";
+    inherits: true;
+    initial-value: 85%;
+}
+
+@property --my {
+    syntax: "<length-percentage>";
+    inherits: true;
+    initial-value: 0%;
+}
+
+@property --spot {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+}
+
+.wo {
+    --card-rise: translateY(-4px);
+    --card-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 4px rgba(7, 24, 56, 0.04), 0 26px 50px -26px rgba(7, 24, 56, 0.36);
+    --card-t: 350ms var(--ease);
+}
+
+.wo-card,
+.wo-plan,
+.wo-channel {
+    --mx: 85%;
+    --my: 0%;
+    --spot: 0;
+    --glow-rest: 0;
+
+    position: relative;
+    isolation: isolate;
+    transition:
+        transform var(--card-t),
+        box-shadow var(--card-t),
+        border-color var(--card-t),
+        opacity var(--card-t),
+        --mx 220ms var(--ease),
+        --my 220ms var(--ease),
+        --spot 400ms var(--ease);
+}
+
+/* module and feature cards keep a little light in the corner at rest */
+.wo-card {
+    --glow-rest: 1;
+}
+
+/* the light */
+.wo-card::before,
+.wo-plan::before,
+.wo-channel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(280px circle at var(--mx) var(--my), rgba(61, 139, 255, calc(0.34 * max(var(--spot), var(--glow-rest) * 0.6))) 0%, rgba(61, 139, 255, calc(0.1 * max(var(--spot), var(--glow-rest) * 0.6))) 45%, transparent 70%);
+    pointer-events: none;
+}
+
+/* the edge, lit only near the cursor */
+.wo-card::after,
+.wo-plan::after,
+.wo-channel::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: radial-gradient(240px circle at var(--mx) var(--my), rgba(31, 102, 229, var(--spot)), transparent 70%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    pointer-events: none;
+}
+
+@media (hover: hover) {
+    .wo-card:hover,
+    .wo-plan:hover,
+    .wo-channel:hover {
+        --spot: 1;
+
+        transform: var(--card-rise);
+    }
+
+    .wo-card:hover,
+    .wo-plan:hover,
+    .wo-channel:hover {
+        border-color: rgba(31, 102, 229, 0.18);
+        box-shadow: var(--card-shadow);
+    }
+}
+
+/* on the dark cards the light is brighter and the lit edge is pale blue */
+.wo-card::before,
+.wo-channel::before,
+.wo-plan--pop::before {
+    background: radial-gradient(280px circle at var(--mx) var(--my), rgba(61, 139, 255, calc(0.45 * max(var(--spot), var(--glow-rest) * 0.6))) 0%, rgba(61, 139, 255, calc(0.12 * max(var(--spot), var(--glow-rest) * 0.6))) 45%, transparent 70%);
+}
+
+.wo-card::after,
+.wo-channel::after,
+.wo-plan--pop::after {
+    background: radial-gradient(240px circle at var(--mx) var(--my), rgba(143, 180, 255, var(--spot)), transparent 70%);
+}
+
+@media (hover: hover) {
+    .wo-card:hover,
+    .wo-channel:hover,
+    .wo-plan--pop:hover {
+        border-color: rgba(143, 180, 255, 0.25);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 30px 56px -26px rgba(4, 13, 34, 0.7);
+    }
+}
+
+/* ---------------------------------------------------------------
+ * Footer — night blue like the closing CTA, so the two read as one
+ * dark block; a faint light rises from the bottom corner.
+ * ------------------------------------------------------------- */
+.wo-foot {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding-block: clamp(3.5rem, 2.5rem + 3vw, 5rem) 2rem;
+    background: #040d22;
+    font-size: 0.9375rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.wo-foot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse 50% 70% at 100% 110%, rgba(31, 102, 229, 0.22), transparent 70%);
+}
+
+.wo-foot a {
+    color: rgba(255, 255, 255, 0.72);
+    transition: color var(--dur) var(--ease);
+}
+
+.wo-foot a:hover {
+    color: #fff;
+}
+
+.wo-foot :focus-visible {
+    outline-color: #8fb4ff;
+}
+
+.wo-foot__top {
+    display: grid;
+    gap: 3rem;
+    padding-bottom: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wo-foot__logo {
+    display: inline-block;
+}
+
+.wo-foot .wo-foot__logo img {
+    width: auto;
+    height: 40px;
+}
+
+.wo-foot__brand p {
+    max-width: 22rem;
+    margin: 1.25rem 0 0;
+    line-height: 1.6;
+}
+
+.wo-foot__contact {
+    display: grid;
+    justify-items: start;
+    gap: 0.375rem;
+    margin-top: 1.5rem;
+}
+
+.wo-foot .wo-foot__contact a {
+    font-weight: 600;
+    color: #fff;
+}
+
+.wo-foot .wo-foot__contact a:hover {
+    color: #8fb4ff;
+}
+
+.wo-foot__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 2rem;
+}
+
+.wo-foot h2 {
+    margin: 0 0 1.125rem;
+    font: 600 0.75rem/1.2 var(--font);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* the link lists (not the social icons) */
+.wo-foot__cols ul {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wo-foot__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
+    padding-top: 1.75rem;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.wo-foot__bottom p {
+    margin: 0 auto 0 0;
+}
+
+/* Social profiles as round icon buttons (partials/social) */
+.wo-social {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.wo-social a {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.wo-social a:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.wo-social svg {
+    width: 1.125rem;
+    height: 1.125rem;
+}
+
+.wo-foot .wo-social--dark a {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.wo-foot .wo-social--dark a:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.wo-foot__lang {
+    display: flex;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.wo-foot .wo-foot__lang a {
+    padding: 0.25rem 0.625rem;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.wo-foot .wo-foot__lang a.is-active {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+}
+
+@media (min-width: 640px) {
+    .wo-foot__cols {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 960px) {
+    .wo-foot__top {
+        grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+        gap: 4rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .wo-foot__bottom p {
+        flex-basis: 100%;
+    }
+}
+
 /* ---------------------------------------------------------------
  * Legal pages (privacy policy)
  * ------------------------------------------------------------- */
@@ -2235,9 +3817,7 @@ a.wo-module-card:hover {
 }
 
 .wo-legal__head {
-    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(2.5rem, 2rem + 2vw, 3.5rem);
-    background: var(--bg-2);
-    border-bottom: 1px solid var(--line);
+    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(1rem, 0.5rem + 1vw, 1.5rem);
 }
 
 /* long single words (e.g. "Datenschutzerklärung") must break on phones */
@@ -2426,6 +4006,133 @@ a.wo-module-card:hover {
 .wo-section,
 .wo-section + .wo-section {
     padding-top: var(--section-y);
+}
+
+/* ---------------------------------------------------------------
+ * Phones — tighter cards and spacing; card rows (modules, prices)
+ * become a sideways swipe so the page doesn't turn into a long
+ * stack of tall cards. The next card peeks in from the edge.
+ * ------------------------------------------------------------- */
+@media (max-width: 639px) {
+    .wo-cards--swipe,
+    .wo-pricing__cards {
+        display: flex;
+        gap: 0.875rem;
+        margin-inline: calc(-1 * var(--gutter));
+        padding: 0.25rem var(--gutter) 1.5rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: var(--gutter);
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .wo-cards--swipe::-webkit-scrollbar,
+    .wo-pricing__cards::-webkit-scrollbar {
+        display: none;
+    }
+
+    .wo-cards--swipe > *,
+    .wo-pricing__cards > * {
+        flex: 0 0 84%;
+        scroll-snap-align: start;
+    }
+
+    /* prices open on the middle card, with the others peeking in on both sides */
+    .wo-pricing__cards > * {
+        flex-basis: 80%;
+        scroll-snap-align: center;
+    }
+
+    /* room for the "most popular" badge above the cards */
+    .wo-pricing__cards {
+        margin-top: 2rem;
+        padding-top: 1rem;
+    }
+
+    .wo-card {
+        gap: 0.625rem;
+        padding: 1.375rem;
+        border-radius: 18px;
+    }
+
+    .wo-card__top {
+        margin-bottom: 0.25rem;
+    }
+
+    .wo-card__icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 12px;
+    }
+
+    .wo-card__icon svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .wo .wo-card__title {
+        font-size: 1.25rem;
+    }
+
+    .wo-card__text {
+        font-size: 0.9375rem;
+    }
+
+    .wo-card__list {
+        padding-top: 0.875rem;
+        font-size: 0.875rem;
+    }
+
+    /* features: a compact row, the number beside the text */
+    .wo-cards:not(.wo-cards--swipe) {
+        gap: 0.75rem;
+    }
+
+    li.wo-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: start;
+        gap: 0.375rem 1rem;
+        padding: 1.125rem 1.25rem;
+    }
+
+    li.wo-card .wo-card__icon--num {
+        grid-row: span 2;
+        width: 2.25rem;
+        height: 2.25rem;
+        margin: 0;
+        font-size: 0.8125rem;
+    }
+
+    .wo li.wo-card .wo-card__title {
+        align-self: center;
+        font-size: 1.0625rem;
+    }
+
+    .wo-plan {
+        padding: 1.75rem 1.375rem 1.375rem;
+    }
+
+    .wo-plan__price strong {
+        font-size: 2.125rem;
+    }
+
+    .wo-plan > :nth-last-child(2) {
+        margin-bottom: 1.375rem;
+    }
+
+    .wo-trust {
+        gap: 1.75rem;
+    }
+
+    .wo-foot .wo-foot__logo img {
+        height: 32px;
+    }
+
+    .wo-foot__top {
+        gap: 2.25rem;
+    }
 }
 
 /* ---------------------------------------------------------------
