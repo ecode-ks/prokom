@@ -22,6 +22,7 @@ const MARKETING_PATHS = [
     /^\/produkti(?:\/|$)/,
     /^\/faq$/,
     /^\/kontakt$/,
+    /^\/privacy-policy$/,
     /^\/locale\/[a-z]{2}$/,
 ];
 

@@ -256,4 +256,5 @@ return [
     'footer_clients' => 'Klientët',
     'footer_bottom_tag' => 'Një platformë për operacionet, klientët dhe stafin.',
     'footer_rights' => 'Të gjitha të drejtat e rezervuara.',
+    'footer_privacy' => 'Politika e privatësisë',
 ];

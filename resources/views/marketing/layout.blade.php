@@ -9,9 +9,14 @@
         'hr' => __('marketing.meta_hr'),
         'faq' => __('marketing.meta_faq'),
         'contact' => __('marketing.meta_contact'),
+        'privacy' => __('privacy.meta_title'),
         default => __('marketing.meta_title'),
     };
-    $description = __('marketing.meta_' . ($page === 'home' ? 'description' : $page . '_description'));
+    $description = match ($page) {
+        'home' => __('marketing.meta_description'),
+        'privacy' => __('privacy.meta_description'),
+        default => __('marketing.meta_' . $page . '_description'),
+    };
     $ogLocale = match (app()->getLocale()) {
         'sq' => 'sq_AL',
         'de' => 'de_DE',
@@ -196,7 +201,7 @@
             </div>
 
             <div class="wo-footer-bottom">
-                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }}</p>
+                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }} · <a href="{{ route('marketing.privacy') }}">{{ __('marketing.footer_privacy') }}</a></p>
                 <p class="wo-footer-bottom-tag">{{ __('marketing.footer_bottom_tag') }}</p>
             </div>
         </div>

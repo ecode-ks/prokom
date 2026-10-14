@@ -71,6 +71,11 @@ class MarketingController extends Controller
         return view('marketing.contact', ['page' => 'contact']);
     }
 
+    public function privacy()
+    {
+        return view('marketing.privacy', ['page' => 'privacy']);
+    }
+
     public function setLocale(Request $request, string $locale)
     {
         if (!in_array($locale, ['sq', 'en', 'de'], true)) {

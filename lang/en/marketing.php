@@ -254,5 +254,6 @@ return [
     'footer_clients' => 'Clients',
     'footer_bottom_tag' => 'One platform for operations, clients and staff.',
     'footer_rights' => 'All rights reserved.',
+    'footer_privacy' => 'Privacy Policy',
 ];
 
