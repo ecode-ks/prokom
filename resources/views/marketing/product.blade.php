@@ -21,7 +21,7 @@
             <div class="wo-cta-row">
                 {{-- the demo request lives in the header and the closing section --}}
                 <a class="wo-btn wo-btn-primary" href="#modulet">{{ __('marketing.product_cta_modules') }}</a>
-                <a class="wo-btn wo-btn-ghost" href="{{ route('home') }}#cmimet">{{ __('marketing.product_cta_pricing') }}</a>
+                <a class="wo-btn wo-btn-ghost" href="{{ route('home') }}#prova-falas">{{ __('marketing.trial_cta') }}</a>
             </div>
         </div>
         <div class="wo-phead__art">

@@ -172,7 +172,7 @@
             'footer_product' => [
                 [route('marketing.product'), __('marketing.nav_product')],
                 [route('home') . '#si-funksionon', __('marketing.footer_how')],
-                [route('home') . '#cmimet', __('marketing.footer_pricing')],
+                [route('home') . '#prova-falas', __('marketing.trial_label')],
                 [route('home') . '#per-ke-eshte', __('marketing.footer_for_who')],
                 [route('home') . '#klientet', __('marketing.footer_clients')],
             ],

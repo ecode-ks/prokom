@@ -31,7 +31,7 @@
                     @if ($shots->isNotEmpty())
                         <a class="wo-textlink" href="#pamjet">{{ __('marketing.module_see_shots') }} <span aria-hidden="true">↓</span></a>
                     @endif
-                    <a class="wo-textlink wo-textlink--quiet" href="{{ route('home') }}#cmimet">{{ __('marketing.product_cta_pricing') }} <span aria-hidden="true">→</span></a>
+                    <a class="wo-textlink wo-textlink--quiet" href="{{ route('home') }}#prova-falas">{{ __('marketing.trial_cta') }} <span aria-hidden="true">→</span></a>
                 </div>
             </div>
         </div>

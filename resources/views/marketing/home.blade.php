@@ -92,7 +92,7 @@
     </div>
 </section>
 
-{{-- Client logos, right before the prices --}}
+{{-- Client logos, right before the free trial --}}
 <section class="wo-wrap wo-trust" id="klientet" aria-labelledby="wo-trust-label">
     <p class="wo-trust__label" id="wo-trust-label">{{ __('marketing.clients_label') }}</p>
     <ul class="wo-trust__logos">
@@ -104,80 +104,30 @@
     </ul>
 </section>
 
-{{-- Pricing: template packages (config/marketing.php for prices, lang 'pricing_plans' for names and
-     features), not the packages table. A toggle switches between monthly and yearly prices. --}}
-@php
-    $locale = app()->getLocale();
-    $money = function ($amount) use ($locale) {
-        $amount = (float) $amount;
-        $decimals = fmod($amount, 1.0) == 0.0 ? 0 : 2;
-        return $locale === 'en'
-            ? '€' . number_format($amount, $decimals, '.', ',')
-            : number_format($amount, $decimals, ',', '.') . ' €';
-    };
-    $plans = config('marketing.plans', []);
-    $texts = __('marketing.pricing_plans');
-    $maxStaff = (int) collect($plans)->max('staff');
-    $periods = ['yearly' => 12, 'monthly' => 1];
-    $shown = 'yearly';
-    // best yearly saving against paying the same plan monthly
-    $savePct = (int) collect($plans)
-        ->map(fn ($plan) => $plan['monthly'] > 0 ? round(100 - $plan['yearly'] / ($plan['monthly'] * 12) * 100) : 0)
-        ->max();
-@endphp
-<section class="wo-pricing" id="cmimet" aria-labelledby="wo-pricing-title">
-    <div class="wo-wrap">
-        <div class="wo-pricing__head">
-            <span class="wo-label">{{ __('marketing.pricing_label') }}</span>
-            <h2 id="wo-pricing-title">{{ __('marketing.pricing_title') }}</h2>
-            <p class="wo-lead">{{ __('marketing.pricing_lead') }}</p>
+<section class="wo-trial" id="prova-falas" aria-labelledby="wo-trial-title">
+    <div class="wo-wrap wo-trial__inner">
+        <div class="wo-trial__copy">
+            <h2 id="wo-trial-title">{{ __('marketing.trial_title') }} <span>{{ __('marketing.trial_offer') }}</span></h2>
+            <p class="wo-trial__lead">{{ __('marketing.trial_lead') }}</p>
+            <a class="wo-btn wo-btn-primary wo-trial__cta" href="{{ route('register') }}">
+                {{ __('marketing.trial_cta') }}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+            <p class="wo-trial__note">{{ __('marketing.trial_note') }}</p>
         </div>
-
-        <div class="wo-billing" role="group" aria-label="{{ __('marketing.pricing_billing') }}" data-billing>
-            <div class="wo-billing__seg">
-                @foreach (['monthly', 'yearly'] as $period)
-                    <button type="button" data-billing-for="{{ $period }}" aria-pressed="{{ $period === $shown ? 'true' : 'false' }}">{{ __('marketing.pricing_' . $period) }}</button>
-                @endforeach
+        <div class="wo-trial__visual" aria-hidden="true">
+            <div class="wo-trial__calendar">
+                <div class="wo-trial__calendar-top"><span>WORKOM</span><span>ERP / CRM / HR</span></div>
+                <div class="wo-trial__calendar-body">
+                    <span class="wo-trial__one">1</span>
+                    <span class="wo-trial__month">{{ __('marketing.trial_month') }}</span>
+                </div>
+                <div class="wo-trial__calendar-bottom">
+                    <span>{{ __('marketing.trial_calendar_note') }}</span>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
+                </div>
             </div>
-            @if ($savePct > 0)
-                <span class="wo-billing__save">{{ __('marketing.pricing_save', ['pct' => $savePct]) }}</span>
-            @endif
         </div>
-
-        @foreach ($periods as $period => $months)
-            <ul class="wo-pricing__cards" role="list" data-billing-group="{{ $period }}" @if ($period !== $shown) hidden @endif>
-                @foreach ($plans as $key => $plan)
-                    @php $popular = ! empty($plan['popular']); @endphp
-                    <li class="wo-plan{{ $popular ? ' wo-plan--pop' : '' }}">
-                        @if ($popular)
-                            <span class="wo-plan__badge">{{ __('marketing.pricing_popular') }}</span>
-                        @endif
-                        <h3 class="wo-plan__title">{{ $texts[$key]['name'] ?? ucfirst($key) }}</h3>
-                        <p class="wo-plan__staff">{{ __('marketing.pricing_staff', ['count' => $plan['staff']]) }}</p>
-                        <p class="wo-plan__price">
-                            <strong>{{ $money($plan[$period]) }}</strong>
-                            <span>{{ __('marketing.pricing_unit_' . ($months === 12 ? 'year' : 'month')) }}</span>
-                        </p>
-                        @if ($months === 12)
-                            <p class="wo-plan__monthly">{{ __('marketing.pricing_per_month', ['price' => $money(round($plan['yearly'] / 12, 2))]) }}</p>
-                        @endif
-                        @if (! empty($texts[$key]['features']))
-                            <ul class="wo-plan__features">
-                                @foreach ($texts[$key]['features'] as $feature)
-                                    <li>{{ $feature }}</li>
-                                @endforeach
-                            </ul>
-                        @endif
-                        <a class="wo-btn {{ $popular ? 'wo-btn-primary' : 'wo-btn-ghost' }} wo-plan__cta" href="{{ route('register') }}">{{ __('marketing.pricing_cta') }}</a>
-                    </li>
-                @endforeach
-            </ul>
-        @endforeach
-
-        <p class="wo-pricing__more">
-            <span>{{ __('marketing.pricing_more', ['count' => $maxStaff]) }}</span>
-            <a href="{{ route('marketing.contact', ['intent' => 'pricing']) }}">{{ __('marketing.pricing_more_cta') }} →</a>
-        </p>
     </div>
 </section>
 
@@ -245,32 +195,5 @@
         update();
     })();
 
-    // Pricing: the billing toggle shows one group of packages at a time.
-    (function () {
-        var box = document.querySelector('[data-billing]');
-        if (!box) return;
-        var buttons = Array.prototype.slice.call(box.querySelectorAll('[data-billing-for]'));
-        var groups = Array.prototype.slice.call(document.querySelectorAll('[data-billing-group]'));
-        // phones: the cards are a sideways row; open it on the most popular card, in the middle
-        function centerPopular(group) {
-            var pop = group.querySelector('.wo-plan--pop');
-            if (!pop || group.scrollWidth <= group.clientWidth) return;
-            var g = group.getBoundingClientRect();
-            var p = pop.getBoundingClientRect();
-            group.scrollLeft += (p.left - g.left) - (g.width - p.width) / 2;
-        }
-
-        buttons.forEach(function (button) {
-            button.addEventListener('click', function () {
-                var months = button.getAttribute('data-billing-for');
-                buttons.forEach(function (b) { b.setAttribute('aria-pressed', b === button ? 'true' : 'false'); });
-                groups.forEach(function (g) {
-                    g.hidden = g.getAttribute('data-billing-group') !== months;
-                    if (!g.hidden) centerPopular(g);
-                });
-            });
-        });
-        groups.forEach(function (g) { if (!g.hidden) centerPopular(g); });
-    })();
 </script>
 @endpush

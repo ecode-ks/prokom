@@ -5,7 +5,8 @@
  * packages table. Prices are in EUR; staff is the most employees the package covers.
  * The price per employee falls as the team grows (5 € → ~4 € → ~3.6 €); a year costs ten
  * months (two months free). Teams above the largest package get an offer.
- * Names and features are translated in lang/{sq,en,de}/marketing.php under 'pricing_plans'.
+ * Names and shared features are translated in lang/{sq,en,de}/marketing.php under
+ * 'pricing_plans' and 'pricing_features'. All packages include the same access and features.
  */
 return [
     'plans' => [
