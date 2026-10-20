@@ -135,14 +135,24 @@
                 <nav class="wo-drawer-nav" aria-label="{{ __('marketing.nav_menu') }}">
                     <a href="{{ route('home') }}" {!! $navCurrent($page === 'home') !!}>{{ __('marketing.nav_home') }}</a>
                     <a href="{{ route('marketing.product') }}" {!! $navCurrent($page === 'product') !!}>{{ __('marketing.nav_product') }}</a>
-                    <p class="wo-drawer-group">{{ __('marketing.nav_modules') }}</p>
-                    <div class="wo-drawer-sub">
-                        @foreach (['erp', 'crm', 'hr'] as $mod)
-                            <a href="{{ route('marketing.' . $mod) }}" {!! $navCurrent($page === $mod) !!}>
-                                <span>{{ __('marketing.nav_' . $mod) }}</span>
-                                <small>{{ __('marketing.nav_' . $mod . '_d') }}</small>
-                            </a>
-                        @endforeach
+                    {{-- Modules: a dropdown like the desktop nav; already open on a module page --}}
+                    <div class="wo-drawer-drop{{ $isModulesNav ? ' is-open' : '' }}">
+                        <button type="button" class="wo-drawer-drop-trigger{{ $isModulesNav ? ' is-active' : '' }}" aria-expanded="{{ $isModulesNav ? 'true' : 'false' }}" aria-controls="woDrawerModules">
+                            {{ __('marketing.nav_modules') }}
+                            <svg class="wo-nav-caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
+                                <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <div class="wo-drawer-sub" id="woDrawerModules">
+                            <div class="wo-drawer-sub-inner">
+                                @foreach (['erp', 'crm', 'hr'] as $mod)
+                                    <a href="{{ route('marketing.' . $mod) }}" {!! $navCurrent($page === $mod) !!}>
+                                        <span>{{ __('marketing.nav_' . $mod) }}</span>
+                                        <small>{{ __('marketing.nav_' . $mod . '_d') }}</small>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
                     <a href="{{ route('marketing.faq') }}" {!! $navCurrent($page === 'faq') !!}>{{ __('marketing.nav_faq') }}</a>
                     <a href="{{ route('marketing.contact') }}" {!! $navCurrent($page === 'contact') !!}>{{ __('marketing.nav_contact') }}</a>
@@ -292,6 +302,16 @@
                 });
                 var onBreakpoint = function () { if (desktopNav.matches) setMenu(false); };
                 if (desktopNav.addEventListener) desktopNav.addEventListener('change', onBreakpoint);
+
+                // Drawer "Modules" dropdown
+                drawer.querySelectorAll('.wo-drawer-drop').forEach(function (drop) {
+                    var trigger = drop.querySelector('.wo-drawer-drop-trigger');
+                    trigger.addEventListener('click', function () {
+                        var open = !drop.classList.contains('is-open');
+                        drop.classList.toggle('is-open', open);
+                        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    });
+                });
             }
 
             // Desktop "Modules" disclosure: hover on fine pointers, click/keyboard everywhere.
@@ -438,6 +458,35 @@
                 animated.forEach(function (el) { io.observe(el); });
             } else {
                 animated.forEach(function (el) { el.classList.add('is-inview'); });
+            }
+
+            // Every page: the blocks of each section fade in and slide up as they scroll into view,
+            // one after another. The home hero stays put; .wo-animate sections have their own motion.
+            // Once shown, the classes come off so the blocks keep their own styles.
+            if (!reduceMotion && 'IntersectionObserver' in window) {
+                var revealIo = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        var el = entry.target;
+                        revealIo.unobserve(el);
+                        el.classList.add('is-inview');
+                        window.setTimeout(function () {
+                            el.classList.remove('wo-reveal', 'is-inview');
+                            el.style.removeProperty('--reveal-delay');
+                        }, 1100);
+                    });
+                }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+                document.querySelectorAll('.wo-main section:not(.wo-hero):not(.wo-animate), .wo-main > header, .wo-legal__head, .wo-legal__body').forEach(function (group) {
+                    if (group.closest('.wo-reveal')) return;
+                    var inner = group.classList.contains('wo-wrap') ? group : (group.querySelector(':scope > .wo-wrap') || group);
+                    Array.prototype.forEach.call(inner.children, function (el, i) {
+                        if (el.matches('.wo-animate, .wo-sr, script, [hidden]')) return;
+                        el.classList.add('wo-reveal');
+                        el.style.setProperty('--reveal-delay', Math.min(i, 4) * 90 + 'ms');
+                        revealIo.observe(el);
+                    });
+                });
             }
 
             // FAQ: one answer open at a time; opening a question closes the one that was open.

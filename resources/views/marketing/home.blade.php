@@ -92,16 +92,24 @@
     </div>
 </section>
 
-{{-- Client logos, right before the free trial --}}
+{{-- Client logos, right before the free trial. On phones they run as an endless slider:
+     the list is drawn twice and the track moves by one list's width, then starts over. --}}
+@php
+    $clients = array_filter($clients, fn ($client) => is_file(public_path('images/marketing/' . $client['file'])));
+@endphp
 <section class="wo-wrap wo-trust" id="klientet" aria-labelledby="wo-trust-label">
     <p class="wo-trust__label" id="wo-trust-label">{{ __('marketing.clients_label') }}</p>
-    <ul class="wo-trust__logos">
-        @foreach ($clients as $client)
-            @if (is_file(public_path('images/marketing/' . $client['file'])))
-                <li><img src="{{ asset('images/marketing/' . $client['file']) }}" alt="{{ $client['alt'] }}" loading="lazy" decoding="async"></li>
-            @endif
-        @endforeach
-    </ul>
+    <div class="wo-trust__marquee">
+        <div class="wo-trust__track">
+            @foreach ([false, true] as $clone)
+                <ul class="wo-trust__logos{{ $clone ? ' wo-trust__logos--clone' : '' }}" @if ($clone) aria-hidden="true" @endif>
+                    @foreach ($clients as $client)
+                        <li><img src="{{ asset('images/marketing/' . $client['file']) }}" alt="{{ $clone ? '' : $client['alt'] }}" loading="lazy" decoding="async"></li>
+                    @endforeach
+                </ul>
+            @endforeach
+        </div>
+    </div>
 </section>
 
 <section class="wo-trial" id="prova-falas" aria-labelledby="wo-trial-title">
