@@ -62,147 +62,178 @@
     <meta name="apple-mobile-web-app-title" content="WORKOM">
     <link rel="apple-touch-icon" href="{{ asset('icons/marketing/icon-192.png') }}">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&family=Sora:wght@500..700&display=swap">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}">
+    {{-- ?v= busts the service-worker cache whenever the file changes --}}
+    <link rel="stylesheet" href="{{ asset('assets/marketing.css') }}?v={{ filemtime(public_path('assets/marketing.css')) }}">
+    <link rel="stylesheet" href="{{ asset('assets/workom.css') }}?v={{ filemtime(public_path('assets/workom.css')) }}">
     @stack('head')
 </head>
-<body class="wo">
+{{-- inner pages share one background: white with a soft blue light at the top, behind the header --}}
+<body class="wo{{ $page !== 'home' ? ' wo--inner' : '' }}">
     <a class="wo-skip" href="#main">Skip</a>
 
-    <header class="wo-top">
+    @php
+        $locale = app()->getLocale();
+        $navCurrent = fn (bool $on) => $on ? 'class=is-active aria-current=page' : '';
+    @endphp
+    {{-- On the home page the header sits over the dark hero photo until the visitor scrolls past it --}}
+    <header class="wo-top{{ $page === 'home' ? ' wo-top--over' : '' }}" id="woTop">
         <div class="wo-wrap wo-top-row">
-            <a href="{{ route('home') }}" class="wo-logo">
-                <img src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" width="170" height="48">
+            <a href="{{ route('home') }}" class="wo-logo" aria-label="WORKOM — {{ __('marketing.nav_home') }}">
+                <img class="wo-logo__dark" src="{{ asset('images/marketing/workom_logo_dark.png') }}" alt="WORKOM" decoding="async" fetchpriority="high" width="1429" height="275">
+                @if ($page === 'home')
+                    <img class="wo-logo__light" src="{{ asset('images/marketing/workom_logo.png') }}" alt="" decoding="async" width="1423" height="266">
+                @endif
             </a>
 
-            <nav class="wo-tabs" aria-label="Primary">
-                <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
-                <div class="wo-nav-drop {{ $isModulesNav ? 'is-active' : '' }}">
-                    <button type="button" class="wo-nav-drop-trigger {{ $isModulesNav ? 'is-active' : '' }}" aria-haspopup="true" aria-expanded="false">
-                        <span class="wo-nav-drop-trigger__label">{{ __('marketing.nav_modules') }}</span>
+            <nav class="wo-nav" aria-label="{{ __('marketing.nav_menu') }}">
+                <a href="{{ route('home') }}" {!! $navCurrent($page === 'home') !!}>{{ __('marketing.nav_home') }}</a>
+                <a href="{{ route('marketing.product') }}" {!! $navCurrent($page === 'product') !!}>{{ __('marketing.nav_product') }}</a>
+                <div class="wo-nav-drop">
+                    <button type="button" class="wo-nav-drop-trigger{{ $isModulesNav ? ' is-active' : '' }}" aria-expanded="false" aria-controls="woModulesMenu">
+                        {{ __('marketing.nav_modules') }}
                         <svg class="wo-nav-caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
                             <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                    <div class="wo-nav-drop-menu" role="menu">
-                        <a href="{{ route('marketing.erp') }}" class="wo-nav-drop-item {{ $page === 'erp' ? 'is-active' : '' }}" role="menuitem">
-                            <span class="wo-nav-drop-item__title">{{ __('marketing.nav_erp') }}</span>
-                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_erp_d') }}</span>
-                        </a>
-                        <a href="{{ route('marketing.crm') }}" class="wo-nav-drop-item {{ $page === 'crm' ? 'is-active' : '' }}" role="menuitem">
-                            <span class="wo-nav-drop-item__title">{{ __('marketing.nav_crm') }}</span>
-                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_crm_d') }}</span>
-                        </a>
-                        <a href="{{ route('marketing.hr') }}" class="wo-nav-drop-item {{ $page === 'hr' ? 'is-active' : '' }}" role="menuitem">
-                            <span class="wo-nav-drop-item__title">{{ __('marketing.nav_hr') }}</span>
-                            <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_hr_d') }}</span>
-                        </a>
+                    <div class="wo-nav-drop-menu" id="woModulesMenu">
+                        @foreach (['erp', 'crm', 'hr'] as $mod)
+                            <a href="{{ route('marketing.' . $mod) }}" class="wo-nav-drop-item{{ $page === $mod ? ' is-active' : '' }}" @if($page === $mod) aria-current="page" @endif>
+                                <span class="wo-nav-drop-item__title">{{ __('marketing.nav_' . $mod) }}</span>
+                                <span class="wo-nav-drop-item__desc">{{ __('marketing.nav_' . $mod . '_d') }}</span>
+                            </a>
+                        @endforeach
                     </div>
                 </div>
-                <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
-                <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
+                <a href="{{ route('marketing.faq') }}" {!! $navCurrent($page === 'faq') !!}>{{ __('marketing.nav_faq') }}</a>
+                <a href="{{ route('marketing.contact') }}" {!! $navCurrent($page === 'contact') !!}>{{ __('marketing.nav_contact') }}</a>
             </nav>
 
             <div class="wo-actions">
                 <div class="wo-lang" role="group" aria-label="Language">
-                    <a href="{{ route('marketing.locale', 'sq') }}" class="{{ app()->getLocale() === 'sq' ? 'is-active' : '' }}">SQ</a>
-                    <a href="{{ route('marketing.locale', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'is-active' : '' }}">EN</a>
-                    <a href="{{ route('marketing.locale', 'de') }}" class="{{ app()->getLocale() === 'de' ? 'is-active' : '' }}">DE</a>
+                    @foreach (['sq', 'en', 'de'] as $lang)
+                        <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                    @endforeach
                 </div>
-                <a class="wo-btn wo-btn-ghost wo-hide-sm wo-btn-login" href="{{ route('login') }}" aria-label="{{ __('marketing.nav_login') }}" title="{{ __('marketing.nav_login') }}">
-                    <svg class="wo-btn-icon text-primary" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                        <path fill="currentColor" d="M12 12a4.5 4.5 0 1 0-4.5-4.5A4.5 4.5 0 0 0 12 12zm0 2.25c-3.6 0-6.75 1.8-6.75 4.05V20h13.5v-1.7c0-2.25-3.15-4.05-6.75-4.05z"/>
-                    </svg>
+                <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                <a class="wo-btn wo-btn-primary wo-top-cta" href="{{ route('marketing.contact') }}">
+                    <span class="wo-top-cta__long">{{ __('marketing.nav_demo') }}</span>
+                    <span class="wo-top-cta__short">{{ __('marketing.nav_demo_short') }}</span>
                 </a>
-                <button type="button" class="wo-menu" id="woMenu" aria-expanded="false" aria-controls="woDrawer" aria-label="{{ __('marketing.nav_menu') }}">
-                    <span class="wo-menu-bars" aria-hidden="true">
-                        <span></span><span></span><span></span>
-                    </span>
+                <button type="button" class="wo-menu" id="woMenu" aria-expanded="false" aria-controls="woDrawer" aria-label="{{ __('marketing.nav_menu') }}" data-label-open="{{ __('marketing.nav_menu') }}" data-label-close="{{ __('marketing.nav_close') }}">
+                    <span class="wo-menu-bars" aria-hidden="true"><span></span><span></span></span>
                 </button>
             </div>
         </div>
-        <div class="wo-nav-backdrop" id="woNavBackdrop" hidden aria-hidden="true"></div>
-        <nav class="wo-drawer" id="woDrawer" aria-label="Mobile">
+
+        <div class="wo-drawer" id="woDrawer" hidden>
             <div class="wo-wrap wo-drawer-inner">
-                <div class="wo-drawer-nav">
-                    <a href="{{ route('home') }}" class="{{ $page === 'home' ? 'is-active' : '' }}">{{ __('marketing.nav_home') }}</a>
-                    <a href="{{ route('marketing.product') }}" class="{{ $page === 'product' ? 'is-active' : '' }}">{{ __('marketing.nav_product') }}</a>
-                    <details class="wo-drawer-modules{{ $isModulesNav ? ' is-open' : '' }}" @if($isModulesNav) open @endif>
-                        <summary class="wo-drawer-modules__trigger">
-                            <span class="wo-drawer-modules__label">{{ __('marketing.nav_modules') }}</span>
-                            <svg class="wo-drawer-modules__caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
+                <nav class="wo-drawer-nav" aria-label="{{ __('marketing.nav_menu') }}">
+                    <a href="{{ route('home') }}" {!! $navCurrent($page === 'home') !!}>{{ __('marketing.nav_home') }}</a>
+                    <a href="{{ route('marketing.product') }}" {!! $navCurrent($page === 'product') !!}>{{ __('marketing.nav_product') }}</a>
+                    {{-- Modules: a dropdown like the desktop nav; already open on a module page --}}
+                    <div class="wo-drawer-drop{{ $isModulesNav ? ' is-open' : '' }}">
+                        <button type="button" class="wo-drawer-drop-trigger{{ $isModulesNav ? ' is-active' : '' }}" aria-expanded="{{ $isModulesNav ? 'true' : 'false' }}" aria-controls="woDrawerModules">
+                            {{ __('marketing.nav_modules') }}
+                            <svg class="wo-nav-caret" viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
                                 <path d="M2.5 4.5 L6 8 L9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                        </summary>
-                        <div class="wo-drawer-sub">
-                            <a href="{{ route('marketing.erp') }}" class="{{ $page === 'erp' ? 'is-active' : '' }}">{{ __('marketing.nav_erp') }}</a>
-                            <a href="{{ route('marketing.crm') }}" class="{{ $page === 'crm' ? 'is-active' : '' }}">{{ __('marketing.nav_crm') }}</a>
-                            <a href="{{ route('marketing.hr') }}" class="{{ $page === 'hr' ? 'is-active' : '' }}">{{ __('marketing.nav_hr') }}</a>
+                        </button>
+                        <div class="wo-drawer-sub" id="woDrawerModules">
+                            <div class="wo-drawer-sub-inner">
+                                @foreach (['erp', 'crm', 'hr'] as $mod)
+                                    <a href="{{ route('marketing.' . $mod) }}" {!! $navCurrent($page === $mod) !!}>
+                                        <span>{{ __('marketing.nav_' . $mod) }}</span>
+                                        <small>{{ __('marketing.nav_' . $mod . '_d') }}</small>
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
-                    </details>
-                    <a href="{{ route('marketing.faq') }}" class="{{ $page === 'faq' ? 'is-active' : '' }}">{{ __('marketing.nav_faq') }}</a>
-                    <a href="{{ route('marketing.contact') }}" class="{{ $page === 'contact' ? 'is-active' : '' }}">{{ __('marketing.nav_contact') }}</a>
-                </div>
-                <div class="wo-drawer-cta">
-                    <a class="wo-btn wo-btn-ghost" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                    </div>
+                    <a href="{{ route('marketing.faq') }}" {!! $navCurrent($page === 'faq') !!}>{{ __('marketing.nav_faq') }}</a>
+                    <a href="{{ route('marketing.contact') }}" {!! $navCurrent($page === 'contact') !!}>{{ __('marketing.nav_contact') }}</a>
+                </nav>
+                <div class="wo-drawer-foot">
+                    <a class="wo-btn wo-btn-primary" href="{{ route('marketing.contact') }}">{{ __('marketing.nav_demo') }}</a>
+                    <div class="wo-drawer-meta">
+                        <a class="wo-login" href="{{ route('login') }}">{{ __('marketing.nav_login') }}</a>
+                        <div class="wo-lang" role="group" aria-label="Language">
+                            @foreach (['sq', 'en', 'de'] as $lang)
+                                <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main id="main" class="wo-main">
         @yield('content')
     </main>
 
-    <footer class="wo-footer">
+    {{-- Footer: the same night blue as the closing CTA, so the two read as one dark block --}}
+    @php
+        $footerCols = [
+            'footer_product' => [
+                [route('marketing.product'), __('marketing.nav_product')],
+                [route('home') . '#si-funksionon', __('marketing.footer_how')],
+                [route('home') . '#prova-falas', __('marketing.trial_label')],
+                [route('home') . '#per-ke-eshte', __('marketing.footer_for_who')],
+                [route('home') . '#klientet', __('marketing.footer_clients')],
+            ],
+            'footer_modules' => [
+                [route('marketing.erp'), __('marketing.nav_erp')],
+                [route('marketing.crm'), __('marketing.nav_crm')],
+                [route('marketing.hr'), __('marketing.nav_hr')],
+            ],
+            'footer_help' => [
+                [route('marketing.faq'), __('marketing.nav_faq')],
+                [route('marketing.contact'), __('marketing.nav_contact')],
+                [route('marketing.privacy'), __('marketing.footer_privacy')],
+            ],
+        ];
+    @endphp
+    <footer class="wo-foot">
         <div class="wo-wrap">
-            <div class="wo-footer-main">
-                <div class="wo-footer-brand">
-                    <a href="{{ route('home') }}" class="wo-logo wo-logo-footer">
-                        <img
-                            class="wo-lazy"
-                            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23071838'/%3E%3C/svg%3E"
-                            data-wo-src="{{ asset('images/marketing/workom_logo.png') }}"
-                            alt="WORKOM"
-                            width="220"
-                            height="56"
-                            loading="lazy"
-                            decoding="async"
-                        >
+            <div class="wo-foot__top">
+                <div class="wo-foot__brand">
+                    <a href="{{ route('home') }}" class="wo-foot__logo" aria-label="WORKOM — {{ __('marketing.nav_home') }}">
+                        <img src="{{ asset('images/marketing/workom_logo.png') }}" alt="WORKOM" width="1423" height="266" loading="lazy" decoding="async">
                     </a>
-                    <p class="wo-footer-copy">{{ __('marketing.footer_copy') }}</p>
-                    <div class="wo-social-links" aria-label="{{ __('marketing.footer_social') }}">
-                        <a href="{{ __('marketing.social_linkedin') }}" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                        <a href="{{ __('marketing.social_instagram') }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="{{ __('marketing.social_tiktok') }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                    <p>{{ __('marketing.footer_copy') }}</p>
+                    <div class="wo-foot__contact">
+                        <a href="mailto:{{ __('marketing.contact_email_address') }}">{{ __('marketing.contact_email_address') }}</a>
+                        <a href="tel:+{{ __('marketing.phone_wa') }}">{{ __('marketing.phone_display') }}</a>
                     </div>
                 </div>
 
-                <div class="wo-footer-col">
-                    <h4>{{ __('marketing.footer_modules') }}</h4>
-                    <nav aria-label="{{ __('marketing.footer_modules') }}">
-                        <a href="{{ route('marketing.erp') }}">{{ __('marketing.nav_erp') }}</a>
-                        <a href="{{ route('marketing.crm') }}">{{ __('marketing.nav_crm') }}</a>
-                        <a href="{{ route('marketing.hr') }}">{{ __('marketing.nav_hr') }}</a>
-                        <a href="{{ route('home') }}#si-funksionon">{{ __('marketing.footer_how') }}</a>
-                    </nav>
-                </div>
-
-                <div class="wo-footer-col wo-footer-col--end">
-                    <h4>{{ __('marketing.footer_product') }}</h4>
-                    <nav aria-label="{{ __('marketing.footer_product') }}">
-                        <a href="{{ route('home') }}#cmimet">{{ __('marketing.footer_pricing') }}</a>
-                        <a href="{{ route('home') }}#per-ke-eshte">{{ __('marketing.footer_for_who') }}</a>
-                        <a href="{{ route('marketing.contact') }}">{{ __('marketing.nav_contact') }}</a>
-                        <a href="{{ route('home') }}#klientet">{{ __('marketing.footer_clients') }}</a>
-                    </nav>
+                <div class="wo-foot__cols">
+                    @foreach ($footerCols as $title => $links)
+                        <nav aria-labelledby="wo-foot-{{ $loop->index }}">
+                            <h2 id="wo-foot-{{ $loop->index }}">{{ __('marketing.' . $title) }}</h2>
+                            <ul>
+                                @foreach ($links as [$href, $label])
+                                    <li><a href="{{ $href }}">{{ $label }}</a></li>
+                                @endforeach
+                            </ul>
+                        </nav>
+                    @endforeach
                 </div>
             </div>
 
-            <div class="wo-footer-bottom">
-                <p class="wo-copy">&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }} · <a href="{{ route('marketing.privacy') }}">{{ __('marketing.footer_privacy') }}</a></p>
-                <p class="wo-footer-bottom-tag">{{ __('marketing.footer_bottom_tag') }}</p>
+            <div class="wo-foot__bottom">
+                <p>&copy; {{ date('Y') }} WORKOM. {{ __('marketing.footer_rights') }}</p>
+                @include('marketing.partials.social', ['class' => 'wo-social--dark'])
+                <div class="wo-foot__lang" role="group" aria-label="Language">
+                    @foreach (['sq', 'en', 'de'] as $lang)
+                        <a href="{{ route('marketing.locale', $lang) }}" hreflang="{{ $lang }}" lang="{{ $lang }}" @if ($locale === $lang) class="is-active" aria-current="true" @endif>{{ strtoupper($lang) }}</a>
+                    @endforeach
+                </div>
             </div>
         </div>
     </footer>
@@ -217,146 +248,106 @@
 
     <script>
         (function () {
+            var top = document.getElementById('woTop');
             var btn = document.getElementById('woMenu');
             var drawer = document.getElementById('woDrawer');
-            var backdrop = document.getElementById('woNavBackdrop');
-            var drawerCloseTimer = null;
-            function setMenu(open) {
+            var desktopNav = window.matchMedia('(min-width: 1080px)');
+            var drawerTimer = null;
+
+            // Header: hairline + solid background once the page scrolls.
+            // Over the home hero it stays dark (is-light off) until the hero has scrolled away
+            // or the mobile drawer opens.
+            var hero = document.querySelector('.wo-hero');
+            function syncTop() {
+                if (!top) return;
+                var y = window.scrollY;
+                top.classList.toggle('is-scrolled', y > 8);
+                if (top.classList.contains('wo-top--over')) {
+                    var pastHero = !hero || y > hero.offsetHeight - top.offsetHeight - 40;
+                    top.classList.toggle('is-light', pastHero || document.body.classList.contains('wo-nav-open'));
+                }
+            }
+            syncTop();
+            window.addEventListener('scroll', syncTop, { passive: true });
+            window.addEventListener('resize', syncTop);
+
+            // Mobile drawer
+            function setMenu(open, restoreFocus) {
                 if (!btn || !drawer) return;
-                window.clearTimeout(drawerCloseTimer);
+                var isOpen = btn.getAttribute('aria-expanded') === 'true';
+                if (open === isOpen) return;
+                window.clearTimeout(drawerTimer);
+                btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+                btn.setAttribute('aria-label', btn.dataset[open ? 'labelClose' : 'labelOpen']);
+                document.body.classList.toggle('wo-nav-open', open);
+                syncTop();
                 if (open) {
-                    drawer.classList.remove('is-closing');
-                    drawer.classList.add('is-open');
-                    btn.classList.add('is-open');
-                    btn.setAttribute('aria-expanded', 'true');
-                    document.body.classList.add('wo-nav-open');
-                    if (backdrop) {
-                        backdrop.hidden = false;
-                        backdrop.setAttribute('aria-hidden', 'false');
-                    }
+                    drawer.hidden = false;
+                    requestAnimationFrame(function () { drawer.classList.add('is-open'); });
                 } else {
-                    if (!drawer.classList.contains('is-open') && !drawer.classList.contains('is-closing')) return;
-                    drawer.classList.add('is-closing');
                     drawer.classList.remove('is-open');
-                    btn.classList.remove('is-open');
-                    btn.setAttribute('aria-expanded', 'false');
-                    document.body.classList.remove('wo-nav-open');
-                    if (backdrop) backdrop.setAttribute('aria-hidden', 'true');
-                    drawerCloseTimer = window.setTimeout(function () {
-                        drawer.classList.remove('is-closing');
-                        if (backdrop) backdrop.hidden = true;
-                    }, 380);
+                    drawerTimer = window.setTimeout(function () { drawer.hidden = true; }, 220);
+                    if (restoreFocus) btn.focus();
                 }
             }
             if (btn && drawer) {
                 btn.addEventListener('click', function () {
-                    setMenu(!drawer.classList.contains('is-open'));
+                    setMenu(btn.getAttribute('aria-expanded') !== 'true');
                 });
                 drawer.querySelectorAll('a').forEach(function (link) {
                     link.addEventListener('click', function () { setMenu(false); });
                 });
-                if (backdrop) {
-                    backdrop.addEventListener('click', function () { setMenu(false); });
-                }
                 document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') setMenu(false);
+                    if (e.key === 'Escape') setMenu(false, true);
                 });
-                window.addEventListener('resize', function () {
-                    if (window.matchMedia('(min-width: 920px)').matches) setMenu(false);
+                var onBreakpoint = function () { if (desktopNav.matches) setMenu(false); };
+                if (desktopNav.addEventListener) desktopNav.addEventListener('change', onBreakpoint);
+
+                // Drawer "Modules" dropdown
+                drawer.querySelectorAll('.wo-drawer-drop').forEach(function (drop) {
+                    var trigger = drop.querySelector('.wo-drawer-drop-trigger');
+                    trigger.addEventListener('click', function () {
+                        var open = !drop.classList.contains('is-open');
+                        drop.classList.toggle('is-open', open);
+                        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+                    });
                 });
             }
 
+            // Desktop "Modules" disclosure: hover on fine pointers, click/keyboard everywhere.
             function initNavDrop() {
-                if (document.documentElement.dataset.woNavDropReady === '1') return;
-                document.documentElement.dataset.woNavDropReady = '1';
-
                 document.querySelectorAll('.wo-nav-drop').forEach(function (drop) {
                     var trigger = drop.querySelector('.wo-nav-drop-trigger');
                     if (!trigger) return;
+                    var closeTimer = null;
 
                     function setOpen(open) {
+                        window.clearTimeout(closeTimer);
                         drop.classList.toggle('is-open', open);
                         trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
                     }
 
-                    var hoverCapable = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-                    if (hoverCapable) {
+                    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
                         drop.addEventListener('mouseenter', function () { setOpen(true); });
-                        drop.addEventListener('mouseleave', function () { setOpen(false); });
+                        drop.addEventListener('mouseleave', function () {
+                            closeTimer = window.setTimeout(function () { setOpen(false); }, 120);
+                        });
                     }
 
-                    trigger.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        var willOpen = !drop.classList.contains('is-open');
-                        document.querySelectorAll('.wo-nav-drop.is-open').forEach(function (other) {
-                            if (other === drop) return;
-                            other.classList.remove('is-open');
-                            var otherTrigger = other.querySelector('.wo-nav-drop-trigger');
-                            if (otherTrigger) otherTrigger.setAttribute('aria-expanded', 'false');
-                        });
-                        setOpen(willOpen);
+                    trigger.addEventListener('click', function () {
+                        setOpen(!drop.classList.contains('is-open'));
                     });
-
-                    drop.addEventListener('focusin', function () { setOpen(true); });
                     drop.addEventListener('focusout', function (e) {
                         if (!drop.contains(e.relatedTarget)) setOpen(false);
                     });
-                });
-
-                document.addEventListener('click', function (e) {
-                    if (e.target.closest('.wo-nav-drop')) return;
-                    document.querySelectorAll('.wo-nav-drop.is-open').forEach(function (drop) {
-                        drop.classList.remove('is-open');
-                        var trigger = drop.querySelector('.wo-nav-drop-trigger');
-                        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                    drop.addEventListener('keydown', function (e) {
+                        if (e.key === 'Escape' && drop.classList.contains('is-open')) {
+                            setOpen(false);
+                            trigger.focus();
+                        }
                     });
-                });
-            }
-
-            function initDrawerModules() {
-                document.querySelectorAll('.wo-drawer-modules').forEach(function (details) {
-                    var summary = details.querySelector('.wo-drawer-modules__trigger');
-                    var panel = details.querySelector('.wo-drawer-sub');
-                    if (!summary || !panel || details.dataset.woModulesReady === '1') return;
-                    details.dataset.woModulesReady = '1';
-                    details.classList.add('wo-drawer-modules-ready');
-                    if (details.open) details.classList.add('is-open');
-
-                    summary.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        var opening = !details.classList.contains('is-open');
-
-                        if (reduceMotion) {
-                            details.open = opening;
-                            details.classList.toggle('is-open', opening);
-                            return;
-                        }
-
-                        if (opening) {
-                            details.open = true;
-                            details.classList.remove('is-closing');
-                            requestAnimationFrame(function () {
-                                details.classList.add('is-open');
-                            });
-                            return;
-                        }
-
-                        details.classList.add('is-closing');
-                        details.classList.remove('is-open');
-                        var done = false;
-                        var finish = function () {
-                            if (done) return;
-                            done = true;
-                            details.open = false;
-                            details.classList.remove('is-closing');
-                        };
-                        panel.addEventListener('transitionend', function onEnd(ev) {
-                            if (ev.target !== panel) return;
-                            panel.removeEventListener('transitionend', onEnd);
-                            finish();
-                        });
-                        window.setTimeout(finish, 420);
+                    document.addEventListener('click', function (e) {
+                        if (!drop.contains(e.target)) setOpen(false);
                     });
                 });
             }
@@ -440,7 +431,21 @@
 
             var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             initNavDrop();
-            initDrawerModules();
+
+            // Cards: the light inside follows the pointer (CSS reads --mx / --my); on leave it glides back.
+            if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                document.querySelectorAll('.wo-card, .wo-plan, .wo-channel').forEach(function (card) {
+                    card.addEventListener('pointermove', function (e) {
+                        var r = card.getBoundingClientRect();
+                        card.style.setProperty('--mx', (e.clientX - r.left).toFixed(0) + 'px');
+                        card.style.setProperty('--my', (e.clientY - r.top).toFixed(0) + 'px');
+                    });
+                    card.addEventListener('pointerleave', function () {
+                        card.style.removeProperty('--mx');
+                        card.style.removeProperty('--my');
+                    });
+                });
+            }
             var animated = document.querySelectorAll('.wo-animate');
             if (!reduceMotion && 'IntersectionObserver' in window && animated.length) {
                 var io = new IntersectionObserver(function (entries) {
@@ -455,173 +460,96 @@
                 animated.forEach(function (el) { el.classList.add('is-inview'); });
             }
 
-            document.querySelectorAll('.wo-faq details').forEach(function (details) {
-                var summary = details.querySelector('summary');
+            // Every page: the blocks of each section fade in and slide up as they scroll into view,
+            // one after another. The home hero stays put; .wo-animate sections have their own motion.
+            // Once shown, the classes come off so the blocks keep their own styles.
+            if (!reduceMotion && 'IntersectionObserver' in window) {
+                var revealIo = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (!entry.isIntersecting) return;
+                        var el = entry.target;
+                        revealIo.unobserve(el);
+                        el.classList.add('is-inview');
+                        window.setTimeout(function () {
+                            el.classList.remove('wo-reveal', 'is-inview');
+                            el.style.removeProperty('--reveal-delay');
+                        }, 1100);
+                    });
+                }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+
+                document.querySelectorAll('.wo-main section:not(.wo-hero):not(.wo-animate), .wo-main > header, .wo-legal__head, .wo-legal__body').forEach(function (group) {
+                    if (group.closest('.wo-reveal')) return;
+                    var inner = group.classList.contains('wo-wrap') ? group : (group.querySelector(':scope > .wo-wrap') || group);
+                    Array.prototype.forEach.call(inner.children, function (el, i) {
+                        if (el.matches('.wo-animate, .wo-sr, script, [hidden]')) return;
+                        el.classList.add('wo-reveal');
+                        el.style.setProperty('--reveal-delay', Math.min(i, 4) * 90 + 'ms');
+                        revealIo.observe(el);
+                    });
+                });
+            }
+
+            // FAQ: one answer open at a time; opening a question closes the one that was open.
+            var faqItems = Array.prototype.slice.call(document.querySelectorAll('.wo-faq details'));
+
+            // the wanted state is kept right away (data-open), so quick clicks never leave two answers open
+            function setFaq(details, open) {
                 var panel = details.querySelector('.wo-faq-panel');
-                if (!summary || !panel) return;
+                if (open === (details.dataset.open === '1')) return;
+                details.dataset.open = open ? '1' : '0';
+
+                if (reduceMotion) {
+                    details.open = open;
+                    details.classList.toggle('is-open', open);
+                    return;
+                }
+
+                if (open) {
+                    details.open = true;
+                    requestAnimationFrame(function () {
+                        if (details.dataset.open === '1') details.classList.add('is-open');
+                    });
+                    return;
+                }
+
+                details.classList.remove('is-open');
+                var done = false;
+                var finish = function () {
+                    // reopened before the panel finished closing: leave it open
+                    if (done || details.dataset.open === '1') return;
+                    done = true;
+                    details.open = false;
+                };
+                panel.addEventListener('transitionend', function onEnd(ev) {
+                    if (ev.target !== panel) return;
+                    panel.removeEventListener('transitionend', onEnd);
+                    finish();
+                });
+                window.setTimeout(finish, 400);
+            }
+
+            faqItems.forEach(function (details) {
+                var summary = details.querySelector('summary');
+                if (!summary || !details.querySelector('.wo-faq-panel')) return;
 
                 details.classList.add('wo-faq-ready');
+                details.dataset.open = details.open ? '1' : '0';
                 if (details.open) details.classList.add('is-open');
 
                 summary.addEventListener('click', function (e) {
                     e.preventDefault();
-                    var opening = !details.classList.contains('is-open');
-
-                    if (reduceMotion) {
-                        details.open = opening;
-                        details.classList.toggle('is-open', opening);
-                        return;
-                    }
-
+                    var opening = details.dataset.open !== '1';
                     if (opening) {
-                        details.open = true;
-                        requestAnimationFrame(function () {
-                            details.classList.add('is-open');
+                        faqItems.forEach(function (other) {
+                            if (other !== details) setFaq(other, false);
                         });
-                    } else {
-                        details.classList.remove('is-open');
-                        var done = false;
-                        var finish = function () {
-                            if (done) return;
-                            done = true;
-                            details.open = false;
-                        };
-                        panel.addEventListener('transitionend', function onEnd(ev) {
-                            if (ev.target !== panel) return;
-                            panel.removeEventListener('transitionend', onEnd);
-                            finish();
-                        });
-                        window.setTimeout(finish, 400);
                     }
+                    setFaq(details, opening);
                 });
             });
-
-            (function initPriceSlider() {
-                var track = document.getElementById('woPrices');
-                if (!track) return;
-
-                var cards = Array.prototype.slice.call(track.querySelectorAll('.wo-price'));
-                if (!cards.length) return;
-
-                var mq = window.matchMedia('(max-width: 639px)');
-                var index = Math.max(0, cards.findIndex(function (c) { return c.classList.contains('is-featured'); }));
-                if (index < 0) index = 0;
-                var ticking = false;
-                var drag = null;
-                var skipClick = false;
-
-                function setActive(i) {
-                    index = i;
-                    cards.forEach(function (card, n) {
-                        card.classList.toggle('is-slide-active', n === i);
-                    });
-                }
-
-                function goTo(i, smooth) {
-                    if (!mq.matches) return;
-                    i = Math.max(0, Math.min(cards.length - 1, i));
-                    var card = cards[i];
-                    var left = card.offsetLeft - (track.clientWidth - card.clientWidth) / 2;
-                    track.scrollTo({ left: left, behavior: smooth && !reduceMotion ? 'smooth' : 'auto' });
-                    setActive(i);
-                }
-
-                function nearest() {
-                    var mid = track.scrollLeft + track.clientWidth / 2;
-                    var best = 0;
-                    var bestDist = Infinity;
-                    cards.forEach(function (card, i) {
-                        var c = card.offsetLeft + card.clientWidth / 2;
-                        var d = Math.abs(c - mid);
-                        if (d < bestDist) {
-                            bestDist = d;
-                            best = i;
-                        }
-                    });
-                    return best;
-                }
-
-                function onScroll() {
-                    if (!mq.matches || ticking) return;
-                    ticking = true;
-                    requestAnimationFrame(function () {
-                        setActive(nearest());
-                        ticking = false;
-                    });
-                }
-
-                function onPointerDown(e) {
-                    if (!mq.matches || e.button === 2) return;
-                    if (e.target.closest('a, button')) return;
-                    drag = {
-                        startX: e.clientX,
-                        startScroll: track.scrollLeft,
-                        moved: false,
-                        pointerId: e.pointerId
-                    };
-                    track.classList.add('is-dragging');
-                    if (e.pointerId != null && track.setPointerCapture) {
-                        try { track.setPointerCapture(e.pointerId); } catch (err) {}
-                    }
-                }
-
-                function onPointerMove(e) {
-                    if (!drag) return;
-                    var dx = e.clientX - drag.startX;
-                    if (Math.abs(dx) > 6) drag.moved = true;
-                    track.scrollLeft = drag.startScroll - dx;
-                    if (drag.moved && e.cancelable) e.preventDefault();
-                }
-
-                function onPointerUp(e) {
-                    if (!drag) return;
-                    var dx = e.clientX - drag.startX;
-                    var moved = drag.moved;
-                    track.classList.remove('is-dragging');
-                    if (drag.pointerId != null && track.releasePointerCapture) {
-                        try { track.releasePointerCapture(drag.pointerId); } catch (err) {}
-                    }
-                    drag = null;
-                    if (!moved) return;
-                    skipClick = true;
-                    var next = index;
-                    if (dx < -48) next = index + 1;
-                    else if (dx > 48) next = index - 1;
-                    else next = nearest();
-                    goTo(next, true);
-                }
-
-                track.addEventListener('scroll', onScroll, { passive: true });
-                track.addEventListener('pointerdown', onPointerDown);
-                track.addEventListener('pointermove', onPointerMove, { passive: false });
-                track.addEventListener('pointerup', onPointerUp);
-                track.addEventListener('pointercancel', onPointerUp);
-                track.addEventListener('click', function (e) {
-                    if (!skipClick) return;
-                    skipClick = false;
-                    e.preventDefault();
-                    e.stopPropagation();
-                }, true);
-
-                function syncMode() {
-                    if (mq.matches) goTo(index, false);
-                    else cards.forEach(function (card) { card.classList.remove('is-slide-active'); });
-                }
-
-                if (mq.addEventListener) mq.addEventListener('change', syncMode);
-                else if (mq.addListener) mq.addListener(syncMode);
-
-                window.addEventListener('resize', function () {
-                    if (mq.matches) goTo(index, false);
-                });
-
-                syncMode();
-                requestAnimationFrame(function () {
-                    if (mq.matches) goTo(index, false);
-                });
-            })();
         })();
     </script>
+    @stack('scripts')
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
