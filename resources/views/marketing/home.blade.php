@@ -8,12 +8,14 @@
 @php
     $clients = [
         ['file' => 'clients/alphatech.webp', 'alt' => 'AlphaTech'],
-        ['file' => 'clients/bibaj.webp', 'alt' => 'Bibaj'],
         ['file' => 'clients/gashiglasstech.webp', 'alt' => 'Gashi Glass Tech'],
-        ['file' => 'clients/laconcept.webp', 'alt' => 'LA Concept'],
         ['file' => 'clients/mobelpro.webp', 'alt' => 'Mobel Pro'],
         ['file' => 'clients/mstudio.webp', 'alt' => 'M Studio'],
-        ['file' => 'clients/veluna.webp', 'alt' => 'Veluna'],
+        ['file' => 'clients/rentos.webp', 'alt' => 'Rentos'],
+        ['file' => 'clients/ecoom.webp', 'alt' => 'eCoom'],
+        ['file' => 'clients/clubmeister.webp', 'alt' => 'ClubMeister'],
+        ['file' => 'clients/alphatune.webp', 'alt' => 'alphatune'],
+        ['file' => 'clients/berna.webp', 'alt' => 'Berna Consulting'],
     ];
 @endphp
 
